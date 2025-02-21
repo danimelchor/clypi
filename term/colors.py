@@ -2,7 +2,8 @@ import builtins
 import typing as t
 from enum import Enum
 
-ESC = "\033["
+from term.const import ESC
+
 END = "m"
 
 FG_OFFSET = 30
