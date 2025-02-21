@@ -5,56 +5,8 @@ Type-safe Python CLI prompts with validations, retries, custom messages, etc.
 ### Examples
 
 Check out the examples in `./examples`! You can run them locally with:
-
 ```
-python -m examples.<name>
-```
-
-For example:
-```
-python -m examples.validations
-```
-
-
-## ✔️ Validations
-
-First, you'll need to import the `validations` module:
-```python
-from term import validations as v
-```
-
-**Basic validations**
-```python
-my_validation = v.Range(18, 21)
-
-# .test(...)
-my_validation.test(18)  # True
-my_validation.test(21)  # True
-my_validation.test(54)  # False
-
-# .validate(...)
-my_validation.validate(21)  # Nothing happens -> continue to next line
-my_validation.validate(54)  # Raises a ValidationException()
-```
-
-**`AND` and `OR` validations**
-```python
-my_validation = (v.StartsWith("foo") | v.EndsWith("foo")) & v.ReMatch(r"^[a-z]*$")
-my_validation.test("foo12")  # True
-my_validation.test("12foo")  # True
-my_validation.test("1foo2")  # False
-```
-
-**Custom validations**
-```python
-def is_div_three(x: int):
-    if x % 3 != 0:
-        raise ValueError("Woops! The Earth is 4.543 billion years old. (Try 4543000000)")
-
-my_validation = v.Custom(validate_earth_age)
-my_validation.test(3)  # True
-my_validation.test(6)  # True
-my_validation.test(4)  # False
+uv run examples/colors.py
 ```
 
 ## ❓ Prompting
