@@ -42,6 +42,7 @@ def main() -> None:
     colors.print("I am underline", underline=True)
     colors.print("I am blink", blink=True)
     colors.print("I am reverse", reverse=True)
+    colors.print("I am strikethrough", strikethrough=True)
 
 
 if __name__ == "__main__":

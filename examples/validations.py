@@ -1,17 +1,17 @@
 from __future__ import annotations
 
+from term import colors
 from term import validations as v
-from util.scripting import colors
 
 
 # --- DEMO UTILS ---
 def print_title(x: str) -> None:
-    print("\n" + colors.fg.blue(colors.style.bold(x)))
+    colors.print("\n" + x, fg="blue", bold=True)
 
 
 def print_example(prompt: str, result: bool) -> None:
-    color = colors.fg.green if result else colors.fg.red
-    print(prompt, color(str(result)))
+    color = "green" if result else "red"
+    print(prompt, colors.style(str(result), fg=color))
 
 
 # --- DEMO ---
@@ -37,9 +37,15 @@ def main() -> None:
     # You can "OR" multiple validations
     slack_or_jira = v.ReMatch(r"#[a-z0-9-]+") | v.ReMatch(r"[A-Z0-9_]+")
     print_title("OR Validations - Slack or Jira")
-    print_example("Is #foo-bar-1 a valid slack or Jira?", slack_or_jira.test("#foo-bar-1"))
-    print_example("Is FOO_BAR100 a valid slack or Jira?", slack_or_jira.test("FOO_BAR100"))
-    print_example("Is foo-bar-1 a valid slack or Jira?", slack_or_jira.test("foo-bar-1"))
+    print_example(
+        "Is #foo-bar-1 a valid slack or Jira?", slack_or_jira.test("#foo-bar-1")
+    )
+    print_example(
+        "Is FOO_BAR100 a valid slack or Jira?", slack_or_jira.test("FOO_BAR100")
+    )
+    print_example(
+        "Is foo-bar-1 a valid slack or Jira?", slack_or_jira.test("foo-bar-1")
+    )
 
     # You can create your own custom validations
     def _validate_earth_age(x: int) -> None:
@@ -48,8 +54,12 @@ def main() -> None:
 
     earth_age = v.Custom(_validate_earth_age)
     print_title("Custom Validation - Earth Age")
-    print_example("Is 4.543 billion years a valid Earth age?", earth_age.test(4_543_000_000))
-    print_example("Is 4.543 million years a valid Earth age?", earth_age.test(4_543_000))
+    print_example(
+        "Is 4.543 billion years a valid Earth age?", earth_age.test(4_543_000_000)
+    )
+    print_example(
+        "Is 4.543 million years a valid Earth age?", earth_age.test(4_543_000)
+    )
 
     # You can create your own reusable validation types
     class SlackChannel(v.Validation[str]):
