@@ -1,0 +1,31 @@
+[build-system]
+requires = ["hatchling==1.27.0"]
+build-backend = "hatchling.build"
+
+[project]
+name = "term"
+description = "Your all-in-one for production-ready CLIs"
+readme = "README.md"
+version = "0.1.0"
+license = "MIT"
+license-files = ["LICEN[CS]E*"]
+requires-python = ">=3.11"
+authors = [
+  {name = "Daniel Melchor", email = "dmelchor@pm.me"},
+]
+keywords = ["cli", "terminal", "ui"]
+dependencies = [
+    "typing-extensions>=4.12.2",
+]
+
+[project.optional-dependencies]
+dev = [
+  "pytest>=8.3.4",
+  "ruff>=0.9.7",
+  "pyright>=1.1.394",
+]
+
+[tool.pytest.ini_options]
+minversion = "8.0"
+addopts = "-ra -q"
+testpaths = ["tests"]

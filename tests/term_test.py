@@ -5,13 +5,13 @@ import re
 import sys
 from contextlib import contextmanager
 from datetime import date, datetime, timedelta
-from typing import Callable
 
 import pytest
 from pytest import mark
 
-from term import term
-from term import validations as v
+import term
+from term import klasses as k
+from term.input import MaxAttemptsException
 
 
 @contextmanager
@@ -77,15 +77,15 @@ def test_prompt_with_no_default(answers: list[str], expected: str, times: int):
 @mark.parametrize(
     "answer,klass,_type",
     [
-        ("Alice", term.Str(), str),
-        ("42", term.Int(), int),
-        ("42 days", term.TimeDelta(), timedelta),
-        ("42 hours", term.TimeDelta() | term.Int(), timedelta),
-        ("42", term.TimeDelta() | term.Int(), int),
-        ("Yes", term.Bool(), bool),
-        ("N", term.Bool(), bool),
-        ("2021-01-01", term.Date(), date),
-        ("2021-01-01T00:00:00", term.DateTime(), datetime),
+        ("Alice", k.Str(), str),
+        ("42", k.Int(), int),
+        ("42 days", k.TimeDelta(), timedelta),
+        ("42 hours", k.TimeDelta() | k.Int(), timedelta),
+        ("42", k.TimeDelta() | k.Int(), int),
+        ("Yes", k.Bool(), bool),
+        ("N", k.Bool(), bool),
+        ("2021-01-01", k.Date(), date),
+        ("2021-01-01T00:00:00", k.DateTime(), datetime),
     ],
     ids=[
         "Str",
@@ -99,7 +99,7 @@ def test_prompt_with_no_default(answers: list[str], expected: str, times: int):
         "DateTime",
     ],
 )
-def test_prompt_with_klass(answer: str, klass: term.Klass, _type: type):
+def test_prompt_with_klass(answer: str, klass: k.Klass, _type: type):
     with replace_stdin(answer) as _:
         res = term.prompt("Some prompt", klass=klass)
         assert isinstance(res, _type)
@@ -131,13 +131,13 @@ def test_prompt_with_native_type(answer: str, _type: type):
 @mark.parametrize(
     "answer,klass",
     [
-        ("Alice", term.Int()),
-        ("42 days", term.Int()),
-        ("42 asd", term.TimeDelta()),
-        ("42", term.TimeDelta()),
-        ("42", term.Bool()),
-        ("202-01-01", term.Date()),
-        ("2021-01-01T00:00", term.DateTime()),
+        ("Alice", k.Int()),
+        ("42 days", k.Int()),
+        ("42 asd", k.TimeDelta()),
+        ("42", k.TimeDelta()),
+        ("42", k.Bool()),
+        ("202-01-01", k.Date()),
+        ("2021-01-01T00:00", k.DateTime()),
     ],
     ids=[
         "Str as Int",
@@ -149,51 +149,27 @@ def test_prompt_with_native_type(answer: str, _type: type):
         "Invalid DateTime",
     ],
 )
-def test_prompt_with_klass_fails(answer: str, klass: term.Klass):
-    with replace_stdin(answer) as _, pytest.raises(term.MaxAttemptsException):
+def test_prompt_with_klass_fails(answer: str, klass: k.Klass):
+    with replace_stdin(answer) as _, pytest.raises(MaxAttemptsException):
         term.prompt("Some prompt", klass=klass, max_attempts=1)
 
 
-@mark.parametrize(
-    "answer,klass,validate",
-    [
-        ("2", term.Int(), v.Gt(1)),
-        ("2", term.Int(), v.Gte(1)),
-        ("2", term.Int(), v.Lt(3)),
-        ("2", term.Int(), v.Lte(3)),
-        ("2", term.Int(), v.Range(1, 3)),
-        ("2", term.Int(), v.Gt(0) & v.Lt(3)),
-        ("2", term.Int(), lambda _: None),
-    ],
-)
-def test_prompt_with_good_validate(answer: str, klass: term.Klass, validate: Callable):
-    with replace_stdin(answer) as _:
-        _ = term.prompt("Some prompt", klass=klass, validate=validate)
+def test_prompt_with_good_validate():
+    with replace_stdin("2") as _:
+        _ = term.prompt("Some prompt", klass=int, validate=lambda _: None)
 
 
 def _raise_error(x: int) -> None:
-    raise ValueError("Invalid")
+    raise ValueError(f"Invalid number {x}")
 
 
-@mark.parametrize(
-    "answer,klass,validate",
-    [
-        ("2", term.Int(), v.Gt(3)),
-        ("2", term.Int(), v.Gte(3)),
-        ("2", term.Int(), v.Lt(2)),
-        ("2", term.Int(), v.Lte(1)),
-        ("2", term.Int(), v.Range(3, 4)),
-        ("2", term.Int(), v.Gt(3) & v.Lt(4)),
-        ("2", term.Int(), _raise_error),
-    ],
-)
-def test_prompt_with_bad_validate(answer: str, klass: term.Klass, validate: Callable):
-    with replace_stdin(answer) as _, pytest.raises(term.MaxAttemptsException):
-        term.prompt("Some prompt", klass=klass, validate=validate, max_attempts=1)
+def test_prompt_with_bad_validate():
+    with replace_stdin("2") as _, pytest.raises(MaxAttemptsException):
+        term.prompt("Some prompt", klass=int, validate=_raise_error, max_attempts=1)
 
 
 def test_prompt_with_provided():
     with replace_stdin() as _:
-        res = term.prompt("Some prompt", klass=term.Int(), provided=42)
+        res = term.prompt("Some prompt", klass=k.Int(), provided=42)
         assert res == 42
         assert isinstance(res, int)

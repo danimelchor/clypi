@@ -9,11 +9,6 @@ from term.klasses import (
     Klass,
     parse_klass,
 )
-from term.validations import (
-    ValidationException,
-    ValidationType,
-    parse_validation,
-)
 
 
 class Unset(Enum):
@@ -45,7 +40,7 @@ def prompt(
     text: str,
     default: T | Unset = _UNSET,
     klass: t.Type[T] | Klass[T] = str,
-    validate: ValidationType[T] | None = None,
+    validate: t.Callable[[T], None] | None = None,
     hide_input: bool = False,
     max_attempts: int = MAX_ATTEMPTS,
     provided: T | None = None,
@@ -93,8 +88,8 @@ def prompt(
         # Validate the parsed value
         if validate is not None:
             try:
-                parse_validation(validate)(parsed_inp)
-            except ValidationException as e:
+                validate(parsed_inp)
+            except ValueError as e:
                 _error(str(e))
                 continue
 

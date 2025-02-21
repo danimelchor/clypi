@@ -1,0 +1,36 @@
+repos:
+  - repo: https://github.com/RobertCraigie/pyright-python
+    rev: v1.1.394
+    hooks:
+    - id: pyright
+      files: ^v6e/.*
+  - repo: local
+    hooks:
+    - id: pytest
+      name: pytest
+      entry: uv run pytest
+      language: python
+      types: [python]
+      files: ^tests/.*
+      pass_filenames: false
+      always_run: true
+      additional_dependencies: ["pytest==8.3.4"]
+    - id: ruff
+      name: Run 'ruff' for extremely fast Python linting
+      description: "Run 'ruff' for extremely fast Python linting"
+      entry: ruff check --force-exclude
+      language: python
+      types_or: [python, pyi]
+      args: [--fix]
+      exclude: ^tests/.*
+      require_serial: true
+      additional_dependencies: ["ruff==0.8.1"]
+    - id: ruff-format
+      name: Run 'ruff format'
+      description: "Run 'ruff format' for extremely fast Python formatting"
+      entry: ruff format --force-exclude
+      language: python
+      types_or: [python, pyi]
+      exclude: ^tests/.*
+      require_serial: true
+      additional_dependencies: ["ruff==0.8.1"]

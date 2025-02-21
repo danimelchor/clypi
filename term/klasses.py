@@ -114,7 +114,9 @@ class DateTime(Klass[datetime]):
         for fmt in self.fmts:
             with suppress(ValueError):
                 return datetime.strptime(x, fmt)
-        raise ValueError(f"Invalid datetime. {x} does not match any of the formats: {self.fmts}")
+        raise ValueError(
+            f"Invalid datetime. {x} does not match any of the formats: {self.fmts}"
+        )
 
 
 class Date(Klass[date]):
@@ -127,7 +129,9 @@ class Date(Klass[date]):
         for fmt in self.fmts:
             with suppress(ValueError):
                 return datetime.strptime(x, fmt).date()
-        raise ValueError(f"Invalid date. {x} does not match any of the formats: {self.fmts}")
+        raise ValueError(
+            f"Invalid date. {x} does not match any of the formats: {self.fmts}"
+        )
 
 
 def parse_klass(value: t.Type[T] | Klass[T]) -> Klass[T]:
