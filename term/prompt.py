@@ -3,42 +3,16 @@ from __future__ import annotations
 import typing as t
 from enum import Enum, auto
 
-from term import colors
+import term
 from term.klasses import (
-    Bool,
-    Date,
-    DateTime,
-    Float,
-    Int,
     Klass,
-    Str,
-    TimeDelta,
     parse_klass,
 )
 from term.validations import (
-    Validation,
     ValidationException,
     ValidationType,
     parse_validation,
 )
-
-# Needed to re-export
-__all__ = [
-    "Bool",
-    "Date",
-    "DateTime",
-    "Float",
-    "Int",
-    "Klass",
-    "MAX_ATTEMPTS",
-    "MaxAttemptsException",
-    "Str",
-    "TimeDelta",
-    "Validation",
-    "ValidationException",
-    "ValidationType",
-    "prompt",
-]
 
 
 class Unset(Enum):
@@ -51,11 +25,11 @@ MAX_ATTEMPTS: int = 20
 
 
 def _error(msg: str):
-    colors.print(msg, fg="red")
+    term.print(msg, fg="red")
 
 
 def _input(prompt: str) -> str:
-    return input(colors.style(prompt, fg="blue", bold=True))
+    return input(term.style(prompt, fg="blue", bold=True))
 
 
 class MaxAttemptsException(Exception):

@@ -1,17 +1,17 @@
 from __future__ import annotations
 
-from term import colors
+import term
 from term import validations as v
 
 
 # --- DEMO UTILS ---
 def print_title(x: str) -> None:
-    colors.print("\n" + x, fg="blue", bold=True)
+    term.print("\n" + x, fg="blue", bold=True)
 
 
 def print_example(prompt: str, result: bool) -> None:
     color = "green" if result else "red"
-    print(prompt, colors.style(str(result), fg=color))
+    print(prompt, term.style(str(result), fg=color))
 
 
 # --- DEMO ---

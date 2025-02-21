@@ -16,7 +16,6 @@ python -m examples.validations
 ```
 
 
-
 ## ✔️ Validations
 
 First, you'll need to import the `validations` module:
@@ -62,7 +61,8 @@ my_validation.test(4)  # False
 
 First, you'll need to import the `term` module:
 ```python
-from term import term
+import term
+from term import klasses as k
 ```
 
 **Basic prompting**
@@ -79,7 +79,7 @@ to_the_moon = term.prompt("Stripe coin to the moon?", default=True, klass=bool)
 ```python
 hours = term.prompt(
     "How many hours are there in a day?",
-    klass=term.TimeDelta() | term.Int(),
+    klass=k.TimeDelta() | k.Int(),
 )
 ```
 
@@ -87,7 +87,7 @@ hours = term.prompt(
 ```python
 earth = term.prompt(
     "How old is The Earth?",
-    klass=term.Int(),
+    klass=int,
     validate=v.Gte(1000) & v.Lte(2000) | v.Range(2001, 2002),
 )
 ```
@@ -100,7 +100,7 @@ def validate_earth_age(x: int):
 
 earth = term.prompt(
     "How old is The Earth?",
-    klass=term.Int(),
+    klass=int,
     validate=validate_earth_age,
 )
 ```
@@ -122,7 +122,7 @@ In this example your editor will correctly infer the type:
 ```python
 hours = term.prompt(
     "How many hours are there in a day?",
-    klass=term.TimeDelta() | term.Str() | term.Int(),
+    klass=k.TimeDelta() | k.Str() | k.Int(),
 )
 reveal_type(hours)  # Type of "res" is "timedelta | str | int"
 ```
@@ -130,7 +130,7 @@ reveal_type(hours)  # Type of "res" is "timedelta | str | int"
 In some cases, like prompting, the type will also indicate how to validate and parse the passed argument.
 For example, the following code will validate that the passed input is a valid number:
 ```python
-age = term.prompt("What's your age?", klass=term.Int())
+age = term.prompt("What's your age?", klass=int)
 ```
 
 

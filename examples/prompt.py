@@ -2,9 +2,10 @@ from __future__ import annotations
 
 import argparse
 
-from term import term
+import term
+from term import colors
+from term import klasses as k
 from term import validations as v
-from util.scripting import colors
 
 
 def _validate_earth_age(x: int) -> None:
@@ -17,7 +18,7 @@ def main() -> None:
     name = term.prompt("What's your name?")
 
     # Default values
-    to_the_moon = term.prompt("Stripe coin to the moon?", default=True, klass=bool)
+    is_cool = term.prompt("Is Term cool?", default=True, klass=bool)
 
     # Custom types with parsing
     age = term.prompt(
@@ -26,7 +27,7 @@ def main() -> None:
     )
     hours = term.prompt(
         "How many hours are there in a day?",
-        klass=term.TimeDelta() | term.Int(),
+        klass=k.TimeDelta() | k.Int(),
     )
 
     # Custom validations
@@ -49,9 +50,9 @@ def main() -> None:
 
     # -----------
     print()
-    print(colors.style.bold(colors.fg.green("🚀 Summary")))
+    colors.print("🚀 Summary", bold=True, fg="green")
     print(f"  Name: {name}")
-    print(f"  Stripe coin to the moon: {to_the_moon}")
+    print(f"  Term is cool: {is_cool}")
     print(f"  Age: {age}")
     print(f"  Hours in a day: {hours} ({type(hours).__name__})")
     print(f"  Earth age: {earth}")
