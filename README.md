@@ -114,31 +114,22 @@ args = parser.parse_args()
 animal = term.prompt("What's your favorite animal?", provided=args.animal)
 ```
 
-#### 🐍 Type-checking
+### 🐍 Type-checking
 
 This library is fully type-checked. This means that all types will be correctly inferred
-from the `klass` Term type you pass in. In fact, this entire library is built on `strict`
-typechecking mode!
+from the arguments you pass in.
 
-Example:
+In this example your editor will correctly infer the type:
 ```python
 hours = term.prompt(
     "How many hours are there in a day?",
     klass=term.TimeDelta() | term.Str() | term.Int(),
 )
+reveal_type(hours)  # Type of "res" is "timedelta | str | int"
 ```
 
-In the example above your editor will correctly infer that the type of `hours` is
-`timedelta | str | int` for you. If you want to triple check, you can also hardcode the type
-yourself:
-
-```python
-hours: timedelta | str | int = term.prompt(...)
-```
-
-The type will also indicate how to validate and parse the passed argument. For example, the following code will validate
-that the passed input is a valid number:
-
+In some cases, like prompting, the type will also indicate how to validate and parse the passed argument.
+For example, the following code will validate that the passed input is a valid number:
 ```python
 age = term.prompt("What's your age?", klass=term.Int())
 ```
