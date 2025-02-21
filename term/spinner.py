@@ -101,7 +101,10 @@ class Spinner(AbstractAsyncContextManager):
         self._render_frame()
 
     async def pipe(
-        self, pipe: asyncio.StreamReader | None, color: ColorType = "blue"
+        self,
+        pipe: asyncio.StreamReader | None,
+        color: ColorType = "blue",
+        prefix: str = "",
     ) -> None:
         if not pipe:
             return
@@ -111,9 +114,10 @@ class Spinner(AbstractAsyncContextManager):
             if not line:
                 break
 
+            icon = f"   ┃ {prefix}" if prefix else "   ┃"
             self._print(
                 line.decode(),
-                icon="   ┃ ",
+                icon=icon,
                 color=color,
             )
             self._render_frame()
