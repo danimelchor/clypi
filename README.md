@@ -15,10 +15,9 @@ For example:
 python -m examples.validations
 ```
 
-## Usage
 
 
-### ✔️ Validations
+## ✔️ Validations
 
 First, you'll need to import the `validations` module:
 ```python
@@ -59,7 +58,7 @@ my_validation.test(6)  # True
 my_validation.test(4)  # False
 ```
 
-### ❓ Prompting
+## ❓ Prompting
 
 First, you'll need to import the `term` module:
 ```python
@@ -114,7 +113,7 @@ args = parser.parse_args()
 animal = term.prompt("What's your favorite animal?", provided=args.animal)
 ```
 
-### 🐍 Type-checking
+## 🐍 Type-checking
 
 This library is fully type-checked. This means that all types will be correctly inferred
 from the arguments you pass in.
