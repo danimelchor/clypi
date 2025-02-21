@@ -51,11 +51,11 @@ MAX_ATTEMPTS: int = 20
 
 
 def _error(msg: str):
-    print(colors.fg.red(msg))
+    colors.print(msg, fg="red")
 
 
 def _input(prompt: str) -> str:
-    return input(colors.fg.blue(colors.style.bold(prompt)))
+    return input(colors.style(prompt, fg="blue", bold=True))
 
 
 class MaxAttemptsException(Exception):

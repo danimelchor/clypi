@@ -2,7 +2,7 @@
 
 Type-safe Python CLI prompts with validations, retries, custom messages, etc.
 
-## Examples
+### Examples
 
 Check out the examples in `./examples`! You can run them locally with:
 
