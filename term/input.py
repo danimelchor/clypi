@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import typing as t
 from enum import Enum, auto
+from getpass import getpass
 
 import term
 from term.klasses import (
@@ -28,8 +29,9 @@ def _error(msg: str):
     term.print(msg, fg="red")
 
 
-def _input(prompt: str) -> str:
-    return input(term.style(prompt, fg="blue", bold=True))
+def _input(prompt: str, hide_input: bool) -> str:
+    fun = getpass if hide_input else input
+    return fun(term.style(prompt, fg="blue", bold=True))
 
 
 class MaxAttemptsException(Exception):
@@ -44,6 +46,7 @@ def prompt(
     default: T | Unset = _UNSET,
     klass: t.Type[T] | Klass[T] = str,
     validate: ValidationType[T] | None = None,
+    hide_input: bool = False,
     max_attempts: int = MAX_ATTEMPTS,
     provided: T | None = None,
 ) -> T:
@@ -71,7 +74,7 @@ def prompt(
 
     # Loop until we get a valid value
     for _ in range(max_attempts):
-        inp = _input(prompt)
+        inp = _input(prompt, hide_input=hide_input)
 
         # User hit enter without a value
         if inp == "":

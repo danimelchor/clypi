@@ -1,6 +1,6 @@
 import asyncio
 
-from term.animations import Spinner
+from term.spinner import Spinner
 
 
 async def long_running_task(

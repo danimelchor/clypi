@@ -24,6 +24,7 @@ def main() -> None:
     age = term.prompt(
         "How old are you?",
         klass=int,
+        hide_input=True,
     )
     hours = term.prompt(
         "How many hours are there in a day?",
