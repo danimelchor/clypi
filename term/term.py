@@ -3,7 +3,8 @@ from __future__ import annotations
 import typing as t
 from enum import Enum, auto
 
-from src.python.term.klasses import (
+from term import colors
+from term.klasses import (
     Bool,
     Date,
     DateTime,
@@ -14,14 +15,12 @@ from src.python.term.klasses import (
     TimeDelta,
     parse_klass,
 )
-from src.python.term.validations import (
+from term.validations import (
     Validation,
     ValidationException,
     ValidationType,
     parse_validation,
 )
-from src.python.util.scripting import colors
-
 
 # Needed to re-export
 __all__ = [
@@ -124,4 +123,6 @@ def prompt(
 
         return parsed_inp
 
-    raise MaxAttemptsException(f"Failed to get a valid value after {max_attempts} attempts.")
+    raise MaxAttemptsException(
+        f"Failed to get a valid value after {max_attempts} attempts."
+    )

@@ -10,8 +10,8 @@ from typing import Callable
 import pytest
 from pytest import mark
 
-from src.python.term import term
-from src.python.term import validations as v
+from term import term
+from term import validations as v
 
 
 @contextmanager

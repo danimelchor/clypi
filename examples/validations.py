@@ -1,7 +1,7 @@
 from __future__ import annotations
 
-from src.python.term import validations as v
-from src.python.util.scripting import colors
+from term import validations as v
+from util.scripting import colors
 
 
 # --- DEMO UTILS ---

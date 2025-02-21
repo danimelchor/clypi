@@ -7,14 +7,12 @@ Type-safe Python CLI prompts with validations, retries, custom messages, etc.
 Check out the examples in `./examples`! You can run them locally with:
 
 ```
-bazel build //src/python/term/examples:<name>
-bazel-bin/src/python/term/examples/<name>
+python -m examples.<name>
 ```
 
 For example:
 ```
-bazel build //src/python/term/examples:validations
-bazel-bin/src/python/term/examples/validations
+python -m examples.validations
 ```
 
 ## Usage
@@ -24,7 +22,7 @@ bazel-bin/src/python/term/examples/validations
 
 First, you'll need to import the `validations` module:
 ```python
-from src.python.term import validations as v
+from term import validations as v
 ```
 
 **Basic validations**
@@ -65,7 +63,7 @@ my_validation.test(4)  # False
 
 First, you'll need to import the `term` module:
 ```python
-from src.python.term import term
+from term import term
 ```
 
 **Basic prompting**

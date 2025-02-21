@@ -2,9 +2,9 @@ from __future__ import annotations
 
 import argparse
 
-from src.python.term import term
-from src.python.term import validations as v
-from src.python.util.scripting import colors
+from term import term
+from term import validations as v
+from util.scripting import colors
 
 
 def _validate_earth_age(x: int) -> None:

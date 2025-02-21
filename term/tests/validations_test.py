@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from pytest import mark
 
-from src.python.term import validations as v
+from term import validations as v
 
 
 @mark.parametrize(
