@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "term"
-description = "Your all-in-one for production-ready CLIs"
+description = "Your all-in-one for beautiful, prod-ready CLIs"
 readme = "README.md"
 version = "0.1.0"
 license = "MIT"
