@@ -16,7 +16,7 @@ async def long_running_task(
         done = (i + 1) * sleep
         if done % 1 == 0:
             spinner.log(f"It's been {done:.1f} seconds")
-        spinner.title = title + f" ({num_seconds-done:.1f} left)"
+        spinner.title = title + f" ({num_seconds - done:.1f} left)"
 
         if done_after is not None and done > done_after:
             spinner.done(title + "- Done early :)")
@@ -26,7 +26,7 @@ async def long_running_task(
             raise RuntimeError("Woops something went wrong")
 
 
-async def main2():
+async def main():
     # Basic example
     title = "EX1 - Running for 4 seconds"
     async with Spinner(title) as s:
@@ -57,8 +57,6 @@ async def main2():
     except RuntimeError as e:
         print(f"Caught {e}")
 
-
-async def main():
     # Example with subprocess
     print()
     title = "EX4 - Example with subprocess"

@@ -5,10 +5,6 @@ from enum import Enum, auto
 from getpass import getpass
 
 import term
-from term.klasses import (
-    Klass,
-    parse_klass,
-)
 
 
 class Unset(Enum):
@@ -35,12 +31,13 @@ class MaxAttemptsException(Exception):
 
 T = t.TypeVar("T")
 
+Parser: t.TypeAlias = t.Callable[[t.Any], T]
+
 
 def prompt(
     text: str,
     default: T | Unset = _UNSET,
-    klass: t.Type[T] | Klass[T] = str,
-    validate: t.Callable[[T], None] | None = None,
+    parser: Parser[T] = str,
     hide_input: bool = False,
     max_attempts: int = MAX_ATTEMPTS,
     provided: T | None = None,
@@ -50,8 +47,7 @@ def prompt(
 
     :param text: The prompt text.
     :param default: The default value.
-    :param klass: The class to parse the input as.
-    :param validate: A function to validate the parsed value.
+    :param parser: The parser function parse the input with.
     :param max_attempts: The maximum number of attempts to get a valid value.
     :param provided: The value the user passed in as a command line argument.
     :return: The parsed value.
@@ -80,18 +76,10 @@ def prompt(
 
         # User answered the prompt -- Parse
         try:
-            parsed_inp = parse_klass(klass)(inp)
-        except ValueError:
-            _error(f"Unable to parse {inp} as {klass}, please provide a valid value.")
+            parsed_inp = parser(inp)
+        except ValueError as e:
+            _error(f"Unable to parse {inp!r}, please provide a valid value.\n  ↳  {e}")
             continue
-
-        # Validate the parsed value
-        if validate is not None:
-            try:
-                validate(parsed_inp)
-            except ValueError as e:
-                _error(str(e))
-                continue
 
         return parsed_inp
 

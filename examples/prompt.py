@@ -2,10 +2,10 @@ from __future__ import annotations
 
 import argparse
 
+import v6e as v
+
 import term
 from term import colors
-from term import klasses as k
-from term import validations as v
 
 
 def _validate_earth_age(x: int) -> None:
@@ -18,29 +18,27 @@ def main() -> None:
     name = term.prompt("What's your name?")
 
     # Default values
-    is_cool = term.prompt("Is Term cool?", default=True, klass=bool)
+    is_cool = term.prompt("Is Term cool?", default=True, parser=bool)
 
-    # Custom types with parsing
+    # Custom types with parsing using v6e
     age = term.prompt(
         "How old are you?",
-        klass=int,
+        parser=int,
         hide_input=True,
     )
     hours = term.prompt(
         "How many hours are there in a day?",
-        klass=k.TimeDelta() | k.Int(),
+        parser=v.timedelta() | v.int(),
     )
 
-    # Custom validations
+    # Custom validations using v6e
     earth = term.prompt(
         "How old is The Earth?",
-        klass=int,
-        validate=_validate_earth_age,
+        parser=v.int().custom(_validate_earth_age),
     )
     moon = term.prompt(
         "How old is The Moon?",
-        klass=int,
-        validate=v.Gte(4) & v.Lte(5) | v.Choices([5]),  # You can chain validations
+        parser=v.int().gte(4).lte(5),  # You can chain validations
     )
 
     # Integration with argparse

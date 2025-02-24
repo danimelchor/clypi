@@ -1,36 +1,63 @@
+ci:
+  skip: [pytest]
+
 repos:
+  # Pyright - Type checking
   - repo: https://github.com/RobertCraigie/pyright-python
     rev: v1.1.394
     hooks:
     - id: pyright
-      files: ^v6e/.*
+      exclude: ^tests/.*
+
+  # Bandit - Security vulnerabilities
+  - repo: https://github.com/pycqa/bandit
+    rev: 1.8.0
+    hooks:
+      - id: bandit
+        name: bandit
+        exclude: ^tests/
+        args:
+          - -c
+          - pyproject.toml
+
+  - repo: https://github.com/astral-sh/uv-pre-commit
+    # uv version.
+    rev: 0.6.2
+    hooks:
+      - id: uv-lock
+
   - repo: local
     hooks:
+    # Run tests
     - id: pytest
       name: pytest
-      entry: uv run pytest
+      entry: uv run pytest tests
       language: python
       types: [python]
       files: ^tests/.*
       pass_filenames: false
       always_run: true
       additional_dependencies: ["pytest==8.3.4"]
-    - id: ruff
-      name: Run 'ruff' for extremely fast Python linting
-      description: "Run 'ruff' for extremely fast Python linting"
-      entry: ruff check --force-exclude
-      language: python
-      types_or: [python, pyi]
-      args: [--fix]
-      exclude: ^tests/.*
-      require_serial: true
-      additional_dependencies: ["ruff==0.8.1"]
+
+    # Ruff - Format all files
     - id: ruff-format
       name: Run 'ruff format'
       description: "Run 'ruff format' for extremely fast Python formatting"
-      entry: ruff format --force-exclude
+      entry: uvx ruff format --force-exclude
       language: python
       types_or: [python, pyi]
+      exclude: ^tests/.*
+      require_serial: true
+      additional_dependencies: ["ruff==0.8.1"]
+
+    # Ruff - Lint and autofix changes
+    - id: ruff
+      name: Run 'ruff' for extremely fast Python linting
+      description: "Run 'ruff' for extremely fast Python linting"
+      entry: uvx ruff check --force-exclude
+      language: python
+      types_or: [python, pyi]
+      args: [--fix]
       exclude: ^tests/.*
       require_serial: true
       additional_dependencies: ["ruff==0.8.1"]

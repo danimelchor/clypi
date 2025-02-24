@@ -9,7 +9,7 @@ readme = "README.md"
 version = "0.1.0"
 license = "MIT"
 license-files = ["LICEN[CS]E*"]
-requires-python = ">=3.11"
+requires-python = "~=3.11,<3.13"
 authors = [
   {name = "Daniel Melchor", email = "dmelchor@pm.me"},
 ]
@@ -18,14 +18,33 @@ dependencies = [
     "typing-extensions>=4.12.2",
 ]
 
+
+[project.urls]
+Documentation = "https://github.com/danimelchor/term"
+Homepage = "https://github.com/danimelchor/term"
+Repository = "https://github.com/danimelchor/term"
+Issues = "https://github.com/danimelchor/term/issues"
+
 [project.optional-dependencies]
 dev = [
   "pytest>=8.3.4",
   "ruff>=0.9.7",
   "pyright>=1.1.394",
 ]
+examples = [
+  "v6e>=0.1.12",
+]
 
 [tool.pytest.ini_options]
 minversion = "8.0"
 addopts = "-ra -q"
 testpaths = ["tests"]
+
+[tool.pyright]
+exclude = [
+    "**/__pycache__",
+]
+reportMissingTypeStubs = false
+
+[tool.bandit]
+skips = ["B101"]

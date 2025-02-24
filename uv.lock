@@ -1,6 +1,6 @@
 version = 1
 revision = 1
-requires-python = ">=3.11"
+requires-python = ">=3.11, <3.13"
 
 [[package]]
 name = "colorama"
@@ -76,6 +76,18 @@ wheels = [
 ]
 
 [[package]]
+name = "python-dateutil"
+version = "2.9.0.post0"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "six" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/66/c0/0c8b6ad9f17a802ee498c46e004a0eb49bc148f2fd230864601a86dcf6db/python-dateutil-2.9.0.post0.tar.gz", hash = "sha256:37dd54208da7e1cd875388217d5e00ebd4179249f90fb72437e91a35459a0ad3", size = 342432 }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/ec/57/56b9bcc3c9c6a792fcbaf139543cee77261f3651ca9da0c93f5c1221264b/python_dateutil-2.9.0.post0-py2.py3-none-any.whl", hash = "sha256:a8b2bc7bffae282281c8140a97d3aa9c14da0b136dfe83f850eea9a5f7470427", size = 229892 },
+]
+
+[[package]]
 name = "ruff"
 version = "0.9.7"
 source = { registry = "https://pypi.org/simple" }
@@ -101,6 +113,15 @@ wheels = [
 ]
 
 [[package]]
+name = "six"
+version = "1.17.0"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/94/e7/b2c673351809dca68a0e064b6af791aa332cf192da575fd474ed7d6f16a2/six-1.17.0.tar.gz", hash = "sha256:ff70335d468e7eb6ec65b95b99d3a2836546063f63acc5171de367e834932a81", size = 34031 }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/b7/ce/149a00dd41f10bc29e5921b496af8b574d8413afcd5e30dfa0ed46c2cc5e/six-1.17.0-py2.py3-none-any.whl", hash = "sha256:4721f391ed90541fddacab5acf947aa0d3dc7d27b2e1e8eda2be8970586c3274", size = 11050 },
+]
+
+[[package]]
 name = "term"
 version = "0.1.0"
 source = { editable = "." }
@@ -114,6 +135,9 @@ dev = [
     { name = "pytest" },
     { name = "ruff" },
 ]
+examples = [
+    { name = "v6e" },
+]
 
 [package.metadata]
 requires-dist = [
@@ -121,8 +145,9 @@ requires-dist = [
     { name = "pytest", marker = "extra == 'dev'", specifier = ">=8.3.4" },
     { name = "ruff", marker = "extra == 'dev'", specifier = ">=0.9.7" },
     { name = "typing-extensions", specifier = ">=4.12.2" },
+    { name = "v6e", marker = "extra == 'examples'", specifier = ">=0.1.12" },
 ]
-provides-extras = ["dev"]
+provides-extras = ["dev", "examples"]
 
 [[package]]
 name = "typing-extensions"
@@ -131,4 +156,17 @@ source = { registry = "https://pypi.org/simple" }
 sdist = { url = "https://files.pythonhosted.org/packages/df/db/f35a00659bc03fec321ba8bce9420de607a1d37f8342eee1863174c69557/typing_extensions-4.12.2.tar.gz", hash = "sha256:1a7ead55c7e559dd4dee8856e3a88b41225abfe1ce8df57b7c13915fe121ffb8", size = 85321 }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/26/9f/ad63fc0248c5379346306f8668cda6e2e2e9c95e01216d2b8ffd9ff037d0/typing_extensions-4.12.2-py3-none-any.whl", hash = "sha256:04e5ca0351e0f3f85c6853954072df659d0d13fac324d0072316b67d7794700d", size = 37438 },
+]
+
+[[package]]
+name = "v6e"
+version = "0.1.12"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "python-dateutil" },
+    { name = "typing-extensions" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/db/71/211ac3d8b4ae015e9d9fd3797f0fd94fd661231c649bf6932de86988187e/v6e-0.1.12.tar.gz", hash = "sha256:c52d4d6cea7f24752767bd2bf10a8b276fef382a17af852e8590e292da6c6c51", size = 20246 }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/0a/64/20e59c3f34f92e40c27fbd779f9d7c6ecb133b0fb3c83814a483b0814370/v6e-0.1.12-py3-none-any.whl", hash = "sha256:13f6bc2be13ca7af99af06ef8c9d1774708eeb03df15af71feac5df0e97947c5", size = 10476 },
 ]

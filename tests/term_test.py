@@ -10,8 +10,7 @@ import pytest
 from pytest import mark
 
 import term
-from term import klasses as k
-from term.input import MaxAttemptsException
+from term.input import MaxAttemptsException, Parser
 
 
 @contextmanager
@@ -75,33 +74,29 @@ def test_prompt_with_no_default(answers: list[str], expected: str, times: int):
 
 
 @mark.parametrize(
-    "answer,klass,_type",
+    "answer,parser,_type",
     [
-        ("Alice", k.Str(), str),
-        ("42", k.Int(), int),
-        ("42 days", k.TimeDelta(), timedelta),
-        ("42 hours", k.TimeDelta() | k.Int(), timedelta),
-        ("42", k.TimeDelta() | k.Int(), int),
-        ("Yes", k.Bool(), bool),
-        ("N", k.Bool(), bool),
-        ("2021-01-01", k.Date(), date),
-        ("2021-01-01T00:00:00", k.DateTime(), datetime),
+        ("Alice", str, str),
+        ("42", int, int),
+        ("42 days", timedelta, timedelta),
+        ("Yes", bool, bool),
+        ("N", bool, bool),
+        ("2021-01-01", date, date),
+        ("2021-01-01T00:00:00", datetime, datetime),
     ],
     ids=[
         "Str",
         "Int",
         "TimeDelta",
-        "Union[TimeDelta, Int] (timedelta)",
-        "Union[TimeDelta, Int] (int)",
         "Bool Full",
         "Bool Short",
         "Date",
         "DateTime",
     ],
 )
-def test_prompt_with_klass(answer: str, klass: k.Klass, _type: type):
+def test_prompt_with_parser(answer: str, parser: Parser, _type: type):
     with replace_stdin(answer) as _:
-        res = term.prompt("Some prompt", klass=klass)
+        res = term.prompt("Some prompt", parser=parser)
         assert isinstance(res, _type)
 
 
@@ -124,20 +119,20 @@ def test_prompt_with_klass(answer: str, klass: k.Klass, _type: type):
 )
 def test_prompt_with_native_type(answer: str, _type: type):
     with replace_stdin(answer) as _:
-        res = term.prompt("Some prompt", klass=_type)
+        res = term.prompt("Some prompt", parser=_type)
         assert isinstance(res, _type)
 
 
 @mark.parametrize(
-    "answer,klass",
+    "answer,parser",
     [
-        ("Alice", k.Int()),
-        ("42 days", k.Int()),
-        ("42 asd", k.TimeDelta()),
-        ("42", k.TimeDelta()),
-        ("42", k.Bool()),
-        ("202-01-01", k.Date()),
-        ("2021-01-01T00:00", k.DateTime()),
+        ("Alice", int),
+        ("42 days", int),
+        ("42 asd", timedelta),
+        ("42", timedelta),
+        ("42", bool),
+        ("202-01-01", date),
+        ("2021-01-01T00:00", datetime),
     ],
     ids=[
         "Str as Int",
@@ -149,14 +144,15 @@ def test_prompt_with_native_type(answer: str, _type: type):
         "Invalid DateTime",
     ],
 )
-def test_prompt_with_klass_fails(answer: str, klass: k.Klass):
+def test_prompt_with_parser_fails(answer: str, parser: Parser):
     with replace_stdin(answer) as _, pytest.raises(MaxAttemptsException):
-        term.prompt("Some prompt", klass=klass, max_attempts=1)
+        term.prompt("Some prompt", parser=parser, max_attempts=1)
 
 
-def test_prompt_with_good_validate():
+def test_prompt_with_good_parser():
     with replace_stdin("2") as _:
-        _ = term.prompt("Some prompt", klass=int, validate=lambda _: None)
+        res = term.prompt("Some prompt", parser=lambda x: int(x) * 2)
+        assert res == 4
 
 
 def _raise_error(x: int) -> None:
@@ -165,11 +161,11 @@ def _raise_error(x: int) -> None:
 
 def test_prompt_with_bad_validate():
     with replace_stdin("2") as _, pytest.raises(MaxAttemptsException):
-        term.prompt("Some prompt", klass=int, validate=_raise_error, max_attempts=1)
+        term.prompt("Some prompt", parser=_raise_error, max_attempts=1)
 
 
 def test_prompt_with_provided():
     with replace_stdin() as _:
-        res = term.prompt("Some prompt", klass=k.Int(), provided=42)
+        res = term.prompt("Some prompt", parser=int, provided=42)
         assert res == 42
         assert isinstance(res, int)
