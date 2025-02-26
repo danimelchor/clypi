@@ -50,7 +50,7 @@ print("The old version said", wrong("the Earth was flat"))
 <details>
     <summary><code>uv run -m term.colors</code></summary>
     <p align="center">
-        <img width="974" alt="image" src="https://github.com/user-attachments/assets/8e1f10ea-745a-4526-896e-490b2241aeaf" />
+        <img width="974" alt="image" src="https://github.com/user-attachments/assets/9340d828-f7ce-491c-b0a8-6a666f7b7caf" />
     </p>
 </details>
 
