@@ -25,20 +25,35 @@ answer = term.prompt(
 ```
 
 ## 🌈 Colors
+
+
+
 ```python
+# demo.py
 import term
 
 # Style text
 print(term.style("This is blue", fg="blue"), "and", term.style("this is red", fg="red"))
 
 # Print with colors directly
-term.print("Some colorful text", bg="magenta", bold=True, italic=True)
+term.print("Some colorful text", fg="green", reverse=True, bold=True, italic=True)
 
 # Store a styler and reuse it
 wrong = term.styler(fg="red", strikethrough=True)
 print("The old version said", wrong("Pluto was a planet"))
 print("The old version said", wrong("the Earth was flat"))
 ```
+
+**`uv run demo.py`**
+<p align="center">
+  <img width="487" alt="image" src="https://github.com/user-attachments/assets/0ee3b49d-0358-4d8c-8704-2da89529b4f5" />
+</p>
+
+**`uv run -m term.colors`**
+<p align="center">
+    <img width="974" alt="image" src="https://github.com/user-attachments/assets/8e1f10ea-745a-4526-896e-490b2241aeaf" />
+</p>
+
 
 ## 🌀 Spinners
 
@@ -54,6 +69,10 @@ async def main():
 
 asyncio.run(main())
 ```
+
+**`uv run demo.py`**
+
+https://github.com/user-attachments/assets/c0b4dc28-f6d4-4891-a9fa-be410119bd83
 
 ## ❯ Parsing CLI args
 
