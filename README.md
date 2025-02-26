@@ -7,6 +7,8 @@ Type-safe Python CLI prompts with validations, retries, custom messages, etc.
 Check out the examples in `./examples`! You can run them locally with:
 ```
 uv run examples/colors.py
+uv run examples/spinner.py
+uv run examples/prompt.py
 ```
 
 ## ❓ Prompting
