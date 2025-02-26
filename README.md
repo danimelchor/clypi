@@ -17,11 +17,7 @@ First, you'll need to import the `term` module:
 ```python
 import term
 
-answer = term.prompt(
-    "Are you going to use Term?",
-    default=True,
-    parser=bool
-)
+answer = term.prompt("Are you going to use Term?", default=True, parser=bool)
 ```
 
 ## 🌈 Colors
@@ -62,6 +58,7 @@ print("The old version said", wrong("the Earth was flat"))
 ## 🌀 Spinners
 
 ```python
+# demo.py
 import asyncio
 from term import Spinner
 
