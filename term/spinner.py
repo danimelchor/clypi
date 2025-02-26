@@ -121,3 +121,9 @@ class Spinner(AbstractAsyncContextManager):
                 color=color,
             )
             self._render_frame()
+
+
+if __name__ == "__main__":
+    from term.examples.spinner import main as example
+
+    asyncio.run(example())

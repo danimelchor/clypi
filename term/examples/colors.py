@@ -44,7 +44,3 @@ def main() -> None:
     term.print("I am blink", blink=True)
     term.print("I am reverse", reverse=True)
     term.print("I am strikethrough", strikethrough=True)
-
-
-if __name__ == "__main__":
-    main()

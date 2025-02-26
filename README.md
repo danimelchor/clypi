@@ -6,9 +6,9 @@ Type-safe Python CLI prompts with validations, retries, custom messages, etc.
 
 Check out the examples in `./examples`! You can run them locally with:
 ```
-uv run examples/colors.py
-uv run examples/spinner.py
-uv run examples/prompt.py
+uv run --all-extras -m term.colors
+uv run --all-extras -m term.spinner
+uv run --all-extras -m term.prompt
 ```
 
 ## ❓ Prompting
@@ -16,6 +16,7 @@ uv run examples/prompt.py
 First, you'll need to import the `term` module:
 ```python
 import term
+
 answer = term.prompt(
     "Are you going to use Term?",
     default=True,

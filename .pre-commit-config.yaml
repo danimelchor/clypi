@@ -21,23 +21,13 @@ repos:
 
   - repo: local
     hooks:
-    # Type check library
-    - id: pyright-lib
-      name: pyright-lib
-      entry: uv run pyright term
+    # Type check
+    - id: pyright
+      name: pyright
+      entry: uv run --all-extras pyright term
       language: python
       types: [python]
       files: ^term/.*
-      pass_filenames: false
-      always_run: true
-
-    # Type check examples
-    - id: pyright-examples
-      name: pyright-examples
-      entry: uv run --extra dev pyright examples
-      language: python
-      types: [python]
-      files: ^examples/.*
       pass_filenames: false
       always_run: true
 
