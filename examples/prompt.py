@@ -38,7 +38,7 @@ def main() -> None:
     )
     moon = term.prompt(
         "How old is The Moon?",
-        parser=v.int().gte(4).lte(5),  # You can chain validations
+        parser=v.int().gte(3).lte(9).multiple_of(3),  # You can chain validations
     )
 
     # Integration with argparse
@@ -50,13 +50,14 @@ def main() -> None:
     # -----------
     print()
     colors.print("🚀 Summary", bold=True, fg="green")
-    print(f"  Name: {name}")
-    print(f"  Term is cool: {is_cool}")
-    print(f"  Age: {age}")
-    print(f"  Hours in a day: {hours} ({type(hours).__name__})")
-    print(f"  Earth age: {earth}")
-    print(f"  Moon age: {moon}")
-    print(f"  Favorite animal: {animal}")
+    answer = colors.styler(fg="magenta", bold=True)
+    print(" ↳  Name:", answer(name))
+    print(" ↳  Term is cool:", answer(is_cool))
+    print(" ↳  Age:", answer(age))
+    print(" ↳  Hours in a day:", answer(hours), f"({type(hours).__name__})")
+    print(" ↳  Earth age:", answer(earth))
+    print(" ↳  Moon age:", answer(moon))
+    print(" ↳  Favorite animal:", answer(animal))
 
 
 if __name__ == "__main__":

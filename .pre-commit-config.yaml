@@ -2,13 +2,6 @@ ci:
   skip: [pytest]
 
 repos:
-  # Pyright - Type checking
-  - repo: https://github.com/RobertCraigie/pyright-python
-    rev: v1.1.394
-    hooks:
-    - id: pyright
-      exclude: ^tests/.*
-
   # Bandit - Security vulnerabilities
   - repo: https://github.com/pycqa/bandit
     rev: 1.8.0
@@ -28,6 +21,26 @@ repos:
 
   - repo: local
     hooks:
+    # Type check library
+    - id: pyright-lib
+      name: pyright-lib
+      entry: uv run pyright term
+      language: python
+      types: [python]
+      files: ^term/.*
+      pass_filenames: false
+      always_run: true
+
+    # Type check examples
+    - id: pyright-examples
+      name: pyright-examples
+      entry: uv run --extra dev pyright examples
+      language: python
+      types: [python]
+      files: ^examples/.*
+      pass_filenames: false
+      always_run: true
+
     # Run tests
     - id: pytest
       name: pytest

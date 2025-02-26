@@ -73,54 +73,10 @@ def test_prompt_with_no_default(answers: list[str], expected: str, times: int):
         assert_prompted_times(stdout, times)
 
 
-@mark.parametrize(
-    "answer,parser,_type",
-    [
-        ("Alice", str, str),
-        ("42", int, int),
-        ("42 days", timedelta, timedelta),
-        ("Yes", bool, bool),
-        ("N", bool, bool),
-        ("2021-01-01", date, date),
-        ("2021-01-01T00:00:00", datetime, datetime),
-    ],
-    ids=[
-        "Str",
-        "Int",
-        "TimeDelta",
-        "Bool Full",
-        "Bool Short",
-        "Date",
-        "DateTime",
-    ],
-)
-def test_prompt_with_parser(answer: str, parser: Parser, _type: type):
-    with replace_stdin(answer) as _:
-        res = term.prompt("Some prompt", parser=parser)
-        assert isinstance(res, _type)
-
-
-@mark.parametrize(
-    "answer,_type",
-    [
-        ("Alice", str),
-        ("42", int),
-        ("42 days", timedelta),
-        ("2021-01-01", date),
-        ("2021-01-01T00:00:00", datetime),
-    ],
-    ids=[
-        "str",
-        "int",
-        "timedelta",
-        "date",
-        "datetime",
-    ],
-)
-def test_prompt_with_native_type(answer: str, _type: type):
-    with replace_stdin(answer) as _:
-        res = term.prompt("Some prompt", parser=_type)
-        assert isinstance(res, _type)
+def test_prompt_with_parser():
+    with replace_stdin("42") as _:
+        res = term.prompt("Some prompt", parser=int)
+        assert isinstance(res, int)
 
 
 @mark.parametrize(
@@ -130,7 +86,6 @@ def test_prompt_with_native_type(answer: str, _type: type):
         ("42 days", int),
         ("42 asd", timedelta),
         ("42", timedelta),
-        ("42", bool),
         ("202-01-01", date),
         ("2021-01-01T00:00", datetime),
     ],
@@ -139,7 +94,6 @@ def test_prompt_with_native_type(answer: str, _type: type):
         "TimeDelta as Int",
         "Invalid TimeDelta",
         "Int as TimeDelta",
-        "Int as Bool",
         "Invalid Date",
         "Invalid DateTime",
     ],

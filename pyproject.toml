@@ -32,7 +32,7 @@ dev = [
   "pyright>=1.1.394",
 ]
 examples = [
-  "v6e>=0.1.12",
+  "v6e>=0.1.15",
 ]
 
 [tool.pytest.ini_options]

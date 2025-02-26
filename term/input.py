@@ -77,7 +77,7 @@ def prompt(
         # User answered the prompt -- Parse
         try:
             parsed_inp = parser(inp)
-        except ValueError as e:
+        except (ValueError, TypeError) as e:
             _error(f"Unable to parse {inp!r}, please provide a valid value.\n  ↳  {e}")
             continue
 

@@ -97,8 +97,39 @@ def _apply_style(s: str, style: StyleCode) -> str:
     return f"{_code(start)}{s}{_code(0)}"
 
 
+class Styler(t.Protocol):
+    def __call__(self, *args: t.Any) -> str: ...
+
+
+def styler(
+    fg: ColorType | None = None,
+    bg: ColorType | None = None,
+    bold: bool = False,
+    italic: bool = False,
+    dim: bool = False,
+    underline: bool = False,
+    blink: bool = False,
+    reverse: bool = False,
+    strikethrough: bool = False,
+) -> Styler:
+    def inner(*messages: t.Any):
+        text = " ".join(str(m) for m in messages)
+        text = _apply_fg(text, fg) if fg else text
+        text = _apply_bg(text, bg) if bg else text
+        text = _apply_style(text, StyleCode.BOLD) if bold else text
+        text = _apply_style(text, StyleCode.ITALIC) if italic else text
+        text = _apply_style(text, StyleCode.DIM) if dim else text
+        text = _apply_style(text, StyleCode.UNDERLINE) if underline else text
+        text = _apply_style(text, StyleCode.BLINK) if blink else text
+        text = _apply_style(text, StyleCode.REVERSE) if reverse else text
+        text = _apply_style(text, StyleCode.STRIKETHROUGH) if strikethrough else text
+        return text
+
+    return inner
+
+
 def style(
-    *messages: str,
+    *messages: t.Any,
     fg: ColorType | None = None,
     bg: ColorType | None = None,
     bold: bool = False,
@@ -109,21 +140,21 @@ def style(
     reverse: bool = False,
     strikethrough: bool = False,
 ) -> str:
-    text = " ".join(messages)
-    text = _apply_fg(text, fg) if fg else text
-    text = _apply_bg(text, bg) if bg else text
-    text = _apply_style(text, StyleCode.BOLD) if bold else text
-    text = _apply_style(text, StyleCode.ITALIC) if italic else text
-    text = _apply_style(text, StyleCode.DIM) if dim else text
-    text = _apply_style(text, StyleCode.UNDERLINE) if underline else text
-    text = _apply_style(text, StyleCode.BLINK) if blink else text
-    text = _apply_style(text, StyleCode.REVERSE) if reverse else text
-    text = _apply_style(text, StyleCode.STRIKETHROUGH) if strikethrough else text
-    return text
+    return styler(
+        fg=fg,
+        bg=bg,
+        bold=bold,
+        italic=italic,
+        dim=dim,
+        underline=underline,
+        blink=blink,
+        reverse=reverse,
+        strikethrough=strikethrough,
+    )(*messages)
 
 
 def print(
-    *messages: str,
+    *messages: t.Any,
     fg: ColorType | None = None,
     bg: ColorType | None = None,
     bold: bool = False,
