@@ -3,20 +3,12 @@ from __future__ import annotations
 from typing import Generator, cast
 
 import term
+from term.boxed import boxed
 from term.colors import ColorType, _color_codes
 from term.examples import _utils
 
 
 # --- DEMO UTILS ---
-def _title(msg: str, char: str = "=", width: int | None = None) -> list[str]:
-    ret = []
-    sep = width or (len(msg) + 4)
-    ret.append("┏" + "━" * (sep - 2) + "┓")
-    ret.append("┃ " + msg.upper().center(sep - 4) + " ┃")
-    ret.append("┗" + "━" * (sep - 2) + "┛")
-    return ret
-
-
 def _all_colors() -> Generator[tuple[ColorType, ...], None, None]:
     for color in _color_codes:
         yield (
@@ -27,21 +19,22 @@ def _all_colors() -> Generator[tuple[ColorType, ...], None, None]:
 
 # --- DEMO START ---
 def main() -> None:
-    fg_block = _title("Foregrounds", width=29)
+    fg_block = ["Foregrounds"]
     for color, bright_color in _all_colors():
         fg_block.append(
             term.style("██ " + color.ljust(9), fg=color)
             + term.style("██ " + bright_color.ljust(16), fg=bright_color)
         )
 
-    bg_block = _title("Backgrounds", width=25)
+    bg_block = ["Backgrounds"]
     for color, bright_color in _all_colors():
         bg_block.append(
             term.style(color.ljust(9), bg=color)
+            + " "
             + term.style(bright_color.ljust(16), bg=bright_color)
         )
 
-    style_block = _title("text styles", width=18)
+    style_block = ["Text Styles"]
     style_block.append(term.style("I am bold", bold=True))
     style_block.append(term.style("I am dim", dim=True))
     style_block.append(term.style("I am underline", underline=True))
@@ -49,5 +42,9 @@ def main() -> None:
     style_block.append(term.style("I am reverse", reverse=True))
     style_block.append(term.style("I am strikethrough", strikethrough=True))
 
-    for line in _utils.assemble(fg_block, bg_block, style_block):
+    for line in _utils.assemble(
+        boxed(fg_block, width=35, has_title=True),
+        boxed(bg_block, width=30, has_title=True),
+        boxed(style_block, width=22, has_title=True),
+    ):
         print(line)
