@@ -40,7 +40,8 @@ print("The old version said", wrong("Pluto was a planet"))
 print("The old version said", wrong("the Earth was flat"))
 ```
 
-<img width="984" alt="image" src="https://github.com/user-attachments/assets/261a9f8a-6839-4893-b6b9-3d573efacf40" />
+<img width="974" alt="image" src="https://github.com/user-attachments/assets/8e1f10ea-745a-4526-896e-490b2241aeaf" />
+
 
 
 ## 🌀 Spinners
