@@ -4,6 +4,14 @@ from enum import Enum
 
 @dataclass
 class Box:
+    """
+    tl  x myt x  tr
+    y             y
+    mxl x mm  x mxr
+    y             y
+    bl  x myb x  br
+    """
+
     tl: str
     tr: str
     bl: str
@@ -14,6 +22,7 @@ class Box:
     myb: str
     mxl: str
     mxr: str
+    mm: str
 
 
 _HEAVY = Box(
@@ -27,6 +36,7 @@ _HEAVY = Box(
     myb="┻",
     mxl="┣",
     mxr="┫",
+    mm="╋",
 )
 
 
