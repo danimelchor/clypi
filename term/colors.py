@@ -1,9 +1,11 @@
 import builtins
+import re
 import typing as t
 from enum import Enum
 
 from term.const import ESC
 
+ANSI_ESCAPE = re.compile(r"\x1B(?:[@-Z\\-_]|\[[0-?]*[ -/]*[@-~])")
 END = "m"
 
 FG_OFFSET = 30
@@ -95,6 +97,10 @@ class StyleCode(Enum):
 def _apply_style(s: str, style: StyleCode) -> str:
     start = style.value + STYLE_ON_OFFSET
     return f"{_code(start)}{s}{_code(0)}"
+
+
+def remove_style(s: str):
+    return ANSI_ESCAPE.sub("", s)
 
 
 class Styler(t.Protocol):
