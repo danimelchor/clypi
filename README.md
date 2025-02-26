@@ -54,7 +54,7 @@ async def main():
 asyncio.run(main())
 ```
 
-##  Parsing CLI args
+## ❯ Parsing CLI args
 
 **Integration with argparse**
 ```python
