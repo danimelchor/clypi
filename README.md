@@ -44,15 +44,19 @@ print("The old version said", wrong("Pluto was a planet"))
 print("The old version said", wrong("the Earth was flat"))
 ```
 
-**`uv run demo.py`**
-<p align="center">
-  <img width="487" alt="image" src="https://github.com/user-attachments/assets/0ee3b49d-0358-4d8c-8704-2da89529b4f5" />
-</p>
+<details>
+    <summary><code>uv run demo.py</code></summary>
+    <p align="center">
+      <img width="487" alt="image" src="https://github.com/user-attachments/assets/0ee3b49d-0358-4d8c-8704-2da89529b4f5" />
+    </p>
+</details>
 
-**`uv run -m term.colors`**
-<p align="center">
-    <img width="974" alt="image" src="https://github.com/user-attachments/assets/8e1f10ea-745a-4526-896e-490b2241aeaf" />
-</p>
+<details>
+    <summary><code>uv run -m term.colors</code></summary>
+    <p align="center">
+        <img width="974" alt="image" src="https://github.com/user-attachments/assets/8e1f10ea-745a-4526-896e-490b2241aeaf" />
+    </p>
+</details>
 
 
 ## 🌀 Spinners
@@ -70,9 +74,19 @@ async def main():
 asyncio.run(main())
 ```
 
-**`uv run demo.py`**
+<details>
+    <summary><code>uv run demo.py</code></summary>
+    <p align="center">
+      <video src="https://github.com/user-attachments/assets/c0b4dc28-f6d4-4891-a9fa-be410119bd83" />
+    </p>
+</details>
 
-https://github.com/user-attachments/assets/c0b4dc28-f6d4-4891-a9fa-be410119bd83
+<details>
+    <summary><code>uv run -m term.spinner</code></summary>
+    <p align="center">
+      <video src="https://github.com/user-attachments/assets/f641a4fe-59fa-4bc1-b31a-bb642c507a20" />
+    </p>
+</details>
 
 ## ❯ Parsing CLI args
 
