@@ -57,3 +57,9 @@ def boxed(
         if idx == 0 and has_title:
             yield box.mxl + box.x * (width - 2) + box.mxr
     yield box.bl + box.x * (width - 2) + box.br
+
+
+if __name__ == "__main__":
+    from term.examples.colors import main as example
+
+    example()
