@@ -16,48 +16,45 @@ uv run examples/prompt.py
 First, you'll need to import the `term` module:
 ```python
 import term
-from term import klasses as k
-```
-
-**Basic prompting**
-```python
-name = term.prompt("What's your name?")
-```
-
-**Default values**
-```python
-to_the_moon = term.prompt("Stripe coin to the moon?", default=True, klass=bool)
-```
-
-**Built-in types with parsing**
-```python
-hours = term.prompt(
-    "How many hours are there in a day?",
-    klass=k.TimeDelta() | k.Int(),
+answer = term.prompt(
+    "Are you going to use Term?",
+    default=True,
+    parser=bool
 )
 ```
 
-**Built-in validations (see the validations section)**
+## 🌈 Colors
 ```python
-earth = term.prompt(
-    "How old is The Earth?",
-    klass=int,
-    validate=v.Gte(1000) & v.Lte(2000) | v.Range(2001, 2002),
-)
+import term
+
+# Style text
+print(term.style("This is blue", fg="blue"), "and", term.style("this is red", fg="red"))
+
+# Print with colors directly
+term.print("Some colorful text", bg="magenta", bold=True, italic=True)
+
+# Store a styler and reuse it
+wrong = term.styler(fg="red", strikethrough=True)
+print("The old version said", wrong("Pluto was a planet"))
+print("The old version said", wrong("the Earth was flat"))
 ```
 
-**Custom validations**
-```python
-def validate_earth_age(x: int):
-    if x != 4_543_000_000:
-        raise ValueError("Woops! The Earth is 4.543 billion years old. (Try 4543000000)")
+## Spinners
 
-earth = term.prompt(
-    "How old is The Earth?",
-    klass=int,
-    validate=validate_earth_age,
-)
+```python
+import asyncio
+from term import Spinner
+
+async def main():
+    async with Spinner("Downloading assets") as s:
+        for i in range(1, 6):
+            await asyncio.sleep(0.5)
+            s.title = f"Downloading assets [{i}/5]"
+
+asyncio.run(main())
 ```
+
+## Parsing CLI args
 
 **Integration with argparse**
 ```python
