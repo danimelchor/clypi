@@ -39,7 +39,7 @@ print("The old version said", wrong("Pluto was a planet"))
 print("The old version said", wrong("the Earth was flat"))
 ```
 
-## Spinners
+## 🌀 Spinners
 
 ```python
 import asyncio
@@ -54,7 +54,7 @@ async def main():
 asyncio.run(main())
 ```
 
-## Parsing CLI args
+##  Parsing CLI args
 
 **Integration with argparse**
 ```python
