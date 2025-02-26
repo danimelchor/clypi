@@ -8,7 +8,7 @@ Check out the examples in `./examples`! You can run them locally with:
 ```
 uv run --all-extras -m term.colors
 uv run --all-extras -m term.spinner
-uv run --all-extras -m term.prompt
+uv run --all-extras -m term.prompts
 ```
 
 ## ❓ Prompting

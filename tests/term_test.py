@@ -10,7 +10,7 @@ import pytest
 from pytest import mark
 
 import term
-from term.input import MaxAttemptsException, Parser
+from term.prompts import MaxAttemptsException, Parser
 
 
 @contextmanager

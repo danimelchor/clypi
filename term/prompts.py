@@ -89,6 +89,6 @@ def prompt(
 
 
 if __name__ == "__main__":
-    from term.examples.prompt import main as example
+    from term.examples.prompts import main as example
 
     example()

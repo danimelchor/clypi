@@ -1,37 +1,38 @@
 import asyncio
-import itertools
 import sys
+import typing as t
 from contextlib import AbstractAsyncContextManager
-from typing import final
 
 import term
+from term._data.spinners import Spin as _Spin
 from term.colors import ColorType
 from term.const import ESC
-
-DEFAULT_CHARSET_1 = "⣾⣽⣻⢿⡿⣟⣯⣷"
-DEFAULT_CHARSET_2 = "⠁⠂⠄⡀⢀⠠⠐⠈"
 
 MOVE_START = f"{ESC}1G"
 DEL_LINE = f"{ESC}0K"
 
+Spin = _Spin
 
-@final
+
+@t.final
 class Spinner(AbstractAsyncContextManager):
     def __init__(
         self,
         title: str,
-        charset=DEFAULT_CHARSET_1,
+        animation: Spin | list[str] = Spin.DOTS,
         prefix: str = " ",
         suffix: str = "…",
+        speed: float = 1,
     ) -> None:
-        self.charset = charset
+        self.animation = animation
         self.prefix = prefix
         self.suffix = suffix
         self.title = title
 
         self._task: asyncio.Task | None = None
         self._manual_exit: bool = False
-        self._frame: str = ""
+        self._frame_idx: int = 0
+        self._refresh_rate = 0.7 / speed / len(self._frames)
 
     async def __aenter__(self):
         self._task = asyncio.create_task(self._spin())
@@ -59,15 +60,21 @@ class Spinner(AbstractAsyncContextManager):
     def _render_frame(self):
         self._print(
             self.title + self.suffix,
-            icon=self._frame,
+            icon=self._frames[self._frame_idx],
             color="blue",
         )
 
+    @property
+    def _frames(self) -> list[str]:
+        return (
+            self.animation.value if isinstance(self.animation, Spin) else self.animation
+        )
+
     async def _spin(self) -> None:
-        for frame in itertools.cycle(self.charset):
-            self._frame = frame
+        while True:
+            self._frame_idx = (self._frame_idx + 1) % len(self._frames)
             self._render_frame()
-            await asyncio.sleep(0.05)
+            await asyncio.sleep(self._refresh_rate)
 
     async def __aexit__(self, _type, value, traceback):
         # If a user already called `.done()`, leaving the closure

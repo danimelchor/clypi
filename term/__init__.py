@@ -3,7 +3,7 @@ from importlib import import_module
 
 if t.TYPE_CHECKING:
     from term.colors import print, style, styler
-    from term.input import prompt
+    from term.prompts import prompt
     from term.spinner import Spinner
 
 __all__ = (
@@ -17,7 +17,7 @@ __all__ = (
 _dynamic_imports: dict[str, tuple[str, str]] = {
     "Spinner": (__spec__.parent, ".spinner"),
     "print": (__spec__.parent, ".colors"),
-    "prompt": (__spec__.parent, ".input"),
+    "prompt": (__spec__.parent, ".prompts"),
     "style": (__spec__.parent, ".colors"),
     "styler": (__spec__.parent, ".colors"),
 }

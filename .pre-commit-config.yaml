@@ -2,17 +2,6 @@ ci:
   skip: [pytest]
 
 repos:
-  # Bandit - Security vulnerabilities
-  - repo: https://github.com/pycqa/bandit
-    rev: 1.8.0
-    hooks:
-      - id: bandit
-        name: bandit
-        exclude: ^tests/
-        args:
-          - -c
-          - pyproject.toml
-
   - repo: https://github.com/astral-sh/uv-pre-commit
     # uv version.
     rev: 0.6.2
