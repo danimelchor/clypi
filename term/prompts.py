@@ -86,9 +86,3 @@ def prompt(
     raise MaxAttemptsException(
         f"Failed to get a valid value after {max_attempts} attempts."
     )
-
-
-if __name__ == "__main__":
-    from term.examples.prompts import main as example
-
-    example()

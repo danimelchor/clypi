@@ -3,9 +3,9 @@ from __future__ import annotations
 from typing import Generator, cast
 
 import term
+from examples import _utils
 from term.boxed import boxed
 from term.colors import ColorType, _color_codes
-from term.examples import _utils
 
 
 # --- DEMO UTILS ---
@@ -48,3 +48,7 @@ def main() -> None:
         boxed(style_block, width=22, has_title=True),
     ):
         print(line)
+
+
+if __name__ == "__main__":
+    main()

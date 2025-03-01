@@ -185,9 +185,3 @@ def print(
         strikethrough=strikethrough,
     )
     builtins.print(text, end=end)
-
-
-if __name__ == "__main__":
-    from term.examples.colors import main as example
-
-    example()
