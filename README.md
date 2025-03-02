@@ -155,10 +155,10 @@ from the arguments you pass in.
 In this example your editor will correctly infer the type:
 ```python
 hours = term.prompt(
-    "How many hours are there in a day?",
-    klass=k.TimeDelta() | k.Str() | k.Int(),
+    "How many hours are there in a year?",
+    parser=lambda x: float(x) if x < 24 else timedelta(days=x),
 )
-reveal_type(hours)  # Type of "res" is "timedelta | str | int"
+reveal_type(hours)  # Type of "res" is "float | timedelta"
 ```
 
 In some cases, like prompting, the type will also indicate how to validate and parse the passed argument.

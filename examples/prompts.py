@@ -1,7 +1,5 @@
 from __future__ import annotations
 
-import argparse
-
 import v6e as v
 
 import term
@@ -41,12 +39,6 @@ def main() -> None:
         parser=v.int().gte(3).lte(9).multiple_of(3),  # You can chain validations
     )
 
-    # Integration with argparse
-    parser = argparse.ArgumentParser()
-    _ = parser.add_argument("--animal", type=str)
-    args = parser.parse_args()
-    animal = term.prompt("What's your favorite animal?", provided=args.animal)
-
     # -----------
     print()
     colors.print("🚀 Summary", bold=True, fg="green")
@@ -57,7 +49,6 @@ def main() -> None:
     print(" ↳  Hours in a day:", answer(hours), f"({type(hours).__name__})")
     print(" ↳  Earth age:", answer(earth))
     print(" ↳  Moon age:", answer(moon))
-    print(" ↳  Favorite animal:", answer(animal))
 
 
 if __name__ == "__main__":
