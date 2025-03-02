@@ -16,10 +16,6 @@ class ProgramConfig:
     prog: str
 
 
-def snake_to_dash(s: str) -> str:
-    return s.replace("_", "-")
-
-
 def _ext(ls: list[str], s: str | list[str] | None) -> list[str] | str | None:
     if s is None:
         return ls
