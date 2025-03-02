@@ -1,15 +1,13 @@
 import asyncio
-from dataclasses import dataclass
 from pathlib import Path
 from typing import Literal
 
 from typing_extensions import override
 
 import term
-from term import Command, field
+from term import Command, config
 
 
-@dataclass
 class RunParallel(Command):
     """
     Runs all of the files in parallel
@@ -24,7 +22,6 @@ class RunParallel(Command):
         term.print("Done!", fg="green", bold=True)
 
 
-@dataclass
 class RunSerial(Command):
     """
     Runs all of the files one by one
@@ -39,7 +36,6 @@ class RunSerial(Command):
         term.print("Done!", fg="green", bold=True)
 
 
-@dataclass
 class Run(Command):
     """
     Allows running files with different options
@@ -50,19 +46,18 @@ class Run(Command):
     format: Literal["json", "pretty"] = "pretty"
 
 
-@dataclass
 class Lint(Command):
     """
-    Lints all of the files in a given directory using the latest termuff
-    rules.
+    Lints all of the files in a given directory using the latest
+    termuff rules.
     """
 
-    files: list[str] = field(help="The list of files to lint")
-    quiet: bool = field(
+    files: list[str] = config(help="The list of files to lint")
+    quiet: bool = config(
         help="If the linter should omit all stdout messages", default=False
     )
-    no_cache: bool = field(help="Disable the termuff cache", default=False)
-    index: str = field(
+    no_cache: bool = config(help="Disable the termuff cache", default=False)
+    index: str = config(
         default="http://pypi.org",
         help="The index to download termuff from",
     )
@@ -73,7 +68,6 @@ class Lint(Command):
         term.print("Done!", fg="green", bold=True)
 
 
-@dataclass
 class Main(Command):
     """
     Termuff is a powerful command line interfact to lint and

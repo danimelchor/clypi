@@ -75,7 +75,7 @@ class Command:
         if not doc or doc.startswith(cls.__name__ + "("):
             return None
 
-        return doc
+        return doc.replace("\n", " ")
 
     async def run(self):
         raise NotImplementedError
@@ -189,11 +189,15 @@ class Command:
             if field not in kwargs and not field_conf.has_default():
                 cls.print_help(parents, f"Missing required argument {field}")
 
+            # Get the value passed in or the provided default
             value = kwargs[field] if field in kwargs else field_conf.get_default()
+
+            # Subcommands are already parsed properly
             if field == "subcommand":
                 setattr(instance, field, value)
                 continue
 
+            # Try parsing the string as the right type
             try:
                 parsed = parser.parse_value_as_type(value, field_conf._type)
                 setattr(instance, field, parsed)
