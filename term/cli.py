@@ -6,11 +6,11 @@ import logging
 import re
 import sys
 import typing as t
-from dataclasses import _MISSING_TYPE, MISSING, Field, dataclass
-from dataclasses import field as dataclass_field
+from dataclasses import dataclass
 from types import NoneType, UnionType
 
 from term._cli import parser, type_util
+from term._cli.config import MISSING, _Config, config
 from term._cli.formatter import TermFormatter
 
 logger = logging.getLogger(__name__)
@@ -93,13 +93,15 @@ class Command:
 
     @t.final
     @classmethod
-    def _type_of(cls, name: str):
-        return cls._annotations()[name]
-
-    @t.final
-    @classmethod
-    def _has_attr(cls, name: str) -> bool:
-        return name in cls._annotations()
+    def fields(cls) -> dict[str, _Config]:
+        defaults = {}
+        for field in cls._annotations():
+            default = getattr(cls, field, MISSING)
+            if isinstance(default, _Config) and (value := default.get_default()):
+                defaults[field] = value
+            else:
+                defaults[field] = config(default=default)
+        return defaults
 
     @t.final
     @classmethod
@@ -109,32 +111,8 @@ class Command:
             if type_util.is_collection(pos._type):
                 return pos
 
-            if field not in kwargs:
+            if pos.name not in kwargs:
                 return pos
-
-    @t.final
-    @classmethod
-    def _has_default(cls, name: str) -> bool:
-        params: Field = getattr(cls, "__dataclass_fields__")[name]
-        if params.default is not MISSING or params.default_factory is not MISSING:
-            return True
-        return False
-
-    @t.final
-    @classmethod
-    def _get_default(cls, name: str) -> t.Any | _MISSING_TYPE:
-        params: Field = getattr(cls, "__dataclass_fields__")[name]
-        if params.default is not MISSING:
-            return params.default
-        if params.default_factory is not MISSING:
-            return params.default_factory()
-        return MISSING
-
-    @t.final
-    @classmethod
-    def _get_help(cls, name: str) -> str | None:
-        params: Field = getattr(cls, "__dataclass_fields__")[name]
-        return params.metadata.get("help", None)
 
     @t.final
     @classmethod
@@ -147,9 +125,13 @@ class Command:
         # The kwars used to initialize the dataclass
         kwargs = {}
 
+        # The current option or positional arg being parsed
         current_attr = parser.CurrentCtx()
 
         for a in args:
+            if a in ("-h", "--help"):
+                cls.print_help(parents=parents)
+
             # ---- Try to parse as an arg/opt ----
             is_opt, attr, orig = parser.parse_as_attr(a)
             if not is_opt and (subcmd := cls.subcommands().get(attr)):
@@ -157,9 +139,6 @@ class Command:
                     args, parents=parents + [cls.prog()]
                 )
                 break
-
-            if is_opt and attr in ("h", "help"):
-                cls.print_help(parents=parents)
 
             # ---- Try to set to the current option ----
             if is_opt and attr in cls.options():
@@ -195,6 +174,7 @@ class Command:
             what = "option" if is_opt else "argument"
             cls.print_help(parents=parents, error=f"Unknown {what} {orig!r}")
 
+        # If we finished the loop and we haven't saved current_attr, save it
         if current_attr.name and current_attr.needs_more():
             cls.print_help(
                 parents=parents, error=f"Not enough values for {current_attr.name}"
@@ -205,21 +185,18 @@ class Command:
             current_attr = None
 
         # Parse as the correct values
-        parsed_kwargs = {}
+        instance = cls()
         for k, v in kwargs.items():
             if k == "subcommand":
-                parsed_kwargs[k] = v
+                setattr(instance, k, v)
                 continue
             try:
-                parsed_kwargs[k] = parser.parse_value_as_type(v, cls._type_of(k))
+                parsed = parser.parse_value_as_type(v, cls._annotations()[k])
+                setattr(instance, k, parsed)
             except Exception as e:
                 cls.print_help(parents, f"Error parsing {k}: {e}")
 
-        try:
-            return cls(**parsed_kwargs)
-        except TypeError as e:
-            parts = str(e).split(" ")[1:]
-            cls.print_help(parents, " ".join(parts))
+        return instance
 
     @t.final
     @classmethod
@@ -228,7 +205,7 @@ class Command:
             return {}
 
         # Get the subcommand type/types
-        _type = cls._type_of("subcommand")
+        _type = cls._annotations()["subcommand"]
         subcmds = [_type]
         if isinstance(_type, UnionType):
             subcmds = [s for s in _type.__args__ if s is not NoneType]
@@ -245,13 +222,13 @@ class Command:
     def options(cls) -> dict[str, Argument]:
         options = {}
         for field, _type in cls._annotations().items():
-            if field == "subcommand" or not cls._has_default(field):
+            if field == "subcommand" or not cls.fields()[field].has_default():
                 continue
 
             options[field] = Argument(
                 field,
                 type_util.remove_optionality(_type),
-                help=cls._get_help(field),
+                help=cls.fields()[field].help,
             )
         return options
 
@@ -260,10 +237,14 @@ class Command:
     def positionals(cls) -> dict[str, Argument]:
         options = {}
         for field, _type in cls._annotations().items():
-            if field == "subcommand" or cls._has_default(field):
+            if field == "subcommand" or cls.fields()[field].has_default():
                 continue
 
-            options[field] = Argument(field, _type, help=cls._get_help(field))
+            options[field] = Argument(
+                field,
+                _type,
+                help=cls.fields()[field].help,
+            )
         return options
 
     @t.final
@@ -294,7 +275,3 @@ class Command:
         )
         print(tf.format_help())
         sys.exit(1 if error else 0)
-
-
-def field(help: str | None = None, *args, **kwargs):
-    return dataclass_field(*args, **kwargs, metadata={"help": help})

@@ -3,7 +3,7 @@ from importlib import import_module
 
 if t.TYPE_CHECKING:
     from term.boxed import boxed
-    from term.cli import Command, field
+    from term.cli import Command, config
     from term.colors import print, style, styler
     from term.prompts import prompt
     from term.spinner import Spinner
@@ -13,7 +13,7 @@ __all__ = (
     "Command",
     "Spinner",
     "boxed",
-    "field",
+    "config",
     "print",
     "prompt",
     "stack",
@@ -25,7 +25,7 @@ _dynamic_imports: dict[str, tuple[str, str]] = {
     "Command": (__spec__.parent, ".cli"),
     "Spinner": (__spec__.parent, ".spinner"),
     "boxed": (__spec__.parent, ".boxed"),
-    "field": (__spec__.parent, ".cli"),
+    "config": (__spec__.parent, ".cli"),
     "print": (__spec__.parent, ".colors"),
     "prompt": (__spec__.parent, ".prompts"),
     "stack": (__spec__.parent, ".stack"),

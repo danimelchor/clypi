@@ -16,17 +16,14 @@ uv run --all-extras -m examples.prompts
 
 ```python
 # examples/basic_cli.py
-from dataclasses import dataclass
 from term import Command
 
-@dataclass
 class Lint(Command):
     files: tuple[str, ...]
 
     async def run(self):
         print(f"Linting {', '.join(self.files)}")
 
-@dataclass
 class MyCli(Command):
     subcommand: Lint | None = None
     verbose: bool = False

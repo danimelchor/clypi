@@ -1,13 +1,12 @@
 import asyncio
-from dataclasses import dataclass
 from pathlib import Path
+from unittest.mock import MagicMock, patch
 
 from typing_extensions import override
 
-from term import Command, field
+from term import Command, config
 
 
-@dataclass
 class ExampleSubCommand(Command):
     """Some sample docs"""
 
@@ -17,7 +16,6 @@ class ExampleSubCommand(Command):
         return "subcommand"
 
 
-@dataclass
 class ExampleCommand(Command):
     """
     Some sample documentation for the main command
@@ -25,7 +23,7 @@ class ExampleCommand(Command):
 
     flag: bool = False
     subcommand: ExampleSubCommand | None = None
-    option: list[str] = field(help="A list of strings please", default_factory=list)
+    option: list[str] = config(help="A list of strings please", default_factory=list)
 
     @override
     @classmethod
@@ -78,7 +76,11 @@ def test_expected_subcommands():
     assert pos["example-sub-command"].help == "Some sample docs"
 
 
-def test_expected_parsing():
+@patch("os.get_terminal_size")
+def test_expected_parsing(gts):
+    gts.return_value = MagicMock()
+    gts.return_value.columns = 80
+
     ec = ExampleCommand.parse(["--flag", "--option", "a", "b"])
     assert ec.flag is True
     assert ec.option == ["a", "b"]
@@ -87,7 +89,11 @@ def test_expected_parsing():
     assert asyncio.run(ec.astart()) == "main"
 
 
-def test_expected_parsing_subcmd():
+@patch("os.get_terminal_size")
+def test_expected_parsing_subcmd(gts):
+    gts.return_value = MagicMock()
+    gts.return_value.columns = 80
+
     ec = ExampleCommand.parse(
         ["--flag", "--option", "a", "b", "example-sub-command", "some_file.json"]
     )
