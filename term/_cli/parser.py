@@ -52,85 +52,111 @@ def parse_as_attr(arg: str) -> Arg:
     return Arg(value=arg, orig=arg, arg_type="pos")
 
 
-def _parse_builtin(builtin: type, value: t.Any):
-    if isinstance(value, list):
-        value = value[0]
-    return builtin(value)
+def _parse_builtin(builtin: type) -> t.Callable[[t.Any], t.Any]:
+    def inner(value: t.Any):
+        if isinstance(value, list):
+            value = value[0]
+        return builtin(value)
+
+    return inner
 
 
-def _parse_value_as_list(value: t.Any, _type: t.Any):
-    if not isinstance(value, list):
-        raise ValueError(
-            f"Don't know how to parse {value} as {type_util.type_to_str(_type)}"
-        )
+def _parse_list(_type: t.Any) -> t.Callable[[t.Any], list]:
+    def inner(value: t.Any):
+        if not isinstance(value, list):
+            raise ValueError(
+                f"Don't know how to parse {value} as {type_util.type_to_str(_type)}"
+            )
 
-    inner_type = _type.__args__[0]
-    return [parse_value_as_type(x, inner_type) for x in value]
+        inner_type = _type.__args__[0]
+        parser = from_type(inner_type)
+        return [parser(x) for x in value]
 
-
-def _parse_value_as_tuple(value: t.Any, _type: t.Any):
-    if not isinstance(value, tuple | list):
-        raise ValueError(
-            f"Don't know how to parse {value} as {type_util.type_to_str(_type)}"
-        )
-
-    # TODO: can be made more efficient
-    inner_types = _type.__args__
-    if inner_types[-1] is Ellipsis:
-        inner_types = [inner_types[0]] * len(value)
-
-    if len(inner_types) > len(value):
-        raise ValueError(
-            f"Not enough arguments for type {type_util.type_to_str(_type)} (got {value})"
-        )
-
-    ret = []
-    for val, inner_type in zip(value, inner_types):
-        ret.append(parse_value_as_type(val, inner_type))
-    return tuple(ret)
+    return inner
 
 
-def _parse_value_as_literal(value: t.Any, _type: t.Any):
-    if isinstance(value, list):
-        value = value[0]
+def _parse_tuple(_type: t.Any) -> t.Callable[[t.Any], tuple]:
+    def inner(value: t.Any):
+        if not isinstance(value, tuple | list):
+            raise ValueError(
+                f"Don't know how to parse {value} as {type_util.type_to_str(_type)}"
+            )
 
-    for a in _type.__args__:
-        if a == value:
-            return value
+        # TODO: can be made more efficient
+        inner_types = _type.__args__
+        if inner_types[-1] is Ellipsis:
+            inner_types = [inner_types[0]] * len(value)
 
-    raise ValueError(
-        f"Value {value} is not a valid choice between {type_util.type_to_str(_type)}"
-    )
+        if len(inner_types) > len(value):
+            raise ValueError(
+                f"Not enough arguments for type {type_util.type_to_str(_type)} (got {value})"
+            )
+
+        ret = []
+        for val, inner_type in zip(value, inner_types):
+            ret.append(from_type(inner_type)(val))
+        return tuple(ret)
+
+    return inner
 
 
-def parse_value_as_type(value: t.Any, _type: t.Any):
-    if _type in (int, float, str, Path, bool):
-        return _parse_builtin(_type, value)
-
-    if type_util.is_collection(_type):
-        return _parse_value_as_list(value, _type)
-
-    if type_util.is_tuple(_type):
-        return _parse_value_as_tuple(value, _type)
-
-    errors = []
-    if isinstance(_type, UnionType):
+def _parse_union(_type: UnionType) -> t.Callable[[t.Any], t.Any]:
+    def inner(value: t.Any):
+        errors = []
         for a in _type.__args__:
             try:
-                return parse_value_as_type(value, a)
+                return from_type(a)(value)
             except (ValueError, TypeError) as e:
                 errors.append(e)
             except UnparseableException:
                 pass
 
+        if errors:
+            raise errors[0]
+
+    return inner
+
+
+def _parse_literal(_type: t.Any) -> t.Callable[[t.Any], t.Any]:
+    def inner(value: t.Any):
+        if isinstance(value, list):
+            value = value[0]
+
+        for a in _type.__args__:
+            if a == value:
+                return value
+
+        raise ValueError(
+            f"Value {value} is not a valid choice between {type_util.type_to_str(_type)}"
+        )
+
+    return inner
+
+
+def _parse_none(value: t.Any) -> None:
+    if value is not None:
+        raise ValueError(f"Value {value} is not None")
+    return None
+
+
+def from_type(_type: t.Any) -> t.Callable[[t.Any], t.Any]:
+    if _type in (int, float, str, Path, bool):
+        return _parse_builtin(_type)
+
+    if type_util.is_collection(_type):
+        return _parse_list(_type)
+
+    if type_util.is_tuple(_type):
+        return _parse_tuple(_type)
+
+    if isinstance(_type, UnionType):
+        return _parse_union(_type)
+
     if t.get_origin(_type) == t.Literal:
-        return _parse_value_as_literal(value, _type)
+        return _parse_literal(_type)
 
-    if _type is NoneType and value is None:
-        return None
-
-    if errors:
-        raise errors[0]
+    if _type is NoneType:
+        return _parse_none
 
     raise UnparseableException(
         f"Don't know how to parse as {type_util.type_to_str(_type)} ({type(_type)})"

@@ -124,9 +124,17 @@ class Command:
         for field, _type in inspect.get_annotations(cls).items():
             default = getattr(cls, field, MISSING)
             if isinstance(default, _PartialConfig):
-                defaults[field] = _Config.from_partial(default, _type)
+                defaults[field] = _Config.from_partial(
+                    default,
+                    parser=default.parser or parser.from_type(_type),
+                    _type=_type,
+                )
             else:
-                defaults[field] = _Config(default=default, _type=_type)
+                defaults[field] = _Config(
+                    default=default,
+                    parser=parser.from_type(_type),
+                    _type=_type,
+                )
         return defaults
 
     @t.final
@@ -268,7 +276,7 @@ class Command:
 
             # Try parsing the string as the right type
             try:
-                parsed = parser.parse_value_as_type(value, field_conf._type)
+                parsed = field_conf.parser(value)
                 setattr(instance, field, parsed)
             except Exception as e:
                 cls.print_help(parents, f"Error parsing {field}: {e}")
