@@ -337,7 +337,6 @@ class Command:
     def options(cls) -> dict[str, Argument]:
         options: dict[str, Argument] = {}
         for field, field_conf in cls.fields().items():
-            print(field, field_conf)
             if field == "subcommand" or not field_conf.has_default():
                 continue
 
