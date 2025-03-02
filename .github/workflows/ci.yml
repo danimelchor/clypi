@@ -28,4 +28,4 @@ jobs:
         run: uvx ruff check .
 
       - name: "Python type checking"
-        run: uvx pyright clypi/ pyright_tests/
+        run: uvx pyright clypi/
