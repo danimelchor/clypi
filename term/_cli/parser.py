@@ -88,7 +88,11 @@ def _parse_value_as_literal(value: t.Any, _type: t.Any):
 
 
 def parse_value_as_type(value: t.Any, _type: t.Any):
-    if _type in (int, float, str, bool, Path):
+    # If value made it to the list of fields, it was manually passed
+    if _type is bool:
+        return True
+
+    if _type in (int, float, str, Path):
         return _parse_builtin(_type, value)
 
     if type_util.is_collection(_type):
@@ -143,3 +147,6 @@ class CurrentCtx:
             self.nargs -= 1
         elif self.nargs == "+":
             self.nargs = "*"
+
+    def __bool__(self) -> bool:
+        return bool(self.name)

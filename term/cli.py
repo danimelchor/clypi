@@ -8,7 +8,7 @@ import sys
 import typing as t
 from dataclasses import _MISSING_TYPE, MISSING, Field, dataclass
 from dataclasses import field as dataclass_field
-from types import UnionType
+from types import NoneType, UnionType
 
 from term._cli import parser, type_util
 from term._cli.formatter import TermFormatter
@@ -164,6 +164,15 @@ class Command:
             # ---- Try to set to the current option ----
             if is_opt and attr in cls.options():
                 option = cls.options()[attr]
+                if current_attr and not current_attr.needs_more():
+                    if current_attr.name not in kwargs:
+                        kwargs[current_attr.name] = []
+                elif current_attr:
+                    cls.print_help(
+                        parents=parents,
+                        error=f"Not enough values for {current_attr.name}",
+                    )
+
                 current_attr = parser.CurrentCtx(option.name, option.nargs)
                 continue
 
@@ -179,6 +188,8 @@ class Command:
                 current_attr.use()
                 continue
             elif current_attr.name and not current_attr.needs_more():
+                if current_attr.name not in kwargs:
+                    kwargs[current_attr.name] = []
                 current_attr = None
 
             what = "option" if is_opt else "argument"
@@ -214,7 +225,10 @@ class Command:
 
         # Get the subcommand type/types
         _type = cls._type_of("subcommand")
-        subcmds = _type.__args__ if isinstance(_type, UnionType) else [_type]
+        subcmds = [_type]
+        if isinstance(_type, UnionType):
+            subcmds = [s for s in _type.__args__ if s is not NoneType]
+
         for v in subcmds:
             assert inspect.isclass(v) and issubclass(v, Command)
 

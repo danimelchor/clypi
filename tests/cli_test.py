@@ -1,3 +1,4 @@
+import asyncio
 from dataclasses import dataclass
 from pathlib import Path
 
@@ -10,6 +11,11 @@ from term import Command, field
 class ExampleSubCommand(Command):
     """Some sample docs"""
 
+    positional: tuple[str | Path, ...]
+
+    async def run(self):
+        return "subcommand"
+
 
 @dataclass
 class ExampleCommand(Command):
@@ -17,9 +23,8 @@ class ExampleCommand(Command):
     Some sample documentation for the main command
     """
 
-    subcommand: ExampleSubCommand
-    positional: tuple[str | Path, ...]
     flag: bool = False
+    subcommand: ExampleSubCommand | None = None
     option: list[str] = field(help="A list of strings please", default_factory=list)
 
     @override
@@ -31,6 +36,9 @@ class ExampleCommand(Command):
     @classmethod
     def epilog(cls):
         return "Some text to display after..."
+
+    async def run(self):
+        return "main"
 
 
 def test_expected_base():
@@ -53,7 +61,7 @@ def test_expected_options():
 
 
 def test_expected_positional():
-    pos = ExampleCommand.positionals()
+    pos = ExampleSubCommand.positionals()
     assert len(pos) == 1
 
     assert pos["positional"].name == "positional"
@@ -68,3 +76,26 @@ def test_expected_subcommands():
     assert pos["example-sub-command"].name == "example-sub-command"
     assert pos["example-sub-command"]._type == ExampleSubCommand
     assert pos["example-sub-command"].help == "Some sample docs"
+
+
+def test_expected_parsing():
+    ec = ExampleCommand.parse(["--flag", "--option", "a", "b"])
+    assert ec.flag is True
+    assert ec.option == ["a", "b"]
+
+    assert ec.subcommand is None
+    assert asyncio.run(ec.astart()) == "main"
+
+
+def test_expected_parsing_subcmd():
+    ec = ExampleCommand.parse(
+        ["--flag", "--option", "a", "b", "example-sub-command", "some_file.json"]
+    )
+    assert ec.flag is True
+    assert ec.option == ["a", "b"]
+
+    sc = ec.subcommand
+    assert isinstance(sc, ExampleSubCommand)
+    assert sc.positional == ("some_file.json",)
+
+    assert asyncio.run(ec.astart()) == "subcommand"
