@@ -58,11 +58,19 @@ if __name__ == "__main__":
 </details>
 
 <details>
-    <summary><code>uv run -m examples.basic_cli lint</code></summary>
+    <summary>(Missing args) <code>uv run -m examples.basic_cli lint</code></summary>
     <p align="center">
         <img width="1692" alt="image" src="https://github.com/user-attachments/assets/f4e08d8f-affd-4e74-9dc2-d4baa7be0f62" />
     </p>
 </details>
+
+<details>
+    <summary>(Typo) <code>uv run -m examples.basic_cli lin</code></summary>
+    <p align="center">
+        <img width="1696" alt="image" src="https://github.com/user-attachments/assets/c75b2cb0-2f2e-4907-86cb-2f62122c0c70" />
+    </p>
+</details>
+
 
 ## ❓ Prompting
 
