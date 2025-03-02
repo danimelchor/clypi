@@ -15,6 +15,7 @@ authors = [
 ]
 keywords = ["cli", "terminal", "ui"]
 dependencies = [
+    "levenshtein>=0.26.1",
     "rich-argparse>=1.7.0",
     "typing-extensions>=4.12.2",
 ]

@@ -1,3 +1,4 @@
+import re
 import typing as t
 from dataclasses import dataclass
 from pathlib import Path
@@ -11,7 +12,7 @@ class UnparseableException(Exception):
 
 
 def dash_to_snake(s: str) -> str:
-    return s.replace("-", "_")
+    return re.sub(r"^-+", "", s).replace("-", "_")
 
 
 def snake_to_dash(s: str) -> str:
@@ -28,16 +29,27 @@ def normalize_args(args: t.Sequence[str]):
     return new_args
 
 
-def parse_as_attr(arg: str) -> tuple[bool, str, str]:
-    if arg.startswith("--"):
-        clean = arg.removeprefix("--")
-        return True, dash_to_snake(clean), arg
+@dataclass
+class Arg:
+    value: str
+    orig: str
+    arg_type: t.Literal["opt", "short-opt", "pos"]
 
-    if arg.startswith("-"):
-        clean = arg.removeprefix("-")
-        return True, dash_to_snake(clean), arg
+    def is_pos(self):
+        return self.arg_type == "pos"
 
-    return False, arg, arg
+    def is_short_opt(self):
+        return self.arg_type == "short-opt"
+
+
+def parse_as_attr(arg: str) -> Arg:
+    if arg.startswith("--") and len(arg) > 3:
+        return Arg(value=dash_to_snake(arg), orig=arg, arg_type="opt")
+
+    if arg.startswith("-") and len(arg) == 2:
+        return Arg(value=dash_to_snake(arg), orig=arg, arg_type="short-opt")
+
+    return Arg(value=arg, orig=arg, arg_type="pos")
 
 
 def _parse_builtin(builtin: type, value: t.Any):

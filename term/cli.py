@@ -9,6 +9,8 @@ import typing as t
 from dataclasses import dataclass
 from types import NoneType, UnionType
 
+from Levenshtein import distance
+
 from term._cli import parser, type_util
 from term._cli.config import MISSING, _Config, _PartialConfig
 from term._cli.config import config as _config
@@ -29,6 +31,7 @@ class Argument:
     name: str
     _type: t.Any
     help: str | None
+    is_opt: bool = False
     short: str | None = None
 
     @property
@@ -44,6 +47,19 @@ class Argument:
             return "+" if sz == float("inf") else sz
 
         return 1
+
+    @property
+    def display_name(self):
+        name = parser.snake_to_dash(self.name)
+        if self.is_opt:
+            return f"--{name}"
+        return name
+
+    @property
+    def short_display_name(self):
+        assert self.short
+        name = parser.snake_to_dash(self.short)
+        return f"-{name}"
 
 
 @dataclass
@@ -139,6 +155,26 @@ class Command:
 
     @t.final
     @classmethod
+    def _find_similar_arg(cls, arg: parser.Arg) -> str | None:
+        if arg.is_pos():
+            for pos in cls.subcommands().values():
+                if distance(pos.name, arg.value) < 3:
+                    return pos.name
+
+            for pos in cls.positionals().values():
+                if distance(pos.name, arg.value) < 3:
+                    return pos.display_name
+        else:
+            for opt in cls.options().values():
+                if distance(opt.name, arg.value) <= 2:
+                    return opt.display_name
+                if opt.short and distance(opt.short, arg.value) <= 1:
+                    return opt.short_display_name
+
+        return None
+
+    @t.final
+    @classmethod
     def _parse(cls, args: t.Iterator[str], parents: list[str]) -> t.Self:
         """
         Given an iterator of arguments we recursively parse all options, arguments,
@@ -156,17 +192,21 @@ class Command:
                 cls.print_help(parents=parents)
 
             # ---- Try to parse as an arg/opt ----
-            is_opt, attr, orig = parser.parse_as_attr(a)
-            if not is_opt and (subcmd := cls.subcommands().get(attr)):
+            parsed = parser.parse_as_attr(a)
+            if parsed.is_pos() and (subcmd := cls.subcommands().get(parsed.value)):
                 kwargs["subcommand"] = subcmd._type._parse(
                     args, parents=parents + [cls.prog()]
                 )
                 break
 
             # ---- Try to set to the current option ----
-            attr = cls._fully_qualify(attr)
-            if is_opt and attr in cls.options():
-                option = cls.options()[attr]
+            full_name = (
+                cls._fully_qualify(parsed.value)
+                if parsed.is_short_opt
+                else parsed.value
+            )
+            if not parsed.is_pos() and full_name in cls.options():
+                option = cls.options()[full_name]
                 if current_attr and current_attr.needs_more():
                     cls.print_help(
                         parents=parents,
@@ -175,7 +215,7 @@ class Command:
 
                 # Boolean flags don't need to parse more args later on
                 if option.nargs == 0:
-                    kwargs[attr] = True
+                    kwargs[full_name] = True
                 else:
                     current_attr = parser.CurrentCtx(option.name, option.nargs)
                 continue
@@ -188,7 +228,7 @@ class Command:
             if current_attr.name and current_attr.has_more():
                 if current_attr.name not in kwargs:
                     kwargs[current_attr.name] = []
-                kwargs[current_attr.name].append(attr)
+                kwargs[current_attr.name].append(full_name)
                 current_attr.use()
                 continue
             elif current_attr.name and not current_attr.needs_more():
@@ -196,8 +236,11 @@ class Command:
                     kwargs[current_attr.name] = []
                 current_attr = None
 
-            what = "option" if is_opt else "argument"
-            cls.print_help(parents=parents, error=f"Unknown {what} {orig!r}")
+            what = "argument" if parsed.is_pos else "option"
+            error = f"Unknown {what} {parsed.orig!r}"
+            if similar := cls._find_similar_arg(parsed):
+                error += f". Did you mean {similar!r}?"
+            cls.print_help(parents=parents, error=error)
 
         # If we finished the loop and we haven't saved current_attr, save it
         if current_attr.name and current_attr.needs_more():
@@ -260,10 +303,11 @@ class Command:
                 continue
 
             options[field] = Argument(
-                parser.snake_to_dash(field),
+                field,
                 type_util.remove_optionality(field_conf._type),
                 help=field_conf.help,
                 short=field_conf.short,
+                is_opt=True,
             )
         return options
 
@@ -276,7 +320,7 @@ class Command:
                 continue
 
             options[field] = Argument(
-                parser.snake_to_dash(field),
+                field,
                 field_conf._type,
                 help=field_conf.help,
             )
