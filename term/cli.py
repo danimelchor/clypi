@@ -219,7 +219,7 @@ class Command:
             )
             is_valid_short = (
                 not parsed.is_pos()
-                and parsed.is_long_opt()
+                and parsed.is_short_opt()
                 and cls._get_long_name(parsed.value) is not None
             )
             if is_valid_long or is_valid_short:
