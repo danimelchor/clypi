@@ -6,17 +6,42 @@ import logging
 import re
 import sys
 import typing as t
-from dataclasses import _MISSING_TYPE, MISSING, Field
+from dataclasses import _MISSING_TYPE, MISSING, Field, dataclass
 from dataclasses import field as dataclass_field
 from types import UnionType
 
 from term._cli import parser, type_util
+from term._cli.formatter import TermFormatter
 
 logger = logging.getLogger(__name__)
 
 
 def _camel_to_dashed(s: str):
     return re.sub(r"(?<!^)(?=[A-Z])", "-", s).lower()
+
+
+@dataclass
+class Argument:
+    name: str
+    _type: t.Any
+    help: str | None
+
+    @property
+    def nargs(self) -> parser.Nargs:
+        if type_util.is_collection(self._type):
+            return "*"
+
+        if type_util.is_tuple(self._type):
+            sz = type_util.tuple_size(self._type)
+            return "+" if sz == float("inf") else sz
+
+        return 1
+
+
+@dataclass
+class SubCommand:
+    name: str
+    _type: type[Command]
 
 
 class Command:
@@ -39,7 +64,7 @@ class Command:
         doc = inspect.getdoc(cls)
 
         # Dataclass sets a default docstring so ignore that
-        if not doc or doc.startswith(cls.__name__):
+        if not doc or doc.startswith(cls.__name__ + "("):
             return None
 
         return doc
@@ -65,40 +90,31 @@ class Command:
     @t.final
     @classmethod
     def _type_of(cls, name: str):
-        if name not in cls._annotations():
-            raise ValueError(f"{cls.__name__} has no value {name}")
-
         return cls._annotations()[name]
 
     @t.final
     @classmethod
-    def _is_flag(cls, name: str) -> bool:
-        return cls._type_of(name) is bool
+    def _has_attr(cls, name: str) -> bool:
+        return name in cls._annotations()
 
     @t.final
     @classmethod
-    def _nargs_for(cls, name: str) -> float:
-        _type = cls._annotations()[name]
-
-        # List positionals are a catch-all
-        if type_util.is_collection(_type):
-            return float("inf")
-
-        return 1
-
-    @t.final
-    @classmethod
-    def _next_positional(cls, kwargs: dict[str, t.Any]) -> str | None:
-        for field, _type in cls._annotations().items():
-            if cls._get_default(field) is not MISSING:
-                continue
-
+    def _next_positional(cls, kwargs: dict[str, t.Any]) -> Argument | None:
+        for pos in cls.positionals().values():
             # List positionals are a catch-all
-            if type_util.is_collection(_type):
-                return field
+            if type_util.is_collection(pos._type):
+                return pos
 
             if field not in kwargs:
-                return field
+                return pos
+
+    @t.final
+    @classmethod
+    def _has_default(cls, name: str) -> bool:
+        params: Field = getattr(cls, "__dataclass_fields__")[name]
+        if params.default is not MISSING or params.default_factory is not MISSING:
+            return True
+        return False
 
     @t.final
     @classmethod
@@ -118,7 +134,7 @@ class Command:
 
     @t.final
     @classmethod
-    def _parse(cls, args: t.Iterator[str]) -> t.Self:
+    def _parse(cls, args: t.Iterator[str], parents: list[str]) -> t.Self:
         """
         Given an iterator of arguments we recursively parse all options, arguments,
         and subcommands until the iterator is complete.
@@ -127,44 +143,42 @@ class Command:
         # The kwars used to initialize the dataclass
         kwargs = {}
 
-        current_attr_name: str | None = None
-        current_attr_nargs: float = 1
+        current_attr = parser.CurrentCtx()
 
         for a in args:
             # ---- Try to parse as an arg/opt ----
-            is_opt, attr = parser.parse_as_attr(a)
-            if not is_opt and (subcmd := cls._get_subcommands().get(attr)):
-                kwargs["subcommand"] = subcmd._parse(args)
+            is_opt, attr, orig = parser.parse_as_attr(a)
+            if not is_opt and (subcmd := cls.subcommands().get(attr)):
+                kwargs["subcommand"] = subcmd._type._parse(
+                    args, parents=parents + [cls.prog()]
+                )
                 break
 
-            # Assign to current object
-            if is_opt:
-                if cls._is_flag(attr):
-                    kwargs[attr] = True
-                else:
-                    current_attr_name = attr
-                    current_attr_nargs = cls._nargs_for(attr)
-                continue
+            if is_opt and attr in ("h", "help"):
+                cls.print_help(parents=parents)
 
-            # ---- Try to assign to the current option ----
-            if current_attr_name and current_attr_nargs > 0:
-                if current_attr_name not in kwargs:
-                    kwargs[current_attr_name] = []
-                kwargs[current_attr_name].append(attr)
-                current_attr_nargs -= 1
+            # Assign to current object
+            if is_opt and attr in cls.options():
+                option = cls.options()[attr]
+                current_attr = parser.CurrentCtx(option.name, option.nargs)
                 continue
-            elif current_attr_name:
-                current_attr_name = None
 
             # ---- Try to assign to the current positional ----
-            if not current_attr_name and (pos_name := cls._next_positional(kwargs)):
-                if pos_name not in kwargs:
-                    kwargs[pos_name] = []
-                if len(kwargs[pos_name]) < cls._nargs_for(pos_name):
-                    kwargs[pos_name].append(attr)
-                continue
+            if not current_attr.name and (pos := cls._next_positional(kwargs)):
+                current_attr = parser.CurrentCtx(pos.name, pos.nargs)
 
-            raise ValueError(f"Unknown argument {attr} for {cls.name()}")
+            # ---- Try to assign to the current ctx ----
+            if current_attr.name and current_attr.has_more():
+                if current_attr.name not in kwargs:
+                    kwargs[current_attr.name] = []
+                kwargs[current_attr.name].append(attr)
+                current_attr.use()
+                continue
+            elif current_attr.name and not current_attr.needs_more():
+                current_attr = None
+
+            what = "option" if is_opt else "argument"
+            cls.print_help(parents=parents, error=f"Unknown {what} {orig!r}")
 
         # Parse as the correct values
         parsed_kwargs = {}
@@ -174,25 +188,51 @@ class Command:
                 continue
             parsed_kwargs[k] = parser.parse_value_as_type(v, cls._type_of(k))
 
-        return cls(**parsed_kwargs)
+        try:
+            return cls(**parsed_kwargs)
+        except TypeError as e:
+            parts = str(e).split(" ")[1:]
+            cls.print_help(parents, " ".join(parts))
 
     @t.final
     @classmethod
-    def _get_subcommands(cls) -> dict[str, type[Command]]:
+    def subcommands(cls) -> dict[str, SubCommand]:
         if "subcommand" not in cls._annotations():
             return {}
 
         # Get the subcommand type/types
         _type = cls._type_of("subcommand")
-        subcmds = (
-            {a.name(): a for a in _type.__args__}
-            if isinstance(_type, UnionType)
-            else {_type.name(): _type}
-        )
-        for v in subcmds.values():
+        subcmds = _type.__args__ if isinstance(_type, UnionType) else _type
+        for v in subcmds:
             assert inspect.isclass(v) and issubclass(v, Command)
 
-        return t.cast(dict[str, type[Command]], subcmds)
+        return {s.name(): SubCommand(name=s.name(), _type=s) for s in subcmds}
+
+    @t.final
+    @classmethod
+    def options(cls) -> dict[str, Argument]:
+        options = {}
+        for field, _type in cls._annotations().items():
+            if field == "subcommand" or not cls._has_default(field):
+                continue
+
+            options[field] = Argument(
+                field,
+                type_util.remove_optionality(_type),
+                help=cls._get_help(field),
+            )
+        return options
+
+    @t.final
+    @classmethod
+    def positionals(cls) -> dict[str, Argument]:
+        options = {}
+        for field, _type in cls._annotations().items():
+            if field == "subcommand" or cls._has_default(field):
+                continue
+
+            options[field] = Argument(field, _type, help=cls._get_help(field))
+        return options
 
     @t.final
     @classmethod
@@ -200,17 +240,28 @@ class Command:
         """
         This is the entry point to start parsing arguments
         """
-        args_iter = iter(args or sys.argv[1:])
-        instance = cls._parse(args_iter)
-        if args_iter:
+        norm_args = parser.normalize_args(args or sys.argv[1:])
+        args_iter = iter(norm_args)
+        instance = cls._parse(args_iter, parents=[])
+        if list(args_iter):
             raise ValueError(f"Unknown arguments {list(args_iter)}")
 
         return instance
 
     @t.final
     @classmethod
-    def print_help(cls):
-        print("Help...")
+    def print_help(cls, parents: list[str], error: str | None = None):
+        tf = TermFormatter(
+            prog=parents + [cls.prog()],
+            description=cls.help(),
+            epilog=cls.epilog(),
+            options=list(cls.options().values()),
+            positionals=list(cls.positionals().values()),
+            subcommands=list(cls.subcommands().values()),
+            error=error,
+        )
+        print(tf.format_help())
+        sys.exit(1 if error else 0)
 
 
 def field(help: str | None = None, *args, **kwargs):

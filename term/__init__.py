@@ -2,12 +2,14 @@ import typing as t
 from importlib import import_module
 
 if t.TYPE_CHECKING:
+    from term.boxed import boxed
     from term.colors import print, style, styler
     from term.prompts import prompt
     from term.spinner import Spinner
 
 __all__ = (
     "Spinner",
+    "boxed",
     "print",
     "prompt",
     "style",
@@ -20,6 +22,7 @@ _dynamic_imports: dict[str, tuple[str, str]] = {
     "prompt": (__spec__.parent, ".prompts"),
     "style": (__spec__.parent, ".colors"),
     "styler": (__spec__.parent, ".colors"),
+    "boxed": (__spec__.parent, ".boxed"),
 }
 
 

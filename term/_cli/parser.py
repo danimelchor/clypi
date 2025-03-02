@@ -1,5 +1,6 @@
 import typing as t
 from contextlib import suppress
+from dataclasses import dataclass
 from types import UnionType
 
 from term._cli import type_util
@@ -9,16 +10,26 @@ def dash_to_snake(s: str) -> str:
     return s.replace("-", "_")
 
 
-def parse_as_attr(arg: str) -> tuple[bool, str]:
+def normalize_args(args: t.Sequence[str]):
+    new_args = []
+    for a in args:
+        if a.startswith("-") and "=" in a:
+            new_args.extend(a.split("=", 1))
+        else:
+            new_args.append(a)
+    return new_args
+
+
+def parse_as_attr(arg: str) -> tuple[bool, str, str]:
     if arg.startswith("--"):
-        arg = arg.removeprefix("--")
-        return True, dash_to_snake(arg)
+        clean = arg.removeprefix("--")
+        return True, dash_to_snake(clean), arg
 
     if arg.startswith("-"):
-        arg = arg.removeprefix("-")
-        return True, dash_to_snake(arg)
+        clean = arg.removeprefix("-")
+        return True, dash_to_snake(clean), arg
 
-    return False, arg
+    return False, arg, arg
 
 
 def _parse_builtin(builtin: type, value: t.Any):
@@ -48,3 +59,30 @@ def parse_value_as_type(value: t.Any, _type: t.Any):
                 return parse_value_as_type(value, a)
 
     raise ValueError(f"Don't know how to parse as {_type}")
+
+
+Nargs: t.TypeAlias = t.Literal["*", "+"] | float
+
+
+@dataclass
+class CurrentCtx:
+    name: str = ""
+    nargs: Nargs = 0
+
+    def has_more(self) -> bool:
+        if isinstance(self.nargs, float):
+            return self.nargs > 0
+        return True
+
+    def needs_more(self) -> bool:
+        if isinstance(self.nargs, float):
+            return self.nargs > 0
+        elif self.nargs == "+":
+            return True
+        return False
+
+    def use(self) -> None:
+        if isinstance(self.nargs, float):
+            self.nargs -= 1
+        elif self.nargs == "+":
+            self.nargs = "*"

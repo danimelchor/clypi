@@ -1,5 +1,6 @@
 import asyncio
 from dataclasses import dataclass
+from pathlib import Path
 from typing import Literal
 
 from typing_extensions import override
@@ -11,7 +12,7 @@ from term.cli import Command, field
 @dataclass
 class RunParallel(Command):
     files: list[str]
-    exceptions_file: str | None = None
+    exceptions_file: str | Path | None = None
 
     async def run(self):
         async with term.Spinner(f"Running {', '.join(self.files)} in parallel"):
@@ -32,7 +33,7 @@ class RunSerial(Command):
 @dataclass
 class Run(Command):
     subcommand: RunParallel | RunSerial
-    quiet: bool
+    quiet: bool = False
     format: Literal["json", "pretty"] = "pretty"
 
 
@@ -43,9 +44,11 @@ class Lint(Command):
     rules.
     """
 
-    quiet: bool = field(help="If the linter should omit all stdout messages")
-    no_cache: bool = field(help="Disable the termuff cache")
     files: list[str] = field(help="The list of files to lint")
+    quiet: bool = field(
+        help="If the linter should omit all stdout messages", default=False
+    )
+    no_cache: bool = field(help="Disable the termuff cache", default=False)
     index: str = field(
         default="http://pypi.org",
         help="The index to download termuff from",

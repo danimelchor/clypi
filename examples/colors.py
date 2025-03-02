@@ -19,14 +19,14 @@ def _all_colors() -> Generator[tuple[ColorType, ...], None, None]:
 
 # --- DEMO START ---
 def main() -> None:
-    fg_block = ["Foregrounds"]
+    fg_block = []
     for color, bright_color in _all_colors():
         fg_block.append(
             term.style("██ " + color.ljust(9), fg=color)
             + term.style("██ " + bright_color.ljust(16), fg=bright_color)
         )
 
-    bg_block = ["Backgrounds"]
+    bg_block = []
     for color, bright_color in _all_colors():
         bg_block.append(
             term.style(color.ljust(9), bg=color)
@@ -34,7 +34,7 @@ def main() -> None:
             + term.style(bright_color.ljust(16), bg=bright_color)
         )
 
-    style_block = ["Text Styles"]
+    style_block = []
     style_block.append(term.style("I am bold", bold=True))
     style_block.append(term.style("I am dim", dim=True))
     style_block.append(term.style("I am underline", underline=True))
@@ -43,9 +43,9 @@ def main() -> None:
     style_block.append(term.style("I am strikethrough", strikethrough=True))
 
     for line in _utils.assemble(
-        boxed(fg_block, width=35, has_title=True),
-        boxed(bg_block, width=30, has_title=True),
-        boxed(style_block, width=22, has_title=True),
+        boxed(fg_block, width=35, title="Foregrounds"),
+        boxed(bg_block, width=30, title="Backgrounds"),
+        boxed(style_block, width=22, title="Styles"),
     ):
         print(line)
 
