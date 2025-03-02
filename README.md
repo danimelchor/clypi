@@ -1,4 +1,4 @@
-# 🦄 Term
+# 🦄 clypi
 
 Type-safe Python CLI prompts with validations, retries, custom messages, etc.
 
@@ -74,11 +74,11 @@ if __name__ == "__main__":
 
 ## ❓ Prompting
 
-First, you'll need to import the `term` module:
+First, you'll need to import the `clypi` module:
 ```python
 import clypi
 
-answer = term.prompt("Are you going to use Term?", default=True, parser=bool)
+answer = clypi.prompt("Are you going to use clypi?", default=True, parser=bool)
 ```
 
 ## 🌈 Colors
@@ -90,13 +90,13 @@ answer = term.prompt("Are you going to use Term?", default=True, parser=bool)
 import clypi
 
 # Style text
-print(term.style("This is blue", fg="blue"), "and", term.style("this is red", fg="red"))
+print(clypi.style("This is blue", fg="blue"), "and", clypi.style("this is red", fg="red"))
 
 # Print with colors directly
-term.print("Some colorful text", fg="green", reverse=True, bold=True, italic=True)
+clypi.print("Some colorful text", fg="green", reverse=True, bold=True, italic=True)
 
 # Store a styler and reuse it
-wrong = term.styler(fg="red", strikethrough=True)
+wrong = clypi.styler(fg="red", strikethrough=True)
 print("The old version said", wrong("Pluto was a planet"))
 print("The old version said", wrong("the Earth was flat"))
 ```
@@ -109,7 +109,7 @@ print("The old version said", wrong("the Earth was flat"))
 </details>
 
 <details>
-    <summary><code>uv run -m term.colors</code></summary>
+    <summary><code>uv run -m examples.colors</code></summary>
     <p align="center">
         <img width="974" alt="image" src="https://github.com/user-attachments/assets/9340d828-f7ce-491c-b0a8-6a666f7b7caf" />
     </p>
@@ -140,7 +140,7 @@ asyncio.run(main())
 </details>
 
 <details>
-    <summary><code>uv run -m term.spinner</code></summary>
+    <summary><code>uv run -m examples.spinner</code></summary>
     <p align="center">
       <video src="https://github.com/user-attachments/assets/f641a4fe-59fa-4bc1-b31a-bb642c507a20" />
     </p>
@@ -154,7 +154,7 @@ from the arguments you pass in.
 
 In this example your editor will correctly infer the type:
 ```python
-hours = term.prompt(
+hours = clypi.prompt(
     "How many hours are there in a year?",
     parser=lambda x: float(x) if x < 24 else timedelta(days=x),
 )
@@ -170,7 +170,7 @@ provide nice autocomplete features in your editor that will make you faster 󱐋
 
 ### Parsers ([v6e](https://github.com/danimelchor/v6e), [pydantic](https://github.com/pydantic/pydantic), etc.)
 
-Term can be integrated with many parsers. The default recommended parser is [v6e](https://github.com/danimelchor/v6e), which is automatically used if installed in your local environment to parse types more accurately. If you wish you specify any parser (from `v6e` or elsewhere) manually, you can do so quite easily:
+CLIPy can be integrated with many parsers. The default recommended parser is [v6e](https://github.com/danimelchor/v6e), which is automatically used if installed in your local environment to parse types more accurately. If you wish you specify any parser (from `v6e` or elsewhere) manually, you can do so quite easily:
 
 **CLI**
 ```python
@@ -194,7 +194,7 @@ if __name__ == "__main__":
 ```python
 import v6e
 
-hours = term.prompt(
+hours = clypi.prompt(
     "How many hours are there in a year?",
     parser=v6e.float().lte(24).union(v6e.timedelta()),
 )

@@ -21,10 +21,10 @@ dependencies = [
 
 
 [project.urls]
-Documentation = "https://github.com/danimelchor/term"
-Homepage = "https://github.com/danimelchor/term"
-Repository = "https://github.com/danimelchor/term"
-Issues = "https://github.com/danimelchor/term/issues"
+Documentation = "https://github.com/danimelchor/clypi"
+Homepage = "https://github.com/danimelchor/clypi"
+Repository = "https://github.com/danimelchor/clypi"
+Issues = "https://github.com/danimelchor/clypi/issues"
 
 [project.optional-dependencies]
 dev = [
@@ -45,7 +45,7 @@ testpaths = ["tests"]
 exclude = [
     "**/__pycache__",
 ]
-# strict = ["term/"]
+# strict = ["clypi/"]
 reportMissingTypeStubs = false
 
 [tool.bandit]
