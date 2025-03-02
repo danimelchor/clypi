@@ -37,35 +37,35 @@ if __name__ == "__main__":
 ```
 
 <details>
-    <summary><code>uv run -m examples.basic_cli -h</code></summary>
+    <summary><code>uv run -m examples.basic_cli -h</code> (Main help page)</summary>
     <p align="center">
         <img width="1694" alt="image" src="https://github.com/user-attachments/assets/91279a3e-cecd-4ac3-a1e7-38507b1d8ddb" />
     </p>
 </details>
 
 <details>
-    <summary><code>uv run -m examples.basic_cli lint</code></summary>
+    <summary><code>uv run -m examples.basic_cli lint</code> (Subcommand help page)</summary>
     <p align="center">
         <img width="1694" alt="image" src="https://github.com/user-attachments/assets/e1222650-2d5b-44c6-a0ef-b085adcab30e" />
     </p>
 </details>
 
 <details>
-    <summary><code>uv run -m examples.basic_cli</code></summary>
+    <summary><code>uv run -m examples.basic_cli</code> (Normal run)</summary>
     <p align="center">
         <img width="609" alt="image" src="https://github.com/user-attachments/assets/d085ba81-f9fd-472e-9bb7-1a788d918b16" />
     </p>
 </details>
 
 <details>
-    <summary>(Missing args) <code>uv run -m examples.basic_cli lint</code></summary>
+    <summary><code>uv run -m examples.basic_cli lint</code> (Missing args error)</summary>
     <p align="center">
         <img width="1692" alt="image" src="https://github.com/user-attachments/assets/f4e08d8f-affd-4e74-9dc2-d4baa7be0f62" />
     </p>
 </details>
 
 <details>
-    <summary>(Typo) <code>uv run -m examples.basic_cli lin</code></summary>
+    <summary><code>uv run -m examples.basic_cli lin</code> (Typo)</summary>
     <p align="center">
         <img width="1696" alt="image" src="https://github.com/user-attachments/assets/c75b2cb0-2f2e-4907-86cb-2f62122c0c70" />
     </p>
