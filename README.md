@@ -168,12 +168,13 @@ provide nice autocomplete features in your editor that will make you faster 󱐋
 
 ## Integrations
 
-### Parsers
+### Parsers ([v6e](https://github.com/danimelchor/v6e), [pydantic](https://github.com/pydantic/pydantic), etc.)
 
-Term can be integrated with many parsers. The default recommended parser is [v6e](https://github.com/danimelchor/v6e), whichis automatically used if installed in your local environment to parse types more accurately. If you wish you specify any parser (from `v6e` or elsewhere) manually, you can do so quite easily:
+Term can be integrated with many parsers. The default recommended parser is [v6e](https://github.com/danimelchor/v6e), which is automatically used if installed in your local environment to parse types more accurately. If you wish you specify any parser (from `v6e` or elsewhere) manually, you can do so quite easily:
 
 **CLI**
 ```python
+import v6e
 from term import Command, config
 
 class MyCli(Command):
@@ -191,6 +192,8 @@ if __name__ == "__main__":
 **Prompting**
 
 ```python
+import v6e
+
 hours = term.prompt(
     "How many hours are there in a year?",
     parser=v6e.float().lte(24).union(v6e.timedelta()),
