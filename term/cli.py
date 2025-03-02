@@ -199,6 +199,14 @@ class Command:
         # The current option or positional arg being parsed
         current_attr = parser.CurrentCtx()
 
+        def flush_ctx():
+            nonlocal current_attr
+            if current_attr and current_attr.needs_more():
+                raise ValueError(f"Not enough values for {current_attr.name}")
+            elif current_attr:
+                kwargs[current_attr.name] = current_attr.collected
+                current_attr = None
+
         for a in args:
             if a in ("-h", "--help"):
                 cls.print_help(parents=parents)
@@ -225,31 +233,25 @@ class Command:
             if is_valid_long or is_valid_short:
                 long_name = cls._get_long_name(parsed.value) or parsed.value
                 option = cls.options()[long_name]
-                if current_attr and current_attr.needs_more():
-                    raise ValueError(f"Not enough values for {current_attr.name}")
+                flush_ctx()
 
                 # Boolean flags don't need to parse more args later on
                 if option.nargs == 0:
                     kwargs[long_name] = True
                 else:
-                    current_attr = parser.CurrentCtx(option.name, option.nargs)
+                    current_attr = parser.CurrentCtx(
+                        option.name, option.nargs, option.nargs
+                    )
                 continue
 
             # ---- Try to assign to the current positional ----
             if not current_attr.name and (pos := cls._next_positional(kwargs)):
-                current_attr = parser.CurrentCtx(pos.name, pos.nargs)
+                current_attr = parser.CurrentCtx(pos.name, pos.nargs, pos.nargs)
 
             # ---- Try to assign to the current ctx ----
             if current_attr.name and current_attr.has_more():
-                if current_attr.name not in kwargs:
-                    kwargs[current_attr.name] = []
-                kwargs[current_attr.name].append(parsed.value)
-                current_attr.use()
+                current_attr.collect(parsed.value)
                 continue
-            elif current_attr.name and not current_attr.needs_more():
-                if current_attr.name not in kwargs:
-                    kwargs[current_attr.name] = []
-                current_attr = None
 
             what = "argument" if parsed.is_pos else "option"
             error = f"Unknown {what} {parsed.orig!r}"
@@ -263,8 +265,7 @@ class Command:
 
         # If we finished the loop and we haven't saved current_attr, save it
         if current_attr.name and not current_attr.needs_more():
-            if current_attr.name not in kwargs:
-                kwargs[current_attr.name] = []
+            kwargs[current_attr.name] = current_attr.collected
             current_attr = None
 
         # Parse as the correct values and assign to the instance

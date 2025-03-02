@@ -29,7 +29,10 @@ class RunParallel(Command):
     """
 
     files: list[str]
-    exceptions_with_reasons: tuple[str | Path, str | Path] | None = None
+    exceptions_with_reasons: Path | None = config(
+        default=None,
+        parser=v.path().exists(),
+    )
 
     @debug
     async def run(self, root):

@@ -1,7 +1,7 @@
 import importlib.util
 import re
 import typing as t
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from datetime import datetime, timedelta
 from pathlib import Path
 from types import NoneType, UnionType
@@ -198,24 +198,35 @@ Nargs: t.TypeAlias = t.Literal["*", "+"] | float
 class CurrentCtx:
     name: str = ""
     nargs: Nargs = 0
+    max_nargs: Nargs = 0
+
+    _collected: list[t.Any] = field(init=False, default_factory=list)
 
     def has_more(self) -> bool:
-        if isinstance(self.nargs, float):
+        if isinstance(self.nargs, float | int):
             return self.nargs > 0
         return True
 
     def needs_more(self) -> bool:
-        if isinstance(self.nargs, float):
+        if isinstance(self.nargs, float | int):
             return self.nargs > 0
         elif self.nargs == "+":
             return True
         return False
 
-    def use(self) -> None:
-        if isinstance(self.nargs, float):
+    def collect(self, item: t.Any) -> None:
+        if isinstance(self.nargs, float | int):
             self.nargs -= 1
         elif self.nargs == "+":
             self.nargs = "*"
+
+        self._collected.append(item)
+
+    @property
+    def collected(self) -> t.Any:
+        if self.max_nargs == 1:
+            return self._collected[0]
+        return self._collected
 
     def __bool__(self) -> bool:
         return bool(self.name)
