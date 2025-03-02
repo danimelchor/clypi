@@ -38,9 +38,15 @@ class RunParallel(Command):
 
     @debug
     async def run(self, root):
+        clypi.print("Running all files", fg="blue", bold=True)
+
         async with clypi.Spinner(f"Running {', '.join(self.files)} in parallel"):
             await asyncio.sleep(2)
-        clypi.print("Done!", fg="green", bold=True)
+
+        async with clypi.Spinner(f"Linting {', '.join(self.files)} in parallel"):
+            await asyncio.sleep(2)
+
+        clypi.print("\nDone!", fg="green", bold=True)
 
 
 class RunSerial(Command):
@@ -52,10 +58,11 @@ class RunSerial(Command):
 
     @debug
     async def run(self, root):
-        files_str = ", ".join(p.as_posix() for p in self.files)
-        async with clypi.Spinner(f"Running {files_str} sequentially"):
-            await asyncio.sleep(2)
-        clypi.print("Done!", fg="green", bold=True)
+        clypi.print("Running all files", fg="blue", bold=True)
+        for f in self.files:
+            async with clypi.Spinner(f"Running {f.as_posix()} in parallel"):
+                await asyncio.sleep(2)
+        clypi.print("\nDone!", fg="green", bold=True)
 
 
 class Run(Command):
@@ -90,7 +97,7 @@ class Lint(Command):
     async def run(self, root):
         async with clypi.Spinner(f"Linting {', '.join(self.files)}"):
             await asyncio.sleep(2)
-        clypi.print("Done!", fg="green", bold=True)
+        clypi.print("\nDone!", fg="green", bold=True)
 
 
 class Main(Command):
