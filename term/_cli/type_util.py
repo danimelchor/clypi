@@ -51,7 +51,10 @@ def type_to_str(_type: t.Any) -> str:
         return "[" + "|".join(type_to_str(tp) for tp in _type.__args__) + "]"
 
     if is_tuple(_type):
-        return "(" + ", ".join(type_to_str(tp) for tp in _type.__args__) + ")"
+        if _type.__args__[1] is Ellipsis:
+            return "(" + type_to_str(_type.__args__[0]) + ", ...)"
+        else:
+            return "(" + ", ".join(type_to_str(tp) for tp in _type.__args__) + ")"
 
     if is_collection(_type):
         return "list[" + ", ".join(type_to_str(tp) for tp in _type.__args__) + "]"
