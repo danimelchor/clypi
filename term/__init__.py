@@ -6,10 +6,12 @@ if t.TYPE_CHECKING:
     from term.colors import print, style, styler
     from term.prompts import prompt
     from term.spinner import Spinner
+    from term.stack import stack
 
 __all__ = (
     "Spinner",
     "boxed",
+    "stack",
     "print",
     "prompt",
     "style",
@@ -23,6 +25,7 @@ _dynamic_imports: dict[str, tuple[str, str]] = {
     "style": (__spec__.parent, ".colors"),
     "styler": (__spec__.parent, ".colors"),
     "boxed": (__spec__.parent, ".boxed"),
+    "stack": (__spec__.parent, ".stack"),
 }
 
 

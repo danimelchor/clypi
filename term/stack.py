@@ -14,7 +14,7 @@ def _real_len(s: str) -> int:
     return len(s)
 
 
-def assemble(*blocks: Iterable[str], padding: int = 1) -> list[str]:
+def stack(*blocks: Iterable[str], padding: int = 1) -> list[str]:
     new_lines = []
     blocks_ls = [list(b) for b in blocks]
     height = max(len(b) for b in blocks_ls)
@@ -32,9 +32,13 @@ def assemble(*blocks: Iterable[str], padding: int = 1) -> list[str]:
             if block_line:
                 more |= True
 
+            # How much do we need to reach the actual visible length
+            actual_width = (width - _real_len(block_line)) + len(block_line)
+
             # Align and append line
-            tmp.append(block_line.ljust(width))
+            tmp.append(block_line.ljust(actual_width))
             tmp.append(" " * padding)
+
         new_lines.append(" ".join(tmp))
 
         # Exit if no more lines in any iter

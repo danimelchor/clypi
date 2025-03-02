@@ -42,6 +42,7 @@ class Argument:
 class SubCommand:
     name: str
     _type: type[Command]
+    help: str
 
 
 class Command:
@@ -157,7 +158,7 @@ class Command:
             if is_opt and attr in ("h", "help"):
                 cls.print_help(parents=parents)
 
-            # Assign to current object
+            # ---- Try to set to the current option ----
             if is_opt and attr in cls.options():
                 option = cls.options()[attr]
                 current_attr = parser.CurrentCtx(option.name, option.nargs)
@@ -180,13 +181,21 @@ class Command:
             what = "option" if is_opt else "argument"
             cls.print_help(parents=parents, error=f"Unknown {what} {orig!r}")
 
+        if current_attr.name and current_attr.needs_more():
+            cls.print_help(
+                parents=parents, error=f"Not enough values for {current_attr.name}"
+            )
+
         # Parse as the correct values
         parsed_kwargs = {}
         for k, v in kwargs.items():
             if k == "subcommand":
                 parsed_kwargs[k] = v
                 continue
-            parsed_kwargs[k] = parser.parse_value_as_type(v, cls._type_of(k))
+            try:
+                parsed_kwargs[k] = parser.parse_value_as_type(v, cls._type_of(k))
+            except Exception as e:
+                cls.print_help(parents, f"Error parsing {k}: {e}")
 
         try:
             return cls(**parsed_kwargs)
@@ -206,7 +215,9 @@ class Command:
         for v in subcmds:
             assert inspect.isclass(v) and issubclass(v, Command)
 
-        return {s.name(): SubCommand(name=s.name(), _type=s) for s in subcmds}
+        return {
+            s.name(): SubCommand(name=s.name(), _type=s, help=s.help()) for s in subcmds
+        }
 
     @t.final
     @classmethod

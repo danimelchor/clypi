@@ -11,8 +11,12 @@ from term.cli import Command, field
 
 @dataclass
 class RunParallel(Command):
+    """
+    Runs all of the files in parallel
+    """
+
     files: list[str]
-    exceptions_file: str | Path | None = None
+    exceptions_with_reasons: tuple[str | Path, str | Path] | None = None
 
     async def run(self):
         async with term.Spinner(f"Running {', '.join(self.files)} in parallel"):
@@ -22,16 +26,25 @@ class RunParallel(Command):
 
 @dataclass
 class RunSerial(Command):
-    files: list[str]
+    """
+    Runs all of the files one by one
+    """
+
+    files: list[Path]
 
     async def run(self):
-        async with term.Spinner(f"Running {', '.join(self.files)} sequentially"):
+        files_str = ", ".join(p.as_posix() for p in self.files)
+        async with term.Spinner(f"Running {files_str} sequentially"):
             await asyncio.sleep(2)
         term.print("Done!", fg="green", bold=True)
 
 
 @dataclass
 class Run(Command):
+    """
+    Allows running files with different options
+    """
+
     subcommand: RunParallel | RunSerial
     quiet: bool = False
     format: Literal["json", "pretty"] = "pretty"
@@ -83,5 +96,4 @@ class Main(Command):
 
 if __name__ == "__main__":
     main = Main.parse()
-    print(main)
     main.start()

@@ -3,8 +3,6 @@ from __future__ import annotations
 from typing import Generator, cast
 
 import term
-from examples import _utils
-from term.boxed import boxed
 from term.colors import ColorType, _color_codes
 
 
@@ -42,10 +40,10 @@ def main() -> None:
     style_block.append(term.style("I am reverse", reverse=True))
     style_block.append(term.style("I am strikethrough", strikethrough=True))
 
-    for line in _utils.assemble(
-        boxed(fg_block, width=35, title="Foregrounds"),
-        boxed(bg_block, width=30, title="Backgrounds"),
-        boxed(style_block, width=22, title="Styles"),
+    for line in term.stack(
+        term.boxed(fg_block, width=35, title="Foregrounds"),
+        term.boxed(bg_block, width=30, title="Backgrounds"),
+        term.boxed(style_block, width=22, title="Styles"),
     ):
         print(line)
 

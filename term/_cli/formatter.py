@@ -4,7 +4,7 @@ import typing as t
 from dataclasses import dataclass
 
 import term
-from term import boxed
+from term import boxed, stack
 from term._cli import type_util
 
 if t.TYPE_CHECKING:
@@ -41,7 +41,7 @@ class TermFormatter:
     subcommands: list[SubCommand]
     error: str | None
 
-    def _format_option(self, option: Argument) -> list[str]:
+    def _format_option(self, option: Argument) -> tuple[str, ...]:
         long, short = _get_long_short([option.name])
         usage = term.style(f"--{long}", fg="blue", bold=True)
         short_usage = term.style(f"-{short}", fg="green", bold=True) if short else ""
@@ -49,27 +49,56 @@ class TermFormatter:
             type_util.type_to_str(option._type).upper(), fg="yellow", bold=True
         )
         help = option.help or ""
-        return [usage, short_usage, type_str, help]
+        return usage, short_usage, type_str, help
 
-    def _format_options(self) -> list[str]:
-        lines = []
+    def _format_options(self) -> list[str] | None:
+        if not self.options:
+            return None
+
+        usage, short_usage, type_str, help = [], [], [], []
         for o in self.options:
-            lines.append(" ".join(self._format_option(o)))
-        return list(boxed(lines, title="Options"))
+            u, su, ts, hp = self._format_option(o)
+            usage.append(u)
+            short_usage.append(su)
+            type_str.append(ts)
+            help.append(hp)
+        return list(boxed(stack(usage, short_usage, type_str, help), title="Options"))
 
-    def _format_positional(self, positional: Argument) -> list[str]:
+    def _format_positional(self, positional: Argument) -> t.Any:
         name = term.style(positional.name, fg="blue", bold=True)
         help = positional.help or ""
         type_str = term.style(
             type_util.type_to_str(positional._type).upper(), fg="yellow", bold=True
         )
-        return [name, type_str, help]
+        return name, type_str, help
 
     def _format_positionals(self) -> list[str] | str | None:
-        lines = []
+        if not self.positionals:
+            return None
+
+        name, type_str, help = [], [], []
         for p in self.positionals:
-            lines.append(" ".join(self._format_positional(p)))
-        return list(boxed(lines, title="Arguments"))
+            n, ts, hp = self._format_positional(p)
+            name.append(n)
+            type_str.append(ts)
+            help.append(hp)
+        return list(boxed(stack(name, type_str, help), title="Options"))
+
+    def _format_subcommand(self, subcmd: SubCommand) -> t.Any:
+        name = term.style(subcmd.name, fg="blue", bold=True)
+        help = subcmd.help or ""
+        return name, help
+
+    def _format_subcommands(self) -> list[str] | str | None:
+        if not self.subcommands:
+            return None
+
+        name, help = [], []
+        for p in self.subcommands:
+            n, hp = self._format_subcommand(p)
+            name.append(n)
+            help.append(hp)
+        return list(boxed(stack(name, help), title="Options"))
 
     def _format_header(self) -> list[str] | str | None:
         prefix = term.style("Usage:", fg="yellow")
@@ -103,7 +132,7 @@ class TermFormatter:
     def _format_error(self) -> list[str] | str | None:
         if not self.error:
             return ""
-        return list(boxed([self.error.capitalize()], title="Error", color="red"))
+        return list(boxed([self.error], title="Error", color="red"))
 
     def format_help(self) -> str:
         lines = []
@@ -120,6 +149,9 @@ class TermFormatter:
 
         # Positionals
         _ext(lines, self._format_positionals())
+
+        # Subcommands
+        _ext(lines, self._format_subcommands())
 
         # Errors
         _ext(lines, self._format_error())

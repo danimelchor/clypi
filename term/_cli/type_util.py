@@ -47,7 +47,13 @@ def type_to_str(_type: t.Any) -> str:
     if t.get_origin(_type) is t.Literal:
         return "{" + "|".join(type_to_str(tp) for tp in _type.__args__) + "}"
 
-    if t.get_origin(_type) is t.Union:
-        return "(" + "|".join(type_to_str(tp) for tp in _type.__args__) + ")"
+    if isinstance(_type, UnionType):
+        return "[" + "|".join(type_to_str(tp) for tp in _type.__args__) + "]"
+
+    if is_tuple(_type):
+        return "(" + ", ".join(type_to_str(tp) for tp in _type.__args__) + ")"
+
+    if is_collection(_type):
+        return "list[" + ", ".join(type_to_str(tp) for tp in _type.__args__) + "]"
 
     return str(_type)
