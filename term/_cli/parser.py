@@ -37,20 +37,23 @@ def normalize_args(args: t.Sequence[str]):
 class Arg:
     value: str
     orig: str
-    arg_type: t.Literal["opt", "short-opt", "pos"]
+    arg_type: t.Literal["long-opt", "short-opt", "pos"]
 
     def is_pos(self):
         return self.arg_type == "pos"
+
+    def is_long_opt(self):
+        return self.arg_type == "long-opt"
 
     def is_short_opt(self):
         return self.arg_type == "short-opt"
 
 
 def parse_as_attr(arg: str) -> Arg:
-    if arg.startswith("--") and len(arg) > 3:
-        return Arg(value=dash_to_snake(arg), orig=arg, arg_type="opt")
+    if arg.startswith("--"):
+        return Arg(value=dash_to_snake(arg), orig=arg, arg_type="long-opt")
 
-    if arg.startswith("-") and len(arg) == 2:
+    if arg.startswith("-"):
         return Arg(value=dash_to_snake(arg), orig=arg, arg_type="short-opt")
 
     return Arg(value=arg, orig=arg, arg_type="pos")

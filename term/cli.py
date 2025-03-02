@@ -150,16 +150,12 @@ class Command:
 
     @t.final
     @classmethod
-    def _fully_qualify(cls, name: str):
+    def _get_long_name(cls, name: str) -> str | None:
         fields = cls.fields()
-        if name in fields:
-            return name
-
         for field, field_conf in fields.items():
             if field_conf.short == name:
                 return field
-
-        return name
+        return None
 
     @t.final
     @classmethod
@@ -216,19 +212,25 @@ class Command:
                 break
 
             # ---- Try to set to the current option ----
-            full_name = (
-                cls._fully_qualify(parsed.value)
-                if parsed.is_short_opt
-                else parsed.value
+            is_valid_long = (
+                not parsed.is_pos()
+                and parsed.is_long_opt()
+                and parsed.value in cls.options()
             )
-            if not parsed.is_pos() and full_name in cls.options():
-                option = cls.options()[full_name]
+            is_valid_short = (
+                not parsed.is_pos()
+                and parsed.is_long_opt()
+                and cls._get_long_name(parsed.value) is not None
+            )
+            if is_valid_long or is_valid_short:
+                long_name = cls._get_long_name(parsed.value) or parsed.value
+                option = cls.options()[long_name]
                 if current_attr and current_attr.needs_more():
                     raise ValueError(f"Not enough values for {current_attr.name}")
 
                 # Boolean flags don't need to parse more args later on
                 if option.nargs == 0:
-                    kwargs[full_name] = True
+                    kwargs[long_name] = True
                 else:
                     current_attr = parser.CurrentCtx(option.name, option.nargs)
                 continue
@@ -241,7 +243,7 @@ class Command:
             if current_attr.name and current_attr.has_more():
                 if current_attr.name not in kwargs:
                     kwargs[current_attr.name] = []
-                kwargs[current_attr.name].append(full_name)
+                kwargs[current_attr.name].append(parsed.value)
                 current_attr.use()
                 continue
             elif current_attr.name and not current_attr.needs_more():
