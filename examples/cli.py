@@ -5,8 +5,8 @@ from typing import Literal
 import v6e as v
 from typing_extensions import override
 
-import term
-from term import Command, config
+import clypi
+from clypi import Command, config
 
 
 def debug(fun):
@@ -16,7 +16,9 @@ def debug(fun):
     """
 
     async def inner(self, root):
-        boxed = term.boxed(term.style(root, bold=True), title="Debug", color="magenta")
+        boxed = clypi.boxed(
+            clypi.style(root, bold=True), title="Debug", color="magenta"
+        )
         print(boxed, end="\n\n")
         await fun(self, root)
 
@@ -36,9 +38,9 @@ class RunParallel(Command):
 
     @debug
     async def run(self, root):
-        async with term.Spinner(f"Running {', '.join(self.files)} in parallel"):
+        async with clypi.Spinner(f"Running {', '.join(self.files)} in parallel"):
             await asyncio.sleep(2)
-        term.print("Done!", fg="green", bold=True)
+        clypi.print("Done!", fg="green", bold=True)
 
 
 class RunSerial(Command):
@@ -51,9 +53,9 @@ class RunSerial(Command):
     @debug
     async def run(self, root):
         files_str = ", ".join(p.as_posix() for p in self.files)
-        async with term.Spinner(f"Running {files_str} sequentially"):
+        async with clypi.Spinner(f"Running {files_str} sequentially"):
             await asyncio.sleep(2)
-        term.print("Done!", fg="green", bold=True)
+        clypi.print("Done!", fg="green", bold=True)
 
 
 class Run(Command):
@@ -86,9 +88,9 @@ class Lint(Command):
 
     @debug
     async def run(self, root):
-        async with term.Spinner(f"Linting {', '.join(self.files)}"):
+        async with clypi.Spinner(f"Linting {', '.join(self.files)}"):
             await asyncio.sleep(2)
-        term.print("Done!", fg="green", bold=True)
+        clypi.print("Done!", fg="green", bold=True)
 
 
 class Main(Command):

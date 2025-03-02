@@ -2,12 +2,12 @@ import typing as t
 from importlib import import_module
 
 if t.TYPE_CHECKING:
-    from term.boxed import boxed
-    from term.cli import Command, config
-    from term.colors import print, style, styler
-    from term.prompts import prompt
-    from term.spinner import Spinner
-    from term.stack import stack
+    from clypi.boxed import boxed
+    from clypi.cli import Command, config
+    from clypi.colors import print, style, styler
+    from clypi.prompts import prompt
+    from clypi.spinner import Spinner
+    from clypi.stack import stack
 
 __all__ = (
     "Command",

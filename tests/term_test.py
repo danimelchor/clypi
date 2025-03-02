@@ -9,8 +9,8 @@ from datetime import date, datetime, timedelta
 import pytest
 from pytest import mark
 
-import term
-from term.prompts import MaxAttemptsException, Parser
+import clypi
+from clypi.prompts import MaxAttemptsException, Parser
 
 
 @contextmanager
@@ -57,7 +57,7 @@ def assert_prompted_times(prompted: io.StringIO, times: int):
 )
 def test_prompt_with_default(answer: str, expected: str):
     with replace_stdin(answer) as _:
-        assert term.prompt("What's your name?", default="John Doe") == expected
+        assert clypi.prompt("What's your name?", default="John Doe") == expected
 
 
 @mark.parametrize(
@@ -69,13 +69,13 @@ def test_prompt_with_default(answer: str, expected: str):
 )
 def test_prompt_with_no_default(answers: list[str], expected: str, times: int):
     with replace_stdin(answers) as _, replace_stdout() as stdout:
-        assert term.prompt("What's your name?") == expected
+        assert clypi.prompt("What's your name?") == expected
         assert_prompted_times(stdout, times)
 
 
 def test_prompt_with_parser():
     with replace_stdin("42") as _:
-        res = term.prompt("Some prompt", parser=int)
+        res = clypi.prompt("Some prompt", parser=int)
         assert isinstance(res, int)
 
 
@@ -100,12 +100,12 @@ def test_prompt_with_parser():
 )
 def test_prompt_with_parser_fails(answer: str, parser: Parser):
     with replace_stdin(answer) as _, pytest.raises(MaxAttemptsException):
-        term.prompt("Some prompt", parser=parser, max_attempts=1)
+        clypi.prompt("Some prompt", parser=parser, max_attempts=1)
 
 
 def test_prompt_with_good_parser():
     with replace_stdin("2") as _:
-        res = term.prompt("Some prompt", parser=lambda x: int(x) * 2)
+        res = clypi.prompt("Some prompt", parser=lambda x: int(x) * 2)
         assert res == 4
 
 
@@ -115,11 +115,11 @@ def _raise_error(x: int) -> None:
 
 def test_prompt_with_bad_validate():
     with replace_stdin("2") as _, pytest.raises(MaxAttemptsException):
-        term.prompt("Some prompt", parser=_raise_error, max_attempts=1)
+        clypi.prompt("Some prompt", parser=_raise_error, max_attempts=1)
 
 
 def test_prompt_with_provided():
     with replace_stdin() as _:
-        res = term.prompt("Some prompt", parser=int, provided=42)
+        res = clypi.prompt("Some prompt", parser=int, provided=42)
         assert res == 42
         assert isinstance(res, int)

@@ -1,8 +1,8 @@
 import os
 import typing as t
 
-from term._data.boxes import Boxes as _Boxes
-from term.colors import ColorType, remove_style, styler
+from clypi._data.boxes import Boxes as _Boxes
+from clypi.colors import ColorType, remove_style, styler
 
 Boxes = _Boxes
 

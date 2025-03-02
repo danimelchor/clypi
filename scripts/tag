@@ -1,0 +1,15 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+
+branch=$(git rev-parse --abbrev-ref HEAD)
+if [[ $branch != "master" ]]; then
+    echo "This script can only be ran in master. You're in '$branch'"
+    exit 1
+fi
+
+version=$(cat pyproject.toml | sed -En 's/^version = "([0-9\.]+)"$/\1/p')
+echo "Creating tag for version $version"
+
+git tag -a "$version" -m "$version Release"
+git push origin "$version"

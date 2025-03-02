@@ -4,7 +4,7 @@ from unittest.mock import MagicMock, patch
 
 from typing_extensions import override
 
-from term import Command, config
+from clypi import Command, config
 
 
 class ExampleSubCommand(Command):

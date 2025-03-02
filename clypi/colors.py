@@ -3,7 +3,7 @@ import re
 import typing as t
 from enum import Enum
 
-from term.const import ESC
+from clypi.const import ESC
 
 ANSI_ESCAPE = re.compile(r"\x1B(?:[@-Z\\-_]|\[[0-?]*[ -/]*[@-~])")
 END = "m"

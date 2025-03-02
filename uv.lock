@@ -3,6 +3,36 @@ revision = 1
 requires-python = ">=3.11, <3.13"
 
 [[package]]
+name = "clypi"
+version = "0.1.0"
+source = { editable = "." }
+dependencies = [
+    { name = "levenshtein" },
+    { name = "typing-extensions" },
+]
+
+[package.optional-dependencies]
+dev = [
+    { name = "pyright" },
+    { name = "pytest" },
+    { name = "ruff" },
+]
+examples = [
+    { name = "v6e" },
+]
+
+[package.metadata]
+requires-dist = [
+    { name = "levenshtein", specifier = ">=0.26.1" },
+    { name = "pyright", marker = "extra == 'dev'", specifier = ">=1.1.394" },
+    { name = "pytest", marker = "extra == 'dev'", specifier = ">=8.3.4" },
+    { name = "ruff", marker = "extra == 'dev'", specifier = ">=0.9.7" },
+    { name = "typing-extensions", specifier = ">=4.12.2" },
+    { name = "v6e", marker = "extra == 'examples'", specifier = ">=0.1.17" },
+]
+provides-extras = ["dev", "examples"]
+
+[[package]]
 name = "colorama"
 version = "0.4.6"
 source = { registry = "https://pypi.org/simple" }
@@ -199,36 +229,6 @@ sdist = { url = "https://files.pythonhosted.org/packages/94/e7/b2c673351809dca68
 wheels = [
     { url = "https://files.pythonhosted.org/packages/b7/ce/149a00dd41f10bc29e5921b496af8b574d8413afcd5e30dfa0ed46c2cc5e/six-1.17.0-py2.py3-none-any.whl", hash = "sha256:4721f391ed90541fddacab5acf947aa0d3dc7d27b2e1e8eda2be8970586c3274", size = 11050 },
 ]
-
-[[package]]
-name = "term"
-version = "0.1.0"
-source = { editable = "." }
-dependencies = [
-    { name = "levenshtein" },
-    { name = "typing-extensions" },
-]
-
-[package.optional-dependencies]
-dev = [
-    { name = "pyright" },
-    { name = "pytest" },
-    { name = "ruff" },
-]
-examples = [
-    { name = "v6e" },
-]
-
-[package.metadata]
-requires-dist = [
-    { name = "levenshtein", specifier = ">=0.26.1" },
-    { name = "pyright", marker = "extra == 'dev'", specifier = ">=1.1.394" },
-    { name = "pytest", marker = "extra == 'dev'", specifier = ">=8.3.4" },
-    { name = "ruff", marker = "extra == 'dev'", specifier = ">=0.9.7" },
-    { name = "typing-extensions", specifier = ">=4.12.2" },
-    { name = "v6e", marker = "extra == 'examples'", specifier = ">=0.1.17" },
-]
-provides-extras = ["dev", "examples"]
 
 [[package]]
 name = "typing-extensions"

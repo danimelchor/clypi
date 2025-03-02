@@ -4,7 +4,7 @@ import typing as t
 from enum import Enum, auto
 from getpass import getpass
 
-import term
+import clypi
 
 
 class Unset(Enum):
@@ -17,12 +17,12 @@ MAX_ATTEMPTS: int = 20
 
 
 def _error(msg: str):
-    term.print(msg, fg="red")
+    clypi.print(msg, fg="red")
 
 
 def _input(prompt: str, hide_input: bool) -> str:
     fun = getpass if hide_input else input
-    return fun(term.style(prompt, fg="blue", bold=True))
+    return fun(clypi.style(prompt, fg="blue", bold=True))
 
 
 class MaxAttemptsException(Exception):

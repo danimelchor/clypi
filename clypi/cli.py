@@ -11,9 +11,9 @@ from types import NoneType, UnionType
 
 from Levenshtein import distance
 
-from term._cli import config as _conf
-from term._cli import parser, type_util
-from term._cli.formatter import TermFormatter
+from clypi._cli import config as _conf
+from clypi._cli import parser, type_util
+from clypi._cli.formatter import TermFormatter
 
 logger = logging.getLogger(__name__)
 

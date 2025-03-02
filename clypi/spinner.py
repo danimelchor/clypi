@@ -5,10 +5,10 @@ from contextlib import AbstractAsyncContextManager
 
 from typing_extensions import override
 
-import term
-from term._data.spinners import Spin as _Spin
-from term.colors import ColorType
-from term.const import ESC
+import clypi
+from clypi._data.spinners import Spin as _Spin
+from clypi.colors import ColorType
+from clypi.const import ESC
 
 MOVE_START = f"{ESC}1G"
 DEL_LINE = f"{ESC}0K"
@@ -48,7 +48,7 @@ class Spinner(AbstractAsyncContextManager):
         end: str = "",
     ):
         # Build the line being printed
-        icon = term.style(icon + " ", fg=color) if icon else ""
+        icon = clypi.style(icon + " ", fg=color) if icon else ""
         msg = f"{self.prefix}{icon}{msg}{end}"
 
         # Wipe the line for next render

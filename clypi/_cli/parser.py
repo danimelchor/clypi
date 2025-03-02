@@ -6,7 +6,7 @@ from datetime import datetime, timedelta
 from pathlib import Path
 from types import NoneType, UnionType
 
-from term._cli import type_util
+from clypi._cli import type_util
 
 HAS_V6E = importlib.util.find_spec("v6e") is not None
 

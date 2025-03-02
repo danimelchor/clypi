@@ -1,0 +1,9 @@
+#!/usr/bin/env python3
+
+from pathlib import Path
+
+import tomllib
+
+with open(Path.home() / ".pypirc", "rb") as f:
+    data = tomllib.load(f)["pypi"]["password"]
+print(data)

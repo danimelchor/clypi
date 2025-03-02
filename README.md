@@ -16,7 +16,7 @@ uv run --all-extras -m examples.prompts
 
 ```python
 # examples/basic_cli.py
-from term import Command
+from clypi import Command
 
 class Lint(Command):
     files: tuple[str, ...]
@@ -76,7 +76,7 @@ if __name__ == "__main__":
 
 First, you'll need to import the `term` module:
 ```python
-import term
+import clypi
 
 answer = term.prompt("Are you going to use Term?", default=True, parser=bool)
 ```
@@ -87,7 +87,7 @@ answer = term.prompt("Are you going to use Term?", default=True, parser=bool)
 
 ```python
 # demo.py
-import term
+import clypi
 
 # Style text
 print(term.style("This is blue", fg="blue"), "and", term.style("this is red", fg="red"))
@@ -121,7 +121,7 @@ print("The old version said", wrong("the Earth was flat"))
 ```python
 # demo.py
 import asyncio
-from term import Spinner
+from clypi import Spinner
 
 async def main():
     async with Spinner("Downloading assets") as s:
@@ -175,7 +175,7 @@ Term can be integrated with many parsers. The default recommended parser is [v6e
 **CLI**
 ```python
 import v6e
-from term import Command, config
+from clypi import Command, config
 
 class MyCli(Command):
     files: list[Path] = config(parser=v6e.path().exists().list())

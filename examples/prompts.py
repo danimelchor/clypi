@@ -2,8 +2,8 @@ from __future__ import annotations
 
 import v6e as v
 
-import term
-from term import colors
+import clypi
+from clypi import colors
 
 
 def _validate_earth_age(x: int) -> None:
@@ -13,28 +13,28 @@ def _validate_earth_age(x: int) -> None:
 
 def main() -> None:
     # Basic prompting
-    name = term.prompt("What's your name?")
+    name = clypi.prompt("What's your name?")
 
     # Default values
-    is_cool = term.prompt("Is Term cool?", default=True, parser=bool)
+    is_cool = clypi.prompt("Is Term cool?", default=True, parser=bool)
 
     # Custom types with parsing using v6e
-    age = term.prompt(
+    age = clypi.prompt(
         "How old are you?",
         parser=int,
         hide_input=True,
     )
-    hours = term.prompt(
+    hours = clypi.prompt(
         "How many hours are there in a day?",
         parser=v.timedelta() | v.int(),
     )
 
     # Custom validations using v6e
-    earth = term.prompt(
+    earth = clypi.prompt(
         "How old is The Earth?",
         parser=v.int().custom(_validate_earth_age),
     )
-    moon = term.prompt(
+    moon = clypi.prompt(
         "How old is The Moon?",
         parser=v.int().gte(3).lte(9).multiple_of(3),  # You can chain validations
     )

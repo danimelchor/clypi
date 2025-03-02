@@ -1,4 +1,4 @@
-from term.colors import remove_style
+from clypi.colors import remove_style
 
 
 def _safe_get(ls: list[str], idx: int) -> str:

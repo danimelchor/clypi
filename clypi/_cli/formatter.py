@@ -3,12 +3,12 @@ from __future__ import annotations
 import typing as t
 from dataclasses import dataclass
 
-import term
-from term import boxed, stack
-from term._cli import type_util
+import clypi
+from clypi import boxed, stack
+from clypi._cli import type_util
 
 if t.TYPE_CHECKING:
-    from term.cli import Argument, SubCommand
+    from clypi.cli import Argument, SubCommand
 
 
 @dataclass
@@ -34,7 +34,7 @@ def _pretty_traceback(err: BaseException) -> list[str]:
     lines: list[str] = []
     for i, e in enumerate(reversed(tb)):
         icon = "  " * (i - 1) + " ↳ " if i != 0 else ""
-        s = term.style(f"{icon}{str(e)}", fg="red")
+        s = clypi.style(f"{icon}{str(e)}", fg="red")
         lines.append(s)
     return lines
 
@@ -50,13 +50,13 @@ class TermFormatter:
     exception: Exception | None
 
     def _format_option(self, option: Argument) -> tuple[str, ...]:
-        usage = term.style(option.display_name, fg="blue", bold=True)
+        usage = clypi.style(option.display_name, fg="blue", bold=True)
         short_usage = (
-            term.style(option.short_display_name, fg="green", bold=True)
+            clypi.style(option.short_display_name, fg="green", bold=True)
             if option.short
             else ""
         )
-        type_str = term.style(
+        type_str = clypi.style(
             type_util.type_to_str(option.arg_type).upper(), fg="yellow", bold=True
         )
         help = option.help or ""
@@ -79,9 +79,9 @@ class TermFormatter:
         return list(boxed(stack(usage, short_usage, type_str, help), title="Options"))
 
     def _format_positional(self, positional: Argument) -> t.Any:
-        name = term.style(positional.name, fg="blue", bold=True)
+        name = clypi.style(positional.name, fg="blue", bold=True)
         help = positional.help or ""
-        type_str = term.style(
+        type_str = clypi.style(
             type_util.type_to_str(positional.arg_type).upper(), fg="yellow", bold=True
         )
         return name, type_str, help
@@ -101,7 +101,7 @@ class TermFormatter:
         return list(boxed(stack(name, type_str, help), title="Arguments"))
 
     def _format_subcommand(self, subcmd: SubCommand) -> t.Any:
-        name = term.style(subcmd.name, fg="blue", bold=True)
+        name = clypi.style(subcmd.name, fg="blue", bold=True)
         help = subcmd.help or ""
         return name, help
 
@@ -118,21 +118,21 @@ class TermFormatter:
         return list(boxed(stack(name, help), title="Subcommands"))
 
     def _format_header(self) -> list[str] | str | None:
-        prefix = term.style("Usage:", fg="yellow")
-        prog = term.style(" ".join(self.prog), bold=True)
+        prefix = clypi.style("Usage:", fg="yellow")
+        prog = clypi.style(" ".join(self.prog), bold=True)
 
         options = (
-            " [" + term.style("OPTIONS", fg="blue", bold=True) + "]"
+            " [" + clypi.style("OPTIONS", fg="blue", bold=True) + "]"
             if self.options
             else ""
         )
         command = (
-            term.style(" COMMAND", fg="blue", bold=True) if self.subcommands else ""
+            clypi.style(" COMMAND", fg="blue", bold=True) if self.subcommands else ""
         )
         positional = (
             " "
             + " ".join(
-                term.style(p.name.upper(), fg="blue", bold=True)
+                clypi.style(p.name.upper(), fg="blue", bold=True)
                 for p in self.positionals
             )
             if self.positionals

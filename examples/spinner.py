@@ -1,11 +1,11 @@
 import asyncio
 
-import term
-from term.spinner import Spin, Spinner
+import clypi
+from clypi.spinner import Spin, Spinner
 
 
 async def all_spinners():
-    term.print(
+    clypi.print(
         "Displaying all spinner animations." + "\n ↳ Press ctrl+c to skip all examples",
         fg="blue",
         bold=True,
