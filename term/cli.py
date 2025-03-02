@@ -10,10 +10,14 @@ from dataclasses import dataclass
 from types import NoneType, UnionType
 
 from term._cli import parser, type_util
-from term._cli.config import MISSING, _Config, config
+from term._cli.config import MISSING, _Config, _PartialConfig
+from term._cli.config import config as _config
 from term._cli.formatter import TermFormatter
 
 logger = logging.getLogger(__name__)
+
+# re-exports
+config = _config
 
 
 def _camel_to_dashed(s: str):
@@ -88,19 +92,14 @@ class Command:
 
     @t.final
     @classmethod
-    def _annotations(cls):
-        return inspect.get_annotations(cls)
-
-    @t.final
-    @classmethod
     def fields(cls) -> dict[str, _Config]:
         defaults = {}
-        for field in cls._annotations():
+        for field, _type in inspect.get_annotations(cls).items():
             default = getattr(cls, field, MISSING)
-            if isinstance(default, _Config) and (value := default.get_default()):
-                defaults[field] = value
+            if isinstance(default, _PartialConfig):
+                defaults[field] = _Config.from_partial(default, _type)
             else:
-                defaults[field] = config(default=default)
+                defaults[field] = _Config(default=default, _type=_type)
         return defaults
 
     @t.final
@@ -184,28 +183,33 @@ class Command:
                 kwargs[current_attr.name] = []
             current_attr = None
 
-        # Parse as the correct values
+        # Parse as the correct values and assign to the instance
         instance = cls()
-        for k, v in kwargs.items():
-            if k == "subcommand":
-                setattr(instance, k, v)
+        for field, field_conf in cls.fields().items():
+            if field not in kwargs and not field_conf.has_default():
+                cls.print_help(parents, f"Missing required argument {field}")
+
+            value = kwargs[field] if field in kwargs else field_conf.get_default()
+            if field == "subcommand":
+                setattr(instance, field, value)
                 continue
+
             try:
-                parsed = parser.parse_value_as_type(v, cls._annotations()[k])
-                setattr(instance, k, parsed)
+                parsed = parser.parse_value_as_type(value, field_conf._type)
+                setattr(instance, field, parsed)
             except Exception as e:
-                cls.print_help(parents, f"Error parsing {k}: {e}")
+                cls.print_help(parents, f"Error parsing {field}: {e}")
 
         return instance
 
     @t.final
     @classmethod
     def subcommands(cls) -> dict[str, SubCommand]:
-        if "subcommand" not in cls._annotations():
+        if "subcommand" not in cls.fields():
             return {}
 
         # Get the subcommand type/types
-        _type = cls._annotations()["subcommand"]
+        _type = cls.fields()["subcommand"]._type
         subcmds = [_type]
         if isinstance(_type, UnionType):
             subcmds = [s for s in _type.__args__ if s is not NoneType]
@@ -221,13 +225,13 @@ class Command:
     @classmethod
     def options(cls) -> dict[str, Argument]:
         options = {}
-        for field, _type in cls._annotations().items():
-            if field == "subcommand" or not cls.fields()[field].has_default():
+        for field, field_conf in cls.fields().items():
+            if field == "subcommand" or not field_conf.has_default():
                 continue
 
             options[field] = Argument(
                 field,
-                type_util.remove_optionality(_type),
+                type_util.remove_optionality(field_conf._type),
                 help=cls.fields()[field].help,
             )
         return options
@@ -236,13 +240,13 @@ class Command:
     @classmethod
     def positionals(cls) -> dict[str, Argument]:
         options = {}
-        for field, _type in cls._annotations().items():
-            if field == "subcommand" or cls.fields()[field].has_default():
+        for field, field_conf in cls.fields().items():
+            if field == "subcommand" or field_conf.has_default():
                 continue
 
             options[field] = Argument(
                 field,
-                _type,
+                field_conf._type,
                 help=cls.fields()[field].help,
             )
         return options

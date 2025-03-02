@@ -1,9 +1,6 @@
-from dataclasses import dataclass
-
 from term import Command
 
 
-@dataclass
 class Lint(Command):
     files: tuple[str, ...]
 
@@ -11,7 +8,6 @@ class Lint(Command):
         print(f"Linting {', '.join(self.files)}")
 
 
-@dataclass
 class MyCli(Command):
     subcommand: Lint | None = None
     verbose: bool = False
