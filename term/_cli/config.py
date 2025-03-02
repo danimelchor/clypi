@@ -42,7 +42,9 @@ class _Config(t.Generic[T]):
     short: str | None = None
 
     def has_default(self) -> bool:
-        return self.default is not MISSING or self.default_factory is not MISSING
+        return not isinstance(self.default, _MISSING_TYPE) or not isinstance(
+            self.default_factory, _MISSING_TYPE
+        )
 
     def get_default(self) -> T:
         if not isinstance(self.default, _MISSING_TYPE):

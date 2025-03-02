@@ -2,6 +2,7 @@ import asyncio
 from pathlib import Path
 from typing import Literal
 
+import v6e as v
 from typing_extensions import override
 
 import term
@@ -42,7 +43,7 @@ class RunSerial(Command):
     Runs all of the files one by one
     """
 
-    files: list[Path]
+    files: list[Path] = config(parser=v.list(v.path().exists()))
 
     @debug
     async def run(self, root):

@@ -183,6 +183,14 @@ class Command:
 
     @t.final
     @classmethod
+    def _safe_parse(cls, args: t.Iterator[str], parents: list[str]) -> t.Self:
+        try:
+            return cls._parse(args, parents)
+        except (ValueError, TypeError) as e:
+            cls.print_help(parents, exception=e)
+
+    @t.final
+    @classmethod
     def _parse(cls, args: t.Iterator[str], parents: list[str]) -> t.Self:
         """
         Given an iterator of arguments we recursively parse all options, arguments,
@@ -202,7 +210,7 @@ class Command:
             # ---- Try to parse as an arg/opt ----
             parsed = parser.parse_as_attr(a)
             if parsed.is_pos() and (subcmd := cls.subcommands().get(parsed.value)):
-                kwargs["subcommand"] = subcmd._type._parse(
+                kwargs["subcommand"] = subcmd._type._safe_parse(
                     args, parents=parents + [cls.prog()]
                 )
                 break
@@ -216,10 +224,7 @@ class Command:
             if not parsed.is_pos() and full_name in cls.options():
                 option = cls.options()[full_name]
                 if current_attr and current_attr.needs_more():
-                    cls.print_help(
-                        parents=parents,
-                        error=f"Not enough values for {current_attr.name}",
-                    )
+                    raise ValueError(f"Not enough values for {current_attr.name}")
 
                 # Boolean flags don't need to parse more args later on
                 if option.nargs == 0:
@@ -248,14 +253,14 @@ class Command:
             error = f"Unknown {what} {parsed.orig!r}"
             if similar := cls._find_similar_arg(parsed):
                 error += f". Did you mean {similar!r}?"
-            cls.print_help(parents=parents, error=error)
+            raise ValueError(error)
+
+        # If we finished the loop but an option needs more args, fail
+        if current_attr.name and current_attr.needs_more():
+            raise ValueError(f"Not enough values for {current_attr.name}")
 
         # If we finished the loop and we haven't saved current_attr, save it
-        if current_attr.name and current_attr.needs_more():
-            cls.print_help(
-                parents=parents, error=f"Not enough values for {current_attr.name}"
-            )
-        elif current_attr.name and not current_attr.needs_more():
+        if current_attr.name and not current_attr.needs_more():
             if current_attr.name not in kwargs:
                 kwargs[current_attr.name] = []
             current_attr = None
@@ -264,7 +269,7 @@ class Command:
         instance = cls()
         for field, field_conf in cls.fields().items():
             if field not in kwargs and not field_conf.has_default():
-                cls.print_help(parents, f"Missing required argument {field}")
+                raise ValueError(f"Missing required argument {field}")
 
             # Get the value passed in or the provided default
             value = kwargs[field] if field in kwargs else field_conf.get_default()
@@ -275,11 +280,8 @@ class Command:
                 continue
 
             # Try parsing the string as the right type
-            try:
-                parsed = field_conf.parser(value)
-                setattr(instance, field, parsed)
-            except Exception as e:
-                cls.print_help(parents, f"Error parsing {field}: {e}")
+            parsed = field_conf.parser(value)
+            setattr(instance, field, parsed)
 
         return instance
 
@@ -342,7 +344,7 @@ class Command:
         """
         norm_args = parser.normalize_args(args or sys.argv[1:])
         args_iter = iter(norm_args)
-        instance = cls._parse(args_iter, parents=[])
+        instance = cls._safe_parse(args_iter, parents=[])
         if list(args_iter):
             raise ValueError(f"Unknown arguments {list(args_iter)}")
 
@@ -350,7 +352,7 @@ class Command:
 
     @t.final
     @classmethod
-    def print_help(cls, parents: list[str] = [], error: str | None = None):
+    def print_help(cls, parents: list[str] = [], *, exception: Exception | None = None):
         tf = TermFormatter(
             prog=parents + [cls.prog()],
             description=cls.help(),
@@ -358,10 +360,10 @@ class Command:
             options=list(cls.options().values()),
             positionals=list(cls.positionals().values()),
             subcommands=list(cls.subcommands().values()),
-            error=error,
+            exception=exception,
         )
         print(tf.format_help())
-        sys.exit(1 if error else 0)
+        sys.exit(1 if exception else 0)
 
     def __repr__(self) -> str:
         fields = ", ".join(

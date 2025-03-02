@@ -25,6 +25,20 @@ def _ext(ls: list[str], s: str | list[str] | None) -> list[str] | str | None:
         ls.extend(s)
 
 
+def _pretty_traceback(err: BaseException) -> list[str]:
+    # Get the traceback bottom up
+    tb: list[BaseException] = [err]
+    while tb[-1].__cause__ is not None:
+        tb.append(tb[-1].__cause__)
+
+    lines = []
+    for i, e in enumerate(reversed(tb)):
+        icon = "  " * (i - 1) + " ↳ " if i != 0 else ""
+        s = term.style(f"{icon}{str(e)}", fg="red")
+        lines.append(s)
+    return lines
+
+
 @dataclass
 class TermFormatter:
     prog: list[str]
@@ -33,7 +47,7 @@ class TermFormatter:
     options: list[Argument]
     positionals: list[Argument]
     subcommands: list[SubCommand]
-    error: str | None
+    exception: Exception | None
 
     def _format_option(self, option: Argument) -> tuple[str, ...]:
         usage = term.style(option.display_name, fg="blue", bold=True)
@@ -126,10 +140,12 @@ class TermFormatter:
             return None
         return [self.description, ""]
 
-    def _format_error(self) -> list[str] | str | None:
-        if not self.error:
+    def _format_exception(self) -> list[str] | str | None:
+        if not self.exception:
             return ""
-        return list(boxed([self.error], title="Error", color="red"))
+        return list(
+            boxed(_pretty_traceback(self.exception), title="Error", color="red")
+        )
 
     def format_help(self) -> str:
         lines = []
@@ -150,7 +166,7 @@ class TermFormatter:
         # Subcommands
         _ext(lines, self._format_subcommands())
 
-        # Errors
-        _ext(lines, self._format_error())
+        # exceptions
+        _ext(lines, self._format_exception())
 
         return "\n".join(lines)
