@@ -36,9 +36,9 @@ class TermFormatter:
     error: str | None
 
     def _format_option(self, option: Argument) -> tuple[str, ...]:
-        usage = term.style(f"--{option.name}", fg="blue", bold=True)
+        usage = term.style(option.display_name, fg="blue", bold=True)
         short_usage = (
-            term.style(f"-{option.short}", fg="green", bold=True)
+            term.style(option.short_display_name, fg="green", bold=True)
             if option.short
             else ""
         )

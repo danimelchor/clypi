@@ -52,4 +52,9 @@ def config(
     help: str | None = None,
     short: str | None = None,
 ) -> T:
-    return _PartialConfig(default, default_factory, help, short)  # type: ignore
+    return _PartialConfig(
+        default=default,
+        default_factory=default_factory,
+        help=help,
+        short=short,
+    )  # type: ignore
