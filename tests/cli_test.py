@@ -50,11 +50,11 @@ def test_expected_options():
     assert len(opts) == 2
 
     assert opts["flag"].name == "flag"
-    assert opts["flag"]._type is bool
+    assert opts["flag"].arg_type is bool
     assert opts["flag"].nargs == 0
 
     assert opts["option"].name == "option"
-    assert opts["option"]._type == list[str]
+    assert opts["option"].arg_type == list[str]
     assert opts["option"].nargs == "*"
 
 
@@ -63,7 +63,7 @@ def test_expected_positional():
     assert len(pos) == 1
 
     assert pos["positional"].name == "positional"
-    assert pos["positional"]._type == tuple[str | Path, ...]
+    assert pos["positional"].arg_type == tuple[str | Path, ...]
     assert pos["positional"].nargs == "+"
 
 
@@ -72,7 +72,7 @@ def test_expected_subcommands():
     assert len(pos) == 1
 
     assert pos["example-sub-command"].name == "example-sub-command"
-    assert pos["example-sub-command"]._type == ExampleSubCommand
+    assert pos["example-sub-command"].klass == ExampleSubCommand
     assert pos["example-sub-command"].help == "Some sample docs"
 
 

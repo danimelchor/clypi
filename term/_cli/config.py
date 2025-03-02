@@ -12,7 +12,7 @@ MISSING = _MISSING_TYPE()
 
 
 @dataclass
-class _PartialConfig(t.Generic[T]):
+class PartialConfig(t.Generic[T]):
     parser: t.Callable[[t.Any], T] | None = None
     default: T | _MISSING_TYPE = MISSING
     default_factory: t.Callable[[], T] | _MISSING_TYPE = MISSING
@@ -33,9 +33,9 @@ class _PartialConfig(t.Generic[T]):
 
 
 @dataclass
-class _Config(t.Generic[T]):
+class Config(t.Generic[T]):
     parser: t.Callable[[t.Any], T]
-    _type: t.Any
+    arg_type: t.Any
     default: T | _MISSING_TYPE = MISSING
     default_factory: t.Callable[[], T] | _MISSING_TYPE = MISSING
     help: str | None = None
@@ -57,10 +57,10 @@ class _Config(t.Generic[T]):
 
     @classmethod
     def from_partial(
-        cls, partial: _PartialConfig, parser: t.Callable[[t.Any], T], _type: t.Any
+        cls, partial: PartialConfig[T], parser: t.Callable[[t.Any], T], arg_type: t.Any
     ):
         kwargs = asdict(partial)
-        kwargs.update(parser=parser, _type=_type)
+        kwargs.update(parser=parser, arg_type=arg_type)
         return cls(**kwargs)
 
 
@@ -71,7 +71,7 @@ def config(
     help: str | None = None,
     short: str | None = None,
 ) -> T:
-    return _PartialConfig(
+    return PartialConfig(
         parser=parser,
         default=default,
         default_factory=default_factory,

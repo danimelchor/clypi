@@ -31,7 +31,7 @@ def _pretty_traceback(err: BaseException) -> list[str]:
     while tb[-1].__cause__ is not None:
         tb.append(tb[-1].__cause__)
 
-    lines = []
+    lines: list[str] = []
     for i, e in enumerate(reversed(tb)):
         icon = "  " * (i - 1) + " ↳ " if i != 0 else ""
         s = term.style(f"{icon}{str(e)}", fg="red")
@@ -57,7 +57,7 @@ class TermFormatter:
             else ""
         )
         type_str = term.style(
-            type_util.type_to_str(option._type).upper(), fg="yellow", bold=True
+            type_util.type_to_str(option.arg_type).upper(), fg="yellow", bold=True
         )
         help = option.help or ""
         return usage, short_usage, type_str, help
@@ -66,7 +66,10 @@ class TermFormatter:
         if not self.options:
             return None
 
-        usage, short_usage, type_str, help = [], [], [], []
+        usage: list[str] = []
+        short_usage: list[str] = []
+        type_str: list[str] = []
+        help: list[str] = []
         for o in self.options:
             u, su, ts, hp = self._format_option(o)
             usage.append(u)
@@ -79,7 +82,7 @@ class TermFormatter:
         name = term.style(positional.name, fg="blue", bold=True)
         help = positional.help or ""
         type_str = term.style(
-            type_util.type_to_str(positional._type).upper(), fg="yellow", bold=True
+            type_util.type_to_str(positional.arg_type).upper(), fg="yellow", bold=True
         )
         return name, type_str, help
 
@@ -87,7 +90,9 @@ class TermFormatter:
         if not self.positionals:
             return None
 
-        name, type_str, help = [], [], []
+        name: list[str] = []
+        type_str: list[str] = []
+        help: list[str] = []
         for p in self.positionals:
             n, ts, hp = self._format_positional(p)
             name.append(n)
@@ -104,7 +109,8 @@ class TermFormatter:
         if not self.subcommands:
             return None
 
-        name, help = [], []
+        name: list[str] = []
+        help: list[str] = []
         for p in self.subcommands:
             n, hp = self._format_subcommand(p)
             name.append(n)
@@ -148,7 +154,7 @@ class TermFormatter:
         )
 
     def format_help(self) -> str:
-        lines = []
+        lines: list[str] = []
 
         # Header
         _ext(lines, self._format_header())

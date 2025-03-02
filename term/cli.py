@@ -11,15 +11,14 @@ from types import NoneType, UnionType
 
 from Levenshtein import distance
 
+from term._cli import config as _conf
 from term._cli import parser, type_util
-from term._cli.config import MISSING, _Config, _PartialConfig
-from term._cli.config import config as _config
 from term._cli.formatter import TermFormatter
 
 logger = logging.getLogger(__name__)
 
 # re-exports
-config = _config
+config = _conf.config
 
 
 def _camel_to_dashed(s: str):
@@ -29,21 +28,21 @@ def _camel_to_dashed(s: str):
 @dataclass
 class Argument:
     name: str
-    _type: t.Any
+    arg_type: t.Any
     help: str | None
     is_opt: bool = False
     short: str | None = None
 
     @property
     def nargs(self) -> parser.Nargs:
-        if self._type is bool:
+        if self.arg_type is bool:
             return 0
 
-        if type_util.is_collection(self._type):
+        if type_util.is_collection(self.arg_type):
             return "*"
 
-        if type_util.is_tuple(self._type):
-            sz = type_util.tuple_size(self._type)
+        if type_util.is_tuple(self.arg_type):
+            sz = type_util.tuple_size(self.arg_type)
             return "+" if sz == float("inf") else sz
 
         return 1
@@ -65,7 +64,7 @@ class Argument:
 @dataclass
 class SubCommand:
     name: str
-    _type: type[Command]
+    klass: type[Command]
     help: str
 
 
@@ -94,7 +93,7 @@ class Command:
 
         return doc.replace("\n", " ")
 
-    async def run(self, root: Command):
+    async def run(self, root: Command) -> None:
         """
         This function is where the business logic of your command
         should live.
@@ -119,25 +118,25 @@ class Command:
 
     @t.final
     @classmethod
-    def fields(cls) -> dict[str, _Config]:
+    def fields(cls) -> dict[str, _conf.Config[t.Any]]:
         """
         Parses the type hints from the class extending Command and assigns each
         a _Config field with all the necessary info to display and parse them.
         """
-        defaults = {}
+        defaults: dict[str, _conf.Config[t.Any]] = {}
         for field, _type in inspect.get_annotations(cls).items():
-            default = getattr(cls, field, MISSING)
-            if isinstance(default, _PartialConfig):
-                defaults[field] = _Config.from_partial(
+            default = getattr(cls, field, _conf.MISSING)
+            if isinstance(default, _conf.PartialConfig):
+                defaults[field] = _conf.Config.from_partial(
                     default,
                     parser=default.parser or parser.from_type(_type),
-                    _type=_type,
+                    arg_type=_type,
                 )
             else:
-                defaults[field] = _Config(
+                defaults[field] = _conf.Config(
                     default=default,
                     parser=parser.from_type(_type),
-                    _type=_type,
+                    arg_type=_type,
                 )
         return defaults
 
@@ -150,7 +149,7 @@ class Command:
         """
         for pos in cls.positionals().values():
             # List positionals are a catch-all
-            if type_util.is_collection(pos._type):
+            if type_util.is_collection(pos.arg_type):
                 return pos
 
             if pos.name not in kwargs:
@@ -210,7 +209,7 @@ class Command:
         """
 
         # The kwars used to initialize the dataclass
-        kwargs = {}
+        kwargs: dict[str, t.Any] = {}
 
         # The current option or positional arg being parsed
         current_attr = parser.CurrentCtx()
@@ -230,7 +229,7 @@ class Command:
             # ---- Try to parse as an arg/opt ----
             parsed = parser.parse_as_attr(a)
             if parsed.is_pos() and (subcmd := cls.subcommands().get(parsed.value)):
-                kwargs["subcommand"] = subcmd._type._safe_parse(
+                kwargs["subcommand"] = subcmd.klass._safe_parse(
                     args, parents=parents + [cls.prog()]
                 )
                 break
@@ -269,7 +268,7 @@ class Command:
                 current_attr.collect(parsed.value)
                 continue
 
-            what = "argument" if parsed.is_pos else "option"
+            what = "argument" if parsed.is_pos() else "option"
             error = f"Unknown {what} {parsed.orig!r}"
             if similar := cls._find_similar_arg(parsed):
                 error += f". Did you mean {similar!r}?"
@@ -311,7 +310,7 @@ class Command:
             return {}
 
         # Get the subcommand type/types
-        _type = cls.fields()["subcommand"]._type
+        _type = cls.fields()["subcommand"].arg_type
         subcmds = [_type]
         if isinstance(_type, UnionType):
             subcmds = [s for s in _type.__args__ if s is not NoneType]
@@ -320,20 +319,20 @@ class Command:
             assert inspect.isclass(v) and issubclass(v, Command)
 
         return {
-            s.name(): SubCommand(name=s.name(), _type=s, help=s.help()) for s in subcmds
+            s.name(): SubCommand(name=s.name(), klass=s, help=s.help()) for s in subcmds
         }
 
     @t.final
     @classmethod
     def options(cls) -> dict[str, Argument]:
-        options = {}
+        options: dict[str, Argument] = {}
         for field, field_conf in cls.fields().items():
             if field == "subcommand" or not field_conf.has_default():
                 continue
 
             options[field] = Argument(
                 field,
-                type_util.remove_optionality(field_conf._type),
+                type_util.remove_optionality(field_conf.arg_type),
                 help=field_conf.help,
                 short=field_conf.short,
                 is_opt=True,
@@ -343,14 +342,14 @@ class Command:
     @t.final
     @classmethod
     def positionals(cls) -> dict[str, Argument]:
-        options = {}
+        options: dict[str, Argument] = {}
         for field, field_conf in cls.fields().items():
             if field == "subcommand" or field_conf.has_default():
                 continue
 
             options[field] = Argument(
                 field,
-                field_conf._type,
+                field_conf.arg_type,
                 help=field_conf.help,
             )
         return options

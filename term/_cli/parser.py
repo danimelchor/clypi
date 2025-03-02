@@ -23,8 +23,8 @@ def snake_to_dash(s: str) -> str:
     return s.replace("_", "-")
 
 
-def normalize_args(args: t.Sequence[str]):
-    new_args = []
+def normalize_args(args: t.Sequence[str]) -> list[str]:
+    new_args: list[str] = []
     for a in args:
         if a.startswith("-") and "=" in a:
             new_args.extend(a.split("=", 1))

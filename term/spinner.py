@@ -3,6 +3,8 @@ import sys
 import typing as t
 from contextlib import AbstractAsyncContextManager
 
+from typing_extensions import override
+
 import term
 from term._data.spinners import Spin as _Spin
 from term.colors import ColorType
@@ -29,7 +31,7 @@ class Spinner(AbstractAsyncContextManager):
         self.suffix = suffix
         self.title = title
 
-        self._task: asyncio.Task | None = None
+        self._task: asyncio.Task[None] | None = None
         self._manual_exit: bool = False
         self._frame_idx: int = 0
         self._refresh_rate = 0.7 / speed / len(self._frames)
@@ -76,6 +78,7 @@ class Spinner(AbstractAsyncContextManager):
             self._render_frame()
             await asyncio.sleep(self._refresh_rate)
 
+    @override
     async def __aexit__(self, _type, value, traceback):
         # If a user already called `.done()`, leaving the closure
         # should not re-trigger a re-render
