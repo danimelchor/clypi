@@ -6,10 +6,36 @@ Type-safe Python CLI prompts with validations, retries, custom messages, etc.
 
 Check out the examples in `./examples`! You can run them locally with:
 ```
+uv run --all-extras -m examples.cli
 uv run --all-extras -m examples.colors
 uv run --all-extras -m examples.spinner
 uv run --all-extras -m examples.prompts
-uv run --all-extras -m examples.cli
+```
+
+## CLI
+
+```python
+from dataclasses import dataclass
+from term import Command
+
+@dataclass
+class Lint(Command):
+    files: tuple[str, ...]
+
+    async def run(self):
+        print(f"Linting {', '.join(self.files)}")
+
+@dataclass
+class MyCli(Command):
+    subcommand: Lint | None = None
+    verbose: bool = False
+
+    async def run(self):
+        print(f"Running the main command with {self.verbose}")
+
+if __name__ == "__main__":
+    cli = MyCli.parse()
+    cli.start()
 ```
 
 ## ❓ Prompting
@@ -86,15 +112,6 @@ asyncio.run(main())
     </p>
 </details>
 
-## ❯ Parsing CLI args
-
-**Integration with argparse**
-```python
-parser = argparse.ArgumentParser()
-_ = parser.add_argument("--animal", type=str)
-args = parser.parse_args()
-animal = term.prompt("What's your favorite animal?", provided=args.animal)
-```
 
 ## 🐍 Type-checking
 

@@ -199,6 +199,10 @@ class Command:
             cls.print_help(
                 parents=parents, error=f"Not enough values for {current_attr.name}"
             )
+        elif current_attr.name and not current_attr.needs_more():
+            if current_attr.name not in kwargs:
+                kwargs[current_attr.name] = []
+            current_attr = None
 
         # Parse as the correct values
         parsed_kwargs = {}
