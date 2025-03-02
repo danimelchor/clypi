@@ -6,7 +6,7 @@ from typing import Literal
 from typing_extensions import override
 
 import term
-from term.cli import Command, field
+from term import Command, field
 
 
 @dataclass

@@ -28,6 +28,9 @@ class Argument:
 
     @property
     def nargs(self) -> parser.Nargs:
+        if self._type is bool:
+            return 0
+
         if type_util.is_collection(self._type):
             return "*"
 
@@ -211,7 +214,7 @@ class Command:
 
         # Get the subcommand type/types
         _type = cls._type_of("subcommand")
-        subcmds = _type.__args__ if isinstance(_type, UnionType) else _type
+        subcmds = _type.__args__ if isinstance(_type, UnionType) else [_type]
         for v in subcmds:
             assert inspect.isclass(v) and issubclass(v, Command)
 
