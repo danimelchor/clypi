@@ -11,6 +11,7 @@ from term.cli import Command, field
 @dataclass
 class RunParallel(Command):
     files: list[str]
+    exceptions_file: str | None = None
 
     async def run(self):
         async with term.Spinner(f"Running {', '.join(self.files)} in parallel"):
@@ -64,6 +65,7 @@ class Main(Command):
     """
 
     subcommand: Run | Lint
+    verbose: bool
 
     @override
     @classmethod
@@ -77,4 +79,6 @@ class Main(Command):
 
 
 if __name__ == "__main__":
-    Main.parse().start()
+    main = Main.parse()
+    print(main)
+    main.start()

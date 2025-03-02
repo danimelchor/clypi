@@ -2,77 +2,81 @@ from __future__ import annotations
 
 import argparse
 import typing as t
-
-from typing_extensions import override
+from dataclasses import dataclass
 
 import term
 
 
-def debug(**msg):
-    msg = {f"  {k}={v}" for k, v in msg.items()}
-    s = ", ".join(msg)
-    term.print("DEBUG:", s, "\n", fg="blue")
+@dataclass
+class ProgramConfig:
+    prog: str
 
 
-class TermArgparseFormatter(argparse.ArgumentDefaultsHelpFormatter):
+def _get_long_short(ls: t.Sequence[str]) -> tuple[str, str | None]:
+    if len(ls) == 1:
+        return ls[0], None
+    return ls[1], ls[0]
+
+
+@dataclass
+class TermFormatter:
+    prog: str
+    description: str
+    epilog: str
+    options: list[argparse.Action]
+    positionals: list[argparse.Action]
+    subcommands: argparse.Action | None
+
+    def _format_option(self, option: argparse.Action) -> list[str]:
+        long, short = _get_long_short(option.option_strings)
+        usage = term.style(long, fg="blue", bold=True)
+        short_usage = term.style(short, fg="green", bold=True) if short else ""
+        help = option.help or ""
+        return [usage + " " + short_usage + " " + help]
+
+    def _format_options(self) -> list[str]:
+        lines = []
+        for o in self.options:
+            lines.extend(self._format_option(o))
+        return lines
+
+    def _format_positional(self, positional: argparse.Action) -> list[str]:
+        name = term.style(positional.dest, fg="blue", bold=True)
+        help = positional.help or ""
+        return [name + " " + help]
+
+    def _format_positionals(self) -> list[str]:
+        lines = []
+        for p in self.positionals:
+            lines.extend(self._format_positional(p))
+        return lines
+
+    def _format_header(self) -> list[str]:
+        prefix = term.style("Usage:", fg="yellow", bold=True)
+        prog = term.style(self.prog, bold=True)
+
+        options = "[" + term.style("OPTIONS", fg="blue", bold=True) + "]"
+        command = term.style("COMMAND", fg="blue", bold=True)
+        positional = "[" + term.style("ARGS", fg="blue", bold=True) + "]"
+
+        return [f"{prefix} {prog} {options} {command} {positional}"]
+
+    def _format_description(self) -> list[str]:
+        return [self.description]
+
     def format_help(self) -> str:
-        return "Foo"
+        lines = []
 
-    def _format_text(self, text):
-        """
-        Format raw text like descriptions, epilog, etc.
-        """
-        return super()._format_text(text)
+        # Header
+        lines.extend(self._format_header())
 
-    def _format_usage(
-        self,
-        usage: str | None,
-        actions: t.Iterable[argparse.Action],
-        groups: t.Iterable[argparse._MutuallyExclusiveGroup],
-        prefix: str | None,
-    ) -> str:
-        prefix = term.style("Usage: ", fg="yellow", bold=True)
-        prog = term.style(self._prog, bold=True)
-        # return prefix + prog
-        return super()._format_usage(usage, actions, groups, prefix)
+        # Description
+        lines.extend(self._format_description())
 
-    @override
-    def _metavar_formatter(self, action, default_metavar):
-        """
-        Renders special qualities about arguments like choices
-        """
-        if action.metavar is not None:
-            result = action.metavar
-        elif action.choices is not None:
-            choice_strs = [str(choice) for choice in action.choices]
-            result = "".join(
-                [
-                    term.style("{", fg="blue"),
-                    term.style(",".join(choice_strs), reset=True, fg="cyan"),
-                    term.style("}", fg="blue"),
-                ]
-            )
-        else:
-            result = default_metavar
+        # Options
+        lines.extend(self._format_options())
 
-        def format(tuple_size):
-            if isinstance(result, tuple):
-                return result
-            return (result,) * tuple_size
+        # Positionals
+        lines.extend(self._format_positionals())
 
-        return format
-
-    def _format_actions_usage(self, actions, groups):
-        """
-        Renders options and positionals like --foo
-        """
-        r = super()._format_actions_usage(actions, groups)
-        debug(r=r)
-        return term.style(r, fg="blue", bold=True)
-
-    def _format_action_invocation(self, action):
-        """
-        Renders options and positionals like --foo
-        """
-        r = super()._format_action_invocation(action)
-        return term.style(r, fg="blue", bold=True)
+        return "\n".join(lines)

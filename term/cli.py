@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-import argparse
 import asyncio
 import inspect
 import logging
@@ -11,34 +10,13 @@ from dataclasses import _MISSING_TYPE, MISSING, Field
 from dataclasses import field as dataclass_field
 from types import UnionType
 
-from typing_extensions import override
-
-import term
-from term._cli.formatter import TermArgparseFormatter
+from term._cli import parser, type_util
 
 logger = logging.getLogger(__name__)
-
-_FORMATTER_CLASS = TermArgparseFormatter
-
-
-def _type_to_argparse(_type: t.Any):
-    if t.get_origin(_type) is t.Literal:
-        return {"choices": _type.__args__}
-    elif t.get_origin(_type) is list:
-        return {"type": _type.__args__[0], "nargs": "+"}
-    return {"type": _type}
 
 
 def _camel_to_dashed(s: str):
     return re.sub(r"(?<!^)(?=[A-Z])", "-", s).lower()
-
-
-class TermParser(argparse.ArgumentParser):
-    @override
-    def error(self, message):
-        sys.stderr.write(term.style("Error: ", fg="red", bold=True) + "%s\n" % message)
-        self.print_help()
-        sys.exit(2)
 
 
 class Command:
@@ -48,7 +26,7 @@ class Command:
         return _camel_to_dashed(cls.__name__)
 
     @classmethod
-    def prog(cls) -> str | None:
+    def prog(cls) -> str:
         return cls.name()
 
     @classmethod
@@ -81,13 +59,6 @@ class Command:
 
     @t.final
     @classmethod
-    def _subparser_name(cls, parent: str | None = None):
-        if not parent:
-            return "subparser_" + cls.name()
-        return f"subparser_{parent}_{cls.name()}"
-
-    @t.final
-    @classmethod
     def _annotations(cls):
         return inspect.get_annotations(cls)
 
@@ -103,6 +74,31 @@ class Command:
     @classmethod
     def _is_flag(cls, name: str) -> bool:
         return cls._type_of(name) is bool
+
+    @t.final
+    @classmethod
+    def _nargs_for(cls, name: str) -> float:
+        _type = cls._annotations()[name]
+
+        # List positionals are a catch-all
+        if type_util.is_collection(_type):
+            return float("inf")
+
+        return 1
+
+    @t.final
+    @classmethod
+    def _next_positional(cls, kwargs: dict[str, t.Any]) -> str | None:
+        for field, _type in cls._annotations().items():
+            if cls._get_default(field) is not MISSING:
+                continue
+
+            # List positionals are a catch-all
+            if type_util.is_collection(_type):
+                return field
+
+            if field not in kwargs:
+                return field
 
     @t.final
     @classmethod
@@ -122,135 +118,99 @@ class Command:
 
     @t.final
     @classmethod
-    def _parse(cls, args: argparse.Namespace, parent: str | None = None) -> t.Self:
+    def _parse(cls, args: t.Iterator[str]) -> t.Self:
         """
-        Given an argparse namespace we create the dataclass for this command and all
-        subcommands
+        Given an iterator of arguments we recursively parse all options, arguments,
+        and subcommands until the iterator is complete.
         """
+
+        # The kwars used to initialize the dataclass
         kwargs = {}
-        for name in cls._annotations():
-            # Subcommands are stored in a particular subparser
-            if name == "subcommand":
-                value = getattr(args, cls._subparser_name(parent))
-                subcmd = cls._subcommand_with_name(value)
 
-                # Recursively parse subcommand
-                kwargs["subcommand"] = subcmd._parse(
-                    args,
-                    parent=cls.name(),
-                )
-            elif hasattr(args, name):
-                kwargs[name] = getattr(args, name)
+        current_attr_name: str | None = None
+        current_attr_nargs: float = 1
 
-        return cls(**kwargs)
+        for a in args:
+            # ---- Try to parse as an arg/opt ----
+            is_opt, attr = parser.parse_as_attr(a)
+            if not is_opt and (subcmd := cls._get_subcommands().get(attr)):
+                kwargs["subcommand"] = subcmd._parse(args)
+                break
+
+            # Assign to current object
+            if is_opt:
+                if cls._is_flag(attr):
+                    kwargs[attr] = True
+                else:
+                    current_attr_name = attr
+                    current_attr_nargs = cls._nargs_for(attr)
+                continue
+
+            # ---- Try to assign to the current option ----
+            if current_attr_name and current_attr_nargs > 0:
+                if current_attr_name not in kwargs:
+                    kwargs[current_attr_name] = []
+                kwargs[current_attr_name].append(attr)
+                current_attr_nargs -= 1
+                continue
+            elif current_attr_name:
+                current_attr_name = None
+
+            # ---- Try to assign to the current positional ----
+            if not current_attr_name and (pos_name := cls._next_positional(kwargs)):
+                if pos_name not in kwargs:
+                    kwargs[pos_name] = []
+                if len(kwargs[pos_name]) < cls._nargs_for(pos_name):
+                    kwargs[pos_name].append(attr)
+                continue
+
+            raise ValueError(f"Unknown argument {attr} for {cls.name()}")
+
+        # Parse as the correct values
+        parsed_kwargs = {}
+        for k, v in kwargs.items():
+            if k == "subcommand":
+                parsed_kwargs[k] = v
+                continue
+            parsed_kwargs[k] = parser.parse_value_as_type(v, cls._type_of(k))
+
+        return cls(**parsed_kwargs)
 
     @t.final
     @classmethod
-    def _get_subcommands(cls) -> list[type[Command]]:
+    def _get_subcommands(cls) -> dict[str, type[Command]]:
         if "subcommand" not in cls._annotations():
-            return []
+            return {}
 
         # Get the subcommand type/types
         _type = cls._type_of("subcommand")
-        subcmds = list(_type.__args__) if isinstance(_type, UnionType) else [_type]
-        for s in subcmds:
-            assert inspect.isclass(s) and issubclass(s, Command)
+        subcmds = (
+            {a.name(): a for a in _type.__args__}
+            if isinstance(_type, UnionType)
+            else {_type.name(): _type}
+        )
+        for v in subcmds.values():
+            assert inspect.isclass(v) and issubclass(v, Command)
 
-        return t.cast(t.List[type[Command]], subcmds)
-
-    @t.final
-    @classmethod
-    def _subcommand_with_name(cls, name: str) -> type[Command]:
-        for subcmd in cls._get_subcommands():
-            if subcmd.name() == name:
-                return subcmd
-        raise ValueError(f"Subcommand {name} does not exist in {cls.name()}")
+        return t.cast(dict[str, type[Command]], subcmds)
 
     @t.final
     @classmethod
-    def _configure_arguments(cls, parser: argparse.ArgumentParser):
-        """
-        Configures this command's arguments based on the dataclass fields
-        """
-        for name, _type in cls._annotations().items():
-            # Subcommand is not an actual argument
-            if name == "subcommand":
-                continue
-
-            # Get the help message for this field to display
-            help = cls._get_help(name)
-
-            # Flags are boolean values
-            if cls._is_flag(name):
-                parser.add_argument(f"--{name}", action="store_true", help=help)
-                continue
-
-            # If the attr has a default, it's an option. Otherwise its a positional argument
-            default = cls._get_default(name)
-            if default is not MISSING:
-                parser.add_argument(
-                    f"--{name}",
-                    default=default,
-                    help=help,
-                    **_type_to_argparse(_type),
-                )
-            else:
-                parser.add_argument(
-                    name,
-                    help=help,
-                    **_type_to_argparse(_type),
-                )
-
-    @t.final
-    @classmethod
-    def _configure_parser(
-        cls,
-        parser: argparse.ArgumentParser,
-        parent: str | None = None,
-    ):
-        """
-        Configures the arguments for this particular command/subcommand
-        and traverses through subcommands
-        """
-
-        # Configure the arguments for this command
-        cls._configure_arguments(parser)
-
-        # Configure each subcommand's args
-        if subcmds := cls._get_subcommands():
-            subparsers = parser.add_subparsers(
-                required=True,
-                dest=cls._subparser_name(parent),
-            )
-            for subcmd in subcmds:
-                subparser = subparsers.add_parser(
-                    subcmd.name(),
-                    help=subcmd.help(),
-                    description=subcmd.help(),
-                    formatter_class=_FORMATTER_CLASS,
-                )
-
-                # Configure the subparser
-                subcmd._configure_parser(
-                    subparser,
-                    parent=cls.name(),
-                )
-
-    @t.final
-    @classmethod
-    def parse(cls) -> t.Self:
+    def parse(cls, args: t.Sequence[str] | None = None) -> t.Self:
         """
         This is the entry point to start parsing arguments
         """
-        parser = TermParser(
-            prog=cls.prog(),
-            description=cls.help(),
-            epilog=cls.epilog(),
-            formatter_class=_FORMATTER_CLASS,
-        )
-        cls._configure_parser(parser)
-        args = parser.parse_args()
-        return cls._parse(args)
+        args_iter = iter(args or sys.argv[1:])
+        instance = cls._parse(args_iter)
+        if args_iter:
+            raise ValueError(f"Unknown arguments {list(args_iter)}")
+
+        return instance
+
+    @t.final
+    @classmethod
+    def print_help(cls):
+        print("Help...")
 
 
 def field(help: str | None = None, *args, **kwargs):
