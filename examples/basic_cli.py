@@ -17,5 +17,5 @@ class MyCli(Command):
 
 
 if __name__ == "__main__":
-    cli = MyCli.parse()
+    cli: MyCli = MyCli.parse()
     cli.start()

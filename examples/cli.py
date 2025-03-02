@@ -116,5 +116,5 @@ class Main(Command):
 
 
 if __name__ == "__main__":
-    main = Main.parse()
+    main: Main = Main.parse()
     main.start()

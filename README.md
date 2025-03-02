@@ -32,7 +32,7 @@ class MyCli(Command):
         print(f"Running the main command with {self.verbose}")
 
 if __name__ == "__main__":
-    cli = MyCli.parse()
+    cli: MyCli = MyCli.parse()
     cli.start()
 ```
 
@@ -161,14 +161,39 @@ hours = term.prompt(
 reveal_type(hours)  # Type of "res" is "float | timedelta"
 ```
 
-In some cases, like prompting, the type will also indicate how to validate and parse the passed argument.
-For example, the following code will validate that the passed input is a valid number:
-```python
-age = term.prompt("What's your age?", klass=int)
-```
-
-
-## Why do I care?
+### Why do I care?
 
 Type checking will help you catch issues way earlier in the development cycle. It will also
 provide nice autocomplete features in your editor that will make you faster 󱐋.
+
+## Integrations
+
+### Parsers
+
+Term can be integrated with many parsers. The default recommended parser is [v6e](https://github.com/danimelchor/v6e), whichis automatically used if installed in your local environment to parse types more accurately. If you wish you specify any parser (from `v6e` or elsewhere) manually, you can do so quite easily:
+
+**CLI**
+```python
+from term import Command, config
+
+class MyCli(Command):
+    files: list[Path] = config(parser=v6e.path().exists().list())
+
+    async def run(self):
+        files = [f.as_posix() for f in self.files]
+        print(f"Linting {', '.join(files)}")
+
+if __name__ == "__main__":
+    cli: MyCli = MyCli.parse()
+    cli.start()
+```
+
+**Prompting**
+
+```python
+hours = term.prompt(
+    "How many hours are there in a year?",
+    parser=v6e.float().lte(24).union(v6e.timedelta()),
+)
+reveal_type(hours)  # Type of "res" is "float | timedelta"
+```
