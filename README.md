@@ -15,6 +15,7 @@ uv run --all-extras -m examples.prompts
 ## CLI
 
 ```python
+# examples/basic_cli.py
 from dataclasses import dataclass
 from term import Command
 
@@ -37,6 +38,34 @@ if __name__ == "__main__":
     cli = MyCli.parse()
     cli.start()
 ```
+
+<details>
+    <summary><code>uv run -m examples.basic_cli -h</code></summary>
+    <p align="center">
+        <img width="1699" alt="image" src="https://github.com/user-attachments/assets/ed3dc70f-1f3c-4fe9-b290-b7aae380acc2" />
+    </p>
+</details>
+
+<details>
+    <summary><code>uv run -m examples.basic_cli lint</code></summary>
+    <p align="center">
+        <img width="1694" alt="image" src="https://github.com/user-attachments/assets/e1222650-2d5b-44c6-a0ef-b085adcab30e" />
+    </p>
+</details>
+
+<details>
+    <summary><code>uv run -m examples.basic_cli</code></summary>
+    <p align="center">
+        <img width="609" alt="image" src="https://github.com/user-attachments/assets/d085ba81-f9fd-472e-9bb7-1a788d918b16" />
+    </p>
+</details>
+
+<details>
+    <summary><code>uv run -m examples.basic_cli lint</code></summary>
+    <p align="center">
+        <img width="1695" alt="image" src="https://github.com/user-attachments/assets/0be2daa1-9d09-42a9-a4eb-22616faf705e" />
+    </p>
+</details>
 
 ## ❓ Prompting
 
