@@ -16,7 +16,7 @@ repos:
       entry: uv run --all-extras pyright term
       language: python
       types: [python]
-      files: ^term/.*
+      exclude: ^tests/.*
       pass_filenames: false
       always_run: true
 
