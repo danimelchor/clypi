@@ -16,14 +16,12 @@ class _PartialConfig(t.Generic[T]):
     default: T | _MISSING_TYPE = MISSING
     default_factory: t.Callable[[], T] | _MISSING_TYPE = MISSING
     help: str | None = None
+    short: str | None = None
 
 
 @dataclass
-class _Config(t.Generic[T]):
-    _type: t.Any
-    default: T | _MISSING_TYPE = MISSING
-    default_factory: t.Callable[[], T] | _MISSING_TYPE = MISSING
-    help: str | None = None
+class _Config(_PartialConfig[T]):
+    _type: t.Any = MISSING
 
     def has_default(self) -> bool:
         return self.default is not MISSING or self.default_factory is not MISSING
@@ -44,6 +42,7 @@ class _Config(t.Generic[T]):
             default=partial.default,
             default_factory=partial.default_factory,
             help=partial.help,
+            short=partial.short,
         )
 
 
@@ -51,5 +50,6 @@ def config(
     default: T | _MISSING_TYPE = MISSING,
     default_factory: t.Callable[[], T] | _MISSING_TYPE = MISSING,
     help: str | None = None,
+    short: str | None = None,
 ) -> T:
-    return _PartialConfig(default, default_factory, help)  # type: ignore
+    return _PartialConfig(default, default_factory, help, short)  # type: ignore

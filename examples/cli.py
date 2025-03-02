@@ -8,6 +8,22 @@ import term
 from term import Command, config
 
 
+def debug(fun):
+    """
+    Just a utility decorator to display the root commands being passed in a somewhat
+    nice way
+    """
+
+    async def inner(self, root):
+        print(
+            term.boxed([term.style(root, bold=True)], title="Debug", color="magenta"),
+            end="\n\n",
+        )
+        await fun(self, root)
+
+    return inner
+
+
 class RunParallel(Command):
     """
     Runs all of the files in parallel
@@ -16,7 +32,8 @@ class RunParallel(Command):
     files: list[str]
     exceptions_with_reasons: tuple[str | Path, str | Path] | None = None
 
-    async def run(self):
+    @debug
+    async def run(self, root):
         async with term.Spinner(f"Running {', '.join(self.files)} in parallel"):
             await asyncio.sleep(2)
         term.print("Done!", fg="green", bold=True)
@@ -29,7 +46,8 @@ class RunSerial(Command):
 
     files: list[Path]
 
-    async def run(self):
+    @debug
+    async def run(self, root):
         files_str = ", ".join(p.as_posix() for p in self.files)
         async with term.Spinner(f"Running {files_str} sequentially"):
             await asyncio.sleep(2)
@@ -54,7 +72,9 @@ class Lint(Command):
 
     files: list[str] = config(help="The list of files to lint")
     quiet: bool = config(
-        help="If the linter should omit all stdout messages", default=False
+        short="q",
+        help="If the linter should omit all stdout messages",
+        default=False,
     )
     no_cache: bool = config(help="Disable the termuff cache", default=False)
     index: str = config(
@@ -62,7 +82,8 @@ class Lint(Command):
         help="The index to download termuff from",
     )
 
-    async def run(self):
+    @debug
+    async def run(self, root):
         async with term.Spinner(f"Linting {', '.join(self.files)}"):
             await asyncio.sleep(2)
         term.print("Done!", fg="green", bold=True)
@@ -74,8 +95,8 @@ class Main(Command):
     run arbitrary files.
     """
 
-    subcommand: Run | Lint
-    verbose: bool
+    subcommand: Run | Lint | None = None
+    verbose: bool = config(short="v", default=False)
 
     @override
     @classmethod
@@ -86,6 +107,10 @@ class Main(Command):
     @classmethod
     def epilog(cls):
         return "Learn more at http://termuff.org"
+
+    @debug
+    async def run(self, root):
+        self.print_help()
 
 
 if __name__ == "__main__":

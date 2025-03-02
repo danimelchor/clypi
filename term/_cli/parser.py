@@ -1,7 +1,7 @@
 import typing as t
 from dataclasses import dataclass
 from pathlib import Path
-from types import UnionType
+from types import NoneType, UnionType
 
 from term._cli import type_util
 
@@ -12,6 +12,10 @@ class UnparseableException(Exception):
 
 def dash_to_snake(s: str) -> str:
     return s.replace("-", "_")
+
+
+def snake_to_dash(s: str) -> str:
+    return s.replace("_", "-")
 
 
 def normalize_args(args: t.Sequence[str]):
@@ -88,11 +92,7 @@ def _parse_value_as_literal(value: t.Any, _type: t.Any):
 
 
 def parse_value_as_type(value: t.Any, _type: t.Any):
-    # If value made it to the list of fields, it was manually passed
-    if _type is bool:
-        return True
-
-    if _type in (int, float, str, Path):
+    if _type in (int, float, str, Path, bool):
         return _parse_builtin(_type, value)
 
     if type_util.is_collection(_type):
@@ -113,6 +113,9 @@ def parse_value_as_type(value: t.Any, _type: t.Any):
 
     if t.get_origin(_type) == t.Literal:
         return _parse_value_as_literal(value, _type)
+
+    if _type is NoneType and value is None:
+        return None
 
     if errors:
         raise errors[0]

@@ -29,6 +29,7 @@ class Argument:
     name: str
     _type: t.Any
     help: str | None
+    short: str | None = None
 
     @property
     def nargs(self) -> parser.Nargs:
@@ -77,14 +78,24 @@ class Command:
 
         return doc.replace("\n", " ")
 
-    async def run(self):
+    async def run(self, root: Command):
+        """
+        This function is where the business logic of your command
+        should live.
+
+        `self` contains the arguments for this command you can access
+        as any other instance property.
+
+        `root` is a pointer to the base command of your CLI so that you
+        can access arguments passed to parent commands.
+        """
         raise NotImplementedError
 
     @t.final
-    async def astart(self) -> None:
+    async def astart(self, root: Command | None = None) -> None:
         if subcommand := getattr(self, "subcommand", None):
-            return await subcommand.astart()
-        return await self.run()
+            return await subcommand.astart(root=root or self)
+        return await self.run(root or self)
 
     @t.final
     def start(self) -> None:
@@ -115,6 +126,19 @@ class Command:
 
     @t.final
     @classmethod
+    def _fully_qualify(cls, name: str):
+        fields = cls.fields()
+        if name in fields:
+            return name
+
+        for field, field_conf in fields.items():
+            if field_conf.short == name:
+                return field
+
+        return name
+
+    @t.final
+    @classmethod
     def _parse(cls, args: t.Iterator[str], parents: list[str]) -> t.Self:
         """
         Given an iterator of arguments we recursively parse all options, arguments,
@@ -140,18 +164,20 @@ class Command:
                 break
 
             # ---- Try to set to the current option ----
+            attr = cls._fully_qualify(attr)
             if is_opt and attr in cls.options():
                 option = cls.options()[attr]
-                if current_attr and not current_attr.needs_more():
-                    if current_attr.name not in kwargs:
-                        kwargs[current_attr.name] = []
-                elif current_attr:
+                if current_attr and current_attr.needs_more():
                     cls.print_help(
                         parents=parents,
                         error=f"Not enough values for {current_attr.name}",
                     )
 
-                current_attr = parser.CurrentCtx(option.name, option.nargs)
+                # Boolean flags don't need to parse more args later on
+                if option.nargs == 0:
+                    kwargs[attr] = True
+                else:
+                    current_attr = parser.CurrentCtx(option.name, option.nargs)
                 continue
 
             # ---- Try to assign to the current positional ----
@@ -234,9 +260,10 @@ class Command:
                 continue
 
             options[field] = Argument(
-                field,
+                parser.snake_to_dash(field),
                 type_util.remove_optionality(field_conf._type),
-                help=cls.fields()[field].help,
+                help=field_conf.help,
+                short=field_conf.short,
             )
         return options
 
@@ -249,9 +276,9 @@ class Command:
                 continue
 
             options[field] = Argument(
-                field,
+                parser.snake_to_dash(field),
                 field_conf._type,
-                help=cls.fields()[field].help,
+                help=field_conf.help,
             )
         return options
 
@@ -271,7 +298,7 @@ class Command:
 
     @t.final
     @classmethod
-    def print_help(cls, parents: list[str], error: str | None = None):
+    def print_help(cls, parents: list[str] = [], error: str | None = None):
         tf = TermFormatter(
             prog=parents + [cls.prog()],
             description=cls.help(),
@@ -283,3 +310,11 @@ class Command:
         )
         print(tf.format_help())
         sys.exit(1 if error else 0)
+
+    def __repr__(self) -> str:
+        fields = ", ".join(
+            f"{k}={v}"
+            for k, v in vars(self).items()
+            if v is not None and not k.startswith("_")
+        )
+        return f"{self.__class__.__name__}({fields})"

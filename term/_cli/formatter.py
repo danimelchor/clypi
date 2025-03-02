@@ -16,10 +16,8 @@ class ProgramConfig:
     prog: str
 
 
-def _get_long_short(ls: t.Sequence[str]) -> tuple[str, str | None]:
-    if len(ls) == 1:
-        return ls[0], None
-    return ls[1], ls[0]
+def snake_to_dash(s: str) -> str:
+    return s.replace("_", "-")
 
 
 def _ext(ls: list[str], s: str | list[str] | None) -> list[str] | str | None:
@@ -42,9 +40,12 @@ class TermFormatter:
     error: str | None
 
     def _format_option(self, option: Argument) -> tuple[str, ...]:
-        long, short = _get_long_short([option.name])
-        usage = term.style(f"--{long}", fg="blue", bold=True)
-        short_usage = term.style(f"-{short}", fg="green", bold=True) if short else ""
+        usage = term.style(f"--{option.name}", fg="blue", bold=True)
+        short_usage = (
+            term.style(f"-{option.short}", fg="green", bold=True)
+            if option.short
+            else ""
+        )
         type_str = term.style(
             type_util.type_to_str(option._type).upper(), fg="yellow", bold=True
         )
@@ -82,7 +83,7 @@ class TermFormatter:
             name.append(n)
             type_str.append(ts)
             help.append(hp)
-        return list(boxed(stack(name, type_str, help), title="Options"))
+        return list(boxed(stack(name, type_str, help), title="Arguments"))
 
     def _format_subcommand(self, subcmd: SubCommand) -> t.Any:
         name = term.style(subcmd.name, fg="blue", bold=True)
@@ -98,7 +99,7 @@ class TermFormatter:
             n, hp = self._format_subcommand(p)
             name.append(n)
             help.append(hp)
-        return list(boxed(stack(name, help), title="Options"))
+        return list(boxed(stack(name, help), title="Subcommands"))
 
     def _format_header(self) -> list[str] | str | None:
         prefix = term.style("Usage:", fg="yellow")

@@ -1,5 +1,3 @@
-from typing import Iterable
-
 from term.colors import remove_style
 
 
@@ -14,11 +12,10 @@ def _real_len(s: str) -> int:
     return len(s)
 
 
-def stack(*blocks: Iterable[str], padding: int = 1) -> list[str]:
+def stack(*blocks: list[str], padding: int = 1) -> list[str]:
     new_lines = []
-    blocks_ls = [list(b) for b in blocks]
-    height = max(len(b) for b in blocks_ls)
-    widths = [max(_real_len(line) for line in block) for block in blocks_ls]
+    height = max(len(b) for b in blocks)
+    widths = [max(_real_len(line) for line in block) for block in blocks]
 
     # Process line until all blocks are done
     for idx in range(height):
@@ -26,7 +23,7 @@ def stack(*blocks: Iterable[str], padding: int = 1) -> list[str]:
         tmp: list[str] = []
 
         # Add the line from each block
-        for block, width in zip(blocks_ls, widths):
+        for block, width in zip(blocks, widths):
             # If there was a line, next iter will happen
             block_line = _safe_get(block, idx)
             if block_line:
