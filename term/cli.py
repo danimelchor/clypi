@@ -120,6 +120,10 @@ class Command:
     @t.final
     @classmethod
     def fields(cls) -> dict[str, _Config]:
+        """
+        Parses the type hints from the class extending Command and assigns each
+        a _Config field with all the necessary info to display and parse them.
+        """
         defaults = {}
         for field, _type in inspect.get_annotations(cls).items():
             default = getattr(cls, field, MISSING)
@@ -140,6 +144,10 @@ class Command:
     @t.final
     @classmethod
     def _next_positional(cls, kwargs: dict[str, t.Any]) -> Argument | None:
+        """
+        Traverse the current collected arguments and find the next positional
+        arg we can assign to.
+        """
         for pos in cls.positionals().values():
             # List positionals are a catch-all
             if type_util.is_collection(pos._type):
@@ -150,16 +158,20 @@ class Command:
 
     @t.final
     @classmethod
-    def _get_long_name(cls, name: str) -> str | None:
+    def _get_long_name(cls, short: str) -> str | None:
         fields = cls.fields()
         for field, field_conf in fields.items():
-            if field_conf.short == name:
+            if field_conf.short == short:
                 return field
         return None
 
     @t.final
     @classmethod
     def _find_similar_arg(cls, arg: parser.Arg) -> str | None:
+        """
+        Utility function to find arguments similar to the one the
+        user passed in to correct typos.
+        """
         if arg.is_pos():
             for pos in cls.subcommands().values():
                 if distance(pos.name, arg.value) < 3:
@@ -180,6 +192,10 @@ class Command:
     @t.final
     @classmethod
     def _safe_parse(cls, args: t.Iterator[str], parents: list[str]) -> t.Self:
+        """
+        Tries parsing args and if an error is shown, it displays the subcommand
+        that failed the parsing's help page.
+        """
         try:
             return cls._parse(args, parents)
         except (ValueError, TypeError) as e:
