@@ -222,6 +222,13 @@ class Command:
                 kwargs[current_attr.name] = current_attr.collected
                 current_attr = None
 
+        def find_similar(parsed: parser.Arg):
+            what = "argument" if parsed.is_pos() else "option"
+            error = f"Unknown {what} {parsed.orig!r}"
+            if similar := cls._find_similar_arg(parsed):
+                error += f". Did you mean {similar!r}?"
+            raise ValueError(error)
+
         for a in args:
             if a in ("-h", "--help"):
                 cls.print_help(parents=parents)
@@ -245,6 +252,13 @@ class Command:
                 and parsed.is_short_opt()
                 and cls._get_long_name(parsed.value) is not None
             )
+            if (
+                parsed.is_short_opt()
+                or parsed.is_long_opt()
+                and not (is_valid_long or is_valid_short)
+            ):
+                raise find_similar(parsed)
+
             if is_valid_long or is_valid_short:
                 long_name = cls._get_long_name(parsed.value) or parsed.value
                 option = cls.options()[long_name]
@@ -268,11 +282,7 @@ class Command:
                 current_attr.collect(parsed.value)
                 continue
 
-            what = "argument" if parsed.is_pos() else "option"
-            error = f"Unknown {what} {parsed.orig!r}"
-            if similar := cls._find_similar_arg(parsed):
-                error += f". Did you mean {similar!r}?"
-            raise ValueError(error)
+            raise find_similar(parsed)
 
         # If we finished the loop but an option needs more args, fail
         if current_attr.name and current_attr.needs_more():
@@ -327,6 +337,7 @@ class Command:
     def options(cls) -> dict[str, Argument]:
         options: dict[str, Argument] = {}
         for field, field_conf in cls.fields().items():
+            print(field, field_conf)
             if field == "subcommand" or not field_conf.has_default():
                 continue
 
