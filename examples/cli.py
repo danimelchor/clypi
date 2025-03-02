@@ -15,10 +15,8 @@ def debug(fun):
     """
 
     async def inner(self, root):
-        print(
-            term.boxed([term.style(root, bold=True)], title="Debug", color="magenta"),
-            end="\n\n",
-        )
+        boxed = term.boxed(term.style(root, bold=True), title="Debug", color="magenta")
+        print(boxed, end="\n\n")
         await fun(self, root)
 
     return inner

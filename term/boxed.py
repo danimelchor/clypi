@@ -58,7 +58,7 @@ def boxed(
     c = styler(fg=color)
 
     # Top bar
-    def iter():
+    def iter(lines: t.Iterable[str]):
         nonlocal title
 
         top_bar_width = width - 3
@@ -78,7 +78,7 @@ def boxed(
         yield c(box.bl + box.x * (width - 2) + box.br)
 
     if isinstance(lines, list):
-        return t.cast(T, list(iter()))
+        return t.cast(T, list(iter(lines)))
     if isinstance(lines, str):
-        return t.cast(T, "\n".join(iter()))
-    return t.cast(T, iter())
+        return t.cast(T, "\n".join(iter([lines])))
+    return t.cast(T, iter(lines))
