@@ -1,10 +1,14 @@
+import importlib.util
 import re
 import typing as t
 from dataclasses import dataclass
+from datetime import datetime, timedelta
 from pathlib import Path
 from types import NoneType, UnionType
 
 from term._cli import type_util
+
+HAS_V6E = importlib.util.find_spec("v6e") is not None
 
 
 class UnparseableException(Exception):
@@ -139,7 +143,27 @@ def _parse_none(value: t.Any) -> None:
     return None
 
 
+def from_v6e(_type: t.Any) -> t.Callable[[t.Any], t.Any] | None:
+    import v6e as v
+
+    v6e_builtins = {
+        bool: v.bool(),
+        int: v.int(),
+        float: v.float(),
+        str: v.str(),
+        datetime: v.datetime(),
+        timedelta: v.timedelta(),
+    }
+    if _type in v6e_builtins:
+        return v6e_builtins[_type]
+
+    return None
+
+
 def from_type(_type: t.Any) -> t.Callable[[t.Any], t.Any]:
+    if HAS_V6E and (parser := from_v6e(_type)):
+        return parser
+
     if _type in (int, float, str, Path, bool):
         return _parse_builtin(_type)
 
