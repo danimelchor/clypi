@@ -1,5 +1,11 @@
 # 🦄 clypi
 
+[![PyPI version](https://badge.fury.io/py/clypi.svg)](https://badge.fury.io/py/clypi)
+[![License](https://img.shields.io/badge/license-MIT-blue)](https://opensource.org/license/mit)
+[![PyPI - Python Version](https://img.shields.io/pypi/pyversions/clypi.svg)](https://pypi.org/project/clypi/)
+[![PyPI - Downloads](https://img.shields.io/pypi/dm/clypi)](https://pypi.org/project/clypi/)
+[![Contributors](https://img.shields.io/github/contributors/danimelchor/clypi)](https://github.com/danimelchor/clypi/graphs/contributors)
+
 Type-safe Python CLI prompts with validations, retries, custom messages, etc.
 
 ### Examples
