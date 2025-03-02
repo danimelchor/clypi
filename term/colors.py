@@ -99,6 +99,10 @@ def _apply_style(s: str, style: StyleCode) -> str:
     return f"{_code(start)}{s}{_code(0)}"
 
 
+def _reset(s: str) -> str:
+    return f"{_code(0)}{s}"
+
+
 def remove_style(s: str):
     return ANSI_ESCAPE.sub("", s)
 
@@ -117,6 +121,7 @@ def styler(
     blink: bool = False,
     reverse: bool = False,
     strikethrough: bool = False,
+    reset: bool = False,
 ) -> Styler:
     def inner(*messages: t.Any):
         text = " ".join(str(m) for m in messages)
@@ -129,6 +134,7 @@ def styler(
         text = _apply_style(text, StyleCode.BLINK) if blink else text
         text = _apply_style(text, StyleCode.REVERSE) if reverse else text
         text = _apply_style(text, StyleCode.STRIKETHROUGH) if strikethrough else text
+        text = _reset(text) if reset else text
         return text
 
     return inner
@@ -145,6 +151,7 @@ def style(
     blink: bool = False,
     reverse: bool = False,
     strikethrough: bool = False,
+    reset: bool = False,
 ) -> str:
     return styler(
         fg=fg,
@@ -156,6 +163,7 @@ def style(
         blink=blink,
         reverse=reverse,
         strikethrough=strikethrough,
+        reset=reset,
     )(*messages)
 
 
@@ -170,6 +178,7 @@ def print(
     blink: bool = False,
     reverse: bool = False,
     strikethrough: bool = False,
+    reset: bool = False,
     end: str | None = "\n",
 ):
     text = style(
@@ -183,5 +192,6 @@ def print(
         blink=blink,
         reverse=reverse,
         strikethrough=strikethrough,
+        reset=reset,
     )
     builtins.print(text, end=end)

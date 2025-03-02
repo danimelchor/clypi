@@ -2,6 +2,8 @@ import asyncio
 from dataclasses import dataclass
 from typing import Literal
 
+from typing_extensions import override
+
 import term
 from term.cli import Command, field
 
@@ -36,16 +38,16 @@ class Run(Command):
 @dataclass
 class Lint(Command):
     """
-    Lints all of the files in a given directory using the latest ruff
+    Lints all of the files in a given directory using the latest termuff
     rules.
     """
 
     quiet: bool = field(help="If the linter should omit all stdout messages")
-    no_cache: bool = field(help="Disable the ruff cache")
+    no_cache: bool = field(help="Disable the termuff cache")
     files: list[str] = field(help="The list of files to lint")
     index: str = field(
         default="http://pypi.org",
-        help="The index to download ruff from",
+        help="The index to download termuff from",
     )
 
     async def run(self):
@@ -56,7 +58,22 @@ class Lint(Command):
 
 @dataclass
 class Main(Command):
+    """
+    Termuff is a powerful command line interfact to lint and
+    run arbitrary files.
+    """
+
     subcommand: Run | Lint
+
+    @override
+    @classmethod
+    def prog(cls):
+        return "termuff"
+
+    @override
+    @classmethod
+    def epilog(cls):
+        return "Learn more at http://termuff.org"
 
 
 if __name__ == "__main__":
