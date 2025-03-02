@@ -42,7 +42,7 @@ if __name__ == "__main__":
 <details>
     <summary><code>uv run -m examples.basic_cli -h</code></summary>
     <p align="center">
-        <img width="1699" alt="image" src="https://github.com/user-attachments/assets/ed3dc70f-1f3c-4fe9-b290-b7aae380acc2" />
+        <img width="1694" alt="image" src="https://github.com/user-attachments/assets/91279a3e-cecd-4ac3-a1e7-38507b1d8ddb" />
     </p>
 </details>
 
@@ -63,7 +63,7 @@ if __name__ == "__main__":
 <details>
     <summary><code>uv run -m examples.basic_cli lint</code></summary>
     <p align="center">
-        <img width="1695" alt="image" src="https://github.com/user-attachments/assets/0be2daa1-9d09-42a9-a4eb-22616faf705e" />
+        <img width="1692" alt="image" src="https://github.com/user-attachments/assets/f4e08d8f-affd-4e74-9dc2-d4baa7be0f62" />
     </p>
 </details>
 
