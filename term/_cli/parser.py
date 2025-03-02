@@ -151,6 +151,7 @@ def from_v6e(_type: t.Any) -> t.Callable[[t.Any], t.Any] | None:
         int: v.int(),
         float: v.float(),
         str: v.str(),
+        Path: v.path(),
         datetime: v.datetime(),
         timedelta: v.timedelta(),
     }
