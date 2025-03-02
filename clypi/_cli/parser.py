@@ -147,7 +147,7 @@ def _parse_none(value: t.Any) -> None:
 
 
 def from_v6e(_type: t.Any) -> t.Callable[[t.Any], t.Any] | None:
-    import v6e as v
+    import v6e as v  # type: ignore
 
     v6e_builtins = {
         bool: v.bool(),

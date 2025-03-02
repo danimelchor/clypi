@@ -9,7 +9,7 @@ import typing as t
 from dataclasses import dataclass
 from types import NoneType, UnionType
 
-from Levenshtein import distance
+from Levenshtein import distance  # type: ignore
 
 from clypi._cli import config as _conf
 from clypi._cli import parser, type_util
