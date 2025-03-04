@@ -18,12 +18,25 @@ class Box:
     br: str
     x: str
     y: str
-    myt: str
-    myb: str
-    mxl: str
-    mxr: str
-    mm: str
 
+
+_ROUNDED = Box(
+    tl="╭",
+    tr="╮",
+    bl="╰",
+    br="╯",
+    x="─",
+    y="│",
+)
+
+_THIN = Box(
+    tl="┌",
+    tr="┐",
+    bl="└",
+    br="┘",
+    x="─",
+    y="│",
+)
 
 _HEAVY = Box(
     tl="┏",
@@ -32,13 +45,14 @@ _HEAVY = Box(
     br="┛",
     x="━",
     y="┃",
-    myt="┳",
-    myb="┻",
-    mxl="┣",
-    mxr="┫",
-    mm="╋",
 )
 
 
 class Boxes(Enum):
+    ROUNDED = _ROUNDED
+    THIN = _THIN
     HEAVY = _HEAVY
+
+    def human_name(self):
+        name = self.name
+        return " ".join(p.capitalize() for p in name.split("_"))

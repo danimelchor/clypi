@@ -18,7 +18,13 @@ uv run --all-extras -m examples.spinner
 uv run --all-extras -m examples.prompts
 ```
 
+### Docs
+
+Read [the API docs](https://github.com/danimelchor/clypi/blob/master/docs/index.md) for examples and a full API reference.
+
 ## CLI
+
+Read the [docs](https://github.com/danimelchor/clypi/blob/master/docs/index.md#cli)
 
 ```python
 # examples/basic_cli.py
@@ -41,6 +47,13 @@ if __name__ == "__main__":
     cli: MyCli = MyCli.parse()
     cli.start()
 ```
+
+<details open>
+    <summary><code>uv run -m examples.basic_cli lin</code> (Typo)</summary>
+    <p align="center">
+        <img width="1696" alt="image" src="https://github.com/user-attachments/assets/c75b2cb0-2f2e-4907-86cb-2f62122c0c70" />
+    </p>
+</details>
 
 <details>
     <summary><code>uv run -m examples.basic_cli -h</code> (Main help page)</summary>
@@ -70,15 +83,10 @@ if __name__ == "__main__":
     </p>
 </details>
 
-<details>
-    <summary><code>uv run -m examples.basic_cli lin</code> (Typo)</summary>
-    <p align="center">
-        <img width="1696" alt="image" src="https://github.com/user-attachments/assets/c75b2cb0-2f2e-4907-86cb-2f62122c0c70" />
-    </p>
-</details>
-
 
 ## ❓ Prompting
+
+Read the [docs](https://github.com/danimelchor/clypi/blob/master/docs/index.md#prompt)
 
 First, you'll need to import the `clypi` module:
 ```python
@@ -89,7 +97,7 @@ answer = clypi.prompt("Are you going to use clypi?", default=True, parser=bool)
 
 ## 🌈 Colors
 
-
+Read the [docs](https://github.com/danimelchor/clypi/blob/master/docs/index.md#colors)
 
 ```python
 # demo.py
@@ -107,14 +115,7 @@ print("The old version said", wrong("Pluto was a planet"))
 print("The old version said", wrong("the Earth was flat"))
 ```
 
-<details>
-    <summary><code>uv run demo.py</code></summary>
-    <p align="center">
-      <img width="487" alt="image" src="https://github.com/user-attachments/assets/0ee3b49d-0358-4d8c-8704-2da89529b4f5" />
-    </p>
-</details>
-
-<details>
+<details open>
     <summary><code>uv run -m examples.colors</code></summary>
     <p align="center">
         <img width="974" alt="image" src="https://github.com/user-attachments/assets/9340d828-f7ce-491c-b0a8-6a666f7b7caf" />
@@ -122,7 +123,17 @@ print("The old version said", wrong("the Earth was flat"))
 </details>
 
 
+<details>
+    <summary><code>uv run demo.py</code></summary>
+    <p align="center">
+      <img width="487" alt="image" src="https://github.com/user-attachments/assets/0ee3b49d-0358-4d8c-8704-2da89529b4f5" />
+    </p>
+</details>
+
+
 ## 🌀 Spinners
+
+Read the [docs](https://github.com/danimelchor/clypi/blob/master/docs/index.md#spinners)
 
 ```python
 # demo.py
@@ -137,18 +148,17 @@ async def main():
 
 asyncio.run(main())
 ```
+<details open>
+    <summary><code>uv run -m examples.spinner</code></summary>
+    <p align="center">
+      <video src="https://github.com/user-attachments/assets/f641a4fe-59fa-4bc1-b31a-bb642c507a20" />
+    </p>
+</details>
 
 <details>
     <summary><code>uv run demo.py</code></summary>
     <p align="center">
       <video src="https://github.com/user-attachments/assets/c0b4dc28-f6d4-4891-a9fa-be410119bd83" />
-    </p>
-</details>
-
-<details>
-    <summary><code>uv run -m examples.spinner</code></summary>
-    <p align="center">
-      <video src="https://github.com/user-attachments/assets/f641a4fe-59fa-4bc1-b31a-bb642c507a20" />
     </p>
 </details>
 
