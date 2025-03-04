@@ -22,6 +22,8 @@ logger = logging.getLogger(__name__)
 # re-exports
 config = _conf.config
 
+HELP_ARGS: tuple[str, ...] = ("help", "-h", "--help")
+
 
 def _camel_to_dashed(s: str):
     return re.sub(r"(?<!^)(?=[A-Z])", "-", s).lower()
@@ -304,9 +306,10 @@ class Command(metaclass=_CommandMeta):
         # The subcommand we need to parse
         subcommand: type[Command] | None = None
 
+        requested_help = sys.argv[-1].lower() in HELP_ARGS
         for a in args:
             parsed = parser.parse_as_attr(a)
-            if parsed.value == "help" or (not parsed.is_pos() and parsed.value == "h"):
+            if parsed.orig.lower() in HELP_ARGS:
                 cls.print_help(parents=parents)
 
             # ---- Try to parse as a subcommand ----
@@ -366,31 +369,33 @@ class Command(metaclass=_CommandMeta):
             unparsed[current_attr.name] = current_attr.collected
             current_attr = None
 
-        # --- Parse as the correct values ---
+        # If the user requested help, skip prompting/parsing
         parsed_kwargs = {}
-        for field, field_conf in cls.fields().items():
-            # Get the value passed in, prompt, or the provided default
-            if field in unparsed:
-                value = field_conf.parser(unparsed[field])
-            elif field_conf.prompt is not None:
-                value = prompt(
-                    field_conf.prompt,
-                    default=field_conf.get_default_or_missing(),
-                    hide_input=field_conf.hide_input,
-                    max_attempts=field_conf.max_attempts,
-                    parser=field_conf.parser,
-                )
-            elif field_conf.has_default():
-                value = field_conf.get_default()
-            elif field_conf.forwarded:
-                if field not in parent_attrs:
+        if not requested_help:
+            # --- Parse as the correct values ---
+            for field, field_conf in cls.fields().items():
+                # Get the value passed in, prompt, or the provided default
+                if field in unparsed:
+                    value = field_conf.parser(unparsed[field])
+                elif field_conf.prompt is not None:
+                    value = prompt(
+                        field_conf.prompt,
+                        default=field_conf.get_default_or_missing(),
+                        hide_input=field_conf.hide_input,
+                        max_attempts=field_conf.max_attempts,
+                        parser=field_conf.parser,
+                    )
+                elif field_conf.has_default():
+                    value = field_conf.get_default()
+                elif field_conf.forwarded:
+                    if field not in parent_attrs:
+                        raise ValueError(f"Missing required argument {field}")
+                    value = parent_attrs[field]
+                else:
                     raise ValueError(f"Missing required argument {field}")
-                value = parent_attrs[field]
-            else:
-                raise ValueError(f"Missing required argument {field}")
 
-            # Try parsing the string as the right type
-            parsed_kwargs[field] = value
+                # Try parsing the string as the right type
+                parsed_kwargs[field] = value
 
         # --- Parse the subcommand passing in the parsed types ---
         if not subcommand and None not in cls.subcommands():
