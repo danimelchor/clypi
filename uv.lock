@@ -4,10 +4,9 @@ requires-python = ">=3.11"
 
 [[package]]
 name = "clypi"
-version = "0.1.16"
+version = "0.1.17"
 source = { editable = "." }
 dependencies = [
-    { name = "mypy" },
     { name = "typing-extensions" },
 ]
 
@@ -25,7 +24,6 @@ examples = [
 [package.metadata]
 requires-dist = [
     { name = "mypy", marker = "extra == 'dev'", specifier = ">=1.15.0" },
-    { name = "mypy", extras = ["dev"], specifier = ">=1.15.0" },
     { name = "pyright", marker = "extra == 'dev'", specifier = ">=1.1.394" },
     { name = "pytest", marker = "extra == 'dev'", specifier = ">=8.3.4" },
     { name = "ruff", marker = "extra == 'dev'", specifier = ">=0.9.7" },
