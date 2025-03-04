@@ -4,7 +4,7 @@ requires-python = ">=3.11"
 
 [[package]]
 name = "clypi"
-version = "0.1.16"
+version = "0.1.17"
 source = { editable = "." }
 dependencies = [
     { name = "typing-extensions" },
