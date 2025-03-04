@@ -102,7 +102,7 @@ class TermFormatter:
             name.append(n)
             type_str.append(ts)
             help.append(hp)
-        return list(boxed(stack(name, type_str, help, lines=True), title="_Arguments"))
+        return list(boxed(stack(name, type_str, help, lines=True), title="Arguments"))
 
     def _format_subcommand(self, subcmd: _SubCommand) -> t.Any:
         name = clypi.style(subcmd.name, fg="blue", bold=True)
