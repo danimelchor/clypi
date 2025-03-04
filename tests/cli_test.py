@@ -69,11 +69,14 @@ def test_expected_positional():
 
 def test_expected_subcommands():
     pos = ExampleCommand.subcommands()
-    assert len(pos) == 1
+    assert len(pos) == 2
 
-    assert pos["example-sub-command"].name == "example-sub-command"
-    assert pos["example-sub-command"].klass == ExampleSubCommand
-    assert pos["example-sub-command"].help == "Some sample docs"
+    assert pos[None] is None
+
+    sub = pos["example-sub-command"]
+    assert sub is ExampleSubCommand
+    assert sub.prog() == "example-sub-command"
+    assert sub.help() == "Some sample docs"
 
 
 @patch("os.get_terminal_size")
@@ -105,3 +108,7 @@ def test_expected_parsing_subcmd(gts):
     assert sc.positional == ("some_file.json",)
 
     assert asyncio.run(ec.astart()) == "subcommand"
+
+
+def test_expected_cls_introspection():
+    assert ExampleCommand.option == []

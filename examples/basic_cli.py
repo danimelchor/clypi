@@ -14,7 +14,7 @@ class MyCli(Command):
     my-cli is a very nifty demo CLI tool
     """
 
-    subcommand: Lint | None = None
+    subcommand: Lint
     verbose: bool = config(
         help="Wether to show extra logs",
         prompt="Do you want to see extra logs?",
