@@ -198,7 +198,7 @@ def parse_slack(value: t.Any) -> str:
     return value
 
 class MyCommand(Command):
-    verbose: bool = config(parser=parse_slack, default=True)
+    slack: str = config(parser=parse_slack)
 ```
 
 Optionally, you can use packages like [v6e](https://github.com/danimelchor/v6e) to parse the input:
