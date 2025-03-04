@@ -6,16 +6,13 @@
 [![PyPI - Downloads](https://img.shields.io/pypi/dm/clypi)](https://pypi.org/project/clypi/)
 [![Contributors](https://img.shields.io/github/contributors/danimelchor/clypi)](https://github.com/danimelchor/clypi/graphs/contributors)
 
-Type-safe Python CLI prompts with validations, retries, custom messages, etc.
+Your all-in-one for beautiful, lightweight, prod-ready CLIs
 
 ### Examples
 
-Check out the examples in `./examples`! You can run them locally with:
+Check out the examples in `./examples`! You can run them locally with `uv run --all-extras -m examples.<example>`. E.g.:
 ```
 uv run --all-extras -m examples.cli
-uv run --all-extras -m examples.colors
-uv run --all-extras -m examples.spinner
-uv run --all-extras -m examples.prompts
 ```
 
 ### Docs
