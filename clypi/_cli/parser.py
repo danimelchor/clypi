@@ -200,7 +200,7 @@ class CurrentCtx:
     nargs: Nargs = 0
     max_nargs: Nargs = 0
 
-    _collected: list[t.Any] = field(init=False, default_factory=list)
+    _collected: list[str] = field(init=False, default_factory=list)
 
     def has_more(self) -> bool:
         if isinstance(self.nargs, float | int):
@@ -214,7 +214,7 @@ class CurrentCtx:
             return True
         return False
 
-    def collect(self, item: t.Any) -> None:
+    def collect(self, item: str) -> None:
         if isinstance(self.nargs, float | int):
             self.nargs -= 1
         elif self.nargs == "+":
@@ -223,7 +223,7 @@ class CurrentCtx:
         self._collected.append(item)
 
     @property
-    def collected(self) -> t.Any:
+    def collected(self) -> str | list[str]:
         if self.max_nargs == 1:
             return self._collected[0]
         return self._collected

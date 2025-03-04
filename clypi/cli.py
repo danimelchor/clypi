@@ -14,6 +14,8 @@ from Levenshtein import distance  # type: ignore
 from clypi._cli import config as _conf
 from clypi._cli import parser, type_util
 from clypi._cli.formatter import TermFormatter
+from clypi._util import _UNSET
+from clypi.prompts import prompt
 
 logger = logging.getLogger(__name__)
 
@@ -26,7 +28,7 @@ def _camel_to_dashed(s: str):
 
 
 @dataclass
-class Argument:
+class _Argument:
     name: str
     arg_type: t.Any
     help: str | None
@@ -62,21 +64,16 @@ class Argument:
 
 
 @dataclass
-class SubCommand:
+class _SubCommand:
     name: str
     klass: type[Command]
-    help: str
+    help: str | None
 
 
 class Command:
-    @t.final
-    @classmethod
-    def name(cls):
-        return _camel_to_dashed(cls.__name__)
-
     @classmethod
     def prog(cls) -> str:
-        return cls.name()
+        return _camel_to_dashed(cls.__name__)
 
     @classmethod
     def epilog(cls) -> str | None:
@@ -125,7 +122,7 @@ class Command:
         """
         defaults: dict[str, _conf.Config[t.Any]] = {}
         for field, _type in inspect.get_annotations(cls).items():
-            default = getattr(cls, field, _conf.MISSING)
+            default = getattr(cls, field, _UNSET)
             if isinstance(default, _conf.PartialConfig):
                 defaults[field] = _conf.Config.from_partial(
                     default,
@@ -142,7 +139,7 @@ class Command:
 
     @t.final
     @classmethod
-    def _next_positional(cls, kwargs: dict[str, t.Any]) -> Argument | None:
+    def _next_positional(cls, kwargs: dict[str, t.Any]) -> _Argument | None:
         """
         Traverse the current collected arguments and find the next positional
         arg we can assign to.
@@ -209,7 +206,7 @@ class Command:
         """
 
         # The kwars used to initialize the dataclass
-        kwargs: dict[str, t.Any] = {}
+        kwargs: dict[str, str | list[str] | Command] = {}
 
         # The current option or positional arg being parsed
         current_attr = parser.CurrentCtx()
@@ -266,7 +263,7 @@ class Command:
 
                 # Boolean flags don't need to parse more args later on
                 if option.nargs == 0:
-                    kwargs[long_name] = True
+                    kwargs[long_name] = "yes"
                 else:
                     current_attr = parser.CurrentCtx(
                         option.name, option.nargs, option.nargs
@@ -296,51 +293,72 @@ class Command:
         # Parse as the correct values and assign to the instance
         instance = cls()
         for field, field_conf in cls.fields().items():
-            if field not in kwargs and not field_conf.has_default():
-                raise ValueError(f"Missing required argument {field}")
-
-            # Get the value passed in or the provided default
-            value = kwargs[field] if field in kwargs else field_conf.get_default()
-
             # Subcommands are already parsed properly
             if field == "subcommand":
-                setattr(instance, field, value)
+                if field not in kwargs and not field_conf.has_default():
+                    raise ValueError("Missing required subcommand")
+                elif field in kwargs:
+                    setattr(instance, field, kwargs[field])
                 continue
 
+            # Get the value passed in, prompt, or the provided default
+            if field in kwargs:
+                unparsed = kwargs[field]
+                if t.TYPE_CHECKING:
+                    assert not isinstance(unparsed, Command)
+                value = field_conf.parser(unparsed)
+            elif field_conf.prompt is not None:
+                value = prompt(
+                    field_conf.prompt,
+                    default=field_conf.get_default(),
+                    hide_input=field_conf.hide_input,
+                    max_attempts=field_conf.max_attempts,
+                )
+            elif field_conf.has_default():
+                value = field_conf.get_default()
+            else:
+                raise ValueError(f"Missing required argument {field}")
+
             # Try parsing the string as the right type
-            parsed = field_conf.parser(value)
-            setattr(instance, field, parsed)
+            setattr(instance, field, value)
 
         return instance
 
     @t.final
     @classmethod
-    def subcommands(cls) -> dict[str, SubCommand]:
+    def subcommands(cls) -> dict[str, _SubCommand]:
         if "subcommand" not in cls.fields():
             return {}
 
         # Get the subcommand type/types
         _type = cls.fields()["subcommand"].arg_type
-        subcmds = [_type]
+        subcmds_tmp = [_type]
         if isinstance(_type, UnionType):
-            subcmds = [s for s in _type.__args__ if s is not NoneType]
+            subcmds_tmp = [s for s in _type.__args__ if s is not NoneType]
 
-        for v in subcmds:
+        subcmds: list[type[Command]] = []
+        for v in subcmds_tmp:
             assert inspect.isclass(v) and issubclass(v, Command)
+            subcmds.append(v)
 
         return {
-            s.name(): SubCommand(name=s.name(), klass=s, help=s.help()) for s in subcmds
+            s.prog(): _SubCommand(name=s.prog(), klass=s, help=s.help())
+            for s in subcmds
         }
 
     @t.final
     @classmethod
-    def options(cls) -> dict[str, Argument]:
-        options: dict[str, Argument] = {}
+    def options(cls) -> dict[str, _Argument]:
+        options: dict[str, _Argument] = {}
         for field, field_conf in cls.fields().items():
-            if field == "subcommand" or not field_conf.has_default():
+            if field == "subcommand":
                 continue
 
-            options[field] = Argument(
+            # Is positional
+            if not field_conf.has_default() and field_conf.prompt is None:
+                continue
+
+            options[field] = _Argument(
                 field,
                 type_util.remove_optionality(field_conf.arg_type),
                 help=field_conf.help,
@@ -351,13 +369,17 @@ class Command:
 
     @t.final
     @classmethod
-    def positionals(cls) -> dict[str, Argument]:
-        options: dict[str, Argument] = {}
+    def positionals(cls) -> dict[str, _Argument]:
+        options: dict[str, _Argument] = {}
         for field, field_conf in cls.fields().items():
-            if field == "subcommand" or field_conf.has_default():
+            if field == "subcommand":
                 continue
 
-            options[field] = Argument(
+            # Is option
+            if field_conf.has_default() or field_conf.prompt is not None:
+                continue
+
+            options[field] = _Argument(
                 field,
                 field_conf.arg_type,
                 help=field_conf.help,

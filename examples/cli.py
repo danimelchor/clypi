@@ -91,6 +91,7 @@ class Lint(Command):
     index: str = config(
         default="http://pypi.org",
         help="The index to download termuff from",
+        prompt="What index do you want to download termuff from?",
     )
 
     @debug
