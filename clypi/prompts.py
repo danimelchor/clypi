@@ -27,10 +27,43 @@ T = t.TypeVar("T")
 Parser: t.TypeAlias = t.Callable[[t.Any], T]
 
 
+@t.overload
 def prompt(
     text: str,
+    *,
+    default: str | Unset = _UNSET,
+    hide_input: bool = False,
+    max_attempts: int = MAX_ATTEMPTS,
+) -> str: ...
+
+
+@t.overload
+def prompt(
+    text: str,
+    *,
+    parser: type[T],
     default: T | Unset = _UNSET,
-    parser: Parser[T] = str,
+    hide_input: bool = False,
+    max_attempts: int = MAX_ATTEMPTS,
+) -> T: ...
+
+
+@t.overload
+def prompt(
+    text: str,
+    *,
+    parser: Parser[T],
+    default: T | Unset = _UNSET,
+    hide_input: bool = False,
+    max_attempts: int = MAX_ATTEMPTS,
+) -> T: ...
+
+
+def prompt(
+    text: str,
+    *,
+    parser: Parser[T] | type[T] | type[str] = str,
+    default: T | Unset = _UNSET,
     hide_input: bool = False,
     max_attempts: int = MAX_ATTEMPTS,
 ) -> T:
@@ -63,6 +96,8 @@ def prompt(
 
         # User answered the prompt -- Parse
         try:
+            if t.TYPE_CHECKING:
+                parser = t.cast(Parser[T], parser)
             parsed_inp = parser(inp)
         except (ValueError, TypeError) as e:
             _error(f"Unable to parse {inp!r}, please provide a valid value.\n  ↳  {e}")

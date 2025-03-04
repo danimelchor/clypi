@@ -212,6 +212,8 @@ class Command(metaclass=_CommandMeta):
             if pos.name not in kwargs:
                 return pos
 
+        return None
+
     @t.final
     @classmethod
     def _get_long_name(cls, short: str) -> str | None:
@@ -272,6 +274,8 @@ class Command(metaclass=_CommandMeta):
         except (ValueError, TypeError) as e:
             cls.print_help(parents, exception=e)
 
+        assert False, "Should never happen"
+
     @t.final
     @classmethod
     def _parse(
@@ -293,7 +297,7 @@ class Command(metaclass=_CommandMeta):
         unparsed = {}
 
         # The current option or positional arg being parsed
-        current_attr = parser.CurrentCtx()
+        current_attr: parser.CurrentCtx = parser.CurrentCtx()
 
         def flush_ctx():
             nonlocal current_attr
@@ -301,7 +305,7 @@ class Command(metaclass=_CommandMeta):
                 raise ValueError(f"Not enough values for {current_attr.name}")
             elif current_attr:
                 unparsed[current_attr.name] = current_attr.collected
-                current_attr = None
+                current_attr = parser.CurrentCtx()
 
         # The subcommand we need to parse
         subcommand: type[Command] | None = None
@@ -367,7 +371,7 @@ class Command(metaclass=_CommandMeta):
         # If we finished the loop and we haven't saved current_attr, save it
         if current_attr.name and not current_attr.needs_more():
             unparsed[current_attr.name] = current_attr.collected
-            current_attr = None
+            current_attr = parser.CurrentCtx()
 
         # If the user requested help, skip prompting/parsing
         parsed_kwargs = {}
@@ -423,7 +427,7 @@ class Command(metaclass=_CommandMeta):
         if subcmds is None:
             return {None: None}
 
-        ret = {}
+        ret: dict[str | None, type[Command] | None] = {}
         for sub in subcmds:
             if issubclass(sub, Command):
                 ret[sub.prog()] = sub

@@ -27,5 +27,8 @@ jobs:
       - name: "Python lint"
         run: uvx ruff check .
 
-      - name: "Python type checking"
-        run: uvx pyright clypi/ pyright_tests/
+      - name: "Python type checking -- Pyright"
+        run: uvx pyright clypi/ type_tests/'
+
+      - name: "Python type checking -- Mypy"
+        run: uvx mypy clypi/ type_tests/
