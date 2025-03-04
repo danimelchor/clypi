@@ -424,7 +424,7 @@ Examples:
 ### `Parser[T]`
 
 ```python
-Parser: TypeAlias = Callable[[Any], T]
+Parser: TypeAlias = Callable[[Any], T] | type[T]
 ```
 A function taking in any value and returns a value of type `T`. This parser
 can be a user defined function, a built-in type like `str`, `int`, etc., or a parser
