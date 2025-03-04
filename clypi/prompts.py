@@ -40,7 +40,6 @@ def prompt(
     parser: Parser[T] = str,
     hide_input: bool = False,
     max_attempts: int = MAX_ATTEMPTS,
-    provided: T | None = None,
 ) -> T:
     """
     Prompt the user for a value.
@@ -49,13 +48,8 @@ def prompt(
     :param default: The default value.
     :param parser: The parser function parse the input with.
     :param max_attempts: The maximum number of attempts to get a valid value.
-    :param provided: The value the user passed in as a command line argument.
     :return: The parsed value.
     """
-
-    # If the value was provided as a command line argument, use that
-    if provided is not None:
-        return provided
 
     # Build the prompt
     prompt = text
