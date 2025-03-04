@@ -3,7 +3,7 @@ from clypi import Command, config
 
 class Lint(Command):
     files: tuple[str, ...]
-    verbose: bool = config(forwarded=True)  # Comes from MyCli but I want to use it too
+    verbose: bool = config(...)  # Comes from MyCli but I want to use it too
 
     async def run(self):
         print(f"Linting {', '.join(self.files)} and {self.verbose=}")
