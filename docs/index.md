@@ -29,6 +29,13 @@ Examples:
 
 ### `Boxes`
 
+```python
+class Boxes(Enum): ...
+```
+
+The border style you'd like to use. To see all the box styles in action run `uv run -m examples.boxed`.
+
+
 ### `boxed`
 
 ```python
@@ -331,8 +338,6 @@ Examples:
 > print(clypi.style("This is blue", fg="blue"), "and", clypi.style("this is red", fg="red"))
 > ```
 
-
-
 ### `print`
 
 ```python
@@ -391,6 +396,16 @@ Parameters:
 
 ## Spinners
 
+### `Spin`
+
+```python
+class Spin(Enum): ...
+```
+
+The spinning animation you'd like to use. The spinners are sourced from the NPM [cli-spinners](https://www.npmjs.com/package/cli-spinners) package.
+
+You can see all the spinners in action by running `uv run -m examples.spinner`. The full list can be found in the code [here](https://github.com/danimelchor/clypi/blob/master/clypi/_data/spinners.py).
+
 ### `Spinner`
 
 A spinner indicating that something is happening behind the scenes. Usage is quite easy:
@@ -423,7 +438,7 @@ def __init__(
 ```
 Parameters:
 - `title`: the initial text to display as the spinner spins
-- `animation`: a provided `Spin` animation or a list of frames to display
+- `animation`: a provided [`Spin`](#spin) animation or a list of frames to display
 - `prefix`: text or padding displayed before the icon
 - `suffix`: text or padding displayed after the icon
 - `speed`: a multiplier to speed or slow down the frame rate of the animation

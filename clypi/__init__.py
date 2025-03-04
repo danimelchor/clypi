@@ -3,15 +3,17 @@ from importlib import import_module
 
 if t.TYPE_CHECKING:
     from clypi.align import AlignType, align
-    from clypi.boxed import boxed
+    from clypi.boxed import Boxes, boxed
     from clypi.cli import Command, config
-    from clypi.colors import print, style, styler
+    from clypi.colors import ALL_COLORS, print, style, styler
     from clypi.prompts import prompt
     from clypi.spinner import Spinner
     from clypi.stack import stack
 
 __all__ = (
+    "ALL_COLORS",
     "AlignType",
+    "Boxes",
     "Command",
     "Spinner",
     "align",
@@ -25,8 +27,12 @@ __all__ = (
 )
 
 _dynamic_imports: dict[str, tuple[str, str]] = {
+    "ALL_COLORS": (__spec__.parent, ".colors"),
+    "AlignType": (__spec__.parent, ".align"),
+    "Boxes": (__spec__.parent, ".boxed"),
     "Command": (__spec__.parent, ".cli"),
     "Spinner": (__spec__.parent, ".spinner"),
+    "align": (__spec__.parent, ".align"),
     "boxed": (__spec__.parent, ".boxed"),
     "config": (__spec__.parent, ".cli"),
     "print": (__spec__.parent, ".colors"),
@@ -34,8 +40,6 @@ _dynamic_imports: dict[str, tuple[str, str]] = {
     "stack": (__spec__.parent, ".stack"),
     "style": (__spec__.parent, ".colors"),
     "styler": (__spec__.parent, ".colors"),
-    "align": (__spec__.parent, ".align"),
-    "AlignType": (__spec__.parent, ".align"),
 }
 
 

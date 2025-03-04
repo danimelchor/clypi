@@ -1,18 +1,17 @@
 from __future__ import annotations
 
-from typing import Generator, cast
+from typing import Generator
 
 import clypi
-from clypi.colors import ColorType, _color_codes
+from clypi.colors import ALL_COLORS, ColorType
 
 
 # --- DEMO UTILS ---
 def _all_colors() -> Generator[tuple[ColorType, ...], None, None]:
-    for color in _color_codes:
-        yield (
-            cast(ColorType, f"{color}"),
-            cast(ColorType, f"bright_{color}"),
-        )
+    mid = len(ALL_COLORS) // 2
+    normal, bright = ALL_COLORS[:mid], ALL_COLORS[mid:]
+    for color in zip(normal, bright):
+        yield color
 
 
 # --- DEMO START ---
