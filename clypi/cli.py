@@ -7,7 +7,6 @@ import re
 import sys
 import typing as t
 from dataclasses import dataclass
-from functools import lru_cache
 from types import NoneType, UnionType
 
 from Levenshtein import distance  # type: ignore
@@ -59,23 +58,95 @@ class _Argument:
 
     @property
     def short_display_name(self):
-        assert self.short
+        assert self.short, f"Expected short to be set in {self}"
         name = parser.snake_to_dash(self.short)
         return f"-{name}"
 
 
-@dataclass
-class _SubCommand:
-    name: str
-    klass: type[Command]
-    help: str | None
+class _CommandMeta(type):
+    def __init__(cls, name, bases, dct) -> None:
+        cls._configure_fields()
+        cls._configure_subcommands()
 
-    @property
-    def display_name(self):
-        return self.name
+    @t.final
+    def _configure_fields(cls) -> None:
+        """
+        Parses the type hints from the class extending Command and assigns each
+        a _Config field with all the necessary info to display and parse them.
+        """
+        annotations: dict[str, t.Any] = inspect.get_annotations(cls, eval_str=True)
+
+        # Ensure each field is annotated
+        for name, value in cls.__dict__.items():
+            if (
+                not name.startswith("_")
+                and not isinstance(value, classmethod)
+                and not callable(value)
+                and name not in annotations
+            ):
+                raise TypeError(f"{name!r} has no type annotation")
+
+        # Get the field config for each field
+        fields: dict[str, _conf.Config[t.Any]] = {}
+        for field, _type in annotations.items():
+            if field == "subcommand":
+                continue
+
+            default = getattr(cls, field, _UNSET)
+            if isinstance(default, _conf.PartialConfig):
+                value = _conf.Config.from_partial(
+                    default,
+                    parser=default.parser or parser.from_type(_type),
+                    arg_type=_type,
+                )
+            else:
+                value = _conf.Config(
+                    default=default,
+                    parser=parser.from_type(_type),
+                    arg_type=_type,
+                )
+
+            fields[field] = value
+
+            # Set the values in the class properly instead of keeping the
+            # _Config classes around
+            if not value.has_default() and hasattr(cls, field):
+                delattr(cls, field)
+            elif value.has_default():
+                setattr(cls, field, value.get_default())
+
+        setattr(cls, "__clypi_fields__", fields)
+
+    @t.final
+    def _configure_subcommands(cls) -> None:
+        """
+        Parses the type hints from the class extending Command and stores the
+        subcommand class if any
+        """
+        annotations: dict[str, t.Any] = inspect.get_annotations(cls, eval_str=True)
+        if "subcommand" not in annotations:
+            return
+
+        _type = annotations["subcommand"]
+        subcmds_tmp = [_type]
+        if isinstance(_type, UnionType):
+            subcmds_tmp = [s for s in _type.__args__ if s]
+
+        subcmds: list[type[Command] | type[None]] = []
+        for v in subcmds_tmp:
+            if inspect.isclass(v) and issubclass(v, Command):
+                subcmds.append(v)
+            elif v is NoneType:
+                subcmds.append(v)
+            else:
+                raise TypeError(
+                    f"Did not expect to see a subcommand {v} of type {type(v)}"
+                )
+
+        setattr(cls, "__clypi_subcommands__", subcmds)
 
 
-class Command:
+class Command(metaclass=_CommandMeta):
     @classmethod
     def prog(cls) -> str:
         return _camel_to_dashed(cls.__name__)
@@ -117,42 +188,12 @@ class Command:
 
     @t.final
     @classmethod
-    @lru_cache
     def fields(cls) -> dict[str, _conf.Config[t.Any]]:
         """
         Parses the type hints from the class extending Command and assigns each
         a _Config field with all the necessary info to display and parse them.
         """
-        annotations: dict[str, t.Any] = inspect.get_annotations(cls, eval_str=True)
-
-        # Ensure each field is annotated
-        for name, value in cls.__dict__.items():
-            if (
-                not name.startswith("_")
-                and not isinstance(value, classmethod)
-                and not callable(value)
-                and name not in annotations
-            ):
-                raise TypeError(f"{name!r} has no type annotation")
-
-        # Get the field config for each field
-        fields: dict[str, _conf.Config[t.Any]] = {}
-        for field, _type in annotations.items():
-            default = getattr(cls, field, _UNSET)
-            if isinstance(default, _conf.PartialConfig):
-                fields[field] = _conf.Config.from_partial(
-                    default,
-                    parser=default.parser or parser.from_type(_type),
-                    arg_type=_type,
-                )
-            else:
-                fields[field] = _conf.Config(
-                    default=default,
-                    parser=parser.from_type(_type),
-                    arg_type=_type,
-                )
-
-        return fields
+        return getattr(cls, "__clypi_fields__")
 
     @t.final
     @classmethod
@@ -188,13 +229,13 @@ class Command:
         similar = None
 
         if arg.is_pos():
-            all_pos: list[_SubCommand | _Argument] = [
-                *cls.subcommands().values(),
-                *cls.positionals().values(),
+            all_pos: list[str] = [
+                *[s for s in cls.subcommands() if s],
+                *[p.name for p in cls.positionals().values()],
             ]
             for pos in all_pos:
-                if distance(pos.name, arg.value) < 3:
-                    similar = pos.name
+                if distance(pos, arg.value) < 3:
+                    similar = pos
                     break
         else:
             for opt in cls.options().values():
@@ -269,8 +310,8 @@ class Command:
                 cls.print_help(parents=parents)
 
             # ---- Try to parse as a subcommand ----
-            if parsed.is_pos() and (subcmd := cls.subcommands().get(parsed.value)):
-                subcommand = subcmd.klass
+            if parsed.is_pos() and parsed.value in cls.subcommands():
+                subcommand = cls.subcommands()[parsed.value]
                 break
 
             # ---- Try to set to the current option ----
@@ -328,9 +369,6 @@ class Command:
         # --- Parse as the correct values ---
         parsed_kwargs = {}
         for field, field_conf in cls.fields().items():
-            if field == "subcommand":
-                continue
-
             # Get the value passed in, prompt, or the provided default
             if field in unparsed:
                 value = field_conf.parser(unparsed[field])
@@ -355,7 +393,9 @@ class Command:
             parsed_kwargs[field] = value
 
         # --- Parse the subcommand passing in the parsed types ---
-        if subcommand:
+        if not subcommand and None not in cls.subcommands():
+            raise ValueError("Missing required subcommand")
+        elif subcommand:
             parsed_kwargs["subcommand"] = subcommand._safe_parse(
                 args,
                 parents=parents + [cls.prog()],
@@ -370,32 +410,28 @@ class Command:
 
     @t.final
     @classmethod
-    def subcommands(cls) -> dict[str, _SubCommand]:
-        if "subcommand" not in cls.fields():
-            return {}
+    def subcommands(cls) -> dict[str | None, type[Command] | None]:
+        subcmds = t.cast(
+            list[type[Command] | type[None]] | None,
+            getattr(cls, "__clypi_subcommands__", None),
+        )
+        if subcmds is None:
+            return {None: None}
 
-        # Get the subcommand type/types
-        _type = cls.fields()["subcommand"].arg_type
-        subcmds_tmp = [_type]
-        if isinstance(_type, UnionType):
-            subcmds_tmp = [s for s in _type.__args__ if s is not NoneType]
-
-        subcmds: list[type[Command]] = []
-        for v in subcmds_tmp:
-            assert inspect.isclass(v) and issubclass(v, Command)
-            subcmds.append(v)
-
-        return {
-            s.prog(): _SubCommand(name=s.prog(), klass=s, help=s.help())
-            for s in subcmds
-        }
+        ret = {}
+        for sub in subcmds:
+            if issubclass(sub, Command):
+                ret[sub.prog()] = sub
+            else:
+                ret[None] = None
+        return ret
 
     @t.final
     @classmethod
     def options(cls) -> dict[str, _Argument]:
         options: dict[str, _Argument] = {}
         for field, field_conf in cls.fields().items():
-            if field == "subcommand":
+            if field_conf.forwarded:
                 continue
 
             # Is positional
@@ -416,7 +452,7 @@ class Command:
     def positionals(cls) -> dict[str, _Argument]:
         options: dict[str, _Argument] = {}
         for field, field_conf in cls.fields().items():
-            if field == "subcommand":
+            if field_conf.forwarded:
                 continue
 
             # Is option
@@ -442,9 +478,6 @@ class Command:
         if list(args_iter):
             raise ValueError(f"Unknown arguments {list(args_iter)}")
 
-        # Clear lru_cache to free up memory
-        cls.fields.cache_clear()
-
         return instance
 
     @t.final
@@ -456,7 +489,7 @@ class Command:
             epilog=cls.epilog(),
             options=list(cls.options().values()),
             positionals=list(cls.positionals().values()),
-            subcommands=list(cls.subcommands().values()),
+            subcommands=[s for s in cls.subcommands().values() if s],
             exception=exception,
         )
         print(tf.format_help())
