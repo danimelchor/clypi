@@ -237,3 +237,7 @@ hours = clypi.prompt(
 )
 reveal_type(hours)  # Type of "res" is "float | timedelta"
 ```
+
+> [!IMPORTANT]
+> This project is still in development. Expect frequent and breaking changes. For upcoming
+> changes, you can follow [the planned work section](https://github.com/danimelchor/clypi/blob/master/docs/planned_work.md).
