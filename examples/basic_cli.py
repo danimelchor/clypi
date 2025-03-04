@@ -4,7 +4,7 @@ from clypi import Command, config
 class Lint(Command):
     files: tuple[str, ...]
 
-    async def run(self, root):
+    async def run(self):
         print(f"Linting {', '.join(self.files)}")
 
 
@@ -21,7 +21,7 @@ class MyCli(Command):
         short="v",
     )
 
-    async def run(self, root):
+    async def run(self):
         print(f"Running the main command with {self.verbose}")
 
 

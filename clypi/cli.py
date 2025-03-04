@@ -90,24 +90,21 @@ class Command:
 
         return doc.replace("\n", " ")
 
-    async def run(self, root: Command) -> None:
+    async def run(self) -> None:
         """
         This function is where the business logic of your command
         should live.
 
         `self` contains the arguments for this command you can access
-        as any other instance property.
-
-        `root` is a pointer to the base command of your CLI so that you
-        can access arguments passed to parent commands.
+        as you would do with any other instance property.
         """
         raise NotImplementedError
 
     @t.final
-    async def astart(self, root: Command | None = None) -> None:
+    async def astart(self) -> None:
         if subcommand := getattr(self, "subcommand", None):
-            return await subcommand.astart(root=root or self)
-        return await self.run(root or self)
+            return await subcommand.astart()
+        return await self.run()
 
     @t.final
     def start(self) -> None:
