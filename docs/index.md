@@ -93,7 +93,7 @@ Parameters:
 - `help`: a brief description to show the user when they pass in `-h` or `--help`
 - `short`: for options it defines a short way to pass in a value (e.g.: `short="v"` allows users to pass in `-v <value>`)
 - `prompt`: if defined, it will ask the user to provide input if not already defined in the command line args
-- `hide_input`: wether the input shouldn't be displayed as the user types (for passwords, API keys, etc.)
+- `hide_input`: whether the input shouldn't be displayed as the user types (for passwords, API keys, etc.)
 - `max_attempts`: how many times to ask the user before giving up and raising
 
 ### `Command`
@@ -197,7 +197,7 @@ You can define custom help messages for each argument using our handy `config` h
 from clypi import Command, config
 
 class MyCommand(Command):
-    verbose: bool = config(help="Wether to show all of the output", default=True)
+    verbose: bool = config(help="Whether to show all of the output", default=True)
 ```
 
 You can also define custom help messages for commands by creating a docstring on the class itself:
@@ -431,7 +431,7 @@ Parameters:
 - `text`: the text to display to the user when asking for input
 - `default`: optionally set a default value that the user can immediately accept
 - `parser`: a function that parses in the user input as a string and returns the parsed value or raises
-- `hide_input`: wether the input shouldn't be displayed as the user types (for passwords, API keys, etc.)
+- `hide_input`: whether the input shouldn't be displayed as the user types (for passwords, API keys, etc.)
 - `max_attempts`: how many times to ask the user before giving up and raising
 
 
