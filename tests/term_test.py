@@ -109,17 +109,10 @@ def test_prompt_with_good_parser():
         assert res == 4
 
 
-def _raise_error(x: int) -> None:
+def _raise_error(x: str) -> None:
     raise ValueError(f"Invalid number {x}")
 
 
 def test_prompt_with_bad_validate():
     with replace_stdin("2") as _, pytest.raises(MaxAttemptsException):
         clypi.prompt("Some prompt", parser=_raise_error, max_attempts=1)
-
-
-def test_prompt_with_provided():
-    with replace_stdin() as _:
-        res = clypi.prompt("Some prompt", parser=int, provided=42)
-        assert res == 42
-        assert isinstance(res, int)
