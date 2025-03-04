@@ -29,6 +29,11 @@ python -m examples.cli
 
 Read [the API docs](https://github.com/danimelchor/clypi/blob/master/docs/index.md) for examples and a full API reference.
 
+> [!IMPORTANT]
+> This project is still in development. Expect frequent and (some) breaking changes. For upcoming
+> releases, you can follow [the planned work section](https://github.com/danimelchor/clypi/blob/master/docs/planned_work.md).
+
+
 ## CLI
 
 Read the [docs](https://github.com/danimelchor/clypi/blob/master/docs/index.md#cli)
