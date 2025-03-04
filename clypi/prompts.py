@@ -1,17 +1,10 @@
 from __future__ import annotations
 
 import typing as t
-from enum import Enum, auto
 from getpass import getpass
 
 import clypi
-
-
-class Unset(Enum):
-    TOKEN = auto()
-
-
-_UNSET = Unset.TOKEN
+from clypi._util import _UNSET, Unset
 
 MAX_ATTEMPTS: int = 20
 

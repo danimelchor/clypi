@@ -8,7 +8,7 @@ from clypi import boxed, stack
 from clypi._cli import type_util
 
 if t.TYPE_CHECKING:
-    from clypi.cli import Argument, SubCommand
+    from clypi.cli import _Argument, _SubCommand
 
 
 @dataclass
@@ -44,12 +44,12 @@ class TermFormatter:
     prog: list[str]
     description: str | None
     epilog: str | None
-    options: list[Argument]
-    positionals: list[Argument]
-    subcommands: list[SubCommand]
+    options: list[_Argument]
+    positionals: list[_Argument]
+    subcommands: list[_SubCommand]
     exception: Exception | None
 
-    def _format_option(self, option: Argument) -> tuple[str, ...]:
+    def _format_option(self, option: _Argument) -> tuple[str, ...]:
         usage = clypi.style(option.display_name, fg="blue", bold=True)
         short_usage = (
             clypi.style(option.short_display_name, fg="green", bold=True)
@@ -82,7 +82,7 @@ class TermFormatter:
             )
         )
 
-    def _format_positional(self, positional: Argument) -> t.Any:
+    def _format_positional(self, positional: _Argument) -> t.Any:
         name = clypi.style(positional.name, fg="blue", bold=True)
         help = positional.help or ""
         type_str = clypi.style(
@@ -102,9 +102,9 @@ class TermFormatter:
             name.append(n)
             type_str.append(ts)
             help.append(hp)
-        return list(boxed(stack(name, type_str, help, lines=True), title="Arguments"))
+        return list(boxed(stack(name, type_str, help, lines=True), title="_Arguments"))
 
-    def _format_subcommand(self, subcmd: SubCommand) -> t.Any:
+    def _format_subcommand(self, subcmd: _SubCommand) -> t.Any:
         name = clypi.style(subcmd.name, fg="blue", bold=True)
         help = subcmd.help or ""
         return name, help

@@ -211,24 +211,13 @@ class MyCli(Command):
     files: list[Path] = config(parser=v6e.path().exists().list())
 ```
 
-
-#### `name`
-
-```python
-@t.final
-@classmethod
-def name(cls)
-```
-The name of the command displayed to the user. Can be overriden to provide a custom name
-or will default to the class name extending `Command`.
-
 #### `prog`
 ```python
 @t.final
 @classmethod
 def prog(cls)
 ```
-The name of the command the user must pass in. Can be overriden to provide a custom name
+The name of the command. Can be overriden to provide a custom name
 or will default to the class name extending `Command`.
 
 #### `help`
