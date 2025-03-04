@@ -8,11 +8,21 @@
 
 Your all-in-one for beautiful, lightweight, prod-ready CLIs
 
+#### Get started
+
+```bash
+uv add clypi  # or `pip install clypi`
+```
+
 #### Examples
 
 Check out the examples in `./examples`! You can run them locally with `uv run --all-extras -m examples.<example>`. E.g.:
-```
+```bash
 uv run --all-extras -m examples.cli
+
+# Or:
+pip install .[examples]
+python -m examples.cli
 ```
 
 ## Docs
