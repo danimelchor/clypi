@@ -9,11 +9,10 @@ import typing as t
 from dataclasses import dataclass
 from types import NoneType, UnionType
 
-from Levenshtein import distance  # type: ignore
-
 from clypi._cli import config as _conf
 from clypi._cli import parser, type_util
 from clypi._cli.formatter import TermFormatter
+from clypi._levenshtein import distance
 from clypi._util import _UNSET
 from clypi.prompts import prompt
 
