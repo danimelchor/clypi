@@ -389,7 +389,7 @@ Parameters:
 - `max_attempts`: how many times to ask the user before giving up and raising
 
 
-## Spinner
+## Spinners
 
 ### `Spinner`
 
