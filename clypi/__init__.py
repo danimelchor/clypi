@@ -2,6 +2,7 @@ import typing as t
 from importlib import import_module
 
 if t.TYPE_CHECKING:
+    from clypi.align import AlignType, align
     from clypi.boxed import boxed
     from clypi.cli import Command, config
     from clypi.colors import print, style, styler
@@ -10,8 +11,10 @@ if t.TYPE_CHECKING:
     from clypi.stack import stack
 
 __all__ = (
+    "AlignType",
     "Command",
     "Spinner",
+    "align",
     "boxed",
     "config",
     "print",
@@ -31,6 +34,8 @@ _dynamic_imports: dict[str, tuple[str, str]] = {
     "stack": (__spec__.parent, ".stack"),
     "style": (__spec__.parent, ".colors"),
     "styler": (__spec__.parent, ".colors"),
+    "align": (__spec__.parent, ".align"),
+    "AlignType": (__spec__.parent, ".align"),
 }
 
 
