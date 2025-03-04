@@ -185,7 +185,7 @@ from clypi import Command, config
 class MyCommand(Command):
     verbose: bool = config(help="Wether to show all of the output", default=True)
 
-    async def run(self, root):
+    async def run(self):
         print(f"Running with verbose: {self.verbose}")
 ```
 
@@ -272,21 +272,18 @@ docstring for the class extending `Command`.
 
 #### `run`
 ```python
-async def run(self, root: Command) -> None:
+async def run(self: Command) -> None:
 ```
 The main function you **must** override. This function is where the business logic of your command
 should live.
 
 `self` contains the arguments for this command you can access
-as any other instance property.
-
-`root` is a pointer to the base command of your CLI so that you
-can access arguments passed to parent commands.
+as you would do with any other instance property.
 
 
 #### `astart` and `start`
 ```python
-async def astart(self, root: Command | None = None) -> None:
+async def astart(self: Command | None = None) -> None:
 ```
 ```python
 def start(self) -> None:

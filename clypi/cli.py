@@ -7,6 +7,7 @@ import re
 import sys
 import typing as t
 from dataclasses import dataclass
+from functools import lru_cache
 from types import NoneType, UnionType
 
 from Levenshtein import distance  # type: ignore
@@ -69,6 +70,10 @@ class _SubCommand:
     klass: type[Command]
     help: str | None
 
+    @property
+    def display_name(self):
+        return self.name
+
 
 class Command:
     @classmethod
@@ -90,24 +95,21 @@ class Command:
 
         return doc.replace("\n", " ")
 
-    async def run(self, root: Command) -> None:
+    async def run(self) -> None:
         """
         This function is where the business logic of your command
         should live.
 
         `self` contains the arguments for this command you can access
-        as any other instance property.
-
-        `root` is a pointer to the base command of your CLI so that you
-        can access arguments passed to parent commands.
+        as you would do with any other instance property.
         """
         raise NotImplementedError
 
     @t.final
-    async def astart(self, root: Command | None = None) -> None:
+    async def astart(self) -> None:
         if subcommand := getattr(self, "subcommand", None):
-            return await subcommand.astart(root=root or self)
-        return await self.run(root or self)
+            return await subcommand.astart()
+        return await self.run()
 
     @t.final
     def start(self) -> None:
@@ -115,27 +117,42 @@ class Command:
 
     @t.final
     @classmethod
+    @lru_cache
     def fields(cls) -> dict[str, _conf.Config[t.Any]]:
         """
         Parses the type hints from the class extending Command and assigns each
         a _Config field with all the necessary info to display and parse them.
         """
-        defaults: dict[str, _conf.Config[t.Any]] = {}
-        for field, _type in inspect.get_annotations(cls).items():
+        annotations: dict[str, t.Any] = inspect.get_annotations(cls, eval_str=True)
+
+        # Ensure each field is annotated
+        for name, value in cls.__dict__.items():
+            if (
+                not name.startswith("_")
+                and not isinstance(value, classmethod)
+                and not callable(value)
+                and name not in annotations
+            ):
+                raise TypeError(f"{name!r} has no type annotation")
+
+        # Get the field config for each field
+        fields: dict[str, _conf.Config[t.Any]] = {}
+        for field, _type in annotations.items():
             default = getattr(cls, field, _UNSET)
             if isinstance(default, _conf.PartialConfig):
-                defaults[field] = _conf.Config.from_partial(
+                fields[field] = _conf.Config.from_partial(
                     default,
                     parser=default.parser or parser.from_type(_type),
                     arg_type=_type,
                 )
             else:
-                defaults[field] = _conf.Config(
+                fields[field] = _conf.Config(
                     default=default,
                     parser=parser.from_type(_type),
                     arg_type=_type,
                 )
-        return defaults
+
+        return fields
 
     @t.final
     @classmethod
@@ -163,50 +180,74 @@ class Command:
 
     @t.final
     @classmethod
-    def _find_similar_arg(cls, arg: parser.Arg) -> str | None:
+    def _find_similar_exc(cls, arg: parser.Arg) -> ValueError:
         """
         Utility function to find arguments similar to the one the
         user passed in to correct typos.
         """
-        if arg.is_pos():
-            for pos in cls.subcommands().values():
-                if distance(pos.name, arg.value) < 3:
-                    return pos.name
+        similar = None
 
-            for pos in cls.positionals().values():
+        if arg.is_pos():
+            all_pos: list[_SubCommand | _Argument] = [
+                *cls.subcommands().values(),
+                *cls.positionals().values(),
+            ]
+            for pos in all_pos:
                 if distance(pos.name, arg.value) < 3:
-                    return pos.display_name
+                    similar = pos.name
+                    break
         else:
             for opt in cls.options().values():
                 if distance(opt.name, arg.value) <= 2:
-                    return opt.display_name
+                    similar = opt.display_name
+                    break
                 if opt.short and distance(opt.short, arg.value) <= 1:
-                    return opt.short_display_name
+                    similar = opt.short_display_name
+                    break
 
-        return None
+        what = "argument" if arg.is_pos() else "option"
+        error = f"Unknown {what} {arg.orig!r}"
+        if similar is not None:
+            error += f". Did you mean {similar!r}?"
+
+        return ValueError(error)
 
     @t.final
     @classmethod
-    def _safe_parse(cls, args: t.Iterator[str], parents: list[str]) -> t.Self:
+    def _safe_parse(
+        cls,
+        args: t.Iterator[str],
+        parents: list[str],
+        parent_attrs: dict[str, str | list[str]] | None = None,
+    ) -> t.Self:
         """
         Tries parsing args and if an error is shown, it displays the subcommand
         that failed the parsing's help page.
         """
         try:
-            return cls._parse(args, parents)
+            return cls._parse(args, parents, parent_attrs)
         except (ValueError, TypeError) as e:
             cls.print_help(parents, exception=e)
 
     @t.final
     @classmethod
-    def _parse(cls, args: t.Iterator[str], parents: list[str]) -> t.Self:
+    def _parse(
+        cls,
+        args: t.Iterator[str],
+        parents: list[str],
+        parent_attrs: dict[str, str | list[str]] | None = None,
+    ) -> t.Self:
         """
         Given an iterator of arguments we recursively parse all options, arguments,
         and subcommands until the iterator is complete.
-        """
 
-        # The kwars used to initialize the dataclass
-        kwargs: dict[str, str | list[str] | Command] = {}
+        When we encounter a subcommand, we parse all the types, then try to keep parsing the
+        subcommand whilst we assign all forwarded types.
+        """
+        parent_attrs = parent_attrs or {}
+
+        # An accumulator to store unparsed arguments for this class
+        unparsed = {}
 
         # The current option or positional arg being parsed
         current_attr = parser.CurrentCtx()
@@ -216,26 +257,20 @@ class Command:
             if current_attr and current_attr.needs_more():
                 raise ValueError(f"Not enough values for {current_attr.name}")
             elif current_attr:
-                kwargs[current_attr.name] = current_attr.collected
+                unparsed[current_attr.name] = current_attr.collected
                 current_attr = None
 
-        def find_similar(parsed: parser.Arg):
-            what = "argument" if parsed.is_pos() else "option"
-            error = f"Unknown {what} {parsed.orig!r}"
-            if similar := cls._find_similar_arg(parsed):
-                error += f". Did you mean {similar!r}?"
-            raise ValueError(error)
+        # The subcommand we need to parse
+        subcommand: type[Command] | None = None
 
         for a in args:
-            if a in ("-h", "--help"):
+            parsed = parser.parse_as_attr(a)
+            if parsed.value == "help" or (not parsed.is_pos() and parsed.value == "h"):
                 cls.print_help(parents=parents)
 
-            # ---- Try to parse as an arg/opt ----
-            parsed = parser.parse_as_attr(a)
+            # ---- Try to parse as a subcommand ----
             if parsed.is_pos() and (subcmd := cls.subcommands().get(parsed.value)):
-                kwargs["subcommand"] = subcmd.klass._safe_parse(
-                    args, parents=parents + [cls.prog()]
-                )
+                subcommand = subcmd.klass
                 break
 
             # ---- Try to set to the current option ----
@@ -254,7 +289,7 @@ class Command:
                 or parsed.is_long_opt()
                 and not (is_valid_long or is_valid_short)
             ):
-                raise find_similar(parsed)
+                raise cls._find_similar_exc(parsed)
 
             if is_valid_long or is_valid_short:
                 long_name = cls._get_long_name(parsed.value) or parsed.value
@@ -263,7 +298,7 @@ class Command:
 
                 # Boolean flags don't need to parse more args later on
                 if option.nargs == 0:
-                    kwargs[long_name] = "yes"
+                    unparsed[long_name] = "yes"
                 else:
                     current_attr = parser.CurrentCtx(
                         option.name, option.nargs, option.nargs
@@ -271,7 +306,7 @@ class Command:
                 continue
 
             # ---- Try to assign to the current positional ----
-            if not current_attr.name and (pos := cls._next_positional(kwargs)):
+            if not current_attr.name and (pos := cls._next_positional(unparsed)):
                 current_attr = parser.CurrentCtx(pos.name, pos.nargs, pos.nargs)
 
             # ---- Try to assign to the current ctx ----
@@ -279,7 +314,7 @@ class Command:
                 current_attr.collect(parsed.value)
                 continue
 
-            raise find_similar(parsed)
+            raise cls._find_similar_exc(parsed)
 
         # If we finished the loop but an option needs more args, fail
         if current_attr.name and current_attr.needs_more():
@@ -287,41 +322,50 @@ class Command:
 
         # If we finished the loop and we haven't saved current_attr, save it
         if current_attr.name and not current_attr.needs_more():
-            kwargs[current_attr.name] = current_attr.collected
+            unparsed[current_attr.name] = current_attr.collected
             current_attr = None
 
-        # Parse as the correct values and assign to the instance
-        instance = cls()
+        # --- Parse as the correct values ---
+        parsed_kwargs = {}
         for field, field_conf in cls.fields().items():
-            # Subcommands are already parsed properly
             if field == "subcommand":
-                if field not in kwargs and not field_conf.has_default():
-                    raise ValueError("Missing required subcommand")
-                elif field in kwargs:
-                    setattr(instance, field, kwargs[field])
                 continue
 
             # Get the value passed in, prompt, or the provided default
-            if field in kwargs:
-                unparsed = kwargs[field]
-                if t.TYPE_CHECKING:
-                    assert not isinstance(unparsed, Command)
-                value = field_conf.parser(unparsed)
+            if field in unparsed:
+                value = field_conf.parser(unparsed[field])
             elif field_conf.prompt is not None:
                 value = prompt(
                     field_conf.prompt,
-                    default=field_conf.get_default(),
+                    default=field_conf.get_default_or_missing(),
                     hide_input=field_conf.hide_input,
                     max_attempts=field_conf.max_attempts,
+                    parser=field_conf.parser,
                 )
             elif field_conf.has_default():
                 value = field_conf.get_default()
+            elif field_conf.forwarded:
+                if field not in parent_attrs:
+                    raise ValueError(f"Missing required argument {field}")
+                value = parent_attrs[field]
             else:
                 raise ValueError(f"Missing required argument {field}")
 
             # Try parsing the string as the right type
-            setattr(instance, field, value)
+            parsed_kwargs[field] = value
 
+        # --- Parse the subcommand passing in the parsed types ---
+        if subcommand:
+            parsed_kwargs["subcommand"] = subcommand._safe_parse(
+                args,
+                parents=parents + [cls.prog()],
+                parent_attrs=parsed_kwargs,
+            )
+
+        # Assign to an instance
+        instance = cls()
+        for k, v in parsed_kwargs.items():
+            setattr(instance, k, v)
         return instance
 
     @t.final
@@ -397,6 +441,9 @@ class Command:
         instance = cls._safe_parse(args_iter, parents=[])
         if list(args_iter):
             raise ValueError(f"Unknown arguments {list(args_iter)}")
+
+        # Clear lru_cache to free up memory
+        cls.fields.cache_clear()
 
         return instance
 

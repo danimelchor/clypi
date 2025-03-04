@@ -11,16 +11,16 @@ from clypi import Command, config
 
 def debug(fun):
     """
-    Just a utility decorator to display the root commands being passed in a somewhat
+    Just a utility decorator to display the commands being passed in a somewhat
     nice way
     """
 
-    async def inner(self, root):
+    async def inner(self):
         boxed = clypi.boxed(
-            clypi.style(root, bold=True), title="Debug", color="magenta"
+            clypi.style(self, bold=True), title="Debug", color="magenta"
         )
         print(boxed, end="\n\n")
-        await fun(self, root)
+        await fun(self)
 
     return inner
 
@@ -37,7 +37,7 @@ class RunParallel(Command):
     )
 
     @debug
-    async def run(self, root):
+    async def run(self):
         clypi.print("Running all files", fg="blue", bold=True)
 
         async with clypi.Spinner(f"Running {', '.join(self.files)} in parallel"):
@@ -57,7 +57,7 @@ class RunSerial(Command):
     files: list[Path] = config(parser=v.list(v.path().exists()))
 
     @debug
-    async def run(self, root):
+    async def run(self):
         clypi.print("Running all files", fg="blue", bold=True)
         for f in self.files:
             async with clypi.Spinner(f"Running {f.as_posix()} in parallel"):
@@ -95,7 +95,7 @@ class Lint(Command):
     )
 
     @debug
-    async def run(self, root):
+    async def run(self):
         async with clypi.Spinner(f"Linting {', '.join(self.files)}"):
             await asyncio.sleep(2)
         clypi.print("\nDone!", fg="green", bold=True)
@@ -121,7 +121,7 @@ class Main(Command):
         return "Learn more at http://termuff.org"
 
     @debug
-    async def run(self, root):
+    async def run(self):
         self.print_help()
 
 

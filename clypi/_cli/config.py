@@ -17,6 +17,7 @@ class PartialConfig(t.Generic[T]):
     prompt: str | None = None
     hide_input: bool = False
     max_attempts: int = MAX_ATTEMPTS
+    forwarded: bool = False
 
     def has_default(self) -> bool:
         return self.default is not _UNSET or self.default_factory is not _UNSET
@@ -42,13 +43,20 @@ class Config(t.Generic[T]):
     prompt: str | None = None
     hide_input: bool = False
     max_attempts: int = MAX_ATTEMPTS
+    forwarded: bool = False
 
     def has_default(self) -> bool:
         return not isinstance(self.default, Unset) or not isinstance(
             self.default_factory, Unset
         )
 
-    def get_default(self) -> T | Unset:
+    def get_default(self) -> T:
+        val = self.get_default_or_missing()
+        if isinstance(val, Unset):
+            raise ValueError(f"Field {self} has no default value!")
+        return val
+
+    def get_default_or_missing(self) -> T | Unset:
         if not isinstance(self.default, Unset):
             return self.default
         if not isinstance(self.default_factory, Unset):
@@ -73,6 +81,7 @@ def config(
     prompt: str | None = None,
     hide_input: bool = False,
     max_attempts: int = MAX_ATTEMPTS,
+    forwarded: bool = False,
 ) -> T:
     return PartialConfig(
         parser=parser,
@@ -83,4 +92,5 @@ def config(
         prompt=prompt,
         hide_input=hide_input,
         max_attempts=max_attempts,
+        forwarded=forwarded,
     )  # type: ignore

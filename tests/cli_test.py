@@ -12,7 +12,7 @@ class ExampleSubCommand(Command):
 
     positional: tuple[str | Path, ...]
 
-    async def run(self, root):
+    async def run(self):
         return "subcommand"
 
 
@@ -35,7 +35,7 @@ class ExampleCommand(Command):
     def epilog(cls):
         return "Some text to display after..."
 
-    async def run(self, root):
+    async def run(self):
         return "main"
 
 
