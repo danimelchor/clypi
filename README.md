@@ -29,6 +29,11 @@ python -m examples.cli
 
 Read [the API docs](https://github.com/danimelchor/clypi/blob/master/docs/index.md) for examples and a full API reference.
 
+> [!IMPORTANT]
+> This project is still in development. Expect frequent and breaking changes. For upcoming
+> changes, you can follow [the planned work section](https://github.com/danimelchor/clypi/blob/master/docs/planned_work.md).
+
+
 ## CLI
 
 Read the [docs](https://github.com/danimelchor/clypi/blob/master/docs/index.md#cli)
@@ -177,13 +182,6 @@ import clypi
 
 answer = clypi.prompt("Are you going to use clypi?", default=True, parser=bool)
 ```
----
-
-> [!IMPORTANT]
-> This project is still in development. Expect frequent and breaking changes. For upcoming
-> changes, you can follow [the planned work section](https://github.com/danimelchor/clypi/blob/master/docs/planned_work.md).
-
----
 
 ## 🔀 Async by default
 
