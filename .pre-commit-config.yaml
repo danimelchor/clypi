@@ -13,7 +13,7 @@ repos:
     # Type check
     - id: pyright
       name: pyright
-      entry: uv run --all-extras pyright clypi
+      entry: uv run --all-extras pyright clypi/ pyright_tests/
       language: python
       types: [python]
       exclude: ^tests/.*
