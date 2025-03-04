@@ -35,6 +35,8 @@ class Boxes(Enum): ...
 
 The border style you'd like to use. To see all the box styles in action run `uv run -m examples.boxed`.
 
+The full list can be found in the code [here](https://github.com/danimelchor/clypi/blob/master/clypi/_data/boxes.py).
+
 
 ### `boxed`
 
