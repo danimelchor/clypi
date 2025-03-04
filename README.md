@@ -161,7 +161,7 @@ asyncio.run(main())
 <details open>
     <summary><code>uv run -m examples.spinner</code></summary>
     <p align="center">
-      <video src="https://github.com/user-attachments/assets/f641a4fe-59fa-4bc1-b31a-bb642c507a20" />
+      <video src="[https://github.com/user-attachments/assets/f641a4fe-59fa-4bc1-b31a-bb642c507a20](https://github.com/user-attachments/assets/3af51391-1ab4-4b41-86f1-1e08e01be7b9)" />
     </p>
 </details>
 
