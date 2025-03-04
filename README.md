@@ -8,14 +8,14 @@
 
 Your all-in-one for beautiful, lightweight, prod-ready CLIs
 
-### Examples
+#### Examples
 
 Check out the examples in `./examples`! You can run them locally with `uv run --all-extras -m examples.<example>`. E.g.:
 ```
 uv run --all-extras -m examples.cli
 ```
 
-### Docs
+## Docs
 
 Read [the API docs](https://github.com/danimelchor/clypi/blob/master/docs/index.md) for examples and a full API reference.
 
@@ -80,17 +80,6 @@ if __name__ == "__main__":
     </p>
 </details>
 
-
-## ❓ Prompting
-
-Read the [docs](https://github.com/danimelchor/clypi/blob/master/docs/index.md#prompt)
-
-First, you'll need to import the `clypi` module:
-```python
-import clypi
-
-answer = clypi.prompt("Are you going to use clypi?", default=True, parser=bool)
-```
 
 ## 🌈 Colors
 
@@ -159,6 +148,22 @@ asyncio.run(main())
     </p>
 </details>
 
+## ❓ Prompting
+
+Read the [docs](https://github.com/danimelchor/clypi/blob/master/docs/index.md#prompt)
+
+First, you'll need to import the `clypi` module:
+```python
+import clypi
+
+answer = clypi.prompt("Are you going to use clypi?", default=True, parser=bool)
+```
+
+## 🔀 Async by default
+
+`clypi` was built with an async-first mentality. Asynchronous code execution is incredibly
+valuable for applications like CLIs where we want to update the UI as we take certain actions behind the scenes.
+Most often, these actions can be made asynchronous since they involve things like file manipulation, network requests, subprocesses, etc.
 
 ## 🐍 Type-checking
 
@@ -174,7 +179,7 @@ hours = clypi.prompt(
 reveal_type(hours)  # Type of "res" is "float | timedelta"
 ```
 
-### Why do I care?
+#### Why should I care?
 
 Type checking will help you catch issues way earlier in the development cycle. It will also
 provide nice autocomplete features in your editor that will make you faster 󱐋.
