@@ -411,10 +411,11 @@ Examples:
 ### `Parser[T]`
 
 ```python
-Parser: t.TypeAlias = t.Callable[[str], T]
+Parser: TypeAlias = Callable[[Any], T]
 ```
-A function taking in any value as a string and returning a value of type `T`. This parser
-can be a user defined function, a built-in type like `str`, `int`, etc., or a parser from a library.
+A function taking in any value and returns a value of type `T`. This parser
+can be a user defined function, a built-in type like `str`, `int`, etc., or a parser
+from a library.
 
 ### `prompt`
 
