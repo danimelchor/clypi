@@ -16,13 +16,12 @@ class ProgramConfig:
     prog: str
 
 
-def _ext(ls: list[str], s: str | list[str] | None) -> list[str] | str | None:
-    if s is None:
-        return ls
+def _ext(ls: list[str], s: str | list[str] | None) -> None:
     if isinstance(s, str):
         ls.append(s)
-    else:
+    elif isinstance(s, list):
         ls.extend(s)
+    return None
 
 
 def _pretty_traceback(err: BaseException) -> list[str]:

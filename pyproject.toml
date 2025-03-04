@@ -9,13 +9,14 @@ readme = "README.md"
 version = "0.1.15"
 license = "MIT"
 license-files = ["LICEN[CS]E*"]
-requires-python = "~=3.11,<3.13"
+requires-python = ">=3.11"
 authors = [
   {name = "Daniel Melchor", email = "dmelchor@pm.me"},
 ]
 keywords = ["cli", "terminal", "ui"]
 dependencies = [
     "levenshtein>=0.26.1",
+    "mypy[dev]>=1.15.0",
     "typing-extensions>=4.12.2",
 ]
 
@@ -31,6 +32,7 @@ dev = [
   "pytest>=8.3.4",
   "ruff>=0.9.7",
   "pyright>=1.1.394",
+  "mypy>=1.15.0",
 ]
 examples = [
   "v6e>=0.1.17",

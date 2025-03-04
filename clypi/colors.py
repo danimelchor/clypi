@@ -35,7 +35,7 @@ ColorType: t.TypeAlias = t.Literal[
     "bright_white",
     "bright_default",
 ]
-ALL_COLORS = tuple(ColorType.__args__)
+ALL_COLORS = tuple(t.get_args(ColorType))
 
 _color_codes = {
     "black": 0,

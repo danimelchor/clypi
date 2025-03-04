@@ -26,7 +26,7 @@ __all__ = (
     "styler",
 )
 
-_dynamic_imports: dict[str, tuple[str, str]] = {
+_dynamic_imports: dict[str, tuple[str | None, str]] = {
     "ALL_COLORS": (__spec__.parent, ".colors"),
     "AlignType": (__spec__.parent, ".align"),
     "Boxes": (__spec__.parent, ".boxed"),

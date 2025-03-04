@@ -94,7 +94,7 @@ class Spinner(AbstractAsyncContextManager):
         if t := self._task:
             t.cancel()
 
-        color = "green" if success else "red"
+        color: ColorType = "green" if success else "red"
         icon = "✔️" if success else "×"
         self._print(msg or self.title, icon=icon, color=color, end="\n")
 
