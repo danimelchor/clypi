@@ -172,6 +172,17 @@ class MyCommand(Command):
     verbose: bool = config(help="Wether to show all of the output", default=True)
 ```
 
+You can also define custom help messages for commands by creating a docstring on the class itself:
+```python
+from clypi import Command, config
+
+class MyCommand(Command):
+    """
+    This text will show up when someone does `my-command --help`
+    and can contain any info you'd like
+    """
+```
+
 #### Custom parsers
 
 If the type you want to parse from the user is too complex, you can define your own parser
