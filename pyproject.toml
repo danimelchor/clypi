@@ -15,7 +15,6 @@ authors = [
 ]
 keywords = ["cli", "terminal", "ui"]
 dependencies = [
-    "mypy[dev]>=1.15.0",
     "typing-extensions>=4.12.2",
 ]
 
