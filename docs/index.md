@@ -183,7 +183,7 @@ must be `async` so that we can properly render items in your screen.
 from clypi import Command, config
 
 class MyCommand(Command):
-    verbose: bool = config(help="Wether to show all of the output", default=True)
+    verbose: bool = False
 
     async def run(self):
         print(f"Running with verbose: {self.verbose}")
