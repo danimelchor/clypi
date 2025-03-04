@@ -39,9 +39,10 @@ from clypi import Command, config
 
 class Lint(Command):
     files: tuple[str, ...]
+    verbose = config(forwarded=True)  # Comes from MyCli but I want to use it too
 
     async def run(self):
-        print(f"Linting {', '.join(self.files)}")
+        print(f"Linting {', '.join(self.files)} and {self.verbose=}")
 
 class MyCli(Command):
     """
@@ -52,7 +53,7 @@ class MyCli(Command):
         help="Wether to show extra logs",
         prompt="Do you want to see extra logs?",
         default=False,
-        short="v",
+        short="v",  # User can pass in --verbose or -v
     )
 
     async def run(self):
