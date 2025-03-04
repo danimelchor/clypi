@@ -35,8 +35,8 @@ AlignType: t.TypeAlias = t.Literal["left", "center", "right"]
 
 
 def align(s: str, alignment: AlignType, width: int) -> str:
-    if align == "left":
+    if alignment == "left":
         return _ljust(s, width)
-    if align == "right":
+    if alignment == "right":
         return _rjust(s, width)
     return _center(s, width)

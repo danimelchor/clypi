@@ -1,9 +1,9 @@
 import os
 import typing as t
 
-import clypi
 from clypi._data.boxes import Boxes as _Boxes
 from clypi.align import AlignType
+from clypi.align import align as _align
 from clypi.colors import ColorType, styler
 
 Boxes = _Boxes
@@ -16,8 +16,7 @@ def boxed(
     lines: T,
     width: int | None = None,
     style: Boxes = Boxes.HEAVY,
-    padding_y: int = 1,
-    alignment: AlignType = "left",
+    align: AlignType = "left",
     title: str | None = None,
     color: ColorType = "bright_white",
 ) -> T:
@@ -40,8 +39,8 @@ def boxed(
 
         # Body
         for line in lines:
-            aligned = clypi.align(line, alignment, width - 2 - padding_y * 2)
-            yield c(box.y) + padding_y * " " + aligned + padding_y * " " + c(box.y)
+            aligned = _align(line, align, width - 2 - 2)
+            yield c(box.y) + " " + aligned + " " + c(box.y)
 
         # Footer
         yield c(box.bl + box.x * (width - 2) + box.br)

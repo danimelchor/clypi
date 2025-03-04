@@ -1,3 +1,5 @@
+from typing import overload
+
 from clypi.colors import remove_style
 
 
@@ -12,7 +14,15 @@ def _real_len(s: str) -> int:
     return len(s)
 
 
-def stack(*blocks: list[str], padding: int = 1) -> list[str]:
+@overload
+def stack(*blocks: list[str], padding: int = 1, lines: bool) -> list[str]: ...
+
+
+@overload
+def stack(*blocks: list[str], padding: int = 1) -> str: ...
+
+
+def stack(*blocks: list[str], padding: int = 1, lines: bool = False) -> str | list[str]:
     new_lines = []
     height = max(len(b) for b in blocks)
     widths = [max(_real_len(line) for line in block) for block in blocks]
@@ -42,4 +52,4 @@ def stack(*blocks: list[str], padding: int = 1) -> list[str]:
         if not more:
             break
 
-    return new_lines
+    return new_lines if lines else "\n".join(new_lines)

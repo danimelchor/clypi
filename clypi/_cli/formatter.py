@@ -76,7 +76,11 @@ class TermFormatter:
             short_usage.append(su)
             type_str.append(ts)
             help.append(hp)
-        return list(boxed(stack(usage, short_usage, type_str, help), title="Options"))
+        return list(
+            boxed(
+                stack(usage, short_usage, type_str, help, lines=True), title="Options"
+            )
+        )
 
     def _format_positional(self, positional: Argument) -> t.Any:
         name = clypi.style(positional.name, fg="blue", bold=True)
@@ -98,7 +102,7 @@ class TermFormatter:
             name.append(n)
             type_str.append(ts)
             help.append(hp)
-        return list(boxed(stack(name, type_str, help), title="Arguments"))
+        return list(boxed(stack(name, type_str, help, lines=True), title="Arguments"))
 
     def _format_subcommand(self, subcmd: SubCommand) -> t.Any:
         name = clypi.style(subcmd.name, fg="blue", bold=True)
@@ -115,7 +119,7 @@ class TermFormatter:
             n, hp = self._format_subcommand(p)
             name.append(n)
             help.append(hp)
-        return list(boxed(stack(name, help), title="Subcommands"))
+        return list(boxed(stack(name, help, lines=True), title="Subcommands"))
 
     def _format_header(self) -> list[str] | str | None:
         prefix = clypi.style("Usage:", fg="yellow")

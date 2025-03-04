@@ -40,12 +40,12 @@ def main() -> None:
     style_block.append(clypi.style("I am reverse", reverse=True))
     style_block.append(clypi.style("I am strikethrough", strikethrough=True))
 
-    for line in clypi.stack(
+    stacked_colors = clypi.stack(
         clypi.boxed(fg_block, width=35, title="Foregrounds"),
         clypi.boxed(bg_block, width=30, title="Backgrounds"),
         clypi.boxed(style_block, width=22, title="Styles"),
-    ):
-        print(line)
+    )
+    print(stacked_colors)
 
 
 if __name__ == "__main__":
