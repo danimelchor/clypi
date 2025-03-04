@@ -73,6 +73,7 @@ class Config(t.Generic[T]):
 
 
 def config(
+    *args,
     parser: Parser[T] | None = None,
     default: T | Unset = _UNSET,
     default_factory: t.Callable[[], T] | Unset = _UNSET,
@@ -83,6 +84,7 @@ def config(
     max_attempts: int = MAX_ATTEMPTS,
     forwarded: bool = False,
 ) -> T:
+    forwarded = forwarded or (bool(args) and args[0] is Ellipsis)
     return PartialConfig(
         parser=parser,
         default=default,

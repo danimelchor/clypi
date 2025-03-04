@@ -44,7 +44,7 @@ from clypi import Command, config
 
 class Lint(Command):
     files: tuple[str, ...]
-    verbose = config(forwarded=True)  # Comes from MyCli but I want to use it too
+    verbose = config(...)  # Comes from MyCli but I want to use it too
 
     async def run(self):
         print(f"Linting {', '.join(self.files)} and {self.verbose=}")

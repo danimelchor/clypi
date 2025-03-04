@@ -252,6 +252,22 @@ class MyCli(Command):
     files: list[Path] = config(parser=v6e.path().exists().list())
 ```
 
+#### Forwarding arguments
+
+If a command defines an argument you want to use in any of it's children, you can re-define the
+argument and pass in a literal ellipsis (`...`) to config to indicate the argument comes from the
+parent command. You can also use `forwarded=True` if you prefer:
+
+```python
+from clypi import Command, config
+
+class MySubCmd(Command):
+    verbose: bool = config(...)  # or `config(forwarded=True)`
+
+class MyCli(Command):
+    subcommand: MySubCmd | None
+```
+
 #### `prog`
 ```python
 @t.final
