@@ -7,6 +7,7 @@ import re
 import sys
 import typing as t
 from dataclasses import dataclass
+from functools import lru_cache
 from types import NoneType, UnionType
 
 from Levenshtein import distance  # type: ignore
@@ -116,27 +117,42 @@ class Command:
 
     @t.final
     @classmethod
+    @lru_cache
     def fields(cls) -> dict[str, _conf.Config[t.Any]]:
         """
         Parses the type hints from the class extending Command and assigns each
         a _Config field with all the necessary info to display and parse them.
         """
-        defaults: dict[str, _conf.Config[t.Any]] = {}
-        for field, _type in inspect.get_annotations(cls).items():
+        annotations: dict[str, t.Any] = inspect.get_annotations(cls, eval_str=True)
+
+        # Ensure each field is annotated
+        for name, value in cls.__dict__.items():
+            if (
+                not name.startswith("_")
+                and not isinstance(value, classmethod)
+                and not callable(value)
+                and name not in annotations
+            ):
+                raise TypeError(f"{name!r} has no type annotation")
+
+        # Get the field config for each field
+        fields: dict[str, _conf.Config[t.Any]] = {}
+        for field, _type in annotations.items():
             default = getattr(cls, field, _UNSET)
             if isinstance(default, _conf.PartialConfig):
-                defaults[field] = _conf.Config.from_partial(
+                fields[field] = _conf.Config.from_partial(
                     default,
                     parser=default.parser or parser.from_type(_type),
                     arg_type=_type,
                 )
             else:
-                defaults[field] = _conf.Config(
+                fields[field] = _conf.Config(
                     default=default,
                     parser=parser.from_type(_type),
                     arg_type=_type,
                 )
-        return defaults
+
+        return fields
 
     @t.final
     @classmethod
@@ -425,6 +441,9 @@ class Command:
         instance = cls._safe_parse(args_iter, parents=[])
         if list(args_iter):
             raise ValueError(f"Unknown arguments {list(args_iter)}")
+
+        # Clear lru_cache to free up memory
+        cls.fields.cache_clear()
 
         return instance
 
