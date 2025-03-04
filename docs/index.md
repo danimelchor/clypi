@@ -68,6 +68,34 @@ Examples:
 
 ## CLI
 
+### `config`
+
+```python
+def config(
+    parser: Parser[T] | None = None,
+    default: T | Unset = _UNSET,
+    default_factory: t.Callable[[], T] | Unset = _UNSET,
+    help: str | None = None,
+    short: str | None = None,
+    prompt: str | None = None,
+    hide_input: bool = False,
+    max_attempts: int = MAX_ATTEMPTS,
+) -> T
+```
+
+Utility function to configure how a specific argument should behave when displayed
+and parsed.
+
+Parameters:
+- `parser`: a function that takes in a string and returns the parsed type (see [`Parser`](#parser[t]))
+- `default`: the default value to return if the user doesn't pass in the argument (or hits enter during the prompt, if any)
+- `default_factory`: a function that returns a default value. Useful to defer computation or to avoid default mutable values
+- `help`: a brief description to show the user when they pass in `-h` or `--help`
+- `short`: for options it defines a short way to pass in a value (e.g.: `short="v"` allows users to pass in `-v <value>`)
+- `prompt`: if defined, it will ask the user to provide input if not already defined in the command line args
+- `hide_input`: wether the input shouldn't be displayed as the user types (for passwords, API keys, etc.)
+- `max_attempts`: how many times to ask the user before giving up and raising
+
 ### `Command`
 
 This is the main class you must extend when defining a command. There are no methods you must override
@@ -182,6 +210,19 @@ class MyCommand(Command):
     and can contain any info you'd like
     """
 ```
+
+#### Prompting
+
+If you want to ask the user to provide input if it's not specified, you can pass in a prompt to `config` for each field like so:
+
+```python
+from clypi import Command, config
+
+class MyCommand(Command):
+    name: str = config(prompt="What's your name?")
+```
+
+On runtime, if the user didn't provide a value for `--name`, the program will ask the user to provide one until they do. You can also pass in a `default` value to `config` to allow the user to just hit enter to accept the default.
 
 #### Custom parsers
 

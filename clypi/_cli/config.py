@@ -2,14 +2,14 @@ import typing as t
 from dataclasses import asdict, dataclass
 
 from clypi._util import _UNSET, Unset
-from clypi.prompts import MAX_ATTEMPTS
+from clypi.prompts import MAX_ATTEMPTS, Parser
 
 T = t.TypeVar("T")
 
 
 @dataclass
 class PartialConfig(t.Generic[T]):
-    parser: t.Callable[[t.Any], T] | None = None
+    parser: Parser[T] | None = None
     default: T | Unset = _UNSET
     default_factory: t.Callable[[], T] | Unset = _UNSET
     help: str | None = None
@@ -33,7 +33,7 @@ class PartialConfig(t.Generic[T]):
 
 @dataclass
 class Config(t.Generic[T]):
-    parser: t.Callable[[t.Any], T]
+    parser: Parser[T]
     arg_type: t.Any
     default: T | Unset = _UNSET
     default_factory: t.Callable[[], T] | Unset = _UNSET
@@ -57,7 +57,7 @@ class Config(t.Generic[T]):
 
     @classmethod
     def from_partial(
-        cls, partial: PartialConfig[T], parser: t.Callable[[t.Any], T], arg_type: t.Any
+        cls, partial: PartialConfig[T], parser: Parser[T], arg_type: t.Any
     ):
         kwargs = asdict(partial)
         kwargs.update(parser=parser, arg_type=arg_type)
@@ -65,7 +65,7 @@ class Config(t.Generic[T]):
 
 
 def config(
-    parser: t.Callable[[t.Any], T] | None = None,
+    parser: Parser[T] | None = None,
     default: T | Unset = _UNSET,
     default_factory: t.Callable[[], T] | Unset = _UNSET,
     help: str | None = None,

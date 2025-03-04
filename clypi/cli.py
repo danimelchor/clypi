@@ -206,7 +206,7 @@ class Command:
         """
 
         # The kwars used to initialize the dataclass
-        kwargs: dict[str, t.Any] = {}
+        kwargs: dict[str, str | list[str] | Command] = {}
 
         # The current option or positional arg being parsed
         current_attr = parser.CurrentCtx()
@@ -263,7 +263,7 @@ class Command:
 
                 # Boolean flags don't need to parse more args later on
                 if option.nargs == 0:
-                    kwargs[long_name] = True
+                    kwargs[long_name] = "yes"
                 else:
                     current_attr = parser.CurrentCtx(
                         option.name, option.nargs, option.nargs
@@ -293,9 +293,20 @@ class Command:
         # Parse as the correct values and assign to the instance
         instance = cls()
         for field, field_conf in cls.fields().items():
+            # Subcommands are already parsed properly
+            if field == "subcommand":
+                if field not in kwargs and not field_conf.has_default():
+                    raise ValueError("Missing required subcommand")
+                elif field in kwargs:
+                    setattr(instance, field, kwargs[field])
+                continue
+
             # Get the value passed in, prompt, or the provided default
             if field in kwargs:
-                value = kwargs[field]
+                unparsed = kwargs[field]
+                if t.TYPE_CHECKING:
+                    assert not isinstance(unparsed, Command)
+                value = field_conf.parser(unparsed)
             elif field_conf.prompt is not None:
                 value = prompt(
                     field_conf.prompt,
@@ -308,14 +319,8 @@ class Command:
             else:
                 raise ValueError(f"Missing required argument {field}")
 
-            # Subcommands are already parsed properly
-            if field == "subcommand":
-                setattr(instance, field, value)
-                continue
-
             # Try parsing the string as the right type
-            parsed = field_conf.parser(value)
-            setattr(instance, field, parsed)
+            setattr(instance, field, value)
 
         return instance
 

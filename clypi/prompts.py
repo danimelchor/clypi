@@ -24,7 +24,7 @@ class MaxAttemptsException(Exception):
 
 T = t.TypeVar("T")
 
-Parser: t.TypeAlias = t.Callable[[str], T]
+Parser: t.TypeAlias = t.Callable[[str | list[str]], T]
 
 
 def prompt(
