@@ -6,7 +6,6 @@ import clypi
 from clypi.colors import ALL_COLORS
 
 
-# --- DEMO START ---
 def main() -> None:
     for box in clypi.Boxes:
         color = random.choice(ALL_COLORS)
