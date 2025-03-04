@@ -1,7 +1,7 @@
 # Planned work
 
 - [ ] Support for better prompts (select, y/n, multi-select, etc.)
-- [ ] Better testing coverate (every parsing combination tested)
+- [ ] Better testing coverage (every parsing combination tested)
 - [ ] Strict Pyright -- Can this repo be entirely in strict mode?
 - [ ] Mypy tests -- Ensure this clypi works everywhere
 - [ ] Other simple UI components (e.g.: simple file tree)
