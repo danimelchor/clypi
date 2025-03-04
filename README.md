@@ -55,7 +55,7 @@ class MyCli(Command):
     """
     subcommand: Lint | None = None
     verbose: bool = config(
-        help="Wether to show extra logs",
+        help="Whether to show extra logs",
         prompt="Do you want to see extra logs?",
         default=False,
         short="v",  # User can pass in --verbose or -v
