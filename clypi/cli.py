@@ -9,6 +9,7 @@ import typing as t
 from dataclasses import dataclass
 from types import NoneType, UnionType
 
+from clypi._cli import autocomplete as _auto
 from clypi._cli import config as _conf
 from clypi._cli import parser, type_util
 from clypi._cli.formatter import TermFormatter
@@ -271,6 +272,13 @@ class Command(metaclass=_CommandMeta):
         try:
             return cls._parse(args, parents, parent_attrs)
         except (ValueError, TypeError) as e:
+            # The user might have started typing a subcommand but not
+            # finished it so we cannot fully parse it, but we can recommend
+            # the current command's args to autocomplete it
+            if _auto.get_autocomplete_args() is not None:
+                _auto.list_arguments(cls)
+
+            # Otherwise, help page
             cls.print_help(parents, exception=e)
 
         assert False, "Should never happen"
@@ -478,11 +486,24 @@ class Command(metaclass=_CommandMeta):
     @classmethod
     def parse(cls, args: t.Sequence[str] | None = None) -> t.Self:
         """
-        This is the entry point to start parsing arguments
+        Entry point of the program. Depending on some env vars it
+        will either run the user-defined program or instead output the necessary
+        completions for shells to provide autocomplete
         """
-        norm_args = parser.normalize_args(args or sys.argv[1:])
+        args = args or sys.argv[1:]
+        if _auto.requested_autocomplete_install(args):
+            _auto.install_autocomplete(cls)
+
+        # If this is an autocomplete call, we need the args from the env var passed in
+        # by the shell's complete function
+        if auto_args := _auto.get_autocomplete_args():
+            args = auto_args
+
+        norm_args = parser.normalize_args(args)
         args_iter = iter(norm_args)
         instance = cls._safe_parse(args_iter, parents=[])
+        if _auto.get_autocomplete_args() is not None:
+            _auto.list_arguments(cls)
         if list(args_iter):
             raise ValueError(f"Unknown arguments {list(args_iter)}")
 
