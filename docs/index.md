@@ -268,6 +268,15 @@ class MyCli(Command):
     subcommand: MySubCmd | None
 ```
 
+#### Autocomplete
+
+All CLIs built with clypi come with a builtin `--install-autocomplete` option that will automatically
+set up shell completions for your built CLI.
+
+> [!IMPORTANT]
+> This feature is brand new and might contain some bugs. Please file a ticket
+> if you run into any!
+
 #### `prog`
 ```python
 @t.final
