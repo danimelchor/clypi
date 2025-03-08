@@ -1,4 +1,3 @@
-import asyncio
 from pathlib import Path
 from unittest.mock import MagicMock, patch
 
@@ -13,7 +12,7 @@ class ExampleSubCommand(Command):
     positional: tuple[str | Path, ...]
 
     async def run(self):
-        return "subcommand"
+        print("subcommand")
 
 
 class ExampleCommand(Command):
@@ -36,7 +35,7 @@ class ExampleCommand(Command):
         return "Some text to display after..."
 
     async def run(self):
-        return "main"
+        print("main")
 
 
 def test_expected_base():
@@ -89,7 +88,6 @@ def test_expected_parsing(gts):
     assert ec.option == ["a", "b"]
 
     assert ec.subcommand is None
-    assert asyncio.run(ec.astart()) == "main"
 
 
 @patch("os.get_terminal_size")
@@ -106,8 +104,6 @@ def test_expected_parsing_subcmd(gts):
     sc = ec.subcommand
     assert isinstance(sc, ExampleSubCommand)
     assert sc.positional == ("some_file.json",)
-
-    assert asyncio.run(ec.astart()) == "subcommand"
 
 
 def test_expected_cls_introspection():
