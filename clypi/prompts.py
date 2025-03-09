@@ -63,32 +63,15 @@ def confirm(
     :param max_attempts: The maximum number of attempts to get a valid value.
     :return: The parsed value.
     """
-
-    # Build the prompt
-    prompt = _build_prompt(text, default)
-
-    # Loop until we get a valid value
-    for _ in range(max_attempts):
-        inp = _input(prompt, default=default)
-        if inp is _UNSET:
-            _error("A value is required.")
-            continue
-
-        # User answered the prompt -- Parse
-        try:
-            parsed_inp = parser.from_type(bool)(inp)
-        except (ValueError, TypeError) as e:
-            _error(str(e))
-            continue
-
-        if abort and not parsed_inp:
-            raise AbortException()
-
-        return parsed_inp
-
-    raise MaxAttemptsException(
-        f"Failed to get a valid value after {max_attempts} attempts."
+    parsed_inp = prompt(
+        text=text,
+        default=default,
+        max_attempts=max_attempts,
+        parser=parser.from_type(bool),
     )
+    if abort and not parsed_inp:
+        raise AbortException()
+    return parsed_inp
 
 
 T = t.TypeVar("T")
