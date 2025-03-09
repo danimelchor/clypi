@@ -178,14 +178,14 @@ class ClipyFormatter:
         # Description
         _ext(lines, self._format_description())
 
+        # Subcommands
+        _ext(lines, self._format_subcommands())
+
         # Options
         _ext(lines, self._format_options())
 
         # Positionals
         _ext(lines, self._format_positionals())
-
-        # Subcommands
-        _ext(lines, self._format_subcommands())
 
         # exceptions
         _ext(lines, self._format_exception())
