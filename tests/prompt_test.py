@@ -10,7 +10,7 @@ import pytest
 from pytest import mark
 
 import clypi
-from clypi.prompts import MaxAttemptsException, Parser
+from clypi import AbortException, MaxAttemptsException, Parser
 
 
 @contextmanager
@@ -46,6 +46,37 @@ def assert_prompted_times(prompted: io.StringIO, times: int):
     text = _escape_ansi(prompted.getvalue())
     lines = list(filter(None, text.split(": ")))
     assert len(lines) == times
+
+
+@mark.parametrize(
+    "expected",
+    [True, False],
+)
+def test_confirm_with_default(expected: bool):
+    with replace_stdin("\n") as _:
+        assert clypi.confirm("What's your name?", default=expected) == expected
+
+
+@mark.parametrize(
+    "answer, expected",
+    [
+        ("y", True),
+        ("Yes", True),
+        ("true", True),
+        ("N", False),
+        ("no", False),
+        ("False", False),
+    ],
+)
+def test_confirm(answer: str, expected: bool):
+    with replace_stdin(answer) as _:
+        assert clypi.confirm("What's your name?") == expected
+
+
+def test_confirm_aborts():
+    with replace_stdin("n") as _:
+        with pytest.raises(AbortException):
+            _ = clypi.confirm("What's your name?", abort=True)
 
 
 @mark.parametrize(

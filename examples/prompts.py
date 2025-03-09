@@ -16,7 +16,7 @@ def main() -> None:
     name = clypi.prompt("What's your name?")
 
     # Default values
-    is_cool = clypi.prompt("Is clypi cool?", default=True, parser=bool)
+    is_cool = clypi.confirm("Is clypi cool?", default=True)
 
     # Custom types with parsing using v6e
     age = clypi.prompt(
