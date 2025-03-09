@@ -329,21 +329,9 @@ class Command(metaclass=_CommandMeta):
                 break
 
             # ---- Try to set to the current option ----
-            is_valid_long = (
-                not parsed.is_pos()
-                and parsed.is_long_opt()
-                and parsed.value in cls.options()
-            )
-            is_valid_short = (
-                not parsed.is_pos()
-                and parsed.is_short_opt()
-                and cls._get_long_name(parsed.value) is not None
-            )
-            if (
-                parsed.is_short_opt()
-                or parsed.is_long_opt()
-                and not (is_valid_long or is_valid_short)
-            ):
+            is_valid_long = parsed.is_long_opt() and parsed.value in cls.options()
+            is_valid_short = parsed.is_short_opt() and cls._get_long_name(parsed.value)
+            if parsed.is_opt() and not (is_valid_long or is_valid_short):
                 raise cls._find_similar_exc(parsed)
 
             if is_valid_long or is_valid_short:
@@ -367,27 +355,25 @@ class Command(metaclass=_CommandMeta):
             # ---- Try to assign to the current ctx ----
             if current_attr.name and current_attr.has_more():
                 current_attr.collect(parsed.value)
+                if not current_attr.has_more():
+                    flush_ctx()
                 continue
 
             raise cls._find_similar_exc(parsed)
 
-        # If we finished the loop but an option needs more args, fail
-        if current_attr.name and current_attr.needs_more():
-            raise ValueError(f"Not enough values for {current_attr.name}")
-
-        # If we finished the loop and we haven't saved current_attr, save it
-        if current_attr.name and not current_attr.needs_more():
-            unparsed[current_attr.name] = current_attr.collected
-            current_attr = parser.CurrentCtx()
+        # Flush the context after the loop in case anything is left uncollected
+        flush_ctx()
 
         # If the user requested help, skip prompting/parsing
         parsed_kwargs = {}
         if not requested_help:
             # --- Parse as the correct values ---
             for field, field_conf in cls.fields().items():
-                # Get the value passed in, prompt, or the provided default
+                # If the field was provided through args
                 if field in unparsed:
                     value = field_conf.parser(unparsed[field])
+
+                # If the field was not provided but we can prompt, do so
                 elif field_conf.prompt is not None:
                     value = prompt(
                         field_conf.prompt,
@@ -396,12 +382,18 @@ class Command(metaclass=_CommandMeta):
                         max_attempts=field_conf.max_attempts,
                         parser=field_conf.parser,
                     )
+
+                # If the field is not provided yet but it has a default, use that
                 elif field_conf.has_default():
                     value = field_conf.get_default()
+
+                # If the field comes from a parent command, use that
                 elif field_conf.forwarded:
                     if field not in parent_attrs:
                         raise ValueError(f"Missing required argument {field}")
                     value = parent_attrs[field]
+
+                # Whoops!
                 else:
                     raise ValueError(f"Missing required argument {field}")
 

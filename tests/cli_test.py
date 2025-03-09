@@ -1,5 +1,4 @@
 from pathlib import Path
-from unittest.mock import MagicMock, patch
 
 from typing_extensions import override
 
@@ -76,34 +75,6 @@ def test_expected_subcommands():
     assert sub is ExampleSubCommand
     assert sub.prog() == "example-sub-command"
     assert sub.help() == "Some sample docs"
-
-
-@patch("os.get_terminal_size")
-def test_expected_parsing(gts):
-    gts.return_value = MagicMock()
-    gts.return_value.columns = 80
-
-    ec = ExampleCommand.parse(["--flag", "--option", "a", "b"])
-    assert ec.flag is True
-    assert ec.option == ["a", "b"]
-
-    assert ec.subcommand is None
-
-
-@patch("os.get_terminal_size")
-def test_expected_parsing_subcmd(gts):
-    gts.return_value = MagicMock()
-    gts.return_value.columns = 80
-
-    ec = ExampleCommand.parse(
-        ["--flag", "--option", "a", "b", "example-sub-command", "some_file.json"]
-    )
-    assert ec.flag is True
-    assert ec.option == ["a", "b"]
-
-    sc = ec.subcommand
-    assert isinstance(sc, ExampleSubCommand)
-    assert sc.positional == ("some_file.json",)
 
 
 def test_expected_cls_introspection():

@@ -48,6 +48,9 @@ class Arg:
     def is_short_opt(self):
         return self.arg_type == "short-opt"
 
+    def is_opt(self):
+        return self.is_long_opt() or self.is_short_opt()
+
 
 def parse_as_attr(arg: str) -> Arg:
     if arg.startswith("--"):
