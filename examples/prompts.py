@@ -16,7 +16,7 @@ def main() -> None:
     name = clypi.prompt("What's your name?")
 
     # Default values
-    is_cool = clypi.prompt("Is Term cool?", default=True, parser=bool)
+    is_cool = clypi.prompt("Is clypi cool?", default=True, parser=bool)
 
     # Custom types with parsing using v6e
     age = clypi.prompt(
@@ -44,7 +44,7 @@ def main() -> None:
     colors.print("🚀 Summary", bold=True, fg="green")
     answer = colors.styler(fg="magenta", bold=True)
     print(" ↳  Name:", answer(name))
-    print(" ↳  Term is cool:", answer(is_cool))
+    print(" ↳  Clypi is cool:", answer(is_cool))
     print(" ↳  Age:", answer(age))
     print(" ↳  Hours in a day:", answer(hours), f"({type(hours).__name__})")
     print(" ↳  Earth age:", answer(earth))

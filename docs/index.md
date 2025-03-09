@@ -131,6 +131,20 @@ class MyCommand(Command):
     subcommand: MySubcommand | MyOtherSubcommand | None
 ```
 
+#### Arguments (positional)
+
+Arguments are mandatory positional words the user must pass in. They're defined as class attributes with no default and type hinted with the `Positional[T]` type.
+
+```python
+from clypi import Command, Positional
+
+# my-command 5 foo bar baz
+#        arg1^ ^^^^^^^^^^^arg2
+class MyCommand(Command):
+    arg1: Positional[int]
+    arg2: Positional[list[str]]
+```
+
 #### Flags
 
 Flags are boolean options that can be either present or not. To define a flag, simply define
@@ -146,10 +160,11 @@ class MyCommand(Command):
     my_flag: bool = False
 ```
 
+
 #### Options
 
-Options are like flags but, instead of booleans, the user passes in values that can be ommitted. As
-the name indicates, you just have to define an optional attribute in your class with a default value.
+Options are like flags but, instead of booleans, the user passes in specific values. You can think of options as key/pair items. Options can be set as required by not specifying a default value.
+
 ```python
 from clypi import Command
 
@@ -157,21 +172,6 @@ from clypi import Command
 # With default: my-command
 class MyCommand(Command):
     my_attr: str | int = "some-default-here"
-```
-
-#### Arguments (positional)
-
-Arguments are mandatory positional words the user must pass in. They're defined as class attributes with
-no default. Arguments are collected in the order they're mentioned, so you'll need to keep that in mind.
-
-```python
-from clypi import Command
-
-# my-command 5 foo bar baz
-#        arg1^ ^^^^^^^^^^^arg2
-class MyCommand(Command):
-    arg1: int
-    arg2: list[str]
 ```
 
 #### Running the command

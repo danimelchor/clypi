@@ -12,7 +12,7 @@ from types import NoneType, UnionType
 from clypi._cli import autocomplete as _auto
 from clypi._cli import config as _conf
 from clypi._cli import parser, type_util
-from clypi._cli.formatter import TermFormatter
+from clypi._cli.formatter import ClipyFormatter
 from clypi._levenshtein import distance
 from clypi._util import _UNSET
 from clypi.prompts import prompt
@@ -499,7 +499,7 @@ class Command(metaclass=_CommandMeta):
     @t.final
     @classmethod
     def print_help(cls, parents: list[str] = [], *, exception: Exception | None = None):
-        tf = TermFormatter(
+        tf = ClipyFormatter(
             prog=parents + [cls.prog()],
             description=cls.help(),
             epilog=cls.epilog(),
