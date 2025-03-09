@@ -4,7 +4,7 @@ from importlib import import_module
 if t.TYPE_CHECKING:
     from clypi.align import AlignType, align
     from clypi.boxed import Boxes, boxed
-    from clypi.cli import Command, config
+    from clypi.cli import Command, Positional, config
     from clypi.colors import ALL_COLORS, print, style, styler
     from clypi.prompts import prompt
     from clypi.spinner import Spinner
@@ -15,6 +15,7 @@ __all__ = (
     "AlignType",
     "Boxes",
     "Command",
+    "Positional",
     "Spinner",
     "align",
     "boxed",
@@ -31,6 +32,7 @@ _dynamic_imports: dict[str, tuple[str | None, str]] = {
     "AlignType": (__spec__.parent, ".align"),
     "Boxes": (__spec__.parent, ".boxed"),
     "Command": (__spec__.parent, ".cli"),
+    "Positional": (__spec__.parent, ".cli"),
     "Spinner": (__spec__.parent, ".spinner"),
     "align": (__spec__.parent, ".align"),
     "boxed": (__spec__.parent, ".boxed"),

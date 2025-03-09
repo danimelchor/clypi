@@ -4,11 +4,11 @@ from unittest.mock import MagicMock, patch
 
 import pytest
 
-from clypi import Command, config
+from clypi import Command, Positional, config
 
 
 class ExampleSub(Command):
-    pos2: tuple[str | Path, ...]
+    pos2: Positional[tuple[str | Path, ...]]
     flag2: bool = False
     option2: int = 5
 
@@ -17,7 +17,7 @@ class ExampleSub(Command):
 
 
 class Example(Command):
-    pos: Path
+    pos: Positional[Path]
     flag: bool = config(default=False, short="f")
     subcommand: ExampleSub | None = None
     option: list[str] = config(default_factory=list, short="o")

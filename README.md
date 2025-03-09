@@ -40,10 +40,10 @@ Read the [docs](https://github.com/danimelchor/clypi/blob/master/docs/index.md#c
 
 ```python
 # examples/basic_cli.py
-from clypi import Command, config
+from clypi import Command, Positional, config
 
 class Lint(Command):
-    files: tuple[str, ...]
+    files: Positional[tuple[str, ...]]
     verbose = config(...)  # Comes from MyCli but I want to use it too
 
     async def run(self):

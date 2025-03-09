@@ -167,6 +167,7 @@ def from_v6e(_type: t.Any) -> t.Callable[[t.Any], t.Any] | None:
     return None
 
 
+@type_util.ignore_annotated
 def from_type(_type: t.Any) -> t.Callable[[t.Any], t.Any]:
     if HAS_V6E and (parser := from_v6e(_type)):
         return parser

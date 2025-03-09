@@ -51,7 +51,7 @@ class Formatter(t.Protocol):
 
 
 @dataclass
-class TermFormatter:
+class ClipyFormatter:
     prog: list[str]
     description: str | None
     epilog: str | None

@@ -12,7 +12,7 @@ from types import NoneType, UnionType
 from clypi._cli import autocomplete as _auto
 from clypi._cli import config as _conf
 from clypi._cli import parser, type_util
-from clypi._cli.formatter import TermFormatter
+from clypi._cli.formatter import ClipyFormatter
 from clypi._levenshtein import distance
 from clypi._util import _UNSET
 from clypi.prompts import prompt
@@ -21,6 +21,7 @@ logger = logging.getLogger(__name__)
 
 # re-exports
 config = _conf.config
+Positional = _conf.Positional
 
 HELP_ARGS: tuple[str, ...] = ("help", "-h", "--help")
 
@@ -390,12 +391,14 @@ class Command(metaclass=_CommandMeta):
                 # If the field comes from a parent command, use that
                 elif field_conf.forwarded:
                     if field not in parent_attrs:
-                        raise ValueError(f"Missing required argument {field}")
+                        what = "argument" if field_conf.is_positional() else "option"
+                        raise ValueError(f"Missing required {what} {field!r}")
                     value = parent_attrs[field]
 
                 # Whoops!
                 else:
-                    raise ValueError(f"Missing required argument {field}")
+                    what = "argument" if field_conf.is_positional() else "option"
+                    raise ValueError(f"Missing required {what} {field!r}")
 
                 # Try parsing the string as the right type
                 parsed_kwargs[field] = value
@@ -439,11 +442,7 @@ class Command(metaclass=_CommandMeta):
     def options(cls) -> dict[str, _Argument]:
         options: dict[str, _Argument] = {}
         for field, field_conf in cls.fields().items():
-            if field_conf.forwarded:
-                continue
-
-            # Is positional
-            if not field_conf.has_default() and field_conf.prompt is None:
+            if field_conf.forwarded or field_conf.is_positional():
                 continue
 
             options[field] = _Argument(
@@ -458,21 +457,17 @@ class Command(metaclass=_CommandMeta):
     @t.final
     @classmethod
     def positionals(cls) -> dict[str, _Argument]:
-        options: dict[str, _Argument] = {}
+        positionals: dict[str, _Argument] = {}
         for field, field_conf in cls.fields().items():
-            if field_conf.forwarded:
+            if field_conf.forwarded or not field_conf.is_positional():
                 continue
 
-            # Is option
-            if field_conf.has_default() or field_conf.prompt is not None:
-                continue
-
-            options[field] = _Argument(
+            positionals[field] = _Argument(
                 field,
                 field_conf.arg_type,
                 help=field_conf.help,
             )
-        return options
+        return positionals
 
     @t.final
     @classmethod
@@ -504,7 +499,7 @@ class Command(metaclass=_CommandMeta):
     @t.final
     @classmethod
     def print_help(cls, parents: list[str] = [], *, exception: Exception | None = None):
-        tf = TermFormatter(
+        tf = ClipyFormatter(
             prog=parents + [cls.prog()],
             description=cls.help(),
             epilog=cls.epilog(),
