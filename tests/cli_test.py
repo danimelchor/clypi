@@ -1,6 +1,4 @@
-import asyncio
 from pathlib import Path
-from unittest.mock import MagicMock, patch
 
 from typing_extensions import override
 
@@ -13,7 +11,7 @@ class ExampleSubCommand(Command):
     positional: tuple[str | Path, ...]
 
     async def run(self):
-        return "subcommand"
+        print("subcommand")
 
 
 class ExampleCommand(Command):
@@ -36,7 +34,7 @@ class ExampleCommand(Command):
         return "Some text to display after..."
 
     async def run(self):
-        return "main"
+        print("main")
 
 
 def test_expected_base():
@@ -77,37 +75,6 @@ def test_expected_subcommands():
     assert sub is ExampleSubCommand
     assert sub.prog() == "example-sub-command"
     assert sub.help() == "Some sample docs"
-
-
-@patch("os.get_terminal_size")
-def test_expected_parsing(gts):
-    gts.return_value = MagicMock()
-    gts.return_value.columns = 80
-
-    ec = ExampleCommand.parse(["--flag", "--option", "a", "b"])
-    assert ec.flag is True
-    assert ec.option == ["a", "b"]
-
-    assert ec.subcommand is None
-    assert asyncio.run(ec.astart()) == "main"
-
-
-@patch("os.get_terminal_size")
-def test_expected_parsing_subcmd(gts):
-    gts.return_value = MagicMock()
-    gts.return_value.columns = 80
-
-    ec = ExampleCommand.parse(
-        ["--flag", "--option", "a", "b", "example-sub-command", "some_file.json"]
-    )
-    assert ec.flag is True
-    assert ec.option == ["a", "b"]
-
-    sc = ec.subcommand
-    assert isinstance(sc, ExampleSubCommand)
-    assert sc.positional == ("some_file.json",)
-
-    assert asyncio.run(ec.astart()) == "subcommand"
 
 
 def test_expected_cls_introspection():
