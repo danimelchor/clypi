@@ -1,4 +1,5 @@
 import asyncio
+from enum import Enum
 from pathlib import Path
 from typing import Literal
 
@@ -26,6 +27,11 @@ def debug(fun):
     return inner
 
 
+class Env(Enum):
+    QA = 1
+    PROD = 2
+
+
 class RunParallel(Command):
     """
     Runs all of the files in parallel
@@ -36,10 +42,11 @@ class RunParallel(Command):
         default=None,
         parser=v.path().exists(),
     )
+    env: Env = config(...)
 
     @debug
     async def run(self):
-        clypi.print("Running all files", fg="blue", bold=True)
+        clypi.print(f"{self.env.name} - Running all files", fg="blue", bold=True)
 
         async with clypi.Spinner(f"Running {', '.join(self.files)} in parallel"):
             await asyncio.sleep(2)
@@ -56,10 +63,11 @@ class RunSerial(Command):
     """
 
     files: Positional[list[Path]] = config(parser=v.list(v.path().exists()))
+    env: Env = config(...)
 
     @debug
     async def run(self):
-        clypi.print("Running all files", fg="blue", bold=True)
+        clypi.print(f"{self.env.name} - Running all files", fg="blue", bold=True)
         for f in self.files:
             async with clypi.Spinner(f"Running {f.as_posix()} in parallel"):
                 await asyncio.sleep(2)
@@ -73,6 +81,7 @@ class Run(Command):
 
     subcommand: RunParallel | RunSerial
     quiet: bool = False
+    env: Env = Env.PROD
     format: Literal["json", "pretty"] = "pretty"
 
 
