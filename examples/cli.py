@@ -55,7 +55,7 @@ class RunSerial(Command):
     Runs all of the files one by one
     """
 
-    files: list[Path] = config(parser=v.list(v.path().exists()))
+    files: Positional[list[Path]] = config(parser=v.list(v.path().exists()))
 
     @debug
     async def run(self):
@@ -82,13 +82,13 @@ class Lint(Command):
     termuff rules.
     """
 
-    files: list[str] = config(help="The list of files to lint")
+    files: Positional[list[str]] = config(help="The list of files to lint")
     quiet: bool = config(
         short="q",
         help="If the linter should omit all stdout messages",
         default=False,
     )
-    no_cache: bool = config(help="Disable the termuff cache", default=False)
+    timeout: int = config(help="Disable the termuff cache")
     index: str = config(
         default="http://pypi.org",
         help="The index to download termuff from",
@@ -98,7 +98,7 @@ class Lint(Command):
     @debug
     async def run(self):
         async with clypi.Spinner(f"Linting {', '.join(self.files)}"):
-            await asyncio.sleep(2)
+            await asyncio.sleep(self.timeout)
         clypi.print("\nDone!", fg="green", bold=True)
 
 

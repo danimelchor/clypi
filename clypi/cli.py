@@ -391,12 +391,14 @@ class Command(metaclass=_CommandMeta):
                 # If the field comes from a parent command, use that
                 elif field_conf.forwarded:
                     if field not in parent_attrs:
-                        raise ValueError(f"Missing required argument {field}")
+                        what = "argument" if field_conf.is_positional() else "option"
+                        raise ValueError(f"Missing required {what} {field!r}")
                     value = parent_attrs[field]
 
                 # Whoops!
                 else:
-                    raise ValueError(f"Missing required argument {field}")
+                    what = "argument" if field_conf.is_positional() else "option"
+                    raise ValueError(f"Missing required {what} {field!r}")
 
                 # Try parsing the string as the right type
                 parsed_kwargs[field] = value
