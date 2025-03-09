@@ -27,13 +27,13 @@ async def subprocess():
     async with Spinner(title) as s:
         # Fist subprocess
         proc = await asyncio.create_subprocess_shell(
-            "for i in $(seq 1 10); do date && sleep 0.4; done;",
+            "for i in $(seq 1 10); do date && sleep 0.2; done;",
             stdout=asyncio.subprocess.PIPE,
         )
 
         # Second subprocess
         proc2 = await asyncio.create_subprocess_shell(
-            "for i in $(seq 1 20); do echo $RANDOM && sleep 0.2; done;",
+            "for i in $(seq 1 20); do echo $RANDOM && sleep 0.1; done;",
             stdout=asyncio.subprocess.PIPE,
         )
 
@@ -49,12 +49,12 @@ async def captured():
     print()
     title = "Example that captures stdout/stderr"
     async with Spinner(title, capture=True):
-        for _ in range(5):
-            clypi.print("Stdout output", fg="blue")
-            clypi.print("Stderr output", fg="red", file=sys.stderr)
-            await asyncio.sleep(1)
-
-    print("Back to normal")
+        for i in range(10):
+            if i % 2 == 0:
+                clypi.print("Stdout output", fg="blue")
+            else:
+                clypi.print("Stderr output", fg="red", file=sys.stderr)
+            await asyncio.sleep(0.3)
 
 
 async def main():
@@ -68,5 +68,5 @@ async def main():
 
 
 if __name__ == "__main__":
-    asyncio.run(captured())
     # asyncio.run(main())
+    asyncio.run(captured())
