@@ -1,8 +1,45 @@
+import asyncio
 import re
 from pathlib import Path
 
 import clypi
-from clypi import Command, Positional, config
+from clypi import Command, Positional, Spinner, config
+
+
+async def from_requirements(file: Path):
+    packages_with_versions: dict[str, str] = {}
+    for line in file.read_text().split():
+        package = re.search(r"(\w+)[>=<]+([0-9\.]+)", line)
+        if not package:
+            continue
+        packages_with_versions[package.group(1)] = package.group(2)
+
+    await _install_packages(packages_with_versions)
+
+
+async def from_packages(packages: list[str]):
+    packages_with_versions: dict[str, str] = {}
+
+    clypi.print("\nAdded new packages", fg="blue", bold=True)
+    for p in packages:
+        package = re.search(r"(\w+)[>=<]+([0-9\.]+)", p)
+        if not package:
+            continue
+        packages_with_versions[package.group(1)] = package.group(2)
+
+    await _install_packages(packages_with_versions)
+
+
+async def _install_packages(packages: dict[str, str]):
+    async with Spinner("Installing packages", capture=True):
+        for name, version in packages.items():
+            print(f"Installed {name}")
+            await asyncio.sleep(0.3)
+
+    clypi.print("\nAdded new packages", fg="blue", bold=True)
+    for name, version in packages.items():
+        icon = clypi.style("+", fg="green", bold=True)
+        print(f"[{icon}] {name} {version}")
 
 
 class Add(Command):
@@ -22,30 +59,15 @@ class Add(Command):
     )
 
     async def run(self) -> None:
-        clypi.print("Running `uv add` command...", fg="blue", bold=True)
+        clypi.print("Running `uv add` command...\n", fg="blue", bold=True)
 
         # Download from requirements.txt file
         if self.requirements:
-            clypi.print(
-                f"\nAdded new packages from {self.requirements}", fg="blue", bold=True
-            )
-            for line in self.requirements.read_text().split():
-                package = re.search(r"(\w+)[>=<]+([0-9\.]+)", line)
-                if package:
-                    icon = clypi.style("+", fg="green", bold=True)
-                    print(f"[{icon}] {package.group(1)} {package.group(2)}")
+            await from_requirements(self.requirements)
 
         # Download positional args
         elif self.packages:
-            clypi.print("\nAdded new packages", fg="blue", bold=True)
-            for p in self.packages:
-                icon = clypi.style("+", fg="green", bold=True)
-                print(f"[{icon}] {p} 1.0.0")
-
-            clypi.print("\nRemoved old packages", fg="blue", bold=True)
-            for p in self.packages:
-                icon = clypi.style("-", fg="red", bold=True)
-                print(f"[{icon}] {p} 0.9.0")
+            await from_packages(self.packages)
 
         else:
             raise ValueError("One of requirements or packages is required!")
