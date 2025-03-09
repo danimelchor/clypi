@@ -52,6 +52,9 @@ class _RedirectStdPipe:
     def write(self, s: str):
         self._original.write(s)
 
+    def flush(self):
+        self._original.flush()
+
 
 @t.final
 class Spinner(AbstractAsyncContextManager):
@@ -82,7 +85,7 @@ class Spinner(AbstractAsyncContextManager):
     async def __aenter__(self):
         if self._capture:
             self._stdout.start()
-            # self._stderr.start()
+            self._stderr.start()
 
         self._task = asyncio.create_task(self._spin())
         return self
@@ -116,7 +119,7 @@ class Spinner(AbstractAsyncContextManager):
 
         # Write msg and flush
         self._stdout.write(msg)
-        sys.stdout.flush()
+        self._stdout.flush()
 
     def _render_frame(self):
         self._print(

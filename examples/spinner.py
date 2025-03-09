@@ -50,8 +50,8 @@ async def captured():
     title = "Example that captures stdout/stderr"
     async with Spinner(title, capture=True):
         for _ in range(5):
-            print("Foooooooo")
-            print("Barrrrrrr", file=sys.stderr)
+            clypi.print("Stdout output", fg="blue")
+            clypi.print("Stderr output", fg="red", file=sys.stderr)
             await asyncio.sleep(1)
 
     print("Back to normal")
