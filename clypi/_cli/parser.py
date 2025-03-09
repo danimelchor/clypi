@@ -1,8 +1,10 @@
 import importlib.util
+import inspect
 import re
 import typing as t
 from dataclasses import dataclass, field
 from datetime import datetime, timedelta
+from enum import Enum
 from pathlib import Path
 from types import NoneType, UnionType
 
@@ -161,6 +163,24 @@ def _parse_bool(value: t.Any) -> bool:
     raise ValueError(f"Value {value!r} is not a valid boolean")
 
 
+def _parse_enum(_type: type[Enum]):
+    def inner(value: t.Any) -> Enum:
+        if not isinstance(value, str):
+            raise ValueError(
+                f"Don't know how to parse {value!r} as {type_util.type_to_str(_type)}"
+            )
+
+        for enum_val in _type:
+            if value.lower() == enum_val.name.lower():
+                return enum_val
+
+        raise ValueError(
+            f"Value {value} is not a valid choice between {type_util.type_to_str(_type)}"
+        )
+
+    return inner
+
+
 def from_v6e(_type: t.Any) -> t.Callable[[t.Any], t.Any] | None:
     import v6e as v  # type: ignore
 
@@ -204,6 +224,9 @@ def from_type(_type: t.Any) -> t.Callable[[t.Any], t.Any]:
 
     if _type is NoneType:
         return _parse_none
+
+    if inspect.isclass(_type) and issubclass(_type, Enum):
+        return _parse_enum(_type)
 
     raise UnparseableException(
         f"Don't know how to parse as {type_util.type_to_str(_type)} ({type(_type)})"

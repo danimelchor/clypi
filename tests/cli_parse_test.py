@@ -1,4 +1,5 @@
 import shlex
+from enum import Enum
 from pathlib import Path
 
 import pytest
@@ -272,3 +273,47 @@ def test_parse_tuples(args, expected, fails):
         lc_v = getattr(lc, k)
         assert lc_v == v
         assert isinstance(lc_v, tuple)
+
+
+class Env(Enum):
+    QA = 1
+    PROD = 2
+
+
+@parametrize(
+    "args,expected,fails",
+    [
+        ([], {}, True),
+        (["foo"], {}, True),
+        (["qa"], {}, True),
+        (["qa", "--env2", "bar"], {}, True),
+        (["qa", "--env2", "prod", "--env3", "foo"], {}, True),
+        (
+            ["qa", "--env2", "prod"],
+            {"env": Env.QA, "env2": Env.PROD, "env3": Env.PROD},
+            False,
+        ),
+        (
+            ["prod", "--env2", "qa", "--env3", "prod"],
+            {"env": Env.PROD, "env2": Env.QA, "env3": Env.PROD},
+            False,
+        ),
+    ],
+)
+def test_parse_enums(args, expected, fails):
+    class EnumCommand(Command):
+        env: Positional[Env]
+        env2: Env
+        env3: Env = Env.PROD
+
+    if fails:
+        with pytest.raises(Exception):
+            _ = EnumCommand.parse(args, _raise=True)
+        return
+
+    ec = EnumCommand.parse(args, _raise=True)
+    assert ec is not None
+    for k, v in expected.items():
+        lc_v = getattr(ec, k)
+        assert lc_v == v
+        assert isinstance(lc_v, Env)

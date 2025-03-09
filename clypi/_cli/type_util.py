@@ -1,5 +1,6 @@
 import inspect
 import typing as t
+from enum import Enum
 from types import NoneType, UnionType
 
 
@@ -60,6 +61,9 @@ def type_to_str(_type: t.Any) -> str:
 
     if t.get_origin(_type) is t.Literal:
         return "{" + "|".join(type_to_str(tp) for tp in _type.__args__) + "}"
+
+    if inspect.isclass(_type) and issubclass(_type, Enum):
+        return "{" + "|".join(tp.name for tp in _type) + "}"
 
     if isinstance(_type, UnionType):
         return "[" + "|".join(type_to_str(tp) for tp in _type.__args__) + "]"
