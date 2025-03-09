@@ -3,6 +3,7 @@ from pathlib import Path
 
 import clypi
 
+t.assert_type(clypi.confirm("A"), bool)
 t.assert_type(clypi.prompt("A"), str)
 t.assert_type(clypi.prompt("A", parser=int), int)
 t.assert_type(clypi.prompt("A", parser=lambda x: Path(x)), Path)
