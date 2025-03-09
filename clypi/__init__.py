@@ -6,7 +6,7 @@ if t.TYPE_CHECKING:
     from clypi.boxed import Boxes, boxed
     from clypi.cli import Command, Positional, config
     from clypi.colors import ALL_COLORS, print, style, styler
-    from clypi.prompts import prompt
+    from clypi.prompts import MaxAttemptsException, confirm, prompt
     from clypi.spinner import Spinner
     from clypi.stack import stack
 
@@ -15,11 +15,13 @@ __all__ = (
     "AlignType",
     "Boxes",
     "Command",
+    "MaxAttemptsException",
     "Positional",
     "Spinner",
     "align",
     "boxed",
     "config",
+    "confirm",
     "print",
     "prompt",
     "stack",
@@ -32,11 +34,13 @@ _dynamic_imports: dict[str, tuple[str | None, str]] = {
     "AlignType": (__spec__.parent, ".align"),
     "Boxes": (__spec__.parent, ".boxed"),
     "Command": (__spec__.parent, ".cli"),
+    "MaxAttemptsException": (__spec__.parent, ".prompts"),
     "Positional": (__spec__.parent, ".cli"),
     "Spinner": (__spec__.parent, ".spinner"),
     "align": (__spec__.parent, ".align"),
     "boxed": (__spec__.parent, ".boxed"),
     "config": (__spec__.parent, ".cli"),
+    "confirm": (__spec__.parent, ".prompts"),
     "print": (__spec__.parent, ".colors"),
     "prompt": (__spec__.parent, ".prompts"),
     "stack": (__spec__.parent, ".stack"),

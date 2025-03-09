@@ -153,6 +153,14 @@ def _parse_none(value: t.Any) -> None:
     return None
 
 
+def _parse_bool(value: t.Any) -> bool:
+    if value.lower() in ("y", "yes", "true"):
+        return True
+    if value.lower() in ("n", "no", "false"):
+        return False
+    raise ValueError(f"Value {value!r} is not a valid boolean")
+
+
 def from_v6e(_type: t.Any) -> t.Callable[[t.Any], t.Any] | None:
     import v6e as v  # type: ignore
 
@@ -176,7 +184,10 @@ def from_type(_type: t.Any) -> t.Callable[[t.Any], t.Any]:
     if HAS_V6E and (parser := from_v6e(_type)):
         return parser
 
-    if _type in (int, float, str, Path, bool):
+    if _type is bool:
+        return _parse_bool
+
+    if _type in (int, float, str, Path):
         return _parse_builtin(_type)
 
     if type_util.is_collection(_type):

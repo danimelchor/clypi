@@ -4,6 +4,7 @@ import typing as t
 from getpass import getpass
 
 import clypi
+from clypi._cli import parser
 from clypi._util import _UNSET, Unset
 
 MAX_ATTEMPTS: int = 20
@@ -13,13 +14,81 @@ def _error(msg: str):
     clypi.print(msg, fg="red")
 
 
-def _input(prompt: str, hide_input: bool) -> str:
+def _input(
+    prompt: str,
+    default: T | Unset = _UNSET,
+    hide_input: bool = False,
+) -> str | T | Unset:
     fun = getpass if hide_input else input
-    return fun(clypi.style(prompt, fg="blue", bold=True))
+    res = fun(clypi.style(prompt, fg="blue", bold=True))
+    if res:
+        return res
+    return default
 
 
 class MaxAttemptsException(Exception):
     pass
+
+
+class AbortException(Exception):
+    pass
+
+
+def _display_default(default: t.Any) -> str:
+    if isinstance(default, bool):
+        return "Y/n" if default else "y/N"
+    return f"{default}"
+
+
+def _build_prompt(text: str, default: t.Any) -> str:
+    prompt = text
+    if default is not _UNSET:
+        prompt += f" [{_display_default(default)}]"
+    prompt += ": "
+    return prompt
+
+
+def confirm(
+    text: str,
+    *,
+    default: bool | Unset = _UNSET,
+    max_attempts: int = MAX_ATTEMPTS,
+    abort: bool = False,
+) -> bool:
+    """
+    Prompt the user for a yes/no value
+
+    :param text: The prompt text.
+    :param default: The default value.
+    :param max_attempts: The maximum number of attempts to get a valid value.
+    :return: The parsed value.
+    """
+
+    # Build the prompt
+    prompt = _build_prompt(text, default)
+
+    # Loop until we get a valid value
+    for _ in range(max_attempts):
+        inp = _input(prompt, default=default)
+        if inp is _UNSET:
+            _error("A value is required.")
+            continue
+
+        # User answered the prompt -- Parse
+        try:
+            parsed_inp = parser.from_type(bool)(inp)
+        except (ValueError, TypeError) as e:
+            _error(str(e))
+            continue
+
+        if abort and not parsed_inp:
+            raise AbortException()
+
+        return parsed_inp
+
+    raise MaxAttemptsException(
+        f"Failed to get a valid value after {max_attempts} attempts."
+    )
 
 
 T = t.TypeVar("T")
@@ -41,18 +110,7 @@ def prompt(
 def prompt(
     text: str,
     *,
-    parser: type[T],
-    default: T | Unset = _UNSET,
-    hide_input: bool = False,
-    max_attempts: int = MAX_ATTEMPTS,
-) -> T: ...
-
-
-@t.overload
-def prompt(
-    text: str,
-    *,
-    parser: Parser[T],
+    parser: Parser[T] | type[T],
     default: T | Unset = _UNSET,
     hide_input: bool = False,
     max_attempts: int = MAX_ATTEMPTS,
@@ -78,19 +136,12 @@ def prompt(
     """
 
     # Build the prompt
-    prompt = text
-    if default is not _UNSET:
-        prompt += f" [{default}]"
-    prompt += ": "
+    prompt = _build_prompt(text, default)
 
     # Loop until we get a valid value
     for _ in range(max_attempts):
-        inp = _input(prompt, hide_input=hide_input)
-
-        # User hit enter without a value
-        if inp == "":
-            if default is not _UNSET:
-                return default
+        inp = _input(prompt, default=default, hide_input=hide_input)
+        if inp is _UNSET:
             _error("A value is required.")
             continue
 
