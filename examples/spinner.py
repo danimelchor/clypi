@@ -1,4 +1,5 @@
 import asyncio
+import sys
 
 import clypi
 from clypi.spinner import Spin, Spinner
@@ -22,7 +23,7 @@ async def all_spinners():
 async def subprocess():
     # Example with subprocess
     print()
-    title = "EX4 - Example with subprocess"
+    title = "Example with subprocess"
     async with Spinner(title) as s:
         # Fist subprocess
         proc = await asyncio.create_subprocess_shell(
@@ -43,6 +44,19 @@ async def subprocess():
         await asyncio.gather(*coros)
 
 
+async def captured():
+    # Example with subprocess
+    print()
+    title = "Example that captures stdout/stderr"
+    async with Spinner(title, capture=True):
+        for _ in range(5):
+            print("Foooooooo")
+            print("Barrrrrrr", file=sys.stderr)
+            await asyncio.sleep(1)
+
+    print("Back to normal")
+
+
 async def main():
     try:
         await all_spinners()
@@ -50,7 +64,9 @@ async def main():
         pass
 
     await subprocess()
+    await captured()
 
 
 if __name__ == "__main__":
-    asyncio.run(main())
+    asyncio.run(captured())
+    # asyncio.run(main())
