@@ -180,6 +180,7 @@ def print(
     reverse: bool = False,
     strikethrough: bool = False,
     reset: bool = False,
+    file: t.IO | None = None,
     end: str | None = "\n",
 ):
     text = style(
@@ -195,4 +196,4 @@ def print(
         strikethrough=strikethrough,
         reset=reset,
     )
-    builtins.print(text, end=end)
+    builtins.print(text, end=end, file=file)
