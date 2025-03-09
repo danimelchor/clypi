@@ -34,7 +34,15 @@ class _PerLineIO(io.TextIOBase):
         When we get a string, split it by new lines, submit every line we've
         collected and keep the remainder for future writes
         """
-        self.buffer.extend(s.split("\n"))
+        parts = s.split("\n")
+
+        # If there's a buffer, there's a half-way sentence there, so we merge it
+        if self.buffer:
+            self.buffer[0] += parts[0]
+            self.buffer.extend(parts[1:])
+        else:
+            self.buffer = parts
+
         if len(self.buffer) > 1:
             for i in range(0, len(self.buffer) - 1):
                 if line := self.buffer[i]:

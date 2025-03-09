@@ -33,7 +33,7 @@ async def from_packages(packages: list[str]):
 async def _install_packages(packages: dict[str, str]):
     async with Spinner("Installing packages", capture=True):
         for name, version in packages.items():
-            print(f"Installed {name}")
+            print("Installed", name)
             await asyncio.sleep(0.3)
 
     clypi.print("\nAdded new packages", fg="blue", bold=True)
