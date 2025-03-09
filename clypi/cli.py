@@ -21,6 +21,7 @@ logger = logging.getLogger(__name__)
 
 # re-exports
 config = _conf.config
+Positional = _conf.Positional
 
 HELP_ARGS: tuple[str, ...] = ("help", "-h", "--help")
 
@@ -439,11 +440,7 @@ class Command(metaclass=_CommandMeta):
     def options(cls) -> dict[str, _Argument]:
         options: dict[str, _Argument] = {}
         for field, field_conf in cls.fields().items():
-            if field_conf.forwarded:
-                continue
-
-            # Is positional
-            if not field_conf.has_default() and field_conf.prompt is None:
+            if field_conf.forwarded or field_conf.is_positional():
                 continue
 
             options[field] = _Argument(
@@ -458,21 +455,17 @@ class Command(metaclass=_CommandMeta):
     @t.final
     @classmethod
     def positionals(cls) -> dict[str, _Argument]:
-        options: dict[str, _Argument] = {}
+        positionals: dict[str, _Argument] = {}
         for field, field_conf in cls.fields().items():
-            if field_conf.forwarded:
+            if field_conf.forwarded or not field_conf.is_positional():
                 continue
 
-            # Is option
-            if field_conf.has_default() or field_conf.prompt is not None:
-                continue
-
-            options[field] = _Argument(
+            positionals[field] = _Argument(
                 field,
                 field_conf.arg_type,
                 help=field_conf.help,
             )
-        return options
+        return positionals
 
     @t.final
     @classmethod

@@ -63,6 +63,17 @@ class Config(t.Generic[T]):
             return self.default_factory()
         return _UNSET
 
+    def is_positional(self) -> bool:
+        if t.get_origin(self.arg_type) != t.Annotated:
+            return False
+
+        metadata = self.arg_type.__metadata__
+        for m in metadata:
+            if isinstance(m, _Positional):
+                return True
+
+        return False
+
     @classmethod
     def from_partial(
         cls, partial: PartialConfig[T], parser: Parser[T], arg_type: t.Any
@@ -96,3 +107,11 @@ def config(
         max_attempts=max_attempts,
         forwarded=forwarded,
     )  # type: ignore
+
+
+@dataclass
+class _Positional:
+    pass
+
+
+Positional: t.TypeAlias = t.Annotated[T, _Positional()]

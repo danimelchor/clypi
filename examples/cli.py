@@ -7,6 +7,7 @@ from typing_extensions import override
 
 import clypi
 from clypi import Command, config
+from clypi._cli.config import Positional
 
 
 def debug(fun):
@@ -30,7 +31,7 @@ class RunParallel(Command):
     Runs all of the files in parallel
     """
 
-    files: list[str]
+    files: Positional[list[str]]
     exceptions_with_reasons: Path | None = config(
         default=None,
         parser=v.path().exists(),

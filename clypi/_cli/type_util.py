@@ -3,14 +3,26 @@ import typing as t
 from types import NoneType, UnionType
 
 
+def ignore_annotated(fun: t.Callable[[t.Any], t.Any]):
+    def inner(_type: t.Any):
+        if t.get_origin(_type) == t.Annotated:
+            _type = _type.__args__[0]
+        return fun(_type)
+
+    return inner
+
+
+@ignore_annotated
 def is_collection(_type: t.Any) -> bool:
     return t.get_origin(_type) in (list, t.Sequence)
 
 
+@ignore_annotated
 def is_tuple(_type: t.Any) -> bool:
     return t.get_origin(_type) is tuple
 
 
+@ignore_annotated
 def tuple_size(_type: t.Any) -> float:
     args = _type.__args__
     if args[-1] is Ellipsis:
@@ -18,6 +30,7 @@ def tuple_size(_type: t.Any) -> float:
     return len(args)
 
 
+@ignore_annotated
 def remove_optionality(_type: t.Any) -> t.Any:
     if not isinstance(_type, UnionType):
         return _type
@@ -33,6 +46,7 @@ def remove_optionality(_type: t.Any) -> t.Any:
     return t.Union[*new_args]
 
 
+@ignore_annotated
 def type_to_str(_type: t.Any) -> str:
     _map = {
         "bool": "boolean",

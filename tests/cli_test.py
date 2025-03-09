@@ -2,13 +2,13 @@ from pathlib import Path
 
 from typing_extensions import override
 
-from clypi import Command, config
+from clypi import Command, Positional, config
 
 
 class ExampleSubCommand(Command):
     """Some sample docs"""
 
-    positional: tuple[str | Path, ...]
+    positional: Positional[tuple[str | Path, ...]]
 
     async def run(self):
         print("subcommand")
@@ -61,7 +61,7 @@ def test_expected_positional():
     assert len(pos) == 1
 
     assert pos["positional"].name == "positional"
-    assert pos["positional"].arg_type == tuple[str | Path, ...]
+    assert pos["positional"].arg_type == Positional[tuple[str | Path, ...]]
     assert pos["positional"].nargs == "+"
 
 
