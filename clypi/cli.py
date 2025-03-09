@@ -226,6 +226,56 @@ class Command(metaclass=_CommandMeta):
 
     @t.final
     @classmethod
+    def subcommands(cls) -> dict[str | None, type[Command] | None]:
+        subcmds = t.cast(
+            list[type[Command] | type[None]] | None,
+            getattr(cls, "__clypi_subcommands__", None),
+        )
+        if subcmds is None:
+            return {None: None}
+
+        ret: dict[str | None, type[Command] | None] = {}
+        for sub in subcmds:
+            if issubclass(sub, Command):
+                ret[sub.prog()] = sub
+            else:
+                ret[None] = None
+        return ret
+
+    @t.final
+    @classmethod
+    def options(cls) -> dict[str, _Argument]:
+        options: dict[str, _Argument] = {}
+        for field, field_conf in cls.fields().items():
+            if field_conf.forwarded or field_conf.is_positional():
+                continue
+
+            options[field] = _Argument(
+                field,
+                type_util.remove_optionality(field_conf.arg_type),
+                help=field_conf.help,
+                short=field_conf.short,
+                is_opt=True,
+            )
+        return options
+
+    @t.final
+    @classmethod
+    def positionals(cls) -> dict[str, _Argument]:
+        positionals: dict[str, _Argument] = {}
+        for field, field_conf in cls.fields().items():
+            if field_conf.forwarded or not field_conf.is_positional():
+                continue
+
+            positionals[field] = _Argument(
+                field,
+                field_conf.arg_type,
+                help=field_conf.help,
+            )
+        return positionals
+
+    @t.final
+    @classmethod
     def _find_similar_exc(cls, arg: parser.Arg) -> ValueError:
         """
         Utility function to find arguments similar to the one the
@@ -265,14 +315,18 @@ class Command(metaclass=_CommandMeta):
         args: t.Iterator[str],
         parents: list[str],
         parent_attrs: dict[str, str | list[str]] | None = None,
+        _raise: bool = False,
     ) -> t.Self:
         """
         Tries parsing args and if an error is shown, it displays the subcommand
         that failed the parsing's help page.
         """
         try:
-            return cls._parse(args, parents, parent_attrs)
+            return cls._parse(args, parents, parent_attrs, _raise)
         except (ValueError, TypeError) as e:
+            if _raise:
+                raise
+
             # The user might have started typing a subcommand but not
             # finished it so we cannot fully parse it, but we can recommend
             # the current command's args to autocomplete it
@@ -291,6 +345,7 @@ class Command(metaclass=_CommandMeta):
         args: t.Iterator[str],
         parents: list[str],
         parent_attrs: dict[str, str | list[str]] | None = None,
+        _raise: bool = False,
     ) -> t.Self:
         """
         Given an iterator of arguments we recursively parse all options, arguments,
@@ -411,6 +466,7 @@ class Command(metaclass=_CommandMeta):
                 args,
                 parents=parents + [cls.prog()],
                 parent_attrs=parsed_kwargs,
+                _raise=_raise,
             )
 
         # Assign to an instance
@@ -421,57 +477,7 @@ class Command(metaclass=_CommandMeta):
 
     @t.final
     @classmethod
-    def subcommands(cls) -> dict[str | None, type[Command] | None]:
-        subcmds = t.cast(
-            list[type[Command] | type[None]] | None,
-            getattr(cls, "__clypi_subcommands__", None),
-        )
-        if subcmds is None:
-            return {None: None}
-
-        ret: dict[str | None, type[Command] | None] = {}
-        for sub in subcmds:
-            if issubclass(sub, Command):
-                ret[sub.prog()] = sub
-            else:
-                ret[None] = None
-        return ret
-
-    @t.final
-    @classmethod
-    def options(cls) -> dict[str, _Argument]:
-        options: dict[str, _Argument] = {}
-        for field, field_conf in cls.fields().items():
-            if field_conf.forwarded or field_conf.is_positional():
-                continue
-
-            options[field] = _Argument(
-                field,
-                type_util.remove_optionality(field_conf.arg_type),
-                help=field_conf.help,
-                short=field_conf.short,
-                is_opt=True,
-            )
-        return options
-
-    @t.final
-    @classmethod
-    def positionals(cls) -> dict[str, _Argument]:
-        positionals: dict[str, _Argument] = {}
-        for field, field_conf in cls.fields().items():
-            if field_conf.forwarded or not field_conf.is_positional():
-                continue
-
-            positionals[field] = _Argument(
-                field,
-                field_conf.arg_type,
-                help=field_conf.help,
-            )
-        return positionals
-
-    @t.final
-    @classmethod
-    def parse(cls, args: t.Sequence[str] | None = None) -> t.Self:
+    def parse(cls, args: t.Sequence[str] | None = None, _raise: bool = False) -> t.Self:
         """
         Entry point of the program. Depending on some env vars it
         will either run the user-defined program or instead output the necessary
@@ -488,7 +494,7 @@ class Command(metaclass=_CommandMeta):
 
         norm_args = parser.normalize_args(args)
         args_iter = iter(norm_args)
-        instance = cls._safe_parse(args_iter, parents=[])
+        instance = cls._safe_parse(args_iter, parents=[], _raise=_raise)
         if _auto.get_autocomplete_args() is not None:
             _auto.list_arguments(cls)
         if list(args_iter):

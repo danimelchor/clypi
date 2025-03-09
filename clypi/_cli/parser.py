@@ -75,7 +75,7 @@ def _parse_list(_type: t.Any) -> t.Callable[[t.Any], list]:
     def inner(value: t.Any):
         if not isinstance(value, list):
             raise ValueError(
-                f"Don't know how to parse {value} as {type_util.type_to_str(_type)}"
+                f"Don't know how to parse {value!r} as {type_util.type_to_str(_type)}"
             )
 
         inner_type = _type.__args__[0]
@@ -87,9 +87,13 @@ def _parse_list(_type: t.Any) -> t.Callable[[t.Any], list]:
 
 def _parse_tuple(_type: t.Any) -> t.Callable[[t.Any], tuple]:
     def inner(value: t.Any):
+        # Tuples of size 1 are passed in as strings
+        if isinstance(value, str):
+            value = (value,)
+
         if not isinstance(value, tuple | list):
             raise ValueError(
-                f"Don't know how to parse {value} as {type_util.type_to_str(_type)}"
+                f"Don't know how to parse {value!r} as {type_util.type_to_str(_type)}"
             )
 
         # TODO: can be made more efficient
@@ -145,7 +149,7 @@ def _parse_literal(_type: t.Any) -> t.Callable[[t.Any], t.Any]:
 
 def _parse_none(value: t.Any) -> None:
     if value is not None:
-        raise ValueError(f"Value {value} is not None")
+        raise ValueError(f"Value {value!r} is not None")
     return None
 
 
