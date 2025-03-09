@@ -481,10 +481,10 @@ import asyncio
 from clypi import Spinner
 
 async def main():
-    async with Spinner("Doing something") as s:
+    async with Spinner("Doing something", capture=True) as s:
         asyncio.sleep(2)
         s.title = "Slept for a bit"
-        s.log("I slept for a bit, will sleep a bit more")
+        print("I slept for a bit, will sleep a bit more")
         asyncio.sleep(2)
 
 asyncio.run(main())
@@ -500,6 +500,7 @@ def __init__(
     prefix: str = " ",
     suffix: str = "…",
     speed: float = 1,
+    capture: bool = False,
 )
 ```
 Parameters:
@@ -508,25 +509,26 @@ Parameters:
 - `prefix`: text or padding displayed before the icon
 - `suffix`: text or padding displayed after the icon
 - `speed`: a multiplier to speed or slow down the frame rate of the animation
+- `capture`: if enabled, the Spinner will capture all stdout and stderr and display it nicely
 
 #### `done`
 
 ```python
-def done(self, msg: str | None = None)
+async def done(self, msg: str | None = None)
 ```
 Mark the spinner as done early and optionally display a message.
 
 #### `fail`
 
 ```python
-def fail(self, msg: str | None = None)
+async def fail(self, msg: str | None = None)
 ```
 Mark the spinner as failed early and optionally display an error message.
 
 #### `log`
 
 ```python
-def log(self, msg: str | None = None)
+async def log(self, msg: str | None = None)
 ```
 Display extra log messages to the user as the spinner spins and your work progresses.
 
