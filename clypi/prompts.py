@@ -7,6 +7,7 @@ import clypi
 from clypi._cli import parser
 from clypi._util import _UNSET, Unset
 from clypi.configuration import get_config
+from clypi.exceptions import AbortException, MaxAttemptsException
 
 MAX_ATTEMPTS: int = 20
 
@@ -26,14 +27,6 @@ def _input(
     if res:
         return res
     return default
-
-
-class MaxAttemptsException(Exception):
-    pass
-
-
-class AbortException(Exception):
-    pass
 
 
 def _display_default(default: t.Any) -> str:
