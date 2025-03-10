@@ -597,6 +597,16 @@ Examples:
 This is just a utility decorator that let's you wrap functions so that a spinner
 displays while they run. `spinner` accepts the same arguments as the context manager [`Spinner`](#spinner).
 
+```python
+import asyncio
+from clypi import spinner
+
+@spinner("Doing work", capture=True)
+async def do_some_work():
+    await asyncio.sleep(5)
+
+asyncio.run(do_some_work())
+```
 
 ## Boxed
 

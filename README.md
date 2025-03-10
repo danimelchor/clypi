@@ -151,7 +151,7 @@ Or as a decorator:
 import asyncio
 from clypi import spinner
 
-@spinner("Doing work")
+@spinner("Doing work", capture=True)
 async def do_some_work():
     await asyncio.sleep(5)
 
