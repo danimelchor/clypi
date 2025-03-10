@@ -15,11 +15,8 @@ jobs:
 
         uses: astral-sh/setup-uv@v5
 
-      - name: Install the project
-        run: uv sync --all-extras
-
       - name: Run tests
-        run: uv run pytest tests
+        run: uv run --all-extras pytest tests
 
       - name: "Python format"
         run: uvx ruff format --diff .
@@ -28,7 +25,7 @@ jobs:
         run: uvx ruff check .
 
       - name: "Python type checking -- Pyright"
-        run: uvx pyright clypi/ type_tests/ examples/
+        run: uv run --all-extras pyright clypi/ type_tests/ examples/
 
       - name: "Python type checking -- Mypy"
-        run: uvx mypy clypi/ type_tests/ examples/
+        run: uv run --all-extras mypy clypi/ type_tests/ examples/
