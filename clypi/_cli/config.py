@@ -83,7 +83,7 @@ class Config(t.Generic[T]):
         return cls(**kwargs)
 
 
-def config(
+def arg(
     *args,
     parser: Parser[T] | None = None,
     default: T | Unset = _UNSET,

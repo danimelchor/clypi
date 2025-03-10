@@ -4,7 +4,7 @@ from importlib import import_module
 if t.TYPE_CHECKING:
     from clypi.align import AlignType, align
     from clypi.boxed import Boxes, boxed
-    from clypi.cli import ClypiFormatter, Command, Formatter, Positional, config
+    from clypi.cli import ClypiFormatter, Command, Formatter, Positional, arg
     from clypi.colors import ALL_COLORS, Styler, print, style
     from clypi.configuration import ClypiConfig, Theme, configure, get_config
     from clypi.exceptions import (
@@ -40,8 +40,8 @@ __all__ = (
     "Styler",
     "Theme",
     "align",
+    "arg",
     "boxed",
-    "config",
     "configure",
     "confirm",
     "format_traceback",
@@ -71,8 +71,8 @@ _dynamic_imports: dict[str, tuple[str | None, str]] = {
     "Styler": (__spec__.parent, ".colors"),
     "Theme": (__spec__.parent, ".configuration"),
     "align": (__spec__.parent, ".align"),
+    "arg": (__spec__.parent, ".cli"),
     "boxed": (__spec__.parent, ".boxed"),
-    "config": (__spec__.parent, ".cli"),
     "configure": (__spec__.parent, ".configuration"),
     "confirm": (__spec__.parent, ".prompts"),
     "format_traceback": (__spec__.parent, ".exceptions"),

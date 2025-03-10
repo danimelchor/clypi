@@ -210,7 +210,7 @@ def from_type(_type: t.Any) -> t.Callable[[t.Any], t.Any]:
     if _type in (int, float, str, Path):
         return _parse_builtin(_type)
 
-    if type_util.is_collection(_type):
+    if type_util.is_list(_type):
         return _parse_list(_type)
 
     if type_util.is_tuple(_type):

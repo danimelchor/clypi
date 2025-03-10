@@ -1,7 +1,7 @@
 import sys
 
 import clypi
-from clypi import ClypiConfig, ClypiFormatter, Command, Styler, Theme, config, configure
+from clypi import ClypiConfig, ClypiFormatter, Command, Styler, Theme, configure
 from examples.uv.add import Add
 from examples.uv.init import Init
 from examples.uv.pip import Pip
@@ -14,8 +14,8 @@ class Uv(Command):
     """
 
     subcommand: Add | Init | Pip | Remove | None
-    quiet: bool = config(default=False, short="q", help="Do not print any output")
-    version: bool = config(default=False, short="V", help="Display the uv version")
+    quiet: bool = arg(default=False, short="q", help="Do not print any output")
+    version: bool = arg(default=False, short="V", help="Display the uv version")
 
     async def run(self) -> None:
         if self.version:

@@ -1,7 +1,7 @@
 import typing as t
 from pathlib import Path
 
-from clypi import Command, config
+from clypi import Command
 
 
 class MySub(Command):
@@ -11,9 +11,9 @@ class MySub(Command):
 class MyCommand(Command):
     subcommand: MySub
     foo: bool
-    bar: str = config(help="help!")
-    baz: Path = config(default=Path.cwd())
-    qux: list[str] = config(default_factory=list)
+    bar: str = arg(help="help!")
+    baz: Path = arg(default=Path.cwd())
+    qux: list[str] = arg(default_factory=list)
 
 
 cli = MyCommand.parse()
@@ -27,9 +27,9 @@ t.assert_type(cli.qux, list[str])
 t.assert_type(cli.subcommand, MySub)
 t.assert_type(cli.subcommand.foo, int)
 
-t.assert_type(config(default=None), None)
-t.assert_type(config(default=5), int)
-t.assert_type(config(default_factory=int), int)
+t.assert_type(arg(default=None), None)
+t.assert_type(arg(default=5), int)
+t.assert_type(arg(default_factory=int), int)
 
 
 def parser(x: t.Any) -> int | list[str]:
@@ -38,4 +38,4 @@ def parser(x: t.Any) -> int | list[str]:
     return ["a"]
 
 
-t.assert_type(config(parser=parser), int | list[str])
+t.assert_type(arg(parser=parser), int | list[str])

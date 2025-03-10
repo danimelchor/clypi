@@ -8,7 +8,7 @@
 from clypi import ClypiConfig, configure, get_config
 
 # Get's the current config (or a default)
-conf = get_config()
+conf = get_arg()
 
 # Change the configuration
 config = ClypiConfig(help_on_fail=False)
@@ -48,7 +48,7 @@ Parameters:
 ### `config`
 
 ```python
-def config(
+def arg(
     parser: Parser[T] | None = None,
     default: T | Unset = _UNSET,
     default_factory: t.Callable[[], T] | Unset = _UNSET,
@@ -157,7 +157,7 @@ You must implement the [`run`](#run) method so that your command can be ran. The
 must be `async` so that we can properly render items in your screen.
 
 ```python
-from clypi import Command, config
+from clypi import Command, arg
 
 class MyCommand(Command):
     verbose: bool = False
@@ -171,15 +171,15 @@ class MyCommand(Command):
 You can define custom help messages for each argument using our handy `config` helper:
 
 ```python
-from clypi import Command, config
+from clypi import Command, arg
 
 class MyCommand(Command):
-    verbose: bool = config(help="Whether to show all of the output", default=True)
+    verbose: bool = arg(help="Whether to show all of the output", default=True)
 ```
 
 You can also define custom help messages for commands by creating a docstring on the class itself:
 ```python
-from clypi import Command, config
+from clypi import Command, arg
 
 class MyCommand(Command):
     """
@@ -193,10 +193,10 @@ class MyCommand(Command):
 If you want to ask the user to provide input if it's not specified, you can pass in a prompt to `config` for each field like so:
 
 ```python
-from clypi import Command, config
+from clypi import Command, arg
 
 class MyCommand(Command):
-    name: str = config(prompt="What's your name?")
+    name: str = arg(prompt="What's your name?")
 ```
 
 On runtime, if the user didn't provide a value for `--name`, the program will ask the user to provide one until they do. You can also pass in a `default` value to `config` to allow the user to just hit enter to accept the default.
@@ -208,7 +208,7 @@ using `config` as well:
 
 ```python
 import typing as t
-from clypi import Command, config
+from clypi import Command, arg
 
 def parse_slack(value: t.Any) -> str:
     if not value.startswith('#'):
@@ -216,17 +216,17 @@ def parse_slack(value: t.Any) -> str:
     return value
 
 class MyCommand(Command):
-    slack: str = config(parser=parse_slack)
+    slack: str = arg(parser=parse_slack)
 ```
 
 Optionally, you can use packages like [v6e](https://github.com/danimelchor/v6e) to parse the input:
 
 ```python
 import v6e
-from clypi import Command, config
+from clypi import Command, arg
 
 class MyCli(Command):
-    files: list[Path] = config(parser=v6e.path().exists().list())
+    files: list[Path] = arg(parser=v6e.path().exists().list())
 ```
 
 #### Forwarding arguments
@@ -236,10 +236,10 @@ argument and pass in a literal ellipsis (`...`) to config to indicate the argume
 parent command. You can also use `forwarded=True` if you prefer:
 
 ```python
-from clypi import Command, config
+from clypi import Command, arg
 
 class MySubCmd(Command):
-    verbose: bool = config(...)  # or `config(forwarded=True)`
+    verbose: bool = arg(...)  # or `arg(forwarded=True)`
 
 class MyCli(Command):
     subcommand: MySubCmd | None

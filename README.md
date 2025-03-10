@@ -35,11 +35,11 @@ Read the [docs](https://github.com/danimelchor/clypi/blob/master/docs/index.md#c
 
 ```python
 # examples/basic_cli.py
-from clypi import Command, Positional, config
+from clypi import Command, Positional, arg
 
 class Lint(Command):
     files: Positional[tuple[str, ...]]
-    verbose = config(...)  # Comes from MyCli but I want to use it too
+    verbose = arg(...)  # Comes from MyCli but I want to use it too
 
     async def run(self):
         print(f"Linting {', '.join(self.files)} and {self.verbose=}")
@@ -49,7 +49,7 @@ class MyCli(Command):
     my-cli is a very nifty demo CLI tool
     """
     subcommand: Lint | None = None
-    verbose: bool = config(
+    verbose: bool = arg(
         help="Whether to show extra logs",
         prompt="Do you want to see extra logs?",
         default=False,
@@ -212,10 +212,10 @@ CLIPy can be integrated with many parsers. The default recommended parser is [v6
 **CLI**
 ```python
 import v6e
-from clypi import Command, config
+from clypi import Command, arg
 
 class MyCli(Command):
-    files: list[Path] = config(parser=v6e.path().exists().list())
+    files: list[Path] = arg(parser=v6e.path().exists().list())
 
     async def run(self):
         files = [f.as_posix() for f in self.files]

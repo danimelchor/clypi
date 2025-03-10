@@ -1,9 +1,9 @@
-from clypi import Command, config
+from clypi import Command
 
 
 class Lint(Command):
     files: tuple[str, ...]
-    verbose: bool = config(...)  # Comes from MyCli but I want to use it too
+    verbose: bool = arg(...)  # Comes from MyCli but I want to use it too
 
     async def run(self):
         print(f"Linting {', '.join(self.files)} and {self.verbose=}")
@@ -15,7 +15,7 @@ class MyCli(Command):
     """
 
     subcommand: Lint | None = None
-    verbose: bool = config(
+    verbose: bool = arg(
         help="Wether to show extra logs",
         prompt="Do you want to see extra logs?",
         default=False,

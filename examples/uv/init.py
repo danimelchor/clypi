@@ -1,18 +1,18 @@
 from pathlib import Path
 
 import clypi
-from clypi import Command, Positional, config
+from clypi import Command, Positional
 
 
 class Init(Command):
     """Create a new project"""
 
-    path: Positional[Path] = config(help="The path to use for the project/script")
-    name: str = config(
+    path: Positional[Path] = arg(help="The path to use for the project/script")
+    name: str = arg(
         help="The name of the project",
         prompt="What's the name of your project/script?",
     )
-    description: str = config(
+    description: str = arg(
         help="Set the project description",
         prompt="What's your project/script's description?",
     )

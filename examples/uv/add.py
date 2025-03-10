@@ -3,7 +3,7 @@ import re
 from pathlib import Path
 
 import clypi
-from clypi import ClypiException, Command, Positional, Spinner, config
+from clypi import ClypiException, Command, Positional, Spinner
 
 
 async def from_requirements(file: Path):
@@ -45,16 +45,16 @@ async def _install_packages(packages: dict[str, str]):
 class Add(Command):
     """Add dependencies to the project"""
 
-    packages: Positional[list[str]] = config(
+    packages: Positional[list[str]] = arg(
         default_factory=list,
         help="The packages to add, as PEP 508 requirements (e.g., `ruff==0.5.0`)",
     )
-    requirements: Path | None = config(
+    requirements: Path | None = arg(
         default=None,
         short="r",
         help="Add all packages listed in the given `requirements.txt` files",
     )
-    dev: bool = config(
+    dev: bool = arg(
         default=False, help="Add the requirements to the development dependency group"
     )
 

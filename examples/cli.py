@@ -7,7 +7,7 @@ import v6e as v
 from typing_extensions import override
 
 import clypi
-from clypi import Command, config
+from clypi import Command
 from clypi._cli.config import Positional
 
 
@@ -38,11 +38,11 @@ class RunParallel(Command):
     """
 
     files: Positional[list[str]]
-    exceptions_with_reasons: Path | None = config(
+    exceptions_with_reasons: Path | None = arg(
         default=None,
         parser=v.path().exists(),
     )
-    env: Env = config(...)
+    env: Env = arg(...)
 
     @debug
     async def run(self):
@@ -62,8 +62,8 @@ class RunSerial(Command):
     Runs all of the files one by one
     """
 
-    files: Positional[list[Path]] = config(parser=v.list(v.path().exists()))
-    env: Env = config(...)
+    files: Positional[list[Path]] = arg(parser=v.list(v.path().exists()))
+    env: Env = arg(...)
 
     @debug
     async def run(self):
@@ -91,14 +91,14 @@ class Lint(Command):
     termuff rules.
     """
 
-    files: Positional[list[str]] = config(help="The list of files to lint")
-    quiet: bool = config(
+    files: Positional[list[str]] = arg(help="The list of files to lint")
+    quiet: bool = arg(
         short="q",
         help="If the linter should omit all stdout messages",
         default=False,
     )
-    timeout: int = config(help="Disable the termuff cache")
-    index: str = config(
+    timeout: int = arg(help="Disable the termuff cache")
+    index: str = arg(
         default="http://pypi.org",
         help="The index to download termuff from",
         prompt="What index do you want to download termuff from?",
@@ -118,7 +118,7 @@ class Main(Command):
     """
 
     subcommand: Run | Lint | None = None
-    verbose: bool = config(short="v", default=False)
+    verbose: bool = arg(short="v", default=False)
 
     @override
     @classmethod
