@@ -2,7 +2,7 @@ from pathlib import Path
 
 from typing_extensions import override
 
-from clypi import Command, Positional, config
+from clypi import Command, Positional, arg
 
 
 class ExampleSubCommand(Command):
@@ -21,7 +21,7 @@ class ExampleCommand(Command):
 
     flag: bool = False
     subcommand: ExampleSubCommand | None = None
-    option: list[str] = config(help="A list of strings please", default_factory=list)
+    option: list[str] = arg(help="A list of strings please", default_factory=list)
 
     @override
     @classmethod

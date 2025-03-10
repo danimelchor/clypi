@@ -5,8 +5,8 @@ from pathlib import Path
 import pytest
 from typing_extensions import override
 
-from clypi import Command, Positional, config
-from clypi.configuration import ClypiConfig
+from clypi import Command, Positional, arg
+from clypi.configuration import get_config
 
 
 def parametrize(args: str, cases: list[tuple]):
@@ -14,6 +14,9 @@ def parametrize(args: str, cases: list[tuple]):
         return pytest.mark.parametrize(args, cases, ids=ids(cases))(fn)
 
     return wrapper
+
+
+get_config().help_on_fail = False
 
 
 class ExampleSub(Command):
@@ -28,14 +31,9 @@ class ExampleSub(Command):
 
 class Example(Command):
     pos: Positional[Path]
-    flag: bool = config(default=False, short="f")
+    flag: bool = arg(default=False, short="f")
     subcommand: ExampleSub | None = None
-    option: list[str] = config(default_factory=list, short="o")
-
-    @override
-    @classmethod
-    def configuration(cls):
-        return ClypiConfig(help_on_fail=False)
+    option: list[str] = arg(default_factory=list, short="o")
 
     @override
     async def run(self):
@@ -229,7 +227,7 @@ def test_parse_lists(args, expected, fails):
     class ListCommand(Command):
         pos: Positional[list[str]]
         opt: list[str]
-        opt2: list[str] = config(default_factory=list)
+        opt2: list[str] = arg(default_factory=list)
 
     if fails:
         with pytest.raises(Exception):
@@ -269,7 +267,7 @@ def test_parse_tuples(args, expected, fails):
     class TupleCommand(Command):
         pos: Positional[tuple[str]]
         opt: tuple[str, str]
-        opt2: tuple[str, ...] = config(default_factory=tuple)
+        opt2: tuple[str, ...] = arg(default_factory=tuple)
 
     if fails:
         with pytest.raises(Exception):

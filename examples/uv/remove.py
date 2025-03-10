@@ -1,14 +1,14 @@
 import clypi
-from clypi import Command, Positional, config
+from clypi import Command, Positional, arg
 
 
 class Remove(Command):
     """Remove dependencies from the project"""
 
-    packages: Positional[list[str]] = config(
+    packages: Positional[list[str]] = arg(
         help="The names of the dependencies to remove (e.g., `ruff`)"
     )
-    dev: bool = config(
+    dev: bool = arg(
         default=False, help="Remove the packages from the development dependency group"
     )
 

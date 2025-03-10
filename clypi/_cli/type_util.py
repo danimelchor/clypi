@@ -14,12 +14,12 @@ def ignore_annotated(fun: t.Callable[[t.Any], t.Any]):
 
 
 @ignore_annotated
-def is_collection(_type: t.Any) -> bool:
+def is_list(_type: t.Any) -> t.TypeGuard[list]:
     return t.get_origin(_type) in (list, t.Sequence)
 
 
 @ignore_annotated
-def is_tuple(_type: t.Any) -> bool:
+def is_tuple(_type: t.Any) -> t.TypeGuard[tuple]:
     return t.get_origin(_type) is tuple
 
 
@@ -77,7 +77,7 @@ def type_to_str(_type: t.Any) -> str:
             maybe_comma = "," if len(args) == 1 else ""  # E.g.: ("foo",)
             return "(" + inner + maybe_comma + ")"
 
-    if is_collection(_type):
+    if is_list(_type):
         return "list[" + ", ".join(type_to_str(tp) for tp in _type.__args__) + "]"
 
     return str(_type)

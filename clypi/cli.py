@@ -22,7 +22,7 @@ from clypi.prompts import prompt
 logger = logging.getLogger(__name__)
 
 # re-exports
-config = _conf.config
+arg = _conf.arg
 Positional = _conf.Positional
 Formatter = _formatter.Formatter
 ClypiFormatter = _formatter.ClypiFormatter
@@ -51,7 +51,7 @@ class _Argument:
         if self.arg_type is bool:
             return 0
 
-        if type_util.is_collection(self.arg_type):
+        if type_util.is_list(self.arg_type):
             return "*"
 
         if type_util.is_tuple(self.arg_type):
@@ -223,7 +223,7 @@ class Command(metaclass=_CommandMeta):
         """
         for pos in cls.positionals().values():
             # List positionals are a catch-all
-            if type_util.is_collection(pos.arg_type):
+            if type_util.is_list(pos.arg_type):
                 return pos
 
             if pos.name not in kwargs:
