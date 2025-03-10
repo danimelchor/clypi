@@ -8,21 +8,19 @@
 
 Your all-in-one for beautiful, lightweight, prod-ready CLIs
 
-#### Get started
+### What is clypi?
+
+I've been working with Python-based CLIs for several years with many users and strict quality requirements and always run into the sames problems with the go-to packages. Therefore, I decided to embark on a journey to build a lightweight, intuitive, pretty, and production ready framework. Here are the key features:
+- **Type safe**: making use of dataclass-like commands, you can easily specify the types you want for each argument and clypi automatically parses and validates them.
+- **Asynchronous**: clypi is built to run asynchronously to provide the best performance possible when re-rendering.
+- **Easily testable**: thanks to being type checked and to using it's own parser, clypi let's you test each individual step. From from parsing command-line arguments to running your commands in tests just like a user would.
+- **Composable**: clypi lets you easily reuse arguments across subcommands without having to specify them again.
+- **Configurable**: clypi lets you configure almost everything you'd like to configure. You can create your own themes, help pages, error messages, and more!
+
+### Getting started
 
 ```bash
 uv add clypi  # or `pip install clypi`
-```
-
-#### Examples
-
-You can run the examples in `./examples` locally. First, clone the repository, then use `uv run --all-extras -m examples.<example>`. E.g.:
-```bash
-uv run --all-extras -m examples.cli
-
-# Or:
-pip install .[examples]
-python -m examples.cli
 ```
 
 ## 📖 Docs
@@ -234,3 +232,18 @@ hours = clypi.prompt(
 )
 reveal_type(hours)  # Type of "res" is "float | timedelta"
 ```
+
+## 📦 Comparison to other packages
+
+> [!NOTE]
+> This section is my (danimelchor's) personal opinion I've gathered during my time
+> working with Python CLIs. If you do not agree, please feel free to reach out and I'm
+> open to discussing / trying out new tools.
+
+[Argparse](https://docs.python.org/3/library/argparse.html) is the builtin solution for CLIs, but, as expected, it's functionality is very restrictive. It is not very extensible, it's UI is not pretty and very hard to change, lacks type checking and type parsers, and does not offer any modern UI components that we all love.
+
+[Rich](https://rich.readthedocs.io/en/stable/) is too complex and threaded. The vast catalog of UI components they offer is amazing, but it is both easy to get wrong and break the UI, and too complicated/verbose to onboard coworkers to. It's prompting functionality is also quite limited and it does not offer command-line arguments parsing.
+
+[Click](https://click.palletsprojects.com/en/stable/) is too restrictive. It enforces you to use decorators, which is great for locality of behavior but not so much if you're trying to reuse arguments across your application. It is also painful to deal with the way arguments are injected into functions and very easy to miss one, misspell, or get the wrong type. Click is also fully untyped for the core CLI functionality and hard to test.
+
+[Typer](https://github.com/fastapi/typer) seems great! I haven't personally tried it, but I have spent time looking through their docs and code. I think the overall experience is a step up from click's but, at the end of the day, it's built on top of it. Hence, many of the issues are the same: testing is hard, shared contexts are untyped, their built-in type parsing is quite limited, and it does not offer modern features like suggestions on typos. Using `Annotated` types is also very verbose inside function definitions.

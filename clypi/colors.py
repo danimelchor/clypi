@@ -62,7 +62,7 @@ def _color_code(color: ColorType, offset: int) -> int:
 
     Example:
       _color_code("bright_green", FG_OFFSET) -> 42
-      Since: 2(green) + 10(brigh) + 30(fg offset)
+      Since: 2(green) + 10(bright) + 30(fg offset)
     """
 
     key = str(color)
