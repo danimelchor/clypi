@@ -2,7 +2,7 @@ import asyncio
 import sys
 
 import clypi
-from clypi.spinner import Spin, Spinner
+from clypi.spinner import Spin, Spinner, spinner
 
 
 async def all_spinners():
@@ -22,7 +22,6 @@ async def all_spinners():
 
 async def subprocess():
     # Example with subprocess
-    print()
     title = "Example with subprocess"
     async with Spinner(title) as s:
         # Fist subprocess
@@ -44,17 +43,15 @@ async def subprocess():
         await asyncio.gather(*coros)
 
 
-async def captured():
+@spinner("Example that captures stdout/stderr", capture=True)
+async def captured_with_decorator():
     # Example with subprocess
-    print()
-    title = "Example that captures stdout/stderr"
-    async with Spinner(title, capture=True):
-        for i in range(10):
-            if i % 2 == 0:
-                clypi.print("Stdout output", fg="blue")
-            else:
-                clypi.print("Stderr output", fg="red", file=sys.stderr)
-            await asyncio.sleep(0.3)
+    for i in range(10):
+        if i % 2 == 0:
+            clypi.print("Stdout output", fg="blue")
+        else:
+            clypi.print("Stderr output", fg="red", file=sys.stderr)
+        await asyncio.sleep(0.3)
 
 
 async def main():
@@ -63,8 +60,14 @@ async def main():
     except asyncio.CancelledError:
         pass
 
-    await subprocess()
-    await captured()
+    print()
+    try:
+        await subprocess()
+    except asyncio.CancelledError:
+        pass
+
+    print()
+    await captured_with_decorator()
 
 
 if __name__ == "__main__":

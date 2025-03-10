@@ -131,8 +131,8 @@ print("The old version said", wrong("the Earth was flat"))
 
 Read the [docs](https://github.com/danimelchor/clypi/blob/master/docs/index.md#spinners)
 
+You can use spinners as an async context manager:
 ```python
-# demo.py
 import asyncio
 from clypi import Spinner
 
@@ -143,6 +143,19 @@ async def main():
             s.title = f"Downloading assets [{i}/5]"
 
 asyncio.run(main())
+```
+
+Or as a decorator:
+
+```python
+import asyncio
+from clypi import spinner
+
+@spinner("Doing work", capture=True)
+async def do_some_work():
+    await asyncio.sleep(5)
+
+asyncio.run(do_some_work())
 ```
 
 `uv run -m examples.spinner`
