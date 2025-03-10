@@ -7,4 +7,4 @@ class Unset(Enum):
     TOKEN = auto()
 
 
-_UNSET = Unset.TOKEN
+UNSET = Unset.TOKEN

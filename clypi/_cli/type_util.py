@@ -14,12 +14,12 @@ def ignore_annotated(fun: t.Callable[[t.Any], t.Any]):
 
 
 @ignore_annotated
-def is_list(_type: t.Any) -> t.TypeGuard[list]:
+def is_list(_type: t.Any) -> t.TypeGuard[list[t.Any]]:
     return t.get_origin(_type) in (list, t.Sequence)
 
 
 @ignore_annotated
-def is_tuple(_type: t.Any) -> t.TypeGuard[tuple]:
+def is_tuple(_type: t.Any) -> t.TypeGuard[tuple[t.Any]]:
     return t.get_origin(_type) is tuple
 
 
@@ -36,7 +36,7 @@ def remove_optionality(_type: t.Any) -> t.Any:
     if not isinstance(_type, UnionType):
         return _type
 
-    new_args = []
+    new_args: list[t.Any] = []
     for arg in _type.__args__:
         if arg is not NoneType:
             new_args.append(arg)
@@ -69,15 +69,15 @@ def type_to_str(_type: t.Any) -> str:
         return "[" + "|".join(type_to_str(tp) for tp in _type.__args__) + "]"
 
     if is_tuple(_type):
-        args = _type.__args__
+        args = t.get_args(_type)
         if args[-1] is Ellipsis:
-            return "(" + type_to_str(_type.__args__[0]) + ", ...)"
+            return "(" + type_to_str(args[0]) + ", ...)"
         else:
-            inner = ", ".join(type_to_str(tp) for tp in _type.__args__)
+            inner = ", ".join(type_to_str(tp) for tp in args)
             maybe_comma = "," if len(args) == 1 else ""  # E.g.: ("foo",)
             return "(" + inner + maybe_comma + ")"
 
     if is_list(_type):
-        return "list[" + ", ".join(type_to_str(tp) for tp in _type.__args__) + "]"
+        return "list[" + ", ".join(type_to_str(tp) for tp in t.get_args(_type)) + "]"
 
     return str(_type)

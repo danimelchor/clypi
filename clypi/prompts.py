@@ -5,7 +5,7 @@ from getpass import getpass
 
 import clypi
 from clypi._cli import parser
-from clypi._util import _UNSET, Unset
+from clypi._util import UNSET, Unset
 from clypi.configuration import get_config
 from clypi.exceptions import AbortException, MaxAttemptsException
 
@@ -18,7 +18,7 @@ def _error(msg: str):
 
 def _input(
     prompt: str,
-    default: T | Unset = _UNSET,
+    default: T | Unset = UNSET,
     hide_input: bool = False,
 ) -> str | T | Unset:
     fun = getpass if hide_input else input
@@ -37,7 +37,7 @@ def _display_default(default: t.Any) -> str:
 
 def _build_prompt(text: str, default: t.Any) -> str:
     prompt = text
-    if default is not _UNSET:
+    if default is not UNSET:
         prompt += f" [{_display_default(default)}]"
     prompt += ": "
     return prompt
@@ -46,7 +46,7 @@ def _build_prompt(text: str, default: t.Any) -> str:
 def confirm(
     text: str,
     *,
-    default: bool | Unset = _UNSET,
+    default: bool | Unset = UNSET,
     max_attempts: int = MAX_ATTEMPTS,
     abort: bool = False,
 ) -> bool:
@@ -78,7 +78,7 @@ Parser: t.TypeAlias = t.Callable[[t.Any], T]
 def prompt(
     text: str,
     *,
-    default: str | Unset = _UNSET,
+    default: str | Unset = UNSET,
     hide_input: bool = False,
     max_attempts: int = MAX_ATTEMPTS,
 ) -> str: ...
@@ -89,7 +89,7 @@ def prompt(
     text: str,
     *,
     parser: Parser[T] | type[T],
-    default: T | Unset = _UNSET,
+    default: T | Unset = UNSET,
     hide_input: bool = False,
     max_attempts: int = MAX_ATTEMPTS,
 ) -> T: ...
@@ -99,7 +99,7 @@ def prompt(
     text: str,
     *,
     parser: Parser[T] | type[T] | type[str] = str,
-    default: T | Unset = _UNSET,
+    default: T | Unset = UNSET,
     hide_input: bool = False,
     max_attempts: int = MAX_ATTEMPTS,
 ) -> T:
@@ -119,7 +119,7 @@ def prompt(
     # Loop until we get a valid value
     for _ in range(max_attempts):
         inp = _input(prompt, default=default, hide_input=hide_input)
-        if inp is _UNSET:
+        if inp is UNSET:
             _error("A value is required.")
             continue
 

@@ -50,8 +50,8 @@ Parameters:
 ```python
 def arg(
     parser: Parser[T] | None = None,
-    default: T | Unset = _UNSET,
-    default_factory: t.Callable[[], T] | Unset = _UNSET,
+    default: T | Unset = UNSET,
+    default_factory: t.Callable[[], T] | Unset = UNSET,
     help: str | None = None,
     short: str | None = None,
     prompt: str | None = None,
@@ -317,8 +317,8 @@ class Formatter(t.Protocol):
         prog: list[str],
         description: str | None,
         epilog: str | None,
-        options: list[_Argument],
-        positionals: list[_Argument],
+        options: list[Argument],
+        positionals: list[Argument],
         subcommands: list[type[Command]],
         exception: Exception | None,
     ) -> str: ...
@@ -359,7 +359,7 @@ from a library.
 def confirm(
     text: str,
     *,
-    default: bool | Unset = _UNSET,
+    default: bool | Unset = UNSET,
     max_attempts: int = MAX_ATTEMPTS,
     abort: bool = False,
 ) -> bool:
@@ -378,7 +378,7 @@ Parameters:
 ```python
 def prompt(
     text: str,
-    default: T | Unset = _UNSET,
+    default: T | Unset = UNSET,
     parser: Parser[T] = str,
     hide_input: bool = False,
     max_attempts: int = MAX_ATTEMPTS,

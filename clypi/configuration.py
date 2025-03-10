@@ -37,13 +37,13 @@ class ClypiConfig:
     )
 
 
-_CONFIG = ClypiConfig()
+_config = ClypiConfig()
 
 
 def configure(config: ClypiConfig):
-    global _CONFIG
-    _CONFIG = config
+    global _config
+    _config = config
 
 
 def get_config() -> ClypiConfig:
-    return _CONFIG
+    return _config

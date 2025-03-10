@@ -3,6 +3,7 @@ import io
 import sys
 import typing as t
 from contextlib import AbstractAsyncContextManager, AbstractContextManager, suppress
+from types import TracebackType
 
 from typing_extensions import override
 
@@ -18,13 +19,13 @@ Spin = _Spin
 
 
 class _PerLineIO(io.TextIOBase):
-    def __init__(self, *args, new_line_cb: t.Callable[[str], None], **kwargs) -> None:
+    def __init__(self, new_line_cb: t.Callable[[str], None]) -> None:
         """
         A string buffer that captures text and calls the callback `new_line_cb`
         on every line written to the buffer. Useful to redirect stdout and stderr
         but only print them nicely on every new line.
         """
-        super().__init__(*args, **kwargs)
+        super().__init__()
         self._new_line_cb = new_line_cb
         self.buffer: list[str] = []
 
@@ -60,7 +61,7 @@ class _PerLineIO(io.TextIOBase):
         self.buffer = []
 
 
-class RedirectStdPipe(AbstractContextManager):
+class RedirectStdPipe(AbstractContextManager[None]):
     def __init__(
         self,
         pipe: t.Literal["stdout", "stderr"],
@@ -83,8 +84,15 @@ class RedirectStdPipe(AbstractContextManager):
         setattr(sys, self._pipe, self._new)
 
     @override
-    def __exit__(self, exc_type, exc_value, traceback):
+    def __exit__(
+        self,
+        exc_type: type[BaseException] | None,
+        exc_value: BaseException | None,
+        traceback: TracebackType | None,
+        /,
+    ) -> bool | None:
         self.stop()
+        return None
 
     def stop(self) -> None:
         setattr(sys, self._pipe, self._original)
@@ -97,7 +105,7 @@ class RedirectStdPipe(AbstractContextManager):
 
 
 @t.final
-class Spinner(AbstractAsyncContextManager):
+class Spinner(AbstractAsyncContextManager["Spinner"]):
     def __init__(
         self,
         title: str,
@@ -138,16 +146,24 @@ class Spinner(AbstractAsyncContextManager):
         return self
 
     @override
-    async def __aexit__(self, _type, value, traceback):
+    async def __aexit__(
+        self,
+        exc_type: type[BaseException] | None,
+        exc_value: BaseException | None,
+        traceback: TracebackType | None,
+        /,
+    ) -> bool | None:
         # If a user already called `.done()`, leaving the closure
         # should not re-trigger a re-render
         if self._manual_exit:
-            return
+            return None
 
-        if any([_type, value, traceback]):
+        if any([exc_type, exc_value, traceback]):
             await self.fail()
         else:
             await self.done()
+
+        return None
 
     def _print(
         self,
@@ -215,7 +231,7 @@ class Spinner(AbstractAsyncContextManager):
         msg: str,
         icon: str = "   ┃",
         color: ColorType | None = None,
-        end="\n",
+        end: str = "\n",
     ):
         """
         Log a message nicely from inside a spinner. If `capture=True`, you can
@@ -246,6 +262,7 @@ class Spinner(AbstractAsyncContextManager):
 
 
 P = t.ParamSpec("P")
+R = t.TypeVar("R")
 
 
 def spinner(
@@ -255,15 +272,13 @@ def spinner(
     suffix: str = "…",
     speed: float = 1,
     capture: bool = False,
-) -> t.Callable[[t.Callable[P, t.Awaitable]], t.Callable[P, t.Awaitable]]:
+) -> t.Callable[[t.Callable[P, t.Awaitable[R]]], t.Callable[P, t.Awaitable[R]]]:
     """
     Utility decorator to wrap a function and display a Spinner while it's running.
     """
 
-    def wrapper(fn: t.Callable[P, t.Awaitable]) -> t.Callable[P, t.Awaitable]:
-        async def inner(
-            *args: P.args, **kwargs: P.kwargs
-        ) -> t.Callable[P, t.Awaitable]:
+    def wrapper(fn: t.Callable[P, t.Awaitable[R]]) -> t.Callable[P, t.Awaitable[R]]:
+        async def inner(*args: P.args, **kwargs: P.kwargs) -> R:
             async with Spinner(
                 title=title,
                 animation=animation,

@@ -166,6 +166,10 @@ def style(
     )(*messages)
 
 
+class SupportsWrite(t.Protocol):
+    def write(self, s: t.Any, /) -> object: ...
+
+
 def print(
     *messages: t.Any,
     fg: ColorType | None = None,
@@ -178,7 +182,7 @@ def print(
     reverse: bool = False,
     strikethrough: bool = False,
     reset: bool = False,
-    file: t.IO | None = None,
+    file: SupportsWrite | None = None,
     end: str | None = "\n",
 ):
     text = style(

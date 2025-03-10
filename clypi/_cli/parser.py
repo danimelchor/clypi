@@ -73,7 +73,7 @@ def _parse_builtin(builtin: type) -> t.Callable[[t.Any], t.Any]:
     return inner
 
 
-def _parse_list(_type: t.Any) -> t.Callable[[t.Any], list]:
+def _parse_list(_type: t.Any) -> t.Callable[[t.Any], list[t.Any]]:
     def inner(value: t.Any):
         if not isinstance(value, list):
             raise ValueError(
@@ -87,8 +87,8 @@ def _parse_list(_type: t.Any) -> t.Callable[[t.Any], list]:
     return inner
 
 
-def _parse_tuple(_type: t.Any) -> t.Callable[[t.Any], tuple]:
-    def inner(value: t.Any):
+def _parse_tuple(_type: t.Any) -> t.Callable[[t.Any], tuple[t.Any]]:
+    def inner(value: t.Any) -> tuple[t.Any]:
         # Tuples of size 1 are passed in as strings
         if isinstance(value, str):
             value = (value,)
@@ -108,7 +108,7 @@ def _parse_tuple(_type: t.Any) -> t.Callable[[t.Any], tuple]:
                 f"Not enough arguments for type {type_util.type_to_str(_type)} (got {value})"
             )
 
-        ret = []
+        ret: list[t.Any] = []
         for val, inner_type in zip(value, inner_types):
             ret.append(from_type(inner_type)(val))
         return tuple(ret)
@@ -118,7 +118,7 @@ def _parse_tuple(_type: t.Any) -> t.Callable[[t.Any], tuple]:
 
 def _parse_union(_type: UnionType) -> t.Callable[[t.Any], t.Any]:
     def inner(value: t.Any):
-        errors = []
+        errors: list[Exception] = []
         for a in _type.__args__:
             try:
                 return from_type(a)(value)
@@ -184,7 +184,7 @@ def _parse_enum(_type: type[Enum]):
 def from_v6e(_type: t.Any) -> t.Callable[[t.Any], t.Any] | None:
     import v6e as v  # type: ignore
 
-    v6e_builtins: dict[t.Any, t.Callable] = {
+    v6e_builtins: dict[t.Any, t.Callable[[t.Any], t.Any]] = {
         bool: v.bool(),
         int: v.int(),
         float: v.float(),

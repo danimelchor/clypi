@@ -23,7 +23,7 @@ def stack(*blocks: list[str], padding: int = 1) -> str: ...
 
 
 def stack(*blocks: list[str], padding: int = 1, lines: bool = False) -> str | list[str]:
-    new_lines = []
+    new_lines: list[str] = []
     height = max(len(b) for b in blocks)
     widths = [max(_real_len(line) for line in block) for block in blocks]
 
