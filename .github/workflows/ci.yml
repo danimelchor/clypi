@@ -29,3 +29,6 @@ jobs:
 
       - name: "Python type checking -- Mypy"
         run: uv run --all-extras mypy clypi/ type_tests/ examples/
+
+      - name: "Codespell"
+        run: uv run --all-extras codespell

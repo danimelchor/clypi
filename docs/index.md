@@ -7,7 +7,7 @@
 ```python
 from clypi import ClypiConfig, configure, get_config
 
-# Get's the current config (or a default)
+# Gets the current config (or a default)
 conf = get_config()
 
 # Change the configuration
@@ -260,7 +260,7 @@ set up shell completions for your built CLI.
 @classmethod
 def prog(cls)
 ```
-The name of the command. Can be overriden to provide a custom name
+The name of the command. Can be overridden to provide a custom name
 or will default to the class name extending `Command`.
 
 #### `help`
@@ -326,7 +326,7 @@ class Formatter(t.Protocol):
 
 ### `ClypiFormatter`
 
-Clypi ships with a pre-made formatter that can display help pages with either boxes or with idented sections:
+Clypi ships with a pre-made formatter that can display help pages with either boxes or with indented sections:
 
 ```python
 ClypiFormatter(boxed=True)
@@ -640,7 +640,7 @@ Parameters:
 - `width`: the desired width of the box
 - `style`: the desired style (see [`Boxes`](#Boxes))
 - `alignment`: the style of alignment (see [`align`](#align))
-- `title`: optionally define a title for the box, it's lenght must be < width
+- `title`: optionally define a title for the box, it's length must be < width
 - `color`: a color for the box border and title (see [`colors`](#colors))
 
 Examples:
@@ -689,7 +689,7 @@ to it's true visible width (the built-in methods count color codes as width char
 Parameters:
 - `s`: the string being aligned
 - `alignment`: one of `left`, `right`, or `center`
-- `width`: the wished final visible widht of the string
+- `width`: the wished final visible width of the string
 
 Examples:
 

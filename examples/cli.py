@@ -112,7 +112,7 @@ class Lint(Command):
 
 class Main(Command):
     """
-    Termuff is a powerful command line interfact to lint and
+    Termuff is a powerful command line interface to lint and
     run arbitrary files.
     """
 

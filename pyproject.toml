@@ -6,7 +6,7 @@ build-backend = "hatchling.build"
 name = "clypi"
 description = "Your all-in-one for beautiful, lightweight, prod-ready CLIs"
 readme = "README.md"
-version = "1.0.4"
+version = "1.0.5"
 license = "MIT"
 license-files = ["LICEN[CS]E*"]
 requires-python = ">=3.11"
@@ -32,6 +32,7 @@ dev = [
   "pyright>=1.1.396",
   "mypy>=1.15.0",
   "pytest>=8.3.5",
+  "codespell>=2.4.1",
 ]
 examples = [
   "v6e>=0.1.18",
