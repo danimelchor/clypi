@@ -64,40 +64,9 @@ if __name__ == "__main__":
     cli.start()
 ```
 
-<details open>
-    <summary><code>uv run -m examples.basic_cli lin</code> (Typo)</summary>
-    <p align="center">
-        <img width="1695" alt="image" src="https://github.com/user-attachments/assets/f57f6518-7d22-4320-a0fe-ec95c1c0579b" />
-    </p>
-</details>
+`uv run -m examples.basic_cli lin`
 
-<details>
-    <summary><code>uv run -m examples.basic_cli -h</code> (Main help page)</summary>
-    <p align="center">
-        <img width="1692" alt="image" src="https://github.com/user-attachments/assets/cc939eab-c9db-4021-8374-a25b892a434c" />
-    </p>
-</details>
-
-<details>
-    <summary><code>uv run -m examples.basic_cli lint -h</code> (Subcommand help page)</summary>
-    <p align="center">
-        <img width="1692" alt="image" src="https://github.com/user-attachments/assets/52eb16a2-7edc-4563-ab3f-0bbe3ab05b14" />
-    </p>
-</details>
-
-<details>
-    <summary><code>uv run -m examples.basic_cli</code> (Normal run)</summary>
-    <p align="center">
-        <img width="836" alt="image" src="https://github.com/user-attachments/assets/030f4e2e-5046-4fa6-948a-c9ab80070ef7" />
-    </p>
-</details>
-
-<details>
-    <summary><code>uv run -m examples.basic_cli lint</code> (Missing args error)</summary>
-    <p align="center">
-        <img width="1692" alt="image" src="https://github.com/user-attachments/assets/4d42bed1-53a3-483f-8d34-fddb2ffec7c6" />
-    </p>
-</details>
+<img width="1695" alt="image" src="https://github.com/user-attachments/assets/f57f6518-7d22-4320-a0fe-ec95c1c0579b" />
 
 
 ## 🌈 Colors
@@ -120,12 +89,9 @@ print("The old version said", wrong("Pluto was a planet"))
 print("The old version said", wrong("the Earth was flat"))
 ```
 
-<details open>
-    <summary><code>uv run -m examples.colors</code></summary>
-    <p align="center">
-        <img width="974" alt="image" src="https://github.com/user-attachments/assets/9340d828-f7ce-491c-b0a8-6a666f7b7caf" />
-    </p>
-</details>
+`uv run -m examples.colors`
+
+<img width="974" alt="image" src="https://github.com/user-attachments/assets/9340d828-f7ce-491c-b0a8-6a666f7b7caf" />
 
 
 <details>
@@ -153,19 +119,10 @@ async def main():
 
 asyncio.run(main())
 ```
-<details open>
-    <summary><code>uv run -m examples.spinner</code></summary>
-    <p align="center">
-      <video src="https://github.com/user-attachments/assets/3af51391-1ab4-4b41-86f1-1e08e01be7b9" />
-    </p>
-</details>
 
-<details>
-    <summary><code>uv run demo.py</code></summary>
-    <p align="center">
-      <video src="https://github.com/user-attachments/assets/c0b4dc28-f6d4-4891-a9fa-be410119bd83" />
-    </p>
-</details>
+`uv run -m examples.spinner`
+
+https://github.com/user-attachments/assets/3af51391-1ab4-4b41-86f1-1e08e01be7b9
 
 ## ❓ Prompting
 
@@ -175,8 +132,40 @@ First, you'll need to import the `clypi` module:
 ```python
 import clypi
 
-answer = clypi.prompt("Are you going to use clypi?", default=True, parser=bool)
+answer = clypi.confirm("Are you going to use clypi?", default=True)
 ```
+
+## Configurable
+
+Read the [docs](https://github.com/danimelchor/clypi/blob/master/docs/index.md#configuration)
+
+Clypi lets you configure the app globally. This means that all the styling will be easy,
+uniform across your entire app, and incredibly maintainable.
+
+For example, this is how you'd achieve a UI like `uv`'s CLI:
+
+```python
+from clypi import ClypiConfig, ClypiFormatter, Styler, Theme, configure
+
+configure(
+    ClypiConfig(
+        theme=Theme(
+            usage=Styler(fg="green", bold=True),
+            prog=Styler(fg="cyan", bold=True),
+            section_title=Styler(fg="green", bold=True),
+            subcommand=Styler(fg="cyan"),
+            long_option=Styler(fg="cyan"),
+            short_option=Styler(fg="cyan"),
+            positional=Styler(fg="cyan"),
+            type_str=Styler(fg="cyan"),
+            prompts=Styler(fg="green", bold=True),
+        ),
+        help_formatter=ClypiFormatter(boxed=False),
+    )
+)
+```
+
+<img width="1696" alt="image" src="https://github.com/user-attachments/assets/d0224cf4-0c91-4720-8e43-746985531912" />
 
 ## 🔀 Async by default
 
