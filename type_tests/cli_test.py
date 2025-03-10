@@ -1,7 +1,7 @@
 import typing as t
 from pathlib import Path
 
-from clypi import Command
+from clypi import Command, arg
 
 
 class MySub(Command):

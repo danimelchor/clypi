@@ -8,7 +8,7 @@
 from clypi import ClypiConfig, configure, get_config
 
 # Get's the current config (or a default)
-conf = get_arg()
+conf = get_config()
 
 # Change the configuration
 config = ClypiConfig(help_on_fail=False)

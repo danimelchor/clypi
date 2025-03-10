@@ -1,4 +1,4 @@
-from clypi import Command
+from clypi import Command, arg
 
 
 class Lint(Command):
