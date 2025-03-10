@@ -15,7 +15,7 @@ class Remove(Command):
     async def run(self) -> None:
         clypi.print("Running `uv remove` command...", fg="blue")
 
-        # Download from requirements.txt file
+        # Remove the packages passed as args
         clypi.print("\nRemoved packages", fg="blue", bold=True)
         for p in self.packages:
             icon = clypi.style("-", fg="red", bold=True)
