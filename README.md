@@ -147,7 +147,8 @@ asyncio.run(main())
 
 `uv run -m examples.spinner`
 
-https://github.com/user-attachments/assets/3af51391-1ab4-4b41-86f1-1e08e01be7b9
+https://github.com/user-attachments/assets/2065b3dd-c73c-4e21-b698-8bf853e8e520
+
 
 ## ❓ Prompting
 
