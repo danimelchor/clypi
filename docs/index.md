@@ -305,6 +305,25 @@ Prints the help page for a particular command.
 Parameters:
 - `exception`: an exception neatly showed to the user as a traceback. Automatically passed in during runtime.
 
+### `Formatter`
+
+A formatter is any class conforming to the following protocol. It is called on several occasions to render
+the help page. The `Formatter` implementation should try to use the provided configuration theme when possible.
+
+```python
+class Formatter(t.Protocol):
+    def format_help(
+        self,
+        prog: list[str],
+        description: str | None,
+        epilog: str | None,
+        options: list[_Argument],
+        positionals: list[_Argument],
+        subcommands: list[type[Command]],
+        exception: Exception | None,
+    ) -> str: ...
+```
+
 ## Prompts
 
 ### `Parser[T]`
