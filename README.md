@@ -16,7 +16,7 @@ uv add clypi  # or `pip install clypi`
 
 #### Examples
 
-Check out the examples in `./examples`! You can run them locally with `uv run --all-extras -m examples.<example>`. E.g.:
+You can run the examples in `./examples` locally. First, clone the repository, then use `uv run --all-extras -m examples.<example>`. E.g.:
 ```bash
 uv run --all-extras -m examples.cli
 
