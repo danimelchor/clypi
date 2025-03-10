@@ -326,7 +326,7 @@ class Formatter(t.Protocol):
 
 ### `ClypiFormatter`
 
-Clypi ships with a pre-made formatter that can display help pages with either boxes or with idented sections:
+Clypi ships with a pre-made formatter that can display help pages with either boxes or with indented sections:
 
 ```python
 ClypiFormatter(boxed=True)
