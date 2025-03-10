@@ -1,7 +1,7 @@
 from pathlib import Path
 
 import clypi
-from clypi import Command, Positional
+from clypi import Command, Positional, arg
 
 
 class Init(Command):

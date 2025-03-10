@@ -1,7 +1,7 @@
 import sys
 
 import clypi
-from clypi import ClypiConfig, ClypiFormatter, Command, Styler, Theme, configure
+from clypi import ClypiConfig, ClypiFormatter, Command, Styler, Theme, arg, configure
 from examples.uv.add import Add
 from examples.uv.init import Init
 from examples.uv.pip import Pip

@@ -1,5 +1,5 @@
 import clypi
-from clypi import Command, Positional
+from clypi import Command, Positional, arg
 
 
 class Remove(Command):
