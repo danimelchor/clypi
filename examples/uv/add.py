@@ -3,7 +3,7 @@ import re
 from pathlib import Path
 
 import clypi
-from clypi import ClypiException, Command, Positional, Spinner
+from clypi import ClypiException, Command, Positional, Spinner, arg
 
 
 async def from_requirements(file: Path):
