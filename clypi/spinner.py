@@ -256,6 +256,10 @@ def spinner(
     speed: float = 1,
     capture: bool = False,
 ) -> t.Callable[[t.Callable[P, t.Awaitable]], t.Callable[P, t.Awaitable]]:
+    """
+    Utility decorator to wrap a function and display a Spinner while it's running.
+    """
+
     def wrapper(fn: t.Callable[P, t.Awaitable]) -> t.Callable[P, t.Awaitable]:
         async def inner(
             *args: P.args, **kwargs: P.kwargs
