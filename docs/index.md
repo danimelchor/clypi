@@ -506,7 +506,7 @@ You can see all the spinners in action by running `uv run -m examples.spinner`. 
 
 ### `Spinner`
 
-A spinner indicating that something is happening behind the scenes. Usage is quite easy:
+A spinner indicating that something is happening behind the scenes. It can be used as a context manager or [like a decorator](#spinner-decorator). The context manager usage is like so:
 
 ```python
 import asyncio
@@ -592,6 +592,10 @@ Examples:
 >         )
 > ```
 
+### `spinner` (decorator)
+
+This is just a utility decorator that let's you wrap functions so that a spinner
+displays while they run. `spinner` accepts the same arguments as the context manager [`Spinner`](#spinner).
 
 
 ## Boxed

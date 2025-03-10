@@ -243,3 +243,33 @@ class Spinner(AbstractAsyncContextManager):
 
             msg = f"{prefix} {line.decode()}" if prefix else line.decode()
             self.log(msg, color=color)
+
+
+P = t.ParamSpec("P")
+
+
+def spinner(
+    title: str,
+    animation: Spin | list[str] = Spin.DOTS,
+    prefix: str = " ",
+    suffix: str = "…",
+    speed: float = 1,
+    capture: bool = False,
+) -> t.Callable[[t.Callable[P, t.Awaitable]], t.Callable[P, t.Awaitable]]:
+    def wrapper(fn: t.Callable[P, t.Awaitable]) -> t.Callable[P, t.Awaitable]:
+        async def inner(
+            *args: P.args, **kwargs: P.kwargs
+        ) -> t.Callable[P, t.Awaitable]:
+            async with Spinner(
+                title=title,
+                animation=animation,
+                prefix=prefix,
+                suffix=suffix,
+                speed=speed,
+                capture=capture,
+            ):
+                return await fn(*args, **kwargs)
+
+        return inner
+
+    return wrapper
