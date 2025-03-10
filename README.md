@@ -39,7 +39,7 @@ from clypi import Command, Positional, arg
 
 class Lint(Command):
     files: Positional[tuple[str, ...]]
-    verbose = arg(...)  # Comes from MyCli but I want to use it too
+    verbose: bool = arg(...)  # Comes from MyCli but I want to use it too
 
     async def run(self):
         print(f"Linting {', '.join(self.files)} and {self.verbose=}")
