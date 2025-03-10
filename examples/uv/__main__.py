@@ -18,6 +18,7 @@ class Uv(Command):
     version: bool = arg(default=False, short="V", help="Display the uv version")
 
     async def run(self) -> None:
+        # If the version was requested, print it
         if self.version:
             clypi.print("clypi's UV 0.0.1", fg="green")
             sys.exit(0)
@@ -27,6 +28,7 @@ class Uv(Command):
 
 
 if __name__ == "__main__":
+    # Configure the CLI to look like uv's
     configure(
         ClypiConfig(
             theme=Theme(
@@ -44,5 +46,6 @@ if __name__ == "__main__":
         )
     )
 
+    # Parse and run the commands
     uv = Uv.parse()
     uv.start()

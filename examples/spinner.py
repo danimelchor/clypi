@@ -55,17 +55,20 @@ async def captured_with_decorator():
 
 
 async def main():
+    # Run all of the spinner animations
     try:
         await all_spinners()
     except asyncio.CancelledError:
         pass
 
+    # Display a subprocess example
     print()
     try:
         await subprocess()
     except asyncio.CancelledError:
         pass
 
+    # Show an example decorator usage with stdout capture
     print()
     await captured_with_decorator()
 
