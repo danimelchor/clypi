@@ -147,7 +147,7 @@ class ZshInstaller(AutocompleteInstaller):
         ).strip()
 
 
-def get_installer(command) -> AutocompleteInstaller:
+def get_installer(command: type[Command]) -> AutocompleteInstaller:
     shell = Path(os.environ["SHELL"]).name
     if shell == "fish":
         return FishInstaller(command)

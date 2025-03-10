@@ -9,7 +9,7 @@ from clypi._cli import type_util
 from clypi.exceptions import format_traceback
 
 if t.TYPE_CHECKING:
-    from clypi.cli import Command, _Argument
+    from clypi.cli import Argument, Command
 
 
 @dataclass
@@ -31,8 +31,8 @@ class Formatter(t.Protocol):
         prog: list[str],
         description: str | None,
         epilog: str | None,
-        options: list[_Argument],
-        positionals: list[_Argument],
+        options: list[Argument],
+        positionals: list[Argument],
         subcommands: list[type[Command]],
         exception: Exception | None,
     ) -> str: ...
@@ -49,7 +49,7 @@ class ClypiFormatter:
 
         return get_config().theme
 
-    def _format_option(self, option: _Argument) -> tuple[str, ...]:
+    def _format_option(self, option: Argument) -> tuple[str, ...]:
         usage = self.theme.long_option(option.display_name)
         short_usage = self.theme.short_option(
             option.short_display_name if option.short else ""
@@ -59,7 +59,7 @@ class ClypiFormatter:
 
         return usage, short_usage, type_str, help
 
-    def _format_options(self, options: list[_Argument]) -> list[str] | None:
+    def _format_options(self, options: list[Argument]) -> list[str] | None:
         if not options:
             return None
 
@@ -81,7 +81,7 @@ class ClypiFormatter:
 
         return list(boxed(stacked_options, title="Options"))
 
-    def _format_positional(self, positional: _Argument) -> t.Any:
+    def _format_positional(self, positional: Argument) -> t.Any:
         name = self.theme.positional(positional.name)
         help = positional.help or ""
         type_str = self.theme.type_str(
@@ -91,7 +91,7 @@ class ClypiFormatter:
         return name, type_str, help
 
     def _format_positionals(
-        self, positionals: list[_Argument]
+        self, positionals: list[Argument]
     ) -> list[str] | str | None:
         if not positionals:
             return None
@@ -140,8 +140,8 @@ class ClypiFormatter:
     def _format_header(
         self,
         prog: list[str],
-        options: list[_Argument],
-        positionals: list[_Argument],
+        options: list[Argument],
+        positionals: list[Argument],
         subcommands: list[type[Command]],
     ) -> list[str] | str | None:
         prefix = self.theme.usage("Usage:")
@@ -176,8 +176,8 @@ class ClypiFormatter:
         prog: list[str],
         description: str | None,
         epilog: str | None,
-        options: list[_Argument],
-        positionals: list[_Argument],
+        options: list[Argument],
+        positionals: list[Argument],
         subcommands: list[type[Command]],
         exception: Exception | None,
     ) -> str:

@@ -15,7 +15,7 @@ from clypi._cli import parser, type_util
 from clypi._cli.config import Positional, arg
 from clypi._cli.formatter import ClypiFormatter, Formatter
 from clypi._levenshtein import distance
-from clypi._util import _UNSET
+from clypi._util import UNSET
 from clypi.configuration import get_config
 from clypi.exceptions import print_traceback
 from clypi.prompts import prompt
@@ -43,7 +43,7 @@ def _camel_to_dashed(s: str):
 
 
 @dataclass
-class _Argument:
+class Argument:
     name: str
     arg_type: t.Any
     help: str | None
@@ -79,20 +79,27 @@ class _Argument:
 
 
 class _CommandMeta(type):
-    def __init__(cls, name, bases, dct) -> None:
-        cls._configure_fields()
-        cls._configure_subcommands()
+    def __init__(
+        self,
+        name: str,
+        bases: tuple[type, ...],
+        dict: dict[str, t.Any],
+        /,
+        **kwds: t.Any,
+    ) -> None:
+        self._configure_fields()
+        self._configure_subcommands()
 
     @t.final
-    def _configure_fields(cls) -> None:
+    def _configure_fields(self) -> None:
         """
         Parses the type hints from the class extending Command and assigns each
         a _Config field with all the necessary info to display and parse them.
         """
-        annotations: dict[str, t.Any] = inspect.get_annotations(cls, eval_str=True)
+        annotations: dict[str, t.Any] = inspect.get_annotations(self, eval_str=True)
 
         # Ensure each field is annotated
-        for name, value in cls.__dict__.items():
+        for name, value in self.__dict__.items():
             if (
                 not name.startswith("_")
                 and not isinstance(value, classmethod)
@@ -107,7 +114,7 @@ class _CommandMeta(type):
             if field == "subcommand":
                 continue
 
-            default = getattr(cls, field, _UNSET)
+            default = getattr(self, field, UNSET)
             if isinstance(default, _conf.PartialConfig):
                 value = _conf.Config.from_partial(
                     default,
@@ -125,20 +132,20 @@ class _CommandMeta(type):
 
             # Set the values in the class properly instead of keeping the
             # _Config classes around
-            if not value.has_default() and hasattr(cls, field):
-                delattr(cls, field)
+            if not value.has_default() and hasattr(self, field):
+                delattr(self, field)
             elif value.has_default():
-                setattr(cls, field, value.get_default())
+                setattr(self, field, value.get_default())
 
-        setattr(cls, CLYPI_FIELDS, fields)
+        setattr(self, CLYPI_FIELDS, fields)
 
     @t.final
-    def _configure_subcommands(cls) -> None:
+    def _configure_subcommands(self) -> None:
         """
         Parses the type hints from the class extending Command and stores the
         subcommand class if any
         """
-        annotations: dict[str, t.Any] = inspect.get_annotations(cls, eval_str=True)
+        annotations: dict[str, t.Any] = inspect.get_annotations(self, eval_str=True)
         if "subcommand" not in annotations:
             return
 
@@ -158,7 +165,7 @@ class _CommandMeta(type):
                     f"Did not expect to see a subcommand {v} of type {type(v)}"
                 )
 
-        setattr(cls, CLYPI_SUBCOMMANDS, subcmds)
+        setattr(self, CLYPI_SUBCOMMANDS, subcmds)
 
 
 class Command(metaclass=_CommandMeta):
@@ -220,7 +227,7 @@ class Command(metaclass=_CommandMeta):
 
     @t.final
     @classmethod
-    def _next_positional(cls, kwargs: dict[str, t.Any]) -> _Argument | None:
+    def _next_positional(cls, kwargs: dict[str, t.Any]) -> Argument | None:
         """
         Traverse the current collected arguments and find the next positional
         arg we can assign to.
@@ -264,13 +271,13 @@ class Command(metaclass=_CommandMeta):
 
     @t.final
     @classmethod
-    def options(cls) -> dict[str, _Argument]:
-        options: dict[str, _Argument] = {}
+    def options(cls) -> dict[str, Argument]:
+        options: dict[str, Argument] = {}
         for field, field_conf in cls.fields().items():
             if field_conf.forwarded or field_conf.is_positional():
                 continue
 
-            options[field] = _Argument(
+            options[field] = Argument(
                 field,
                 type_util.remove_optionality(field_conf.arg_type),
                 help=field_conf.help,
@@ -281,13 +288,13 @@ class Command(metaclass=_CommandMeta):
 
     @t.final
     @classmethod
-    def positionals(cls) -> dict[str, _Argument]:
-        positionals: dict[str, _Argument] = {}
+    def positionals(cls) -> dict[str, Argument]:
+        positionals: dict[str, Argument] = {}
         for field, field_conf in cls.fields().items():
             if field_conf.forwarded or not field_conf.is_positional():
                 continue
 
-            positionals[field] = _Argument(
+            positionals[field] = Argument(
                 field,
                 field_conf.arg_type,
                 help=field_conf.help,
@@ -373,7 +380,7 @@ class Command(metaclass=_CommandMeta):
         parent_attrs = parent_attrs or {}
 
         # An accumulator to store unparsed arguments for this class
-        unparsed = {}
+        unparsed: dict[str, str | list[str]] = {}
 
         # The current option or positional arg being parsed
         current_attr: parser.CurrentCtx = parser.CurrentCtx()
@@ -437,7 +444,7 @@ class Command(metaclass=_CommandMeta):
         flush_ctx()
 
         # If the user requested help, skip prompting/parsing
-        parsed_kwargs = {}
+        parsed_kwargs: dict[str, t.Any] = {}
         if not requested_help:
             # --- Parse as the correct values ---
             for field, field_conf in cls.fields().items():

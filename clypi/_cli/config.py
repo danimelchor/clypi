@@ -1,7 +1,7 @@
 import typing as t
 from dataclasses import asdict, dataclass
 
-from clypi._util import _UNSET, Unset
+from clypi._util import UNSET, Unset
 from clypi.prompts import MAX_ATTEMPTS, Parser
 
 T = t.TypeVar("T")
@@ -10,8 +10,8 @@ T = t.TypeVar("T")
 @dataclass
 class PartialConfig(t.Generic[T]):
     parser: Parser[T] | None = None
-    default: T | Unset = _UNSET
-    default_factory: t.Callable[[], T] | Unset = _UNSET
+    default: T | Unset = UNSET
+    default_factory: t.Callable[[], T] | Unset = UNSET
     help: str | None = None
     short: str | None = None
     prompt: str | None = None
@@ -20,7 +20,7 @@ class PartialConfig(t.Generic[T]):
     forwarded: bool = False
 
     def has_default(self) -> bool:
-        return self.default is not _UNSET or self.default_factory is not _UNSET
+        return self.default is not UNSET or self.default_factory is not UNSET
 
     def get_default(self) -> T:
         if not isinstance(self.default, Unset):
@@ -36,8 +36,8 @@ class PartialConfig(t.Generic[T]):
 class Config(t.Generic[T]):
     parser: Parser[T]
     arg_type: t.Any
-    default: T | Unset = _UNSET
-    default_factory: t.Callable[[], T] | Unset = _UNSET
+    default: T | Unset = UNSET
+    default_factory: t.Callable[[], T] | Unset = UNSET
     help: str | None = None
     short: str | None = None
     prompt: str | None = None
@@ -61,7 +61,7 @@ class Config(t.Generic[T]):
             return self.default
         if not isinstance(self.default_factory, Unset):
             return self.default_factory()
-        return _UNSET
+        return UNSET
 
     def is_positional(self) -> bool:
         if t.get_origin(self.arg_type) != t.Annotated:
@@ -84,10 +84,10 @@ class Config(t.Generic[T]):
 
 
 def arg(
-    *args,
+    *args: t.Any,
     parser: Parser[T] | None = None,
-    default: T | Unset = _UNSET,
-    default_factory: t.Callable[[], T] | Unset = _UNSET,
+    default: T | Unset = UNSET,
+    default_factory: t.Callable[[], T] | Unset = UNSET,
     help: str | None = None,
     short: str | None = None,
     prompt: str | None = None,
