@@ -324,6 +324,18 @@ class Formatter(t.Protocol):
     ) -> str: ...
 ```
 
+### `ClypiFormatter`
+
+Clypi ships with a pre-made formatter that can display help pages with either boxes or with idented sections:
+
+```python
+ClypiFormatter(boxed=True)
+```
+
+```python
+ClypiFormatter(boxed=False)
+```
+
 ## Prompts
 
 ### `Parser[T]`
