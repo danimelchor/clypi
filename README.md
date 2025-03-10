@@ -25,11 +25,11 @@ pip install .[examples]
 python -m examples.cli
 ```
 
-## Docs
+## 📖 Docs
 
 Read [the API docs](https://github.com/danimelchor/clypi/blob/master/docs/index.md) for examples and a full API reference.
 
-## CLI
+## 🧰 CLI
 
 Read the [docs](https://github.com/danimelchor/clypi/blob/master/docs/index.md#cli)
 
@@ -138,7 +138,7 @@ import clypi
 answer = clypi.confirm("Are you going to use clypi?", default=True)
 ```
 
-## Configurable
+## 🛠️ Configurable
 
 Read the [docs](https://github.com/danimelchor/clypi/blob/master/docs/index.md#configuration)
 
@@ -195,7 +195,7 @@ reveal_type(hours)  # Type of "res" is "float | timedelta"
 Type checking will help you catch issues way earlier in the development cycle. It will also
 provide nice autocomplete features in your editor that will make you faster 󱐋.
 
-## Integrations
+## 🔌 Integrations
 
 ### Parsers ([v6e](https://github.com/danimelchor/v6e), [pydantic](https://github.com/pydantic/pydantic), etc.)
 
