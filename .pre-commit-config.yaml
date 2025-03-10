@@ -13,7 +13,7 @@ repos:
     # Type check
     - id: pyright
       name: pyright
-      entry: uv run --all-extras pyright clypi/ type_tests/
+      entry: uv run --all-extras pyright clypi/ type_tests/ examples/
       language: python
       types: [python]
       exclude: ^tests/.*
@@ -21,7 +21,7 @@ repos:
       always_run: true
     - id: mypy
       name: mypy
-      entry: uv run --all-extras mypy clypi/ type_tests/
+      entry: uv run --all-extras mypy clypi/ type_tests/ examples/
       language: python
       types: [python]
       exclude: ^tests/.*

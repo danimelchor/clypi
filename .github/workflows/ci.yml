@@ -28,7 +28,7 @@ jobs:
         run: uvx ruff check .
 
       - name: "Python type checking -- Pyright"
-        run: uvx pyright clypi/ type_tests/
+        run: uvx pyright clypi/ type_tests/ examples/
 
       - name: "Python type checking -- Mypy"
-        run: uvx mypy clypi/ type_tests/
+        run: uvx mypy clypi/ type_tests/ examples/

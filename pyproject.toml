@@ -34,7 +34,7 @@ dev = [
   "pytest>=8.3.5",
 ]
 examples = [
-  "v6e>=0.1.17",
+  "v6e>=0.1.18",
 ]
 
 [tool.pytest.ini_options]

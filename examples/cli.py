@@ -7,8 +7,7 @@ import v6e as v
 from typing_extensions import override
 
 import clypi
-from clypi import Command, arg
-from clypi._cli.config import Positional
+from clypi import Command, Positional, arg
 
 
 def debug(fun):

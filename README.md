@@ -115,7 +115,7 @@ print(clypi.style("This is blue", fg="blue"), "and", clypi.style("this is red", 
 clypi.print("Some colorful text", fg="green", reverse=True, bold=True, italic=True)
 
 # Store a styler and reuse it
-wrong = clypi.styler(fg="red", strikethrough=True)
+wrong = clypi.Styler(fg="red", strikethrough=True)
 print("The old version said", wrong("Pluto was a planet"))
 print("The old version said", wrong("the Earth was flat"))
 ```
