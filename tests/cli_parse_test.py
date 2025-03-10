@@ -3,8 +3,10 @@ from enum import Enum
 from pathlib import Path
 
 import pytest
+from typing_extensions import override
 
 from clypi import Command, Positional, config
+from clypi.configuration import ClypiConfig
 
 
 def parametrize(args: str, cases: list[tuple]):
@@ -19,6 +21,7 @@ class ExampleSub(Command):
     flag2: bool = False
     option2: int = 5
 
+    @override
     async def run(self):
         print("subcommand")
 
@@ -29,6 +32,12 @@ class Example(Command):
     subcommand: ExampleSub | None = None
     option: list[str] = config(default_factory=list, short="o")
 
+    @override
+    @classmethod
+    def configuration(cls):
+        return ClypiConfig(help_on_fail=False)
+
+    @override
     async def run(self):
         print("main")
 
@@ -84,7 +93,7 @@ COMMAND = [
 
 @parametrize("args,expected", COMMAND)
 def test_expected_parsing_no_subcommand(args, expected):
-    ec = Example.parse(args, _raise=True)
+    ec = Example.parse(args)
     for k, v in expected.items():
         assert getattr(ec, k) == v
 
@@ -178,7 +187,7 @@ MERGED = [
 
 @parametrize("args,cmd_expected,subcmd_expected", MERGED)
 def test_expected_parsing_subcommand(args, cmd_expected, subcmd_expected):
-    ec = Example.parse(args, _raise=True)
+    ec = Example.parse(args)
     for k, v in cmd_expected.items():
         assert getattr(ec, k) == v
 
@@ -224,10 +233,10 @@ def test_parse_lists(args, expected, fails):
 
     if fails:
         with pytest.raises(Exception):
-            _ = ListCommand.parse(args, _raise=True)
+            _ = ListCommand.parse(args)
         return
 
-    lc = ListCommand.parse(args, _raise=True)
+    lc = ListCommand.parse(args)
     assert lc is not None
     for k, v in expected.items():
         lc_v = getattr(lc, k)
@@ -264,10 +273,10 @@ def test_parse_tuples(args, expected, fails):
 
     if fails:
         with pytest.raises(Exception):
-            _ = TupleCommand.parse(args, _raise=True)
+            _ = TupleCommand.parse(args)
         return
 
-    lc = TupleCommand.parse(args, _raise=True)
+    lc = TupleCommand.parse(args)
     assert lc is not None
     for k, v in expected.items():
         lc_v = getattr(lc, k)
@@ -308,10 +317,10 @@ def test_parse_enums(args, expected, fails):
 
     if fails:
         with pytest.raises(Exception):
-            _ = EnumCommand.parse(args, _raise=True)
+            _ = EnumCommand.parse(args)
         return
 
-    ec = EnumCommand.parse(args, _raise=True)
+    ec = EnumCommand.parse(args)
     assert ec is not None
     for k, v in expected.items():
         lc_v = getattr(ec, k)

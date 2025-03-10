@@ -1,70 +1,47 @@
 # 🦄 clypi
 
-## Align
+## Configuration
 
-### `align`
+### Accessing and changing the configuration
 
 ```python
-def align(s: str, alignment: AlignType, width: int) -> str
+from clypi import ClypiConfig, configure, get_config
+
+# Get's the current config (or a default)
+conf = get_config()
+
+# Change the configuration
+config = ClypiConfig(help_on_fail=False)
+configure(config)
 ```
-Aligns text according to `alignment` and `width`. In contrast with the built-in
-methods `rjust`, `ljust`, and `center`, `clypi.align(...)` aligns text according
-to it's true visible width (the built-in methods count color codes as width chars).
+
+### Default config
+
+```python
+ClypiConfig(
+    help_formatter=ClypiFormatter(boxed=True),
+    help_on_fail=True,
+    nice_errors=(ClypiException,),
+    theme=Theme(
+        usage=Styler(fg="yellow"),
+        prog=Styler(bold=True),
+        section_title=Styler(),
+        subcommand=Styler(fg="blue", bold=True),
+        long_option=Styler(fg="blue", bold=True),
+        short_option=Styler(fg="green", bold=True),
+        positional=Styler(fg="blue", bold=True),
+        type_str=Styler(fg="yellow", bold=True),
+        prompts=Styler(fg="blue", bold=True),
+    ),
+)
+```
 
 Parameters:
-- `s`: the string being aligned
-- `alignment`: one of `left`, `right`, or `center`
-- `width`: the wished final visible widht of the string
+- `help_formatter`: the formatter class to use to display the help pages (see [Formatter](#formatter))
+- `help_on_fail`: weather the help page should be displayed if a user doesn't pass the right params
+- `nice_errors`: a list of errors clypi will catch and display neatly
+- `theme`: a `Theme` object used to format different styles and colors for help pages, prompts, tracebacks, etc.
 
-Examples:
-
-> ```python
-> clypi.align("foo", "left", 10) -> "foo       "
-> clypi.align("foo", "right", 10) -> "          foo"
-> clypi.align("foo", "center", 10) -> "   foo   "
->```
-
-
-## Boxed
-
-### `Boxes`
-
-```python
-class Boxes(Enum): ...
-```
-
-The border style you'd like to use. To see all the box styles in action run `uv run -m examples.boxed`.
-
-The full list can be found in the code [here](https://github.com/danimelchor/clypi/blob/master/clypi/_data/boxes.py).
-
-
-### `boxed`
-
-```python
-def boxed(
-    lines: T,
-    width: int | None = None,
-    style: Boxes = Boxes.HEAVY,
-    alignment: AlignType = "left",
-    title: str | None = None,
-    color: ColorType = "bright_white",
-) -> T:
-```
-Wraps text neatly in a box with the selected style, padding, and alignment.
-
-Parameters:
-- `lines`: the type of lines will determine it's output type. It can be one of `str`, `list[str]` or `Iterable[str]`
-- `width`: the desired width of the box
-- `style`: the desired style (see [`Boxes`](#Boxes))
-- `alignment`: the style of alignment (see [`align`](#align))
-- `title`: optionally define a title for the box, it's lenght must be < width
-- `color`: a color for the box border and title (see [`colors`](#colors))
-
-Examples:
-
-> ```python
-> print(clypi.boxed("Some boxed text", color="red", width=30, align="center"))
-> ```
 
 ## CLI
 
@@ -321,112 +298,49 @@ or, if already in an async loop, `await YourCommand.astart()`.
 ```python
 @t.final
 @classmethod
-def print_help(cls, parents: list[str] = [], *, exception: Exception | None = None)
+def print_help(cls, exception: Exception | None = None)
 ```
 Prints the help page for a particular command.
 
 Parameters:
-- `parents`: a list of parent commands. Passed automatically during runtime if an error occurs or the user tries to access the help page.
 - `exception`: an exception neatly showed to the user as a traceback. Automatically passed in during runtime.
 
-## Colors
+### `Formatter`
 
-### `ColorType`
-
-```python
-ColorType: t.TypeAlias = t.Literal[
-    "black",
-    "red",
-    "green",
-    "yellow",
-    "blue",
-    "magenta",
-    "cyan",
-    "white",
-    "default",
-    "bright_black",
-    "bright_red",
-    "bright_green",
-    "bright_yellow",
-    "bright_blue",
-    "bright_magenta",
-    "bright_cyan",
-    "bright_white",
-    "bright_default",
-]
-```
-
-### `styler`
-```python
-def styler(
-    fg: ColorType | None = None,
-    bg: ColorType | None = None,
-    bold: bool = False,
-    italic: bool = False,
-    dim: bool = False,
-    underline: bool = False,
-    blink: bool = False,
-    reverse: bool = False,
-    strikethrough: bool = False,
-    reset: bool = False,
-) -> Styler
-```
-Returns a reusable function to style text.
-
-Examples:
-> ```python
-> wrong = clypi.styler(fg="red", strikethrough=True)
-> print("The old version said", wrong("Pluto was a planet"))
-> print("The old version said", wrong("the Earth was flat"))
-> ```
-
-### `style`
-```python
-def style(
-    *messages: t.Any,
-    fg: ColorType | None = None,
-    bg: ColorType | None = None,
-    bold: bool = False,
-    italic: bool = False,
-    dim: bool = False,
-    underline: bool = False,
-    blink: bool = False,
-    reverse: bool = False,
-    strikethrough: bool = False,
-    reset: bool = False,
-) -> str
-```
-Styles text and returns the styled string.
-
-Examples:
-> ```python
-> print(clypi.style("This is blue", fg="blue"), "and", clypi.style("this is red", fg="red"))
-> ```
-
-### `print`
+A formatter is any class conforming to the following protocol. It is called on several occasions to render
+the help page. The `Formatter` implementation should try to use the provided configuration theme when possible.
 
 ```python
-def print(
-    *messages: t.Any,
-    fg: ColorType | None = None,
-    bg: ColorType | None = None,
-    bold: bool = False,
-    italic: bool = False,
-    dim: bool = False,
-    underline: bool = False,
-    blink: bool = False,
-    reverse: bool = False,
-    strikethrough: bool = False,
-    reset: bool = False,
-    end: str | None = "\n",
-) -> None
+class Formatter(t.Protocol):
+    def format_help(
+        self,
+        prog: list[str],
+        description: str | None,
+        epilog: str | None,
+        options: list[_Argument],
+        positionals: list[_Argument],
+        subcommands: list[type[Command]],
+        exception: Exception | None,
+    ) -> str: ...
 ```
-Styles and prints text directly.
 
-Examples:
-> ```python
-> clypi.print("Some colorful text", fg="green", reverse=True, bold=True, italic=True)
-> ```
+### `ClypiFormatter`
+
+Clypi ships with a pre-made formatter that can display help pages with either boxes or with idented sections:
+
+```python
+ClypiFormatter(boxed=True)
+```
+
+<img width="1701" alt="image" src="https://github.com/user-attachments/assets/20212b97-73b8-4efa-92b0-873405f33c55" />
+
+
+```python
+ClypiFormatter(boxed=False)
+```
+
+<img width="1696" alt="image" src="https://github.com/user-attachments/assets/d0224cf4-0c91-4720-8e43-746985531912" />
+
 
 ## Prompts
 
@@ -478,6 +392,105 @@ Parameters:
 - `parser`: a function that parses in the user input as a string and returns the parsed value or raises
 - `hide_input`: whether the input shouldn't be displayed as the user types (for passwords, API keys, etc.)
 - `max_attempts`: how many times to ask the user before giving up and raising
+
+## Colors
+
+### `ColorType`
+
+```python
+ColorType: t.TypeAlias = t.Literal[
+    "black",
+    "red",
+    "green",
+    "yellow",
+    "blue",
+    "magenta",
+    "cyan",
+    "white",
+    "default",
+    "bright_black",
+    "bright_red",
+    "bright_green",
+    "bright_yellow",
+    "bright_blue",
+    "bright_magenta",
+    "bright_cyan",
+    "bright_white",
+    "bright_default",
+]
+```
+
+### `Styler`
+```python
+class Styler(
+    fg: ColorType | None = None,
+    bg: ColorType | None = None,
+    bold: bool = False,
+    italic: bool = False,
+    dim: bool = False,
+    underline: bool = False,
+    blink: bool = False,
+    reverse: bool = False,
+    strikethrough: bool = False,
+    reset: bool = False,
+)
+```
+Returns a reusable function to style text.
+
+Examples:
+> ```python
+> wrong = clypi.Styler(fg="red", strikethrough=True)
+> print("The old version said", wrong("Pluto was a planet"))
+> print("The old version said", wrong("the Earth was flat"))
+> ```
+
+### `style`
+```python
+def style(
+    *messages: t.Any,
+    fg: ColorType | None = None,
+    bg: ColorType | None = None,
+    bold: bool = False,
+    italic: bool = False,
+    dim: bool = False,
+    underline: bool = False,
+    blink: bool = False,
+    reverse: bool = False,
+    strikethrough: bool = False,
+    reset: bool = False,
+) -> str
+```
+Styles text and returns the styled string.
+
+Examples:
+> ```python
+> print(clypi.style("This is blue", fg="blue"), "and", clypi.style("this is red", fg="red"))
+> ```
+
+### `print`
+
+```python
+def print(
+    *messages: t.Any,
+    fg: ColorType | None = None,
+    bg: ColorType | None = None,
+    bold: bool = False,
+    italic: bool = False,
+    dim: bool = False,
+    underline: bool = False,
+    blink: bool = False,
+    reverse: bool = False,
+    strikethrough: bool = False,
+    reset: bool = False,
+    end: str | None = "\n",
+) -> None
+```
+Styles and prints text directly.
+
+Examples:
+> ```python
+> clypi.print("Some colorful text", fg="green", reverse=True, bold=True, italic=True)
+> ```
 
 ## Spinners
 
@@ -579,6 +592,50 @@ Examples:
 >         )
 > ```
 
+
+
+## Boxed
+
+### `Boxes`
+
+```python
+class Boxes(Enum): ...
+```
+
+The border style you'd like to use. To see all the box styles in action run `uv run -m examples.boxed`.
+
+The full list can be found in the code [here](https://github.com/danimelchor/clypi/blob/master/clypi/_data/boxes.py).
+
+
+### `boxed`
+
+```python
+def boxed(
+    lines: T,
+    width: int | None = None,
+    style: Boxes = Boxes.HEAVY,
+    alignment: AlignType = "left",
+    title: str | None = None,
+    color: ColorType = "bright_white",
+) -> T:
+```
+Wraps text neatly in a box with the selected style, padding, and alignment.
+
+Parameters:
+- `lines`: the type of lines will determine it's output type. It can be one of `str`, `list[str]` or `Iterable[str]`
+- `width`: the desired width of the box
+- `style`: the desired style (see [`Boxes`](#Boxes))
+- `alignment`: the style of alignment (see [`align`](#align))
+- `title`: optionally define a title for the box, it's lenght must be < width
+- `color`: a color for the box border and title (see [`colors`](#colors))
+
+Examples:
+
+> ```python
+> print(clypi.boxed("Some boxed text", color="red", width=30, align="center"))
+> ```
+
+
 ## Stack
 
 ```python
@@ -603,3 +660,27 @@ names = clypi.boxed(["Daniel", "Pedro", "Paul"], title="Names", width=15)
 colors = clypi.boxed(["Blue", "Red", "Green"], title="Colors", width=15)
 print(clypi.stack(names, colors))
 ```
+
+## Align
+
+### `align`
+
+```python
+def align(s: str, alignment: AlignType, width: int) -> str
+```
+Aligns text according to `alignment` and `width`. In contrast with the built-in
+methods `rjust`, `ljust`, and `center`, `clypi.align(...)` aligns text according
+to it's true visible width (the built-in methods count color codes as width chars).
+
+Parameters:
+- `s`: the string being aligned
+- `alignment`: one of `left`, `right`, or `center`
+- `width`: the wished final visible widht of the string
+
+Examples:
+
+> ```python
+> clypi.align("foo", "left", 10) -> "foo       "
+> clypi.align("foo", "right", 10) -> "          foo"
+> clypi.align("foo", "center", 10) -> "   foo   "
+>```
