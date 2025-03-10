@@ -1,8 +1,8 @@
-from clypi import Command, arg
+from clypi import Command, Positional, arg
 
 
 class Lint(Command):
-    files: tuple[str, ...]
+    files: Positional[tuple[str, ...]]
     verbose: bool = arg(...)  # Comes from MyCli but I want to use it too
 
     async def run(self):

@@ -114,4 +114,5 @@ class _Positional:
     pass
 
 
-Positional: t.TypeAlias = t.Annotated[T, _Positional()]
+P = t.TypeVar("P")
+Positional: t.TypeAlias = t.Annotated[P, _Positional()]

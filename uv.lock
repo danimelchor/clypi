@@ -30,7 +30,7 @@ requires-dist = [
     { name = "pytest", marker = "extra == 'dev'", specifier = ">=8.3.5" },
     { name = "ruff", marker = "extra == 'dev'", specifier = ">=0.9.7" },
     { name = "typing-extensions", specifier = ">=4.12.2" },
-    { name = "v6e", marker = "extra == 'examples'", specifier = ">=0.1.17" },
+    { name = "v6e", marker = "extra == 'examples'", specifier = ">=0.1.18" },
 ]
 provides-extras = ["dev", "examples"]
 
@@ -219,13 +219,13 @@ wheels = [
 
 [[package]]
 name = "v6e"
-version = "0.1.17"
+version = "0.1.18"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "python-dateutil" },
     { name = "typing-extensions" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/c6/9f/aad469432e0b3809f511874883a9d7b437115dbb2a59af47ffc46d53eb38/v6e-0.1.17.tar.gz", hash = "sha256:202c588ad64e4d65abe341c104790a49ec5780c24dca630848ed070e030d2133", size = 21899 }
+sdist = { url = "https://files.pythonhosted.org/packages/de/7e/d4217639357a3bcd14eebe928124978253f748ac178bcf9db78e7a004e7f/v6e-0.1.18.tar.gz", hash = "sha256:97b94543a6452bca4ccdae8fa8bb18b94826105c132032431b520b176574205f", size = 21923 }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/33/56/4e6c6b7df5b35932c8533712458d60ef899cc29cab9a1e8aa9e53caf86f8/v6e-0.1.17-py3-none-any.whl", hash = "sha256:a3cf31842207b915e4e2a51a1b9b2f7a7668c9dd9eaca77b743ab6a36f8977f1", size = 12095 },
+    { url = "https://files.pythonhosted.org/packages/de/21/69f58ac9b8aeaa4b12cc4699623860450335afb256eaaa8a20506e0c5205/v6e-0.1.18-py3-none-any.whl", hash = "sha256:1fcaacefc4f7603fc3d17ca8ea7d5a4577e95211c4ab6a42f4c92b6970e34d8f", size = 12241 },
 ]

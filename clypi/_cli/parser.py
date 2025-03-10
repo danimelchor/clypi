@@ -184,7 +184,7 @@ def _parse_enum(_type: type[Enum]):
 def from_v6e(_type: t.Any) -> t.Callable[[t.Any], t.Any] | None:
     import v6e as v  # type: ignore
 
-    v6e_builtins = {
+    v6e_builtins: dict[t.Any, t.Callable] = {
         bool: v.bool(),
         int: v.int(),
         float: v.float(),

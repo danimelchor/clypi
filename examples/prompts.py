@@ -36,13 +36,13 @@ def main() -> None:
     )
     moon = clypi.prompt(
         "How old is The Moon?",
-        parser=v.int().gte(3).lte(9).multiple_of(3),  # You can chain validations
+        parser=v.int().multiple_of(3).gte(3).lte(9),  # You can chain validations
     )
 
     # -----------
     print()
     colors.print("🚀 Summary", bold=True, fg="green")
-    answer = colors.styler(fg="magenta", bold=True)
+    answer = colors.Styler(fg="magenta", bold=True)
     print(" ↳  Name:", answer(name))
     print(" ↳  Clypi is cool:", answer(is_cool))
     print(" ↳  Age:", answer(age))

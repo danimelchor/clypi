@@ -11,8 +11,9 @@ from types import NoneType, UnionType
 
 from clypi._cli import autocomplete as _auto
 from clypi._cli import config as _conf
-from clypi._cli import formatter as _formatter
 from clypi._cli import parser, type_util
+from clypi._cli.config import Positional, arg
+from clypi._cli.formatter import ClypiFormatter, Formatter
 from clypi._levenshtein import distance
 from clypi._util import _UNSET
 from clypi.configuration import get_config
@@ -21,11 +22,14 @@ from clypi.prompts import prompt
 
 logger = logging.getLogger(__name__)
 
-# re-exports
-arg = _conf.arg
-Positional = _conf.Positional
-Formatter = _formatter.Formatter
-ClypiFormatter = _formatter.ClypiFormatter
+__all__ = (
+    "ClypiFormatter",
+    "Command",
+    "Formatter",
+    "Positional",
+    "arg",
+)
+
 
 HELP_ARGS: tuple[str, ...] = ("help", "-h", "--help")
 
