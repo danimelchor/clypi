@@ -2,10 +2,11 @@ from __future__ import annotations
 
 import typing as t
 from dataclasses import dataclass
+from functools import cached_property
 
-import clypi
-from clypi import boxed, stack
+from clypi import boxed, indented, stack
 from clypi._cli import type_util
+from clypi.exceptions import format_traceback
 
 if t.TYPE_CHECKING:
     from clypi.cli import Command, _Argument
@@ -24,170 +25,184 @@ def _ext(ls: list[str], s: str | list[str] | None) -> None:
     return None
 
 
-def _pretty_traceback(err: BaseException) -> list[str]:
-    # Get the traceback bottom up
-    tb: list[BaseException] = [err]
-    while tb[-1].__cause__ is not None:
-        tb.append(tb[-1].__cause__)
-
-    lines: list[str] = []
-    for i, e in enumerate(reversed(tb)):
-        icon = "  " * (i - 1) + " ↳ " if i != 0 else ""
-        s = clypi.style(f"{icon}{str(e)}", fg="red")
-        lines.append(s)
-    return lines
-
-
 class Formatter(t.Protocol):
-    prog: list[str]
-    description: str | None
-    epilog: str | None
-    options: list[_Argument]
-    positionals: list[_Argument]
-    subcommands: list[type[Command]]
-    exception: Exception | None
-
-    def format_help(self) -> str: ...
+    def format_help(
+        self,
+        prog: list[str],
+        description: str | None,
+        epilog: str | None,
+        options: list[_Argument],
+        positionals: list[_Argument],
+        subcommands: list[type[Command]],
+        exception: Exception | None,
+    ) -> str: ...
 
 
 @dataclass
-class ClipyFormatter:
-    prog: list[str]
-    description: str | None
-    epilog: str | None
-    options: list[_Argument]
-    positionals: list[_Argument]
-    subcommands: list[type[Command]]
-    exception: Exception | None
+class ClypiFormatter:
+    def __init__(self, boxed: bool = True) -> None:
+        self.boxed = boxed
+
+    @cached_property
+    def theme(self):
+        from clypi.configuration import get_config
+
+        return get_config().theme
 
     def _format_option(self, option: _Argument) -> tuple[str, ...]:
-        usage = clypi.style(option.display_name, fg="blue", bold=True)
-        short_usage = (
-            clypi.style(option.short_display_name, fg="green", bold=True)
-            if option.short
-            else ""
+        usage = self.theme.long_option(option.display_name)
+        short_usage = self.theme.short_option(
+            option.short_display_name if option.short else ""
         )
-        type_str = clypi.style(
-            type_util.type_to_str(option.arg_type).upper(), fg="yellow", bold=True
-        )
+        type_str = self.theme.type_str(type_util.type_to_str(option.arg_type).upper())
         help = option.help or ""
+
         return usage, short_usage, type_str, help
 
-    def _format_options(self) -> list[str] | None:
-        if not self.options:
+    def _format_options(self, options: list[_Argument]) -> list[str] | None:
+        if not options:
             return None
 
         usage: list[str] = []
         short_usage: list[str] = []
         type_str: list[str] = []
         help: list[str] = []
-        for o in self.options:
+        for o in options:
             u, su, ts, hp = self._format_option(o)
             usage.append(u)
             short_usage.append(su)
             type_str.append(ts)
             help.append(hp)
-        return list(
-            boxed(
-                stack(usage, short_usage, type_str, help, lines=True), title="Options"
-            )
-        )
+
+        stacked_options = stack(usage, short_usage, type_str, help, lines=True)
+        if not self.boxed:
+            section_title = self.theme.section_title("Options")
+            return [section_title] + indented(stacked_options) + [""]
+
+        return list(boxed(stacked_options, title="Options"))
 
     def _format_positional(self, positional: _Argument) -> t.Any:
-        name = clypi.style(positional.name, fg="blue", bold=True)
+        name = self.theme.positional(positional.name)
         help = positional.help or ""
-        type_str = clypi.style(
-            type_util.type_to_str(positional.arg_type).upper(), fg="yellow", bold=True
+        type_str = self.theme.type_str(
+            type_util.type_to_str(positional.arg_type).upper()
         )
+
         return name, type_str, help
 
-    def _format_positionals(self) -> list[str] | str | None:
-        if not self.positionals:
+    def _format_positionals(
+        self, positionals: list[_Argument]
+    ) -> list[str] | str | None:
+        if not positionals:
             return None
 
         name: list[str] = []
         type_str: list[str] = []
         help: list[str] = []
-        for p in self.positionals:
+        for p in positionals:
             n, ts, hp = self._format_positional(p)
             name.append(n)
             type_str.append(ts)
             help.append(hp)
-        return list(boxed(stack(name, type_str, help, lines=True), title="Arguments"))
+
+        stacked_positionals = stack(name, type_str, help, lines=True)
+        if not self.boxed:
+            section_title = self.theme.section_title("Arguments")
+            return [section_title] + indented(stacked_positionals) + [""]
+
+        return list(boxed(stacked_positionals, title="Arguments"))
 
     def _format_subcommand(self, subcmd: type[Command]) -> tuple[str, str]:
-        name = clypi.style(subcmd.prog(), fg="blue", bold=True)
+        name = self.theme.subcommand(subcmd.prog())
         help = subcmd.help() or ""
         return name, help
 
-    def _format_subcommands(self) -> list[str] | str | None:
-        if not self.subcommands:
+    def _format_subcommands(
+        self, subcommands: list[type[Command]]
+    ) -> list[str] | str | None:
+        if not subcommands:
             return None
 
         name: list[str] = []
         help: list[str] = []
-        for p in self.subcommands:
+        for p in subcommands:
             n, hp = self._format_subcommand(p)
             name.append(n)
             help.append(hp)
-        return list(boxed(stack(name, help, lines=True), title="Subcommands"))
 
-    def _format_header(self) -> list[str] | str | None:
-        prefix = clypi.style("Usage:", fg="yellow")
-        prog = clypi.style(" ".join(self.prog), bold=True)
+        stacked_subcommands = stack(name, help, lines=True)
+        if not self.boxed:
+            section_title = self.theme.section_title("Subcommands")
+            return [section_title] + indented(stacked_subcommands) + [""]
 
-        options = (
-            " [" + clypi.style("OPTIONS", fg="blue", bold=True) + "]"
-            if self.options
-            else ""
-        )
-        command = (
-            clypi.style(" COMMAND", fg="blue", bold=True) if self.subcommands else ""
-        )
+        return list(boxed(stacked_subcommands, title="Subcommands"))
+
+    def _format_header(
+        self,
+        prog: list[str],
+        options: list[_Argument],
+        positionals: list[_Argument],
+        subcommands: list[type[Command]],
+    ) -> list[str] | str | None:
+        prefix = self.theme.usage("Usage:")
+        prog_str = self.theme.prog(" ".join(prog))
+
+        option = " [" + self.theme.long_option("OPTIONS") + "]" if options else ""
+        command = self.theme.subcommand(" COMMAND") if subcommands else ""
         positional = (
-            " "
-            + " ".join(
-                clypi.style(p.name.upper(), fg="blue", bold=True)
-                for p in self.positionals
-            )
-            if self.positionals
+            " " + " ".join(self.theme.positional(p.name.upper()) for p in positionals)
+            if positionals
             else ""
         )
 
-        return [f"{prefix} {prog}{options}{command}{positional}"]
+        return [f"{prefix} {prog_str}{option}{command}{positional}"]
 
-    def _format_description(self) -> list[str] | str | None:
-        if not self.description:
+    def _format_description(self, description: str | None) -> list[str] | str | None:
+        if not description:
             return None
-        return [self.description, ""]
+        return [description, ""]
 
-    def _format_exception(self) -> list[str] | str | None:
-        if not self.exception:
-            return ""
-        return list(
-            boxed(_pretty_traceback(self.exception), title="Error", color="red")
-        )
+    def _format_exception(self, exception: Exception | None) -> list[str] | str | None:
+        if not exception:
+            return None
 
-    def format_help(self) -> str:
+        if not self.boxed:
+            section_title = self.theme.section_title("Error")
+            return [section_title] + indented(format_traceback(exception)) + [""]
+        return list(boxed(format_traceback(exception), title="Error", color="red"))
+
+    def format_help(
+        self,
+        prog: list[str],
+        description: str | None,
+        epilog: str | None,
+        options: list[_Argument],
+        positionals: list[_Argument],
+        subcommands: list[type[Command]],
+        exception: Exception | None,
+    ) -> str:
         lines: list[str] = []
 
         # Header
-        _ext(lines, self._format_header())
+        _ext(lines, self._format_header(prog, options, positionals, subcommands))
         _ext(lines, "")
 
         # Description
-        _ext(lines, self._format_description())
+        _ext(lines, self._format_description(description))
 
         # Subcommands
-        _ext(lines, self._format_subcommands())
-
-        # Options
-        _ext(lines, self._format_options())
+        _ext(lines, self._format_subcommands(subcommands))
 
         # Positionals
-        _ext(lines, self._format_positionals())
+        _ext(lines, self._format_positionals(positionals))
 
-        # exceptions
-        _ext(lines, self._format_exception())
+        # Options
+        _ext(lines, self._format_options(options))
+
+        # Epilog
+        _ext(lines, self._format_description(epilog))
+
+        # Exceptions
+        _ext(lines, self._format_exception(exception))
 
         return "\n".join(lines)

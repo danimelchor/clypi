@@ -3,7 +3,7 @@ import re
 from pathlib import Path
 
 import clypi
-from clypi import Command, Positional, Spinner, config
+from clypi import ClypiException, Command, Positional, Spinner, config
 
 
 async def from_requirements(file: Path):
@@ -70,4 +70,4 @@ class Add(Command):
             await from_packages(self.packages)
 
         else:
-            raise ValueError("One of requirements or packages is required!")
+            raise ClypiException("One of requirements or packages is required!")

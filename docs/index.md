@@ -356,9 +356,9 @@ ColorType: t.TypeAlias = t.Literal[
 ]
 ```
 
-### `styler`
+### `Styler`
 ```python
-def styler(
+class Styler(
     fg: ColorType | None = None,
     bg: ColorType | None = None,
     bold: bool = False,
@@ -369,13 +369,13 @@ def styler(
     reverse: bool = False,
     strikethrough: bool = False,
     reset: bool = False,
-) -> Styler
+)
 ```
 Returns a reusable function to style text.
 
 Examples:
 > ```python
-> wrong = clypi.styler(fg="red", strikethrough=True)
+> wrong = clypi.Styler(fg="red", strikethrough=True)
 > print("The old version said", wrong("Pluto was a planet"))
 > print("The old version said", wrong("the Earth was flat"))
 > ```

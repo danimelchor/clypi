@@ -11,10 +11,12 @@ from types import NoneType, UnionType
 
 from clypi._cli import autocomplete as _auto
 from clypi._cli import config as _conf
+from clypi._cli import formatter as _formatter
 from clypi._cli import parser, type_util
-from clypi._cli.formatter import ClipyFormatter
 from clypi._levenshtein import distance
 from clypi._util import _UNSET
+from clypi.configuration import get_config
+from clypi.exceptions import print_traceback
 from clypi.prompts import prompt
 
 logger = logging.getLogger(__name__)
@@ -22,8 +24,14 @@ logger = logging.getLogger(__name__)
 # re-exports
 config = _conf.config
 Positional = _conf.Positional
+Formatter = _formatter.Formatter
+ClypiFormatter = _formatter.ClypiFormatter
 
 HELP_ARGS: tuple[str, ...] = ("help", "-h", "--help")
+
+CLYPI_FIELDS = "__clypi_fields__"
+CLYPI_SUBCOMMANDS = "__clypi_subcommands__"
+CLYPI_PARENTS = "__clypi_parents__"
 
 
 def _camel_to_dashed(s: str):
@@ -118,7 +126,7 @@ class _CommandMeta(type):
             elif value.has_default():
                 setattr(cls, field, value.get_default())
 
-        setattr(cls, "__clypi_fields__", fields)
+        setattr(cls, CLYPI_FIELDS, fields)
 
     @t.final
     def _configure_subcommands(cls) -> None:
@@ -146,7 +154,7 @@ class _CommandMeta(type):
                     f"Did not expect to see a subcommand {v} of type {type(v)}"
                 )
 
-        setattr(cls, "__clypi_subcommands__", subcmds)
+        setattr(cls, CLYPI_SUBCOMMANDS, subcmds)
 
 
 class Command(metaclass=_CommandMeta):
@@ -157,6 +165,10 @@ class Command(metaclass=_CommandMeta):
     @classmethod
     def epilog(cls) -> str | None:
         return None
+
+    @classmethod
+    def _parents(cls) -> list[str]:
+        return getattr(cls, CLYPI_PARENTS, [])
 
     @t.final
     @classmethod
@@ -183,7 +195,11 @@ class Command(metaclass=_CommandMeta):
     async def astart(self) -> None:
         if subcommand := getattr(self, "subcommand", None):
             return await subcommand.astart()
-        return await self.run()
+
+        try:
+            return await self.run()
+        except get_config().nice_errors as e:
+            print_traceback(e)
 
     @t.final
     def start(self) -> None:
@@ -196,7 +212,7 @@ class Command(metaclass=_CommandMeta):
         Parses the type hints from the class extending Command and assigns each
         a _Config field with all the necessary info to display and parse them.
         """
-        return getattr(cls, "__clypi_fields__")
+        return getattr(cls, CLYPI_FIELDS)
 
     @t.final
     @classmethod
@@ -229,7 +245,7 @@ class Command(metaclass=_CommandMeta):
     def subcommands(cls) -> dict[str | None, type[Command] | None]:
         subcmds = t.cast(
             list[type[Command] | type[None]] | None,
-            getattr(cls, "__clypi_subcommands__", None),
+            getattr(cls, CLYPI_SUBCOMMANDS, None),
         )
         if subcmds is None:
             return {None: None}
@@ -313,18 +329,16 @@ class Command(metaclass=_CommandMeta):
     def _safe_parse(
         cls,
         args: t.Iterator[str],
-        parents: list[str],
         parent_attrs: dict[str, str | list[str]] | None = None,
-        _raise: bool = False,
     ) -> t.Self:
         """
         Tries parsing args and if an error is shown, it displays the subcommand
         that failed the parsing's help page.
         """
         try:
-            return cls._parse(args, parents, parent_attrs, _raise)
+            return cls._parse(args, parent_attrs)
         except (ValueError, TypeError) as e:
-            if _raise:
+            if not get_config().help_on_fail:
                 raise
 
             # The user might have started typing a subcommand but not
@@ -334,7 +348,7 @@ class Command(metaclass=_CommandMeta):
                 _auto.list_arguments(cls)
 
             # Otherwise, help page
-            cls.print_help(parents, exception=e)
+            cls.print_help(exception=e)
 
         assert False, "Should never happen"
 
@@ -343,9 +357,7 @@ class Command(metaclass=_CommandMeta):
     def _parse(
         cls,
         args: t.Iterator[str],
-        parents: list[str],
         parent_attrs: dict[str, str | list[str]] | None = None,
-        _raise: bool = False,
     ) -> t.Self:
         """
         Given an iterator of arguments we recursively parse all options, arguments,
@@ -377,7 +389,7 @@ class Command(metaclass=_CommandMeta):
         for a in args:
             parsed = parser.parse_as_attr(a)
             if parsed.orig.lower() in HELP_ARGS:
-                cls.print_help(parents=parents)
+                cls.print_help()
 
             # ---- Try to parse as a subcommand ----
             if parsed.is_pos() and parsed.value in cls.subcommands():
@@ -462,11 +474,11 @@ class Command(metaclass=_CommandMeta):
         if not subcommand and None not in cls.subcommands():
             raise ValueError("Missing required subcommand")
         elif subcommand:
+            # Pass parent configs to child to get parenthood + config
+            setattr(subcommand, CLYPI_PARENTS, cls._parents() + [cls.prog()])
+
             parsed_kwargs["subcommand"] = subcommand._safe_parse(
-                args,
-                parents=parents + [cls.prog()],
-                parent_attrs=parsed_kwargs,
-                _raise=_raise,
+                args, parent_attrs=parsed_kwargs
             )
 
         # Assign to an instance
@@ -477,7 +489,7 @@ class Command(metaclass=_CommandMeta):
 
     @t.final
     @classmethod
-    def parse(cls, args: t.Sequence[str] | None = None, _raise: bool = False) -> t.Self:
+    def parse(cls, args: t.Sequence[str] | None = None) -> t.Self:
         """
         Entry point of the program. Depending on some env vars it
         will either run the user-defined program or instead output the necessary
@@ -494,7 +506,7 @@ class Command(metaclass=_CommandMeta):
 
         norm_args = parser.normalize_args(args)
         args_iter = iter(norm_args)
-        instance = cls._safe_parse(args_iter, parents=[], _raise=_raise)
+        instance = cls._safe_parse(args_iter)
         if _auto.get_autocomplete_args() is not None:
             _auto.list_arguments(cls)
         if list(args_iter):
@@ -504,9 +516,9 @@ class Command(metaclass=_CommandMeta):
 
     @t.final
     @classmethod
-    def print_help(cls, parents: list[str] = [], *, exception: Exception | None = None):
-        tf = ClipyFormatter(
-            prog=parents + [cls.prog()],
+    def print_help(cls, exception: Exception | None = None):
+        help_str = get_config().help_formatter.format_help(
+            prog=cls._parents() + [cls.prog()],
             description=cls.help(),
             epilog=cls.epilog(),
             options=list(cls.options().values()),
@@ -514,7 +526,8 @@ class Command(metaclass=_CommandMeta):
             subcommands=[s for s in cls.subcommands().values() if s],
             exception=exception,
         )
-        print(tf.format_help())
+        sys.stdout.write(help_str)
+        sys.stdout.flush()
         sys.exit(1 if exception else 0)
 
     def __repr__(self) -> str:

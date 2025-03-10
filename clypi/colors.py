@@ -1,6 +1,7 @@
 import builtins
 import re
 import typing as t
+from dataclasses import dataclass
 from enum import Enum
 
 from clypi.const import ESC
@@ -108,37 +109,34 @@ def remove_style(s: str):
     return ANSI_ESCAPE.sub("", s)
 
 
-class Styler(t.Protocol):
-    def __call__(self, *args: t.Any) -> str: ...
+@dataclass
+class Styler:
+    fg: ColorType | None = None
+    bg: ColorType | None = None
+    bold: bool = False
+    italic: bool = False
+    dim: bool = False
+    underline: bool = False
+    blink: bool = False
+    reverse: bool = False
+    strikethrough: bool = False
+    reset: bool = False
 
-
-def styler(
-    fg: ColorType | None = None,
-    bg: ColorType | None = None,
-    bold: bool = False,
-    italic: bool = False,
-    dim: bool = False,
-    underline: bool = False,
-    blink: bool = False,
-    reverse: bool = False,
-    strikethrough: bool = False,
-    reset: bool = False,
-) -> Styler:
-    def inner(*messages: t.Any):
+    def __call__(self, *messages: t.Any) -> str:
         text = " ".join(str(m) for m in messages)
-        text = _apply_fg(text, fg) if fg else text
-        text = _apply_bg(text, bg) if bg else text
-        text = _apply_style(text, StyleCode.BOLD) if bold else text
-        text = _apply_style(text, StyleCode.ITALIC) if italic else text
-        text = _apply_style(text, StyleCode.DIM) if dim else text
-        text = _apply_style(text, StyleCode.UNDERLINE) if underline else text
-        text = _apply_style(text, StyleCode.BLINK) if blink else text
-        text = _apply_style(text, StyleCode.REVERSE) if reverse else text
-        text = _apply_style(text, StyleCode.STRIKETHROUGH) if strikethrough else text
-        text = _reset(text) if reset else text
+        text = _apply_fg(text, self.fg) if self.fg else text
+        text = _apply_bg(text, self.bg) if self.bg else text
+        text = _apply_style(text, StyleCode.BOLD) if self.bold else text
+        text = _apply_style(text, StyleCode.ITALIC) if self.italic else text
+        text = _apply_style(text, StyleCode.DIM) if self.dim else text
+        text = _apply_style(text, StyleCode.UNDERLINE) if self.underline else text
+        text = _apply_style(text, StyleCode.BLINK) if self.blink else text
+        text = _apply_style(text, StyleCode.REVERSE) if self.reverse else text
+        text = (
+            _apply_style(text, StyleCode.STRIKETHROUGH) if self.strikethrough else text
+        )
+        text = _reset(text) if self.reset else text
         return text
-
-    return inner
 
 
 def style(
@@ -154,7 +152,7 @@ def style(
     strikethrough: bool = False,
     reset: bool = False,
 ) -> str:
-    return styler(
+    return Styler(
         fg=fg,
         bg=bg,
         bold=bold,

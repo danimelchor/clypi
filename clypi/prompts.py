@@ -6,6 +6,7 @@ from getpass import getpass
 import clypi
 from clypi._cli import parser
 from clypi._util import _UNSET, Unset
+from clypi.configuration import get_config
 
 MAX_ATTEMPTS: int = 20
 
@@ -20,7 +21,8 @@ def _input(
     hide_input: bool = False,
 ) -> str | T | Unset:
     fun = getpass if hide_input else input
-    res = fun(clypi.style(prompt, fg="blue", bold=True))
+    styled_prompt = get_config().theme.prompts(prompt)
+    res = fun(styled_prompt)
     if res:
         return res
     return default

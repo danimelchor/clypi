@@ -4,7 +4,7 @@ import typing as t
 from clypi._data.boxes import Boxes as _Boxes
 from clypi.align import AlignType
 from clypi.align import align as _align
-from clypi.colors import ColorType, styler
+from clypi.colors import ColorType, Styler
 
 Boxes = _Boxes
 
@@ -23,7 +23,7 @@ def boxed(
     width = width or os.get_terminal_size().columns
     box = style.value
 
-    c = styler(fg=color)
+    c = Styler(fg=color)
 
     # Top bar
     def iter(lines: t.Iterable[str]):
