@@ -45,7 +45,7 @@ Parameters:
 
 ## CLI
 
-### `config`
+### `arg`
 
 ```python
 def arg(
