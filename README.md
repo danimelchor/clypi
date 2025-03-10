@@ -68,10 +68,40 @@ if __name__ == "__main__":
 
 <img width="1697" alt="image" src="https://github.com/user-attachments/assets/76d2c6c4-e075-4c69-89a8-f8dac8dec367" />
 
+
+## 🛠️ Configurable
+
+Read the [docs](https://github.com/danimelchor/clypi/blob/master/docs/index.md#configuration)
+
+Clypi lets you configure the app globally. This means that all the styling will be easy,
+uniform across your entire app, and incredibly maintainable.
+
+For example, this is how you'd achieve a UI like `uv`'s CLI:
+
+```python
+from clypi import ClypiConfig, ClypiFormatter, Styler, Theme, configure
+
+configure(
+    ClypiConfig(
+        theme=Theme(
+            usage=Styler(fg="green", bold=True),
+            prog=Styler(fg="cyan", bold=True),
+            section_title=Styler(fg="green", bold=True),
+            subcommand=Styler(fg="cyan"),
+            long_option=Styler(fg="cyan"),
+            short_option=Styler(fg="cyan"),
+            positional=Styler(fg="cyan"),
+            type_str=Styler(fg="cyan"),
+            prompts=Styler(fg="green", bold=True),
+        ),
+        help_formatter=ClypiFormatter(boxed=False),
+    )
+)
+```
+
 `uv run -m examples.uv ad`
 
 <img width="1699" alt="image" src="https://github.com/user-attachments/assets/65643677-c95b-4d48-955d-28ba49797fa9" />
-
 
 ## 🌈 Colors
 
@@ -96,15 +126,6 @@ print("The old version said", wrong("the Earth was flat"))
 `uv run -m examples.colors`
 
 <img width="974" alt="image" src="https://github.com/user-attachments/assets/9340d828-f7ce-491c-b0a8-6a666f7b7caf" />
-
-
-<details>
-    <summary><code>uv run demo.py</code></summary>
-    <p align="center">
-      <img width="487" alt="image" src="https://github.com/user-attachments/assets/0ee3b49d-0358-4d8c-8704-2da89529b4f5" />
-    </p>
-</details>
-
 
 ## 🌀 Spinners
 
@@ -139,37 +160,6 @@ import clypi
 answer = clypi.confirm("Are you going to use clypi?", default=True)
 ```
 
-## 🛠️ Configurable
-
-Read the [docs](https://github.com/danimelchor/clypi/blob/master/docs/index.md#configuration)
-
-Clypi lets you configure the app globally. This means that all the styling will be easy,
-uniform across your entire app, and incredibly maintainable.
-
-For example, this is how you'd achieve a UI like `uv`'s CLI:
-
-```python
-from clypi import ClypiConfig, ClypiFormatter, Styler, Theme, configure
-
-configure(
-    ClypiConfig(
-        theme=Theme(
-            usage=Styler(fg="green", bold=True),
-            prog=Styler(fg="cyan", bold=True),
-            section_title=Styler(fg="green", bold=True),
-            subcommand=Styler(fg="cyan"),
-            long_option=Styler(fg="cyan"),
-            short_option=Styler(fg="cyan"),
-            positional=Styler(fg="cyan"),
-            type_str=Styler(fg="cyan"),
-            prompts=Styler(fg="green", bold=True),
-        ),
-        help_formatter=ClypiFormatter(boxed=False),
-    )
-)
-```
-
-<img width="1696" alt="image" src="https://github.com/user-attachments/assets/d0224cf4-0c91-4720-8e43-746985531912" />
 
 ## 🔀 Async by default
 
