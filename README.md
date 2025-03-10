@@ -66,7 +66,10 @@ if __name__ == "__main__":
 
 `uv run -m examples.basic_cli lin`
 
-<img width="1695" alt="image" src="https://github.com/user-attachments/assets/f57f6518-7d22-4320-a0fe-ec95c1c0579b" />
+<img width="1697" alt="image" src="https://github.com/user-attachments/assets/76d2c6c4-e075-4c69-89a8-f8dac8dec367" />
+
+`uv run -m examples.uv ad`
+<img width="1699" alt="image" src="https://github.com/user-attachments/assets/65643677-c95b-4d48-955d-28ba49797fa9" />
 
 
 ## 🌈 Colors
