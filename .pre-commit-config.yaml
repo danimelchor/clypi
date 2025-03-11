@@ -69,3 +69,11 @@ repos:
       language: python
       pass_filenames: false
       always_run: true
+
+    # Markdown tests
+    - id: mdtest
+      name: mdtest
+      entry: uv run mdtest
+      language: python
+      pass_filenames: false
+      always_run: true
