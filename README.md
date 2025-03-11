@@ -25,7 +25,7 @@ uv add clypi  # or `pip install clypi`
 
 ## 📖 Docs
 
-Read [the API docs](https://github.com/danimelchor/clypi/blob/master/docs/index.md) for examples and a full API reference.
+Read [the API docs](https://github.com/danimelchor/clypi/blob/master/docs/index.md) for examples and a full API reference. If you want a full guide on how to create and distribute your own Python CLI, check our our [tutorial](https://github.com/danimelchor/clypi/blob/master/docs/tutorial.md).
 
 ## 🧰 CLI
 
