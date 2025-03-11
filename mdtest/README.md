@@ -3,10 +3,7 @@
 I want to make sure almost every code block in the clypi repository is runnable and has no typos. For that,
  I've created a tiny CLI I called `md-test` (using clypi obviously). The idea is simple, any Python code block annotated as an `mdtest` (see below) can be run to ensure it's correctly defined.
 
-
-<img width="1059" alt="image" src="https://github.com/user-attachments/assets/718ae887-d04d-4a9c-9dbb-f1a772edd535" />
-
-
+<img width="1252" alt="image" src="https://github.com/user-attachments/assets/8089b378-eff0-4a8a-aab6-d06e78f26da8" />
 
 
 ## Creating Markdown Tests
