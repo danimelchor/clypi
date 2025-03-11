@@ -4,7 +4,8 @@ I want to make sure almost every code block in the clypi repository is runnable 
  I've created a tiny CLI I called `md-test` (using clypi obviously). The idea is simple, any Python code block annotated as an `mdtest` (see below) can be run to ensure it's correctly defined.
 
 
- <img width="1055" alt="image" src="https://github.com/user-attachments/assets/0265b00c-9958-4561-a3a8-7c59b9665b73" />
+<img width="1059" alt="image" src="https://github.com/user-attachments/assets/718ae887-d04d-4a9c-9dbb-f1a772edd535" />
+
 
 
 
