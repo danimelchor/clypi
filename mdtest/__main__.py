@@ -8,7 +8,7 @@ from textwrap import dedent
 from clypi import Command, Positional, Spinner, arg, boxed, print
 from clypi.colors import style
 
-MDTEST_DIR = Path.cwd() / "mdtest"
+MDTEST_DIR = Path.cwd() / ".mdtest"
 PREAMBLE = """\
 import clypi
 import v6e
@@ -135,7 +135,7 @@ async def run_mdtest(file: Path) -> bool:
     return True
 
 
-class MdTest(Command):
+class Mdtest(Command):
     """
     Run python code embedded in markdown files to ensure it's
     runnable.
@@ -163,5 +163,5 @@ class MdTest(Command):
 
 
 if __name__ == "__main__":
-    mdtest = MdTest.parse()
+    mdtest = Mdtest.parse()
     mdtest.start()
