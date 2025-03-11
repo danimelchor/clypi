@@ -116,4 +116,4 @@ $ uvx shiv -c zit -o zit-bin .
 $ ./zit-bin --verbose
 ```
 
-You now have a binary (`zit-bin`) that you can distribute and run like any other binary. You'll have to add it to a `$PATH` location though ([What is $PATH?](https://askubuntu.com/a/551993)).
+You now have a binary (`zit-bin`) that you can distribute and run like any other binary. You'll have to manually add it to a `$PATH` location though ([What is $PATH?](https://askubuntu.com/a/551993)).
