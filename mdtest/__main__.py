@@ -97,7 +97,7 @@ async def run_test(test: Test, idx: int):
         return idx, True
 
     # If there was an error, pretty print it
-    print(f"\n\nError running '{command}'\n", fg="red", bold=True)
+    print(f"\n\nError running test {idx}\n", fg="red", bold=True)
     print(boxed(test.code, title="Code"))
 
     if stdout.decode():
