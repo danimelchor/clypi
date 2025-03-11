@@ -5,6 +5,8 @@ from dataclasses import dataclass
 from pathlib import Path
 from textwrap import dedent
 
+import anyio
+
 from clypi import Command, Positional, Spinner, arg, boxed, print
 from clypi.colors import style
 
@@ -35,39 +37,40 @@ def normalize_code(code: str) -> str:
     return code
 
 
-def parse_file(text: str) -> list[Test]:
+async def parse_file(file: Path) -> list[Test]:
     tests: list[Test] = []
 
-    in_test, current_test, args, stdin = False, [], "", ""
-    for line in text.split("\n"):
-        # End of a code block
-        if "```" in line and current_test:
-            tests.append(
-                Test(
-                    code=normalize_code("\n".join(current_test[1:])),
-                    args=args,
-                    stdin=stdin + "\n",
+    async with await anyio.open_file(file, "r") as f:
+        in_test, current_test, args, stdin = False, [], "", ""
+        async for line in f:
+            # End of a code block
+            if "```" in line and current_test:
+                tests.append(
+                    Test(
+                        code=normalize_code("\n".join(current_test[1:])),
+                        args=args,
+                        stdin=stdin + "\n",
+                    )
                 )
-            )
-            in_test, current_test, args, stdin = False, [], "", ""
+                in_test, current_test, args, stdin = False, [], "", ""
 
-        # We're in a test, accumulate all lines
-        elif in_test:
-            current_test.append(line.removeprefix("> "))
+            # We're in a test, accumulate all lines
+            elif in_test:
+                current_test.append(line.removeprefix("> "))
 
-        # Mdtest arg definition
-        elif g := re.search("<!--- mdtest-args (.*) -->", line):
-            args = g.group(1)
-            in_test = True
+            # Mdtest arg definition
+            elif g := re.search("<!--- mdtest-args (.*) -->", line):
+                args = g.group(1)
+                in_test = True
 
-        # Mdtest stdin definition
-        elif g := re.search("<!--- mdtest-stdin (.*) -->", line):
-            stdin = g.group(1)
-            in_test = True
+            # Mdtest stdin definition
+            elif g := re.search("<!--- mdtest-stdin (.*) -->", line):
+                stdin = g.group(1)
+                in_test = True
 
-        # Mdtest generic definition
-        elif g := re.search("<!--- mdtest -->", line):
-            in_test = True
+            # Mdtest generic definition
+            elif g := re.search("<!--- mdtest -->", line):
+                in_test = True
 
     return tests
 
@@ -94,45 +97,41 @@ async def run_test(test: Test, idx: int):
 
     # If no errors, return
     if proc.returncode == 0:
-        return idx, True
+        return idx, ""
 
     # If there was an error, pretty print it
-    print(f"\n\nError running test {idx}\n", fg="red", bold=True)
-    print(boxed(test.code, title="Code"))
+    error = []
+    error.append(style(f"\n\nError running test {idx}\n", fg="red", bold=True))
+    error.append(boxed(test.code, title="Code"))
 
     if stdout.decode():
-        print()
-        print(boxed(stdout.decode(), title="Stdout"))
+        error.append("")
+        error.append(boxed(stdout.decode(), title="Stdout"))
 
     if stderr.decode():
-        print()
-        print(boxed(stderr.decode(), title="Stderr"))
+        error.append("")
+        error.append(boxed(stderr.decode(), title="Stderr"))
 
-    return idx, False
+    return idx, "\n".join(error)
 
 
-async def run_mdtest(file: Path) -> bool:
-    text = file.read_text()
-    tests = parse_file(text)
-
-    # Run all tests
-    async with Spinner(f"Running {file.name} mdtest") as s:
+async def run_mdtests(tests: list[Test]):
+    errors = []
+    async with Spinner("Running Markdown Tests") as s:
         coros = [run_test(test, idx=idx) for idx, test in enumerate(tests, 1)]
-
-        any_err = False
         for task in asyncio.as_completed(coros):
-            idx, ok = await task
-            if ok:
+            idx, err = await task
+            if not err:
                 s.log(style("✔", fg="green") + f" Finished test {idx}")
             else:
-                any_err = True
+                errors.append(err)
                 s.log(style("×", fg="red") + f" Finished test {idx}")
 
-        if any_err:
+        if errors:
             await s.fail()
-            return False
 
-    return True
+    for err in errors:
+        print(err)
 
 
 class Mdtest(Command):
@@ -150,13 +149,17 @@ class Mdtest(Command):
         # Setup test dir
         MDTEST_DIR.mkdir(exist_ok=True)
 
-        # Run each file
+        # Assert each file exists
         for file in self.files:
-            ok = await run_mdtest(file.resolve())
-            if not ok:
-                break
+            assert file.exists(), f"File {file} does not exist!"
 
-            print()
+        # Collect tests
+        async with Spinner("Collecting Markdown Tests"):
+            per_file = await asyncio.gather(*(parse_file(file) for file in self.files))
+            all_tests = [test for file in per_file for test in file]
+
+        # Run each file
+        await run_mdtests(all_tests)
 
         # Cleanup
         shutil.rmtree(MDTEST_DIR)
