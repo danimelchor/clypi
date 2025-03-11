@@ -17,7 +17,7 @@ from clypi._cli.formatter import ClypiFormatter, Formatter
 from clypi._levenshtein import distance
 from clypi._util import UNSET
 from clypi.configuration import get_config
-from clypi.exceptions import print_traceback
+from clypi.exceptions import ClypiException, print_traceback
 from clypi.prompts import prompt
 
 logger = logging.getLogger(__name__)
@@ -169,6 +169,12 @@ class _CommandMeta(type):
 
 
 class Command(metaclass=_CommandMeta):
+    def __init__(self, _from_parser=False) -> None:
+        if not _from_parser:
+            raise ClypiException(
+                "Please, call `.parse()` on your command instead of instantiating it directly"
+            )
+
     @classmethod
     def prog(cls) -> str:
         return _camel_to_dashed(cls.__name__)
@@ -493,7 +499,7 @@ class Command(metaclass=_CommandMeta):
             )
 
         # Assign to an instance
-        instance = cls()
+        instance = cls(_from_parser=True)
         for k, v in parsed_kwargs.items():
             setattr(instance, k, v)
         return instance

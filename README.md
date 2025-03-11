@@ -31,6 +31,7 @@ Read [the API docs](https://github.com/danimelchor/clypi/blob/master/docs/index.
 
 Read the [docs](https://github.com/danimelchor/clypi/blob/master/docs/index.md#cli)
 
+<!--- mdtest-args -v -->
 ```python
 # examples/basic_cli.py
 from clypi import Command, Positional, arg
@@ -76,6 +77,7 @@ uniform across your entire app, and incredibly maintainable.
 
 For example, this is how you'd achieve a UI like `uv`'s CLI:
 
+<!--- mdtest -->
 ```python
 from clypi import ClypiConfig, ClypiFormatter, Styler, Theme, configure
 
@@ -105,6 +107,7 @@ configure(
 
 Read the [docs](https://github.com/danimelchor/clypi/blob/master/docs/index.md#colors)
 
+<!--- mdtest -->
 ```python
 # demo.py
 import clypi
@@ -130,6 +133,7 @@ print("The old version said", wrong("the Earth was flat"))
 Read the [docs](https://github.com/danimelchor/clypi/blob/master/docs/index.md#spinners)
 
 You can use spinners as an async context manager:
+<!--- mdtest -->
 ```python
 import asyncio
 from clypi import Spinner
@@ -145,13 +149,14 @@ asyncio.run(main())
 
 Or as a decorator:
 
+<!--- mdtest -->
 ```python
 import asyncio
 from clypi import spinner
 
 @spinner("Doing work", capture=True)
 async def do_some_work():
-    await asyncio.sleep(5)
+    await asyncio.sleep(2)
 
 asyncio.run(do_some_work())
 ```
@@ -166,6 +171,8 @@ https://github.com/user-attachments/assets/2065b3dd-c73c-4e21-b698-8bf853e8e520
 Read the [docs](https://github.com/danimelchor/clypi/blob/master/docs/index.md#prompt)
 
 First, you'll need to import the `clypi` module:
+
+<!--- mdtest-stdin y -->
 ```python
 import clypi
 
@@ -185,10 +192,12 @@ This library is fully type-checked. This means that all types will be correctly 
 from the arguments you pass in.
 
 In this example your editor will correctly infer the type:
+
+<!--- mdtest-stdin 23 -->
 ```python
 hours = clypi.prompt(
     "How many hours are there in a year?",
-    parser=lambda x: float(x) if x < 24 else timedelta(days=x),
+    parser=lambda x: float(x) if int(x) < 24 else timedelta(days=x),
 )
 reveal_type(hours)  # Type of "res" is "float | timedelta"
 ```
@@ -205,6 +214,8 @@ provide nice autocomplete features in your editor that will make you faster 󱐋
 clypi can be integrated with many parsers. The default recommended parser is [v6e](https://github.com/danimelchor/v6e), which is automatically used if installed in your local environment to parse types more accurately. If you wish you specify any parser (from `v6e` or elsewhere) manually, you can do so quite easily:
 
 **CLI**
+
+<!--- mdtest-args --files README.md -->
 ```python
 import v6e
 from clypi import Command, arg
@@ -223,6 +234,7 @@ if __name__ == "__main__":
 
 **Prompting**
 
+<!--- mdtest-stdin 23 -->
 ```python
 import v6e
 
