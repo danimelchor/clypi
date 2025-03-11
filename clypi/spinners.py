@@ -110,7 +110,7 @@ class Spinner(AbstractAsyncContextManager["Spinner"]):
         self,
         title: str,
         animation: Spin | list[str] = Spin.DOTS,
-        prefix: str = " ",
+        prefix: str = "",
         suffix: str = "…",
         speed: float = 1,
         capture: bool = False,
