@@ -62,7 +62,7 @@ async def parse_file(file: Path) -> list[Test]:
 
             # We're in a test, accumulate all lines
             elif in_test:
-                current_test.append(line.removeprefix(">").strip())
+                current_test.append(line.removeprefix("> ").rstrip())
 
             # Mdtest arg definition
             elif g := re.search("<!--- mdtest-args (.*) -->", line):
