@@ -26,6 +26,7 @@ class TestFailed(Exception):
 
 @dataclass
 class Test:
+    name: str
     code: str
     args: str
     stdin: str
@@ -39,6 +40,13 @@ def normalize_code(code: str) -> str:
 
 async def parse_file(file: Path) -> list[Test]:
     tests: list[Test] = []
+    base_name = (
+        file.relative_to(Path.cwd())
+        .as_posix()
+        .replace("/", "-")
+        .replace(".md", "")
+        .lower()
+    )
 
     async with await anyio.open_file(file, "r") as f:
         in_test, current_test, args, stdin = False, [], "", ""
@@ -47,6 +55,7 @@ async def parse_file(file: Path) -> list[Test]:
             if "```" in line and current_test:
                 tests.append(
                     Test(
+                        name=f"{base_name}-{len(tests)}",
                         code=normalize_code("\n".join(current_test[1:])),
                         args=args,
                         stdin=stdin + "\n",
@@ -75,9 +84,9 @@ async def parse_file(file: Path) -> list[Test]:
     return tests
 
 
-async def run_test(test: Test, idx: int):
+async def run_test(test: Test) -> tuple[str, str]:
     # Save test to temp file
-    test_file = MDTEST_DIR / f"md_test_{idx}.py"
+    test_file = MDTEST_DIR / f"{test.name}.py"
     test_file.write_text(test.code)
 
     # Run the test
@@ -97,11 +106,11 @@ async def run_test(test: Test, idx: int):
 
     # If no errors, return
     if proc.returncode == 0:
-        return idx, ""
+        return test.name, ""
 
     # If there was an error, pretty print it
     error = []
-    error.append(style(f"\n\nError running test {idx}\n", fg="red", bold=True))
+    error.append(style(f"\n\nError running test {test.name!r}\n", fg="red", bold=True))
     error.append(boxed(test.code, title="Code"))
 
     if stdout.decode():
@@ -112,13 +121,13 @@ async def run_test(test: Test, idx: int):
         error.append("")
         error.append(boxed(stderr.decode(), title="Stderr"))
 
-    return idx, "\n".join(error)
+    return test.name, "\n".join(error)
 
 
 async def run_mdtests(tests: list[Test]):
     errors = []
     async with Spinner("Running Markdown Tests") as s:
-        coros = [run_test(test, idx=idx) for idx, test in enumerate(tests, 1)]
+        coros = [run_test(test) for test in tests]
         for task in asyncio.as_completed(coros):
             idx, err = await task
             if not err:
