@@ -12,6 +12,13 @@ Boxes = _Boxes
 T = t.TypeVar("T", bound=t.Iterable[str] | list[str] | str)
 
 
+def _get_width():
+    try:
+        return os.get_terminal_size().columns
+    except OSError:
+        return 50
+
+
 def boxed(
     lines: T,
     width: int | None = None,
@@ -20,7 +27,7 @@ def boxed(
     title: str | None = None,
     color: ColorType = "bright_white",
 ) -> T:
-    width = width or os.get_terminal_size().columns
+    width = width or _get_width()
     box = style.value
 
     c = Styler(fg=color)
@@ -48,5 +55,5 @@ def boxed(
     if isinstance(lines, list):
         return t.cast(T, list(iter(lines)))
     if isinstance(lines, str):
-        return t.cast(T, "\n".join(iter([lines])))
+        return t.cast(T, "\n".join(iter(lines.split("\n"))))
     return t.cast(T, iter(lines))

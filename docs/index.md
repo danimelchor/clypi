@@ -17,6 +17,7 @@ configure(config)
 
 ### Default config
 
+<!--- mdtest -->
 ```python
 ClypiConfig(
     help_formatter=ClypiFormatter(boxed=True),
@@ -112,6 +113,7 @@ class MyCommand(Command):
 
 Arguments are mandatory positional words the user must pass in. They're defined as class attributes with no default and type hinted with the `Positional[T]` type.
 
+<!--- mdtest -->
 ```python
 from clypi import Command, Positional
 
@@ -128,6 +130,7 @@ Flags are boolean options that can be either present or not. To define a flag, s
 a boolean class attribute in your command with a default value. The user will then be able
 to pass in `--my-flag` when running the command which will set it to True.
 
+<!--- mdtest -->
 ```python
 from clypi import Command
 
@@ -142,6 +145,7 @@ class MyCommand(Command):
 
 Options are like flags but, instead of booleans, the user passes in specific values. You can think of options as key/pair items. Options can be set as required by not specifying a default value.
 
+<!--- mdtest -->
 ```python
 from clypi import Command
 
@@ -156,6 +160,7 @@ class MyCommand(Command):
 You must implement the [`run`](#run) method so that your command can be ran. The function
 must be `async` so that we can properly render items in your screen.
 
+<!--- mdtest -->
 ```python
 from clypi import Command, arg
 
@@ -170,6 +175,7 @@ class MyCommand(Command):
 
 You can define custom help messages for each argument using our handy `config` helper:
 
+<!--- mdtest -->
 ```python
 from clypi import Command, arg
 
@@ -178,6 +184,7 @@ class MyCommand(Command):
 ```
 
 You can also define custom help messages for commands by creating a docstring on the class itself:
+<!--- mdtest -->
 ```python
 from clypi import Command, arg
 
@@ -192,6 +199,7 @@ class MyCommand(Command):
 
 If you want to ask the user to provide input if it's not specified, you can pass in a prompt to `config` for each field like so:
 
+<!--- mdtest -->
 ```python
 from clypi import Command, arg
 
@@ -206,6 +214,7 @@ On runtime, if the user didn't provide a value for `--name`, the program will as
 If the type you want to parse from the user is too complex, you can define your own parser
 using `config` as well:
 
+<!--- mdtest -->
 ```python
 import typing as t
 from clypi import Command, arg
@@ -221,6 +230,7 @@ class MyCommand(Command):
 
 Optionally, you can use packages like [v6e](https://github.com/danimelchor/v6e) to parse the input:
 
+<!--- mdtest -->
 ```python
 import v6e
 from clypi import Command, arg
@@ -235,6 +245,7 @@ If a command defines an argument you want to use in any of it's children, you ca
 argument and pass in a literal ellipsis (`...`) to config to indicate the argument comes from the
 parent command. You can also use `forwarded=True` if you prefer:
 
+<!--- mdtest -->
 ```python
 from clypi import Command, arg
 
@@ -328,6 +339,7 @@ class Formatter(t.Protocol):
 
 Clypi ships with a pre-made formatter that can display help pages with either boxes or with indented sections:
 
+<!--- mdtest -->
 ```python
 ClypiFormatter(boxed=True)
 ```
@@ -335,6 +347,7 @@ ClypiFormatter(boxed=True)
 <img width="1701" alt="image" src="https://github.com/user-attachments/assets/20212b97-73b8-4efa-92b0-873405f33c55" />
 
 
+<!--- mdtest -->
 ```python
 ClypiFormatter(boxed=False)
 ```
@@ -438,6 +451,7 @@ class Styler(
 Returns a reusable function to style text.
 
 Examples:
+<!--- mdtest -->
 > ```python
 > wrong = clypi.Styler(fg="red", strikethrough=True)
 > print("The old version said", wrong("Pluto was a planet"))
@@ -463,6 +477,7 @@ def style(
 Styles text and returns the styled string.
 
 Examples:
+<!--- mdtest -->
 > ```python
 > print(clypi.style("This is blue", fg="blue"), "and", clypi.style("this is red", fg="red"))
 > ```
@@ -488,6 +503,7 @@ def print(
 Styles and prints text directly.
 
 Examples:
+<!--- mdtest -->
 > ```python
 > clypi.print("Some colorful text", fg="green", reverse=True, bold=True, italic=True)
 > ```
@@ -508,6 +524,7 @@ You can see all the spinners in action by running `uv run -m examples.spinner`. 
 
 A spinner indicating that something is happening behind the scenes. It can be used as a context manager or [like a decorator](#spinner-decorator). The context manager usage is like so:
 
+<!--- mdtest -->
 ```python
 import asyncio
 from clypi import Spinner
@@ -578,6 +595,7 @@ Pipe the output of an async subprocess into the spinner and display the stdout o
 with a particular color and prefix.
 
 Examples:
+<!--- mdtest -->
 > ```python
 > async def main():
 >     async with Spinner("Doing something") as s:
@@ -597,6 +615,7 @@ Examples:
 This is just a utility decorator that let's you wrap functions so that a spinner
 displays while they run. `spinner` accepts the same arguments as the context manager [`Spinner`](#spinner).
 
+<!--- mdtest -->
 ```python
 import asyncio
 from clypi import spinner
@@ -645,6 +664,7 @@ Parameters:
 
 Examples:
 
+<!--- mdtest -->
 > ```python
 > print(clypi.boxed("Some boxed text", color="red", width=30, align="center"))
 > ```
@@ -669,6 +689,7 @@ Parameters:
 - `lines`: if the output should be returned as lines or as a string
 
 Examples:
+<!--- mdtest -->
 ```python
 names = clypi.boxed(["Daniel", "Pedro", "Paul"], title="Names", width=15)
 colors = clypi.boxed(["Blue", "Red", "Green"], title="Colors", width=15)
@@ -694,7 +715,7 @@ Parameters:
 Examples:
 
 > ```python
-> clypi.align("foo", "left", 10) -> "foo       "
-> clypi.align("foo", "right", 10) -> "          foo"
-> clypi.align("foo", "center", 10) -> "   foo   "
+> clypi.align("foo", "left", 10) # -> "foo       "
+> clypi.align("foo", "right", 10) # -> "          foo"
+> clypi.align("foo", "center", 10) # -> "   foo   "
 >```

@@ -215,7 +215,7 @@ class Spinner(AbstractAsyncContextManager["Spinner"]):
             self._stderr.stop()
 
         color: ColorType = "green" if success else "red"
-        icon = "✔️" if success else "×"
+        icon = "✔" if success else "×"
         self._print(msg or self.title, icon=icon, color=color, end="\n")
 
     async def done(self, msg: str | None = None):

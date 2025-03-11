@@ -20,7 +20,7 @@ if t.TYPE_CHECKING:
         confirm,
         prompt,
     )
-    from clypi.spinner import Spinner
+    from clypi.spinners import Spin, Spinner, spinner
     from clypi.stack import stack
 
 __all__ = (
@@ -36,6 +36,7 @@ __all__ = (
     "MaxAttemptsException",
     "Parser",
     "Positional",
+    "Spin",
     "Spinner",
     "Styler",
     "Theme",
@@ -50,6 +51,7 @@ __all__ = (
     "print",
     "print_traceback",
     "prompt",
+    "spinner",
     "stack",
     "style",
 )
@@ -67,7 +69,8 @@ _dynamic_imports: dict[str, tuple[str | None, str]] = {
     "MaxAttemptsException": (__spec__.parent, ".exceptions"),
     "Parser": (__spec__.parent, ".prompts"),
     "Positional": (__spec__.parent, ".cli"),
-    "Spinner": (__spec__.parent, ".spinner"),
+    "Spin": (__spec__.parent, ".spinners"),
+    "Spinner": (__spec__.parent, ".spinners"),
     "Styler": (__spec__.parent, ".colors"),
     "Theme": (__spec__.parent, ".configuration"),
     "align": (__spec__.parent, ".align"),
@@ -81,6 +84,7 @@ _dynamic_imports: dict[str, tuple[str | None, str]] = {
     "print": (__spec__.parent, ".colors"),
     "print_traceback": (__spec__.parent, ".exceptions"),
     "prompt": (__spec__.parent, ".prompts"),
+    "spinner": (__spec__.parent, ".spinners"),
     "stack": (__spec__.parent, ".stack"),
     "style": (__spec__.parent, ".colors"),
 }

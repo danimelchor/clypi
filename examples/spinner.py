@@ -2,7 +2,7 @@ import asyncio
 import sys
 
 import clypi
-from clypi.spinner import Spin, Spinner, spinner
+from clypi import Spin, Spinner, spinner
 
 
 async def all_spinners():
