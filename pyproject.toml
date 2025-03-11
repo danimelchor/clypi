@@ -33,6 +33,7 @@ dev = [
   "mypy>=1.15.0",
   "pytest>=8.3.5",
   "codespell>=2.4.1",
+  "anyio>=4.8.0",
 ]
 examples = [
   "v6e>=0.1.18",
