@@ -33,12 +33,6 @@ class Test:
     stdin: str
 
 
-def normalize_code(code: str) -> str:
-    code = dedent(code)
-    code = PREAMBLE + code
-    return code
-
-
 async def parse_file(file: Path) -> list[Test]:
     tests: list[Test] = []
     base_name = (
@@ -58,8 +52,8 @@ async def parse_file(file: Path) -> list[Test]:
                 tests.append(
                     Test(
                         name=f"{base_name}-{len(tests)}",
-                        orig=code,
-                        code=normalize_code(code),
+                        orig=dedent(code),
+                        code=PREAMBLE + dedent(code),
                         args=args,
                         stdin=stdin + "\n",
                     )
@@ -68,7 +62,7 @@ async def parse_file(file: Path) -> list[Test]:
 
             # We're in a test, accumulate all lines
             elif in_test:
-                current_test.append(line.removeprefix("> "))
+                current_test.append(line.removeprefix(">").strip())
 
             # Mdtest arg definition
             elif g := re.search("<!--- mdtest-args (.*) -->", line):
@@ -118,11 +112,11 @@ async def run_test(test: Test) -> tuple[str, str]:
 
     if stdout.decode():
         error.append("")
-        error.append(boxed(stdout.decode(), title="Stdout"))
+        error.append(boxed(stdout.decode().strip(), title="Stdout"))
 
     if stderr.decode():
         error.append("")
-        error.append(boxed(stderr.decode(), title="Stderr"))
+        error.append(boxed(stderr.decode().strip(), title="Stderr"))
 
     return test.name, "\n".join(error)
 
