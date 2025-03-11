@@ -141,7 +141,10 @@ class MdTest(Command):
     runnable.
     """
 
-    files: Positional[list[Path]] = arg(help="The list of markdown files to test")
+    files: Positional[list[Path]] = arg(
+        help="The list of markdown files to test",
+        default_factory=lambda: list(Path.cwd().glob("**/*.md")),
+    )
 
     async def run(self) -> None:
         # Setup test dir
