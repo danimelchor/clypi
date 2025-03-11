@@ -27,6 +27,7 @@ class TestFailed(Exception):
 @dataclass
 class Test:
     name: str
+    orig: str
     code: str
     args: str
     stdin: str
@@ -53,10 +54,12 @@ async def parse_file(file: Path) -> list[Test]:
         async for line in f:
             # End of a code block
             if "```" in line and current_test:
+                code = "\n".join(current_test[1:])
                 tests.append(
                     Test(
                         name=f"{base_name}-{len(tests)}",
-                        code=normalize_code("\n".join(current_test[1:])),
+                        orig=code,
+                        code=normalize_code(code),
                         args=args,
                         stdin=stdin + "\n",
                     )
@@ -111,7 +114,7 @@ async def run_test(test: Test) -> tuple[str, str]:
     # If there was an error, pretty print it
     error = []
     error.append(style(f"\n\nError running test {test.name!r}\n", fg="red", bold=True))
-    error.append(boxed(test.code, title="Code"))
+    error.append(boxed(test.orig, title="Code"))
 
     if stdout.decode():
         error.append("")
