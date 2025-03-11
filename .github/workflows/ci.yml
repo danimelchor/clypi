@@ -32,3 +32,6 @@ jobs:
 
       - name: "Codespell"
         run: uv run --all-extras codespell
+
+      - name: "Markdown tests"
+        run: uv run --all-extras mdtest
