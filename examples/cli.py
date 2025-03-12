@@ -129,10 +129,6 @@ class Main(Command):
     def epilog(cls):
         return "Learn more at http://termuff.org"
 
-    @debug
-    async def run(self):
-        self.print_help()
-
 
 if __name__ == "__main__":
     main: Main = Main.parse()

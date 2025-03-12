@@ -206,7 +206,7 @@ class Command(metaclass=_CommandMeta):
         `self` contains the arguments for this command you can access
         as you would do with any other instance property.
         """
-        raise NotImplementedError
+        self.print_help()
 
     @t.final
     async def astart(self) -> None:
@@ -531,9 +531,8 @@ class Command(metaclass=_CommandMeta):
 
         return instance
 
-    @t.final
     @classmethod
-    def print_help(cls, exception: Exception | None = None):
+    def print_help(cls, exception: Exception | None = None) -> t.NoReturn:
         help_str = get_config().help_formatter.format_help(
             prog=cls._parents() + [cls.prog()],
             description=cls.help(),
