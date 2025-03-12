@@ -5,6 +5,7 @@ from clypi.colors import Styler
 from clypi.exceptions import (
     ClypiException,
 )
+from clypi.wraps import OverflowStyle
 
 
 @dataclass
@@ -35,6 +36,7 @@ class ClypiConfig:
     nice_errors: tuple[type[Exception]] = field(
         default_factory=lambda: (ClypiException,)
     )
+    overflow_style: OverflowStyle = "wrap"
 
 
 _config = ClypiConfig()
