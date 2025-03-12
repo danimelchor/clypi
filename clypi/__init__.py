@@ -22,6 +22,7 @@ if t.TYPE_CHECKING:
     )
     from clypi.spinners import Spin, Spinner, spinner
     from clypi.stack import stack
+    from clypi.wraps import OverflowStyle, wrap
 
 __all__ = (
     "ALL_COLORS",
@@ -34,6 +35,7 @@ __all__ = (
     "Command",
     "Formatter",
     "MaxAttemptsException",
+    "OverflowStyle",
     "Parser",
     "Positional",
     "Spin",
@@ -54,6 +56,7 @@ __all__ = (
     "spinner",
     "stack",
     "style",
+    "wrap",
 )
 
 _dynamic_imports: dict[str, tuple[str | None, str]] = {
@@ -67,6 +70,7 @@ _dynamic_imports: dict[str, tuple[str | None, str]] = {
     "Command": (__spec__.parent, ".cli"),
     "Formatter": (__spec__.parent, ".cli"),
     "MaxAttemptsException": (__spec__.parent, ".exceptions"),
+    "OverflowStyle": (__spec__.parent, ".wraps"),
     "Parser": (__spec__.parent, ".prompts"),
     "Positional": (__spec__.parent, ".cli"),
     "Spin": (__spec__.parent, ".spinners"),
@@ -87,6 +91,7 @@ _dynamic_imports: dict[str, tuple[str | None, str]] = {
     "spinner": (__spec__.parent, ".spinners"),
     "stack": (__spec__.parent, ".stack"),
     "style": (__spec__.parent, ".colors"),
+    "wrap": (__spec__.parent, ".wraps"),
 }
 
 
