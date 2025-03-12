@@ -307,7 +307,6 @@ or, if already in an async loop, `await YourCommand.astart()`.
 
 #### `print_help`
 ```python
-@t.final
 @classmethod
 def print_help(cls, exception: Exception | None = None)
 ```
