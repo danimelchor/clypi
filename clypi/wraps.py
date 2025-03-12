@@ -12,6 +12,7 @@ def wrap(
     If a string is larger than width, it either wraps the string into new
     lines or appends an ellipsis
     """
+    s = s.rstrip()
     if len(s) <= width:
         return [s]
 

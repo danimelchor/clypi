@@ -1,7 +1,8 @@
-import os
 import typing as t
 
+from clypi import wrap
 from clypi._data.boxes import Boxes as _Boxes
+from clypi._util import get_term_width
 from clypi.align import AlignType
 from clypi.align import align as _align
 from clypi.colors import ColorType, Styler
@@ -12,22 +13,15 @@ Boxes = _Boxes
 T = t.TypeVar("T", bound=t.Iterable[str] | list[str] | str)
 
 
-def _get_width():
-    try:
-        return os.get_terminal_size().columns
-    except OSError:
-        return 50
-
-
 def boxed(
     lines: T,
     width: int | None = None,
     style: Boxes = Boxes.HEAVY,
     align: AlignType = "left",
     title: str | None = None,
-    color: ColorType = "bright_white",
+    color: ColorType | None = None,
 ) -> T:
-    width = width or _get_width()
+    width = width or get_term_width()
     box = style.value
 
     c = Styler(fg=color)
@@ -46,8 +40,14 @@ def boxed(
 
         # Body
         for line in lines:
-            aligned = _align(line, align, width - 2 - 2)
-            yield c(box.y) + " " + aligned + " " + c(box.y)
+            # Bar, space, text..., space, bar
+            max_text_width = width - 2 - 2
+
+            # Wrap it in case each line is longer than expected
+            wrapped = wrap(line, max_text_width)
+            for sub_line in wrapped:
+                aligned = _align(sub_line, align, max_text_width)
+                yield c(box.y) + " " + aligned + " " + c(box.y)
 
         # Footer
         yield c(box.bl + box.x * (width - 2) + box.br)

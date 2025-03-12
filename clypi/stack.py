@@ -15,14 +15,28 @@ def _real_len(s: str) -> int:
 
 
 @overload
-def stack(*blocks: list[str], padding: int = 1, lines: bool) -> list[str]: ...
+def stack(
+    *blocks: list[str],
+    width: int | None = None,
+    padding: int = 1,
+    lines: bool,
+) -> list[str]: ...
 
 
 @overload
-def stack(*blocks: list[str], padding: int = 1) -> str: ...
+def stack(
+    *blocks: list[str],
+    width: int | None = None,
+    padding: int = 1,
+) -> str: ...
 
 
-def stack(*blocks: list[str], padding: int = 1, lines: bool = False) -> str | list[str]:
+def stack(
+    *blocks: list[str],
+    width: int | None = None,
+    padding: int = 1,
+    lines: bool = False,
+) -> str | list[str]:
     new_lines: list[str] = []
     height = max(len(b) for b in blocks)
     widths = [max(_real_len(line) for line in block) for block in blocks]
@@ -33,20 +47,19 @@ def stack(*blocks: list[str], padding: int = 1, lines: bool = False) -> str | li
         tmp: list[str] = []
 
         # Add the line from each block
-        for block, width in zip(blocks, widths):
+        for block, block_width in zip(blocks, widths):
             # If there was a line, next iter will happen
             block_line = _safe_get(block, idx)
             if block_line:
                 more |= True
 
             # How much do we need to reach the actual visible length
-            actual_width = (width - _real_len(block_line)) + len(block_line)
+            actual_width = (block_width - _real_len(block_line)) + len(block_line)
 
             # Align and append line
             tmp.append(block_line.ljust(actual_width))
-            tmp.append(" " * padding)
 
-        new_lines.append(" ".join(tmp))
+        new_lines.append((padding * " ").join(tmp).rstrip())
 
         # Exit if no more lines in any iter
         if not more:
