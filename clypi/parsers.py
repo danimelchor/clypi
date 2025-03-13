@@ -242,6 +242,9 @@ class NoneParser(ClypiParser[None]):
     def __call__(self, raw: str | list[str], /) -> t.Any:
         raise UnparseableException()
 
+    def __repr__(self):
+        return "NONE"
+
 
 class Enum(ClypiParser[type[enum.Enum]]):
     def __init__(self, _type: type[enum.Enum]) -> None:
