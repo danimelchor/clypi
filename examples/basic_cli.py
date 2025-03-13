@@ -1,12 +1,15 @@
+from pathlib import Path
+
+import clypi.parsers as cp
 from clypi import Command, Positional, arg
 
 
 class Lint(Command):
-    files: Positional[tuple[str, ...]]
+    files: Positional[tuple[Path, ...]]
     verbose: bool = arg(...)  # Comes from MyCli but I want to use it too
 
     async def run(self):
-        print(f"Linting {', '.join(self.files)} and {self.verbose=}")
+        print(f"Linting {self.files=} and {self.verbose=}")
 
 
 class MyCli(Command):
@@ -15,9 +18,13 @@ class MyCli(Command):
     """
 
     subcommand: Lint | None = None
+    config: Path | None = arg(
+        # Built-in adatpters for useful validations
+        parser=cp.Path(exists=True),
+    )
     verbose: bool = arg(
         False,
-        help="Weather to show extra logs",
+        help="Whether to show extra logs",
         prompt="Do you want to see extra logs?",
         short="v",  # User can pass in --verbose or -v
     )
