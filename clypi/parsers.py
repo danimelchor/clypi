@@ -156,7 +156,7 @@ class Path(ClypiParser[_Path]):
 
     @override
     def _repr_args(self, args: list[tuple[str, t.Any]]) -> str | None:
-        return ", ".join(f"{k}={v}" for k, v in args)
+        return ", ".join(f"{k}={v}" for k, v in args if v) or None
 
 
 class List(ClypiParser[list[X]]):
@@ -213,8 +213,18 @@ class Union(ClypiParser[t.Union[X, Y]]):
         except Exception:
             return self._right(raw)
 
+    def _parts(self):
+        """
+        Some recursive magic here to "flatten" unions
+        """
+        left = self._left._parts() if isinstance(self._left, Union) else str(self._left)
+        right = (
+            self._right._parts() if isinstance(self._right, Union) else str(self._right)
+        )
+        return f"{left}|{right}"
+
     def __repr__(self):
-        return "(" + f"{self._left}|{self._right}" + ")"
+        return "(" + self._parts() + ")"
 
 
 class Literal(ClypiParser[t.Any]):
@@ -253,7 +263,7 @@ class Enum(ClypiParser[type[enum.Enum]]):
         raise ValueError(f"Value {raw} is not a valid choice between {self}")
 
     def __repr__(self):
-        values = "|".join(str(v).lower() for v in self._type)
+        values = "|".join(v.name.lower() for v in self._type)
         return "{" + values + "}"
 
 
