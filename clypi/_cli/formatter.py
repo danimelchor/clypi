@@ -6,6 +6,7 @@ from functools import cached_property
 
 from clypi import boxed, indented, stack
 from clypi._cli import type_util
+from clypi.colors import ColorType
 from clypi.exceptions import format_traceback
 
 if t.TYPE_CHECKING:
@@ -49,6 +50,21 @@ class ClypiFormatter:
 
         return get_config().theme
 
+    def _maybe_boxed(
+        self, *columns: list[str], title: str, color: ColorType | None = None
+    ) -> list[str]:
+        first_col, *rest = columns
+        if not self.boxed:
+            section_title = self.theme.section_title(title)
+
+            # For non-boxed design, we just indent the first col a bit so that it looks
+            # like it's inside the section
+            stacked = stack(indented(first_col), *rest, lines=True)
+            return [section_title] + stacked + [""]
+
+        stacked = stack(first_col, *rest, lines=True)
+        return list(boxed(stacked, title=title, color=color))
+
     def _format_option(self, option: Argument) -> tuple[str, ...]:
         name = self.theme.long_option(option.display_name)
         short_usage = self.theme.short_option(
@@ -74,15 +90,7 @@ class ClypiFormatter:
             type_str.append(ts)
             help.append(hp)
 
-        if not self.boxed:
-            stacked_options = stack(
-                indented(name), short_usage, type_str, help, lines=True
-            )
-            section_title = self.theme.section_title("Options")
-            return [section_title] + stacked_options + [""]
-        else:
-            stacked_options = stack(name, short_usage, type_str, help, lines=True)
-            return list(boxed(stacked_options, title="Options"))
+        return self._maybe_boxed(name, short_usage, type_str, help, title="Options")
 
     def _format_positional(self, positional: Argument) -> t.Any:
         name = self.theme.positional(positional.name)
@@ -108,13 +116,7 @@ class ClypiFormatter:
             type_str.append(ts)
             help.append(hp)
 
-        if not self.boxed:
-            stacked_positionals = stack(indented(name), type_str, help, lines=True)
-            section_title = self.theme.section_title("Arguments")
-            return [section_title] + stacked_positionals + [""]
-        else:
-            stacked_positionals = stack(name, type_str, help, lines=True)
-            return list(boxed(stacked_positionals, title="Arguments"))
+        return self._maybe_boxed(name, type_str, help, title="Arguments")
 
     def _format_subcommand(self, subcmd: type[Command]) -> tuple[str, str]:
         name = self.theme.subcommand(subcmd.prog())
@@ -134,13 +136,7 @@ class ClypiFormatter:
             name.append(n)
             help.append(hp)
 
-        if not self.boxed:
-            stacked_subcommands = stack(indented(name), help, lines=True)
-            section_title = self.theme.section_title("Subcommands")
-            return [section_title] + stacked_subcommands + [""]
-        else:
-            stacked_subcommands = stack(name, help, lines=True)
-            return list(boxed(stacked_subcommands, title="Subcommands"))
+        return self._maybe_boxed(name, help, title="Subcommands")
 
     def _format_header(
         self,
@@ -171,11 +167,9 @@ class ClypiFormatter:
         if not exception:
             return None
 
-        if not self.boxed:
-            section_title = self.theme.section_title("Error")
-            return [section_title] + indented(format_traceback(exception)) + [""]
-        else:
-            return list(boxed(format_traceback(exception), title="Error", color="red"))
+        return self._maybe_boxed(
+            format_traceback(exception), title="Error", color="red"
+        )
 
     def format_help(
         self,
