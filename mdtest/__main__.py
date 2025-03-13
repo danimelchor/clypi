@@ -18,6 +18,8 @@ from pathlib import Path
 from typing import reveal_type
 from clypi import *
 from enum import Enum
+import asyncio
+from datetime import datetime, timedelta
 """
 
 
@@ -87,39 +89,48 @@ async def run_test(test: Test) -> tuple[str, str]:
     test_file = MDTEST_DIR / f"{test.name}.py"
     test_file.write_text(test.code)
 
-    # Run the test
     file_rel = test_file.relative_to(Path.cwd())
-    command = f"uv run --all-extras {file_rel}"
+    commands = [f"uv run --all-extras {file_rel}"]
     if test.args:
-        command += f" {test.args}"
+        commands[0] += f" {test.args}"
+    commands.append(f"uv run --all-extras pyright {file_rel}")
 
-    # Await the subprocess to run it
-    proc = await asyncio.create_subprocess_shell(
-        command,
-        stdout=asyncio.subprocess.PIPE,
-        stdin=asyncio.subprocess.PIPE,
-        stderr=asyncio.subprocess.PIPE,
-    )
-    stdout, stderr = await proc.communicate(test.stdin.encode())
+    # Run the test
+    errors = []
+    for command in commands:
+        # Await the subprocess to run it
+        proc = await asyncio.create_subprocess_shell(
+            command,
+            stdout=asyncio.subprocess.PIPE,
+            stdin=asyncio.subprocess.PIPE,
+            stderr=asyncio.subprocess.PIPE,
+        )
+        stdout, stderr = await proc.communicate(test.stdin.encode())
 
-    # If no errors, return
-    if proc.returncode == 0:
+        # If no errors, return
+        if proc.returncode == 0:
+            continue
+
+        # If there was an error, pretty print it
+        error = []
+        error.append(
+            style(f"\n\nError running test {test.name!r}\n", fg="red", bold=True)
+        )
+        error.append(boxed(test.orig, title="Code", width="max"))
+
+        if stdout.decode():
+            error.append("")
+            error.append(boxed(stdout.decode().strip(), title="Stdout", width="max"))
+
+        if stderr.decode():
+            error.append("")
+            error.append(boxed(stderr.decode().strip(), title="Stderr", width="max"))
+
+        errors.append(error)
+
+    if not errors:
         return test.name, ""
-
-    # If there was an error, pretty print it
-    error = []
-    error.append(style(f"\n\nError running test {test.name!r}\n", fg="red", bold=True))
-    error.append(boxed(test.orig, title="Code", width="max"))
-
-    if stdout.decode():
-        error.append("")
-        error.append(boxed(stdout.decode().strip(), title="Stdout", width="max"))
-
-    if stderr.decode():
-        error.append("")
-        error.append(boxed(stderr.decode().strip(), title="Stderr", width="max"))
-
-    return test.name, "\n".join(error)
+    return test.name, "\n\n".join("\n".join(err) for err in errors)
 
 
 async def run_mdtests(tests: list[Test]) -> int:

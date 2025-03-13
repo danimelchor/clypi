@@ -41,7 +41,7 @@ class Lint(Command):
     verbose: bool = arg(...)  # Comes from MyCli but I want to use it too
 
     async def run(self):
-        print(f"Linting {', '.join(self.files)} and {self.verbose=}")
+        print(f"Linting {self.files=} and {self.verbose=}")
 
 class MyCli(Command):
     """
@@ -207,7 +207,7 @@ In this example your editor will correctly infer the type:
 ```python
 hours = clypi.prompt(
     "How many hours are there in a year?",
-    parser=lambda x: float(x) if int(x) < 24 else timedelta(days=x),
+    parser=lambda x: float(x) if isinstance(x, str) else timedelta(days=len(x)),
 )
 reveal_type(hours)  # Type of "res" is "float | timedelta"
 ```

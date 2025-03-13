@@ -263,6 +263,7 @@ class Spinner(AbstractAsyncContextManager["Spinner"]):
 
 P = t.ParamSpec("P")
 R = t.TypeVar("R")
+Func = t.Callable[P, t.Coroutine[t.Any, t.Any, R]]
 
 
 def spinner(
@@ -272,12 +273,12 @@ def spinner(
     suffix: str = "…",
     speed: float = 1,
     capture: bool = False,
-) -> t.Callable[[t.Callable[P, t.Awaitable[R]]], t.Callable[P, t.Awaitable[R]]]:
+) -> t.Callable[[Func[P, R]], Func[P, R]]:
     """
     Utility decorator to wrap a function and display a Spinner while it's running.
     """
 
-    def wrapper(fn: t.Callable[P, t.Awaitable[R]]) -> t.Callable[P, t.Awaitable[R]]:
+    def wrapper(fn: Func[P, R]) -> Func[P, R]:
         async def inner(*args: P.args, **kwargs: P.kwargs) -> R:
             async with Spinner(
                 title=title,
