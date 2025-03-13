@@ -153,11 +153,6 @@ class Path(ClypiParser[_Path]):
 
         return p
 
-    @override
-    def _repr_args(self) -> str | None:
-        args = [(k, v) for k, v in vars(self).items() if not k.startswith("_")]
-        return ", ".join(f"{k}={v}" for k, v in args if v) or None
-
 
 class List(ClypiParser[list[X]]):
     def __init__(self, inner: Parser[X]) -> None:

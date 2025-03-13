@@ -126,6 +126,15 @@ class Config(t.Generic[T]):
 
         return 1
 
+    @property
+    def modifier(self) -> str:
+        nargs = self.nargs
+        if nargs in ("+", "*"):
+            return "…"
+        elif isinstance(nargs, int) and nargs > 1:
+            return "…"
+        return ""
+
 
 def arg(
     default: T | Unset | EllipsisType = UNSET,

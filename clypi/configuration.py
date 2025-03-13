@@ -12,6 +12,7 @@ from clypi.wraps import OverflowStyle
 class Theme:
     usage: Styler = field(default_factory=lambda: Styler(fg="yellow"))
     prog: Styler = field(default_factory=lambda: Styler(bold=True))
+    prog_args: Styler = field(default_factory=lambda: Styler())
     section_title: Styler = field(default_factory=lambda: Styler())
 
     # Subcommands
@@ -24,7 +25,8 @@ class Theme:
     # Positionals
     positional: Styler = field(default_factory=lambda: Styler(fg="blue", bold=True))
 
-    type_str: Styler = field(default_factory=lambda: Styler(hide=True))
+    placeholder: Styler = field(default_factory=lambda: Styler(fg="blue"))
+    type_str: Styler = field(default_factory=lambda: Styler(fg="yellow", bold=True))
     prompts: Styler = field(default_factory=lambda: Styler(fg="blue", bold=True))
 
 

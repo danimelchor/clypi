@@ -5,6 +5,7 @@ from dataclasses import dataclass
 from functools import cached_property
 
 from clypi import boxed, indented, stack
+from clypi._cli.parser import dash_to_snake
 from clypi.colors import ColorType
 from clypi.exceptions import format_traceback
 
@@ -40,8 +41,8 @@ class Formatter(t.Protocol):
 
 @dataclass
 class ClypiFormatter:
-    def __init__(self, boxed: bool = True) -> None:
-        self.boxed = boxed
+    boxed: bool = True
+    show_option_types: bool = True
 
     @cached_property
     def theme(self):
@@ -68,15 +69,33 @@ class ClypiFormatter:
         stacked = stack(first_col, *rest, lines=True)
         return list(boxed(stacked, width="max", title=title, color=color))
 
+    def _format_option_value(self, option: Config):
+        if option.nargs == 0:
+            return ""
+        placeholder = dash_to_snake(option.name).upper()
+        return self.theme.placeholder(f"<{placeholder}>")
+
     def _format_option(self, option: Config) -> tuple[str, ...]:
+        # E.g.: -r, --requirements <REQUIREMENTS>
         name = self.theme.long_option(option.display_name)
         short_usage = (
             self.theme.short_option(option.short_display_name) if option.short else ""
         )
-        type_str = self.theme.type_str(str(option.parser).upper())
-        help = option.help or ""
+        usage = name
+        if short_usage:
+            usage = short_usage + ", " + usage
+        if not self.show_option_types:
+            usage += " " + self._format_option_value(option)
 
-        return name, short_usage, type_str, help
+        # E.g.: TEXT
+        type_str = (
+            self.theme.type_str(str(option.parser).upper())
+            if self.show_option_types
+            else ""
+        )
+
+        help = option.help or ""
+        return usage, type_str, help
 
     def _format_options(self, options: list[Config]) -> list[str] | None:
         if not options:
@@ -90,18 +109,33 @@ class ClypiFormatter:
             if o.hidden:
                 continue
 
-            u, su, ts, hp = self._format_option(o)
-            usage.append(su + ", " + u if su else u)
+            u, ts, hp = self._format_option(o)
+            usage.append(u)
             type_str.append(ts)
             help.append(hp)
 
         return self._maybe_boxed(usage, type_str, help, title="Options")
 
-    def _format_positional(self, positional: Config) -> t.Any:
-        name = self.theme.positional(positional.name)
-        help = positional.help or ""
-        type_str = self.theme.type_str(str(positional.parser).upper())
+    def _format_positional_with_mod(self, positional: Config) -> str:
+        # E.g.: [FILES]...
+        pos_name = positional.name.upper()
+        name = f"[{pos_name}]{positional.modifier}"
+        return name
 
+    def _format_positional(self, positional: Config) -> tuple[str, ...]:
+        # E.g.: [FILES]... or FILES
+        name = (
+            self.theme.positional(self._format_positional_with_mod(positional))
+            if not self.show_option_types
+            else self.theme.positional(positional.name.upper())
+        )
+
+        help = positional.help or ""
+        type_str = (
+            self.theme.type_str(str(positional.parser).upper())
+            if self.show_option_types
+            else ""
+        )
         return name, type_str, help
 
     def _format_positionals(self, positionals: list[Config]) -> list[str] | str | None:
@@ -117,7 +151,7 @@ class ClypiFormatter:
             type_str.append(ts)
             help.append(hp)
 
-        return self._maybe_boxed(name, type_str, help, title="Configs")
+        return self._maybe_boxed(name, type_str, help, title="Arguments")
 
     def _format_subcommand(self, subcmd: type[Command]) -> tuple[str, str]:
         name = self.theme.subcommand(subcmd.prog())
@@ -149,13 +183,14 @@ class ClypiFormatter:
         prefix = self.theme.usage("Usage:")
         prog_str = self.theme.prog(" ".join(prog))
 
-        option = " [" + self.theme.long_option("OPTIONS") + "]" if options else ""
-        command = self.theme.subcommand(" COMMAND") if subcommands else ""
-        positional = (
-            " " + " ".join(self.theme.positional(p.name.upper()) for p in positionals)
-            if positionals
-            else ""
-        )
+        option = self.theme.prog_args(" [OPTIONS]") if options else ""
+        command = self.theme.prog_args(" COMMAND") if subcommands else ""
+
+        positionals_str = []
+        for pos in positionals:
+            name = self._format_positional_with_mod(pos)
+            positionals_str.append(self.theme.prog_args(name))
+        positional = " " + " ".join(positionals_str) if positionals else ""
 
         return [f"{prefix} {prog_str}{option}{command}{positional}", ""]
 
