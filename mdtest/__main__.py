@@ -109,15 +109,15 @@ async def run_test(test: Test) -> tuple[str, str]:
     # If there was an error, pretty print it
     error = []
     error.append(style(f"\n\nError running test {test.name!r}\n", fg="red", bold=True))
-    error.append(boxed(test.orig, title="Code"))
+    error.append(boxed(test.orig, title="Code", width="max"))
 
     if stdout.decode():
         error.append("")
-        error.append(boxed(stdout.decode().strip(), title="Stdout"))
+        error.append(boxed(stdout.decode().strip(), title="Stdout", width="max"))
 
     if stderr.decode():
         error.append("")
-        error.append(boxed(stderr.decode().strip(), title="Stderr"))
+        error.append(boxed(stderr.decode().strip(), title="Stderr", width="max"))
 
     return test.name, "\n".join(error)
 
