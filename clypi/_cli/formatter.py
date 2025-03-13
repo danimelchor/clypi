@@ -63,7 +63,7 @@ class ClypiFormatter:
             return [section_title] + stacked + [""]
 
         stacked = stack(first_col, *rest, lines=True)
-        return list(boxed(stacked, title=title, color=color))
+        return list(boxed(stacked, width="max", title=title, color=color))
 
     def _format_option(self, option: Argument) -> tuple[str, ...]:
         name = self.theme.long_option(option.display_name)
@@ -156,12 +156,17 @@ class ClypiFormatter:
             else ""
         )
 
-        return [f"{prefix} {prog_str}{option}{command}{positional}"]
+        return [f"{prefix} {prog_str}{option}{command}{positional}", ""]
 
     def _format_description(self, description: str | None) -> list[str] | str | None:
         if not description:
             return None
         return [description, ""]
+
+    def _format_epilog(self, epilog: str | None) -> list[str] | str | None:
+        if not epilog:
+            return None
+        return ["", epilog]
 
     def _format_exception(self, exception: Exception | None) -> list[str] | str | None:
         if not exception:
@@ -185,7 +190,6 @@ class ClypiFormatter:
 
         # Header
         _ext(lines, self._format_header(prog, options, positionals, subcommands))
-        _ext(lines, "")
 
         # Description
         _ext(lines, self._format_description(description))
@@ -200,7 +204,7 @@ class ClypiFormatter:
         _ext(lines, self._format_options(options))
 
         # Epilog
-        _ext(lines, self._format_description(epilog))
+        _ext(lines, self._format_epilog(epilog))
 
         # Exceptions
         _ext(lines, self._format_exception(exception))
