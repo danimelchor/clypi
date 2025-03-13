@@ -346,6 +346,19 @@ class Formatter(t.Protocol):
 
 ### `ClypiFormatter`
 
+```python
+class ClypiFormatter(
+    boxed=True,
+    show_option_types=True,
+    normalize_dots=".",
+)
+```
+Parameters:
+- `boxed`: weather to wrap each section in a box made with ASCII characters
+- `show_option_types`: weather to display the expected type for each argument or just a placeholder. E.g.: `--foo TEXT` vs `--foo <FOO>`
+- `normalize_dots`: either `"."`, `""`, or `None`. If a dot, or empty, it will standardize all help messages to keep a more consistent formatting across the application.
+
+
 Clypi ships with a pre-made formatter that can display help pages with either boxes or with indented sections, and hideor show the option types. You can disable both the boxes and type of each option and display just a placeholder.
 
 With everything enabled:

@@ -76,9 +76,15 @@ class Run(Command):
     """
 
     subcommand: RunParallel | RunSerial
-    quiet: bool = False
+    quiet: bool = arg(
+        False,
+        short="q",
+        help="If the runner should omit all stdout messages",
+    )
     env: Env = arg(Env.PROD, help="The environment to run in")
-    format: Literal["json", "pretty"] = "pretty"
+    format: Literal["json", "pretty"] = arg(
+        "pretty", help="The format with which to display results"
+    )
 
 
 class Lint(Command):

@@ -85,6 +85,18 @@ def is_enum(_type: t.Any) -> t.TypeGuard[type[Enum]]:
 
 
 @ignore_annotated
+def is_not_primitive(_type: t.Any) -> bool:
+    return (
+        is_enum(_type)
+        or is_none(_type)
+        or is_tuple(_type)
+        or is_list(_type)
+        or is_literal(_type)
+        or is_union(_type)
+    )
+
+
+@ignore_annotated
 def remove_optionality(_type: t.Any) -> t.Any:
     if not isinstance(_type, UnionType):
         return _type

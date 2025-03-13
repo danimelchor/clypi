@@ -5,6 +5,7 @@ from dataclasses import dataclass
 from functools import cached_property
 
 from clypi import boxed, indented, stack
+from clypi._cli import type_util
 from clypi._cli.parser import dash_to_snake
 from clypi.colors import ColorType
 from clypi.exceptions import format_traceback
@@ -43,12 +44,24 @@ class Formatter(t.Protocol):
 class ClypiFormatter:
     boxed: bool = True
     show_option_types: bool = False
+    normalize_dots: t.Literal[".", ""] | None = "."
 
     @cached_property
     def theme(self):
         from clypi.configuration import get_config
 
         return get_config().theme
+
+    def _maybe_norm_help(self, message: str) -> str:
+        """
+        Utility function to add or remove dots from the end of all option/arg
+        descriptions to have a more consistent formatting experience.
+        """
+        if message and self.normalize_dots == "." and message[-1].isalnum():
+            return message + "."
+        if message and self.normalize_dots == "" and message[-1] == ".":
+            return message[:-1]
+        return message
 
     def _maybe_boxed(
         self, *columns: list[str], title: str, color: ColorType | None = None
@@ -76,6 +89,8 @@ class ClypiFormatter:
         return self.theme.placeholder(f"<{placeholder}>")
 
     def _format_option(self, option: Config) -> tuple[str, ...]:
+        help = self._maybe_norm_help(option.help or "")
+
         # E.g.: -r, --requirements <REQUIREMENTS>
         name = self.theme.long_option(option.display_name)
         short_usage = (
@@ -88,13 +103,13 @@ class ClypiFormatter:
             usage += " " + self._format_option_value(option)
 
         # E.g.: TEXT
-        type_str = (
-            self.theme.type_str(str(option.parser).upper())
-            if self.show_option_types
-            else ""
-        )
+        type_str = ""
+        type_upper = str(option.parser).upper()
+        if self.show_option_types:
+            type_str = self.theme.type_str(type_upper)
+        elif type_util.is_not_primitive(option.arg_type):
+            help += help + " " + type_upper if help else type_upper
 
-        help = option.help or ""
         return usage, type_str, help
 
     def _format_options(self, options: list[Config]) -> list[str] | None:
@@ -136,7 +151,7 @@ class ClypiFormatter:
             if self.show_option_types
             else ""
         )
-        return name, type_str, help
+        return name, type_str, self._maybe_norm_help(help)
 
     def _format_positionals(self, positionals: list[Config]) -> list[str] | str | None:
         if not positionals:
@@ -156,7 +171,7 @@ class ClypiFormatter:
     def _format_subcommand(self, subcmd: type[Command]) -> tuple[str, str]:
         name = self.theme.subcommand(subcmd.prog())
         help = subcmd.help() or ""
-        return name, help
+        return name, self._maybe_norm_help(help)
 
     def _format_subcommands(
         self, subcommands: list[type[Command]]
@@ -197,12 +212,12 @@ class ClypiFormatter:
     def _format_description(self, description: str | None) -> list[str] | str | None:
         if not description:
             return None
-        return [description, ""]
+        return [self._maybe_norm_help(description), ""]
 
     def _format_epilog(self, epilog: str | None) -> list[str] | str | None:
         if not epilog:
             return None
-        return ["", epilog]
+        return ["", self._maybe_norm_help(epilog)]
 
     def _format_exception(self, exception: Exception | None) -> list[str] | str | None:
         if not exception:
