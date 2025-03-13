@@ -13,7 +13,6 @@ from clypi.colors import style
 MDTEST_DIR = Path.cwd() / ".mdtest"
 PREAMBLE = """\
 import clypi
-import v6e
 from pathlib import Path
 from typing import reveal_type
 from clypi import *

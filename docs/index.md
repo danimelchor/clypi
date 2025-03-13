@@ -228,17 +228,6 @@ class MyCommand(Command):
     slack: str = arg(parser=parse_slack)
 ```
 
-Optionally, you can use packages like [v6e](https://github.com/danimelchor/v6e) to parse the input:
-
-<!--- mdtest -->
-```python
-import v6e
-from clypi import Command, arg
-
-class MyCli(Command):
-    files: list[Path] = arg(parser=v6e.path().exists().list())
-```
-
 #### Forwarding arguments
 
 If a command defines an argument you want to use in any of it's children, you can re-define the

@@ -108,10 +108,19 @@ class TimeDelta:
 
 
 class Path:
+    def __init__(self, *, exists: bool = False) -> None:
+        self._exists = exists
+
     def __call__(self, raw: str | list[str], /) -> _Path:
         if isinstance(raw, list):
             raise CannotParseAs(raw, self)
-        return _Path(raw)
+        p = _Path(raw)
+
+        # Validations on the path
+        if self._exists and not p.exists():
+            raise ValueError(f"File {p} does not exist!")
+
+        return p
 
 
 class List(t.Generic[T]):

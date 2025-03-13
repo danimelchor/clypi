@@ -36,9 +36,6 @@ dev = [
   "anyio>=4.8.0",
   "types-python-dateutil>=2.9.0.20241206",
 ]
-examples = [
-  "v6e>=0.1.18",
-]
 
 [tool.pytest.ini_options]
 minversion = "8.0"

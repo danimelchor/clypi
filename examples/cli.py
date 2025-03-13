@@ -3,10 +3,10 @@ from enum import Enum
 from pathlib import Path
 from typing import Literal
 
-import v6e as v
 from typing_extensions import override
 
 import clypi
+import clypi.parsers as cp
 from clypi import Command, Positional, arg
 
 
@@ -39,7 +39,7 @@ class RunParallel(Command):
     files: Positional[list[str]]
     exceptions_with_reasons: Path | None = arg(
         default=None,
-        parser=v.path().exists(),
+        parser=cp.Path(exists=True),
     )
     env: Env = arg(...)
 
@@ -61,7 +61,7 @@ class RunSerial(Command):
     Runs all of the files one by one
     """
 
-    files: Positional[list[Path]] = arg(parser=v.list(v.path().exists()))
+    files: Positional[list[Path]] = arg(parser=cp.List(cp.Path(exists=True)))
     env: Env = arg(...)
 
     @debug

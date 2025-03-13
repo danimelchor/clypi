@@ -1,14 +1,14 @@
 from __future__ import annotations
 
-import v6e as v
-
 import clypi
+import clypi.parsers as cp
 from clypi import colors
 
 
-def _validate_earth_age(x: int) -> None:
+def _validate_earth_age(x: int) -> int:
     if x != 4_543_000_000:
         raise ValueError("The Earth is 4.543 billion years old. Try 4543000000.")
+    return x
 
 
 def main() -> None:
@@ -18,7 +18,7 @@ def main() -> None:
     # Default values
     is_cool = clypi.confirm("Is clypi cool?", default=True)
 
-    # Custom types with parsing using v6e
+    # Custom types with parsing
     age = clypi.prompt(
         "How old are you?",
         parser=int,
@@ -26,17 +26,13 @@ def main() -> None:
     )
     hours = clypi.prompt(
         "How many hours are there in a day?",
-        parser=v.timedelta() | v.int(),
+        parser=cp.Union(cp.TimeDelta(), cp.Int()),
     )
 
-    # Custom validations using v6e
+    # Custom validations
     earth = clypi.prompt(
         "How old is The Earth?",
-        parser=v.int().custom(_validate_earth_age),
-    )
-    moon = clypi.prompt(
-        "How old is The Moon?",
-        parser=v.int().multiple_of(3).gte(3).lte(9),  # You can chain validations
+        parser=_validate_earth_age,
     )
 
     # -----------
@@ -48,7 +44,6 @@ def main() -> None:
     print(" ↳  Age:", answer(age))
     print(" ↳  Hours in a day:", answer(hours), f"({type(hours).__name__})")
     print(" ↳  Earth age:", answer(earth))
-    print(" ↳  Moon age:", answer(moon))
 
 
 if __name__ == "__main__":

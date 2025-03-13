@@ -207,44 +207,6 @@ reveal_type(hours)  # Type of "res" is "float | timedelta"
 Type checking will help you catch issues way earlier in the development cycle. It will also
 provide nice autocomplete features in your editor that will make you faster 󱐋.
 
-## 🔌 Integrations
-
-### Parsers ([v6e](https://github.com/danimelchor/v6e), [pydantic](https://github.com/pydantic/pydantic), etc.)
-
-clypi can be integrated with many parsers. The default recommended parser is [v6e](https://github.com/danimelchor/v6e), which is automatically used if installed in your local environment to parse types more accurately. If you wish you specify any parser (from `v6e` or elsewhere) manually, you can do so quite easily:
-
-**CLI**
-
-<!--- mdtest-args --files README.md -->
-```python
-import v6e
-from clypi import Command, arg
-
-class MyCli(Command):
-    files: list[Path] = arg(parser=v6e.path().exists().list())
-
-    async def run(self):
-        files = [f.as_posix() for f in self.files]
-        print(f"Linting {', '.join(files)}")
-
-if __name__ == "__main__":
-    cli: MyCli = MyCli.parse()
-    cli.start()
-```
-
-**Prompting**
-
-<!--- mdtest-stdin 23 -->
-```python
-import v6e
-
-hours = clypi.prompt(
-    "How many hours are there in a year?",
-    parser=v6e.float().lte(24).union(v6e.timedelta()),
-)
-reveal_type(hours)  # Type of "res" is "float | timedelta"
-```
-
 ## 📦 Comparison to other packages
 
 > [!NOTE]

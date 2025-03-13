@@ -1,9 +1,6 @@
-import importlib.util
 import re
 import typing as t
 from dataclasses import dataclass
-
-HAS_V6E = importlib.util.find_spec("v6e") is not None
 
 
 def dash_to_snake(s: str) -> str:
