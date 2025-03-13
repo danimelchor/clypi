@@ -34,13 +34,12 @@ class ClypiParser(ABC, t.Generic[X]):
     @abstractmethod
     def __call__(self, raw: str | list[str], /) -> X: ...
 
-    def _repr_args(self, args: list[tuple[str, t.Any]]) -> str | None:
+    def _repr_args(self) -> str | None:
         return None
 
     def __repr__(self):
         name = self.__class__.__name__.lower()
-        args = [(k, v) for k, v in vars(self).items() if not k.startswith("_")]
-        args_str = self._repr_args(args)
+        args_str = self._repr_args()
         if args_str is None:
             return name
         return f"{name}({args_str})"
@@ -154,10 +153,6 @@ class Path(ClypiParser[_Path]):
 
         return p
 
-    @override
-    def _repr_args(self, args: list[tuple[str, t.Any]]) -> str | None:
-        return ", ".join(f"{k}={v}" for k, v in args if v) or None
-
 
 class List(ClypiParser[list[X]]):
     def __init__(self, inner: Parser[X]) -> None:
@@ -169,8 +164,8 @@ class List(ClypiParser[list[X]]):
         return [self._inner(item) for item in raw]
 
     @override
-    def _repr_args(self, args):
-        return str(args[0])
+    def _repr_args(self):
+        return str(self._inner)
 
 
 class Tuple(ClypiParser[tuple[t.Any]]):
@@ -198,7 +193,7 @@ class Tuple(ClypiParser[tuple[t.Any]]):
         return tuple(parser(raw_item) for parser, raw_item in zip(inner_parsers, raw))
 
     @override
-    def _repr_args(self, args: list[tuple[str, t.Any]]) -> str | None:
+    def _repr_args(self) -> str | None:
         return ", ".join(str(it) for it in self._inner)
 
 
@@ -246,6 +241,9 @@ class Literal(ClypiParser[t.Any]):
 class NoneParser(ClypiParser[None]):
     def __call__(self, raw: str | list[str], /) -> t.Any:
         raise UnparseableException()
+
+    def __repr__(self):
+        return "NONE"
 
 
 class Enum(ClypiParser[type[enum.Enum]]):
@@ -315,6 +313,4 @@ def from_type(_type: type) -> Parser[t.Any]:
     if tu.is_enum(_type):
         return Enum(_type)
 
-    raise UnparseableException(
-        f"Don't know how to parse as {tu.type_to_str(_type)} ({type(_type)})"
-    )
+    raise UnparseableException(f"Don't know how to parse as {_type}")

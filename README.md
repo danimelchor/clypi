@@ -31,7 +31,7 @@ Read [the API docs](https://github.com/danimelchor/clypi/blob/master/docs/index.
 
 Read the [docs](https://github.com/danimelchor/clypi/blob/master/docs/index.md#cli)
 
-<!--- mdtest-args -v -->
+<!--- mdtest-args -v --config ./README.md -->
 ```python
 # examples/basic_cli.py
 from clypi import Command, Positional, arg
@@ -48,11 +48,14 @@ class MyCli(Command):
     my-cli is a very nifty demo CLI tool
     """
     subcommand: Lint | None = None
-    config: Path | None = arg(parser=cp.Path(exists=True))
+    config: Path | None = arg(
+        # Built-in adatpters for useful validations
+        parser=cp.Path(exists=True),
+    )
     verbose: bool = arg(
+        False,
         help="Whether to show extra logs",
         prompt="Do you want to see extra logs?",
-        default=False,
         short="v",  # User can pass in --verbose or -v
     )
 
@@ -64,9 +67,10 @@ if __name__ == "__main__":
     cli.start()
 ```
 
-`uv run -m examples.basic_cli lin`
+`uv run -m examples.cli run run-seria`
 
-<img width="1697" alt="image" src="https://github.com/user-attachments/assets/76d2c6c4-e075-4c69-89a8-f8dac8dec367" />
+<img width="1699" alt="image" src="https://github.com/user-attachments/assets/6a8a9397-bfe3-4ae3-a3aa-65eac77df792" />
+
 
 
 ## 🛠️ Configurable
@@ -87,22 +91,27 @@ configure(
         theme=Theme(
             usage=Styler(fg="green", bold=True),
             prog=Styler(fg="cyan", bold=True),
+            prog_args=Styler(fg="cyan"),
             section_title=Styler(fg="green", bold=True),
-            subcommand=Styler(fg="cyan"),
-            long_option=Styler(fg="cyan"),
-            short_option=Styler(fg="cyan"),
+            subcommand=Styler(fg="cyan", bold=True),
+            long_option=Styler(fg="cyan", bold=True),
+            short_option=Styler(fg="cyan", bold=True),
             positional=Styler(fg="cyan"),
-            type_str=Styler(fg="cyan"),
+            placeholder=Styler(fg="cyan"),
             prompts=Styler(fg="green", bold=True),
         ),
-        help_formatter=ClypiFormatter(boxed=False),
+        help_formatter=ClypiFormatter(
+            boxed=False,
+            show_option_types=False,
+        ),
     )
 )
 ```
 
-`uv run -m examples.uv ad`
+`uv run -m examples.uv add -h`
 
-<img width="1699" alt="image" src="https://github.com/user-attachments/assets/65643677-c95b-4d48-955d-28ba49797fa9" />
+<img width="1705" alt="image" src="https://github.com/user-attachments/assets/f6e7e44c-98f9-41f2-b9a2-5574db7a7be5" />
+
 
 ## 🌈 Colors
 

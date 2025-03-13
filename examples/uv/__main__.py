@@ -14,10 +14,10 @@ class Uv(Command):
     """
 
     subcommand: Add | Init | Pip | Remove | None
-    quiet: bool = arg(default=False, short="q", help="Do not print any output")
-    version: bool = arg(default=False, short="V", help="Display the uv version")
+    quiet: bool = arg(False, short="q", help="Do not print any output")
+    version: bool = arg(False, short="V", help="Display the uv version")
     no_cache: bool = arg(
-        default=False,
+        False,
         help="Avoid reading from or writing to the cache, instead using a temporary directory for the duration of the operation",
         hidden=True,
     )
@@ -39,15 +39,19 @@ if __name__ == "__main__":
             theme=Theme(
                 usage=Styler(fg="green", bold=True),
                 prog=Styler(fg="cyan", bold=True),
+                prog_args=Styler(fg="cyan"),
                 section_title=Styler(fg="green", bold=True),
-                subcommand=Styler(fg="cyan"),
-                long_option=Styler(fg="cyan"),
-                short_option=Styler(fg="cyan"),
+                subcommand=Styler(fg="cyan", bold=True),
+                long_option=Styler(fg="cyan", bold=True),
+                short_option=Styler(fg="cyan", bold=True),
                 positional=Styler(fg="cyan"),
-                type_str=Styler(fg="cyan"),
+                placeholder=Styler(fg="cyan"),
                 prompts=Styler(fg="green", bold=True),
             ),
-            help_formatter=ClypiFormatter(boxed=False),
+            help_formatter=ClypiFormatter(
+                boxed=False,
+                show_option_types=False,
+            ),
         )
     )
 

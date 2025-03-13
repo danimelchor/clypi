@@ -121,8 +121,13 @@ class Styler:
     reverse: bool = False
     strikethrough: bool = False
     reset: bool = False
+    hide: bool = False
 
     def __call__(self, *messages: t.Any) -> str:
+        # Utility so that strings can be dynamically removed
+        if self.hide:
+            return ""
+
         text = " ".join(str(m) for m in messages)
         text = _apply_fg(text, self.fg) if self.fg else text
         text = _apply_bg(text, self.bg) if self.bg else text
@@ -151,6 +156,7 @@ def style(
     reverse: bool = False,
     strikethrough: bool = False,
     reset: bool = False,
+    hide: bool = False,
 ) -> str:
     return Styler(
         fg=fg,
@@ -163,6 +169,7 @@ def style(
         reverse=reverse,
         strikethrough=strikethrough,
         reset=reset,
+        hide=hide,
     )(*messages)
 
 
@@ -182,6 +189,7 @@ def print(
     reverse: bool = False,
     strikethrough: bool = False,
     reset: bool = False,
+    hide: bool = False,
     file: SupportsWrite | None = None,
     end: str | None = "\n",
 ):
@@ -197,5 +205,6 @@ def print(
         reverse=reverse,
         strikethrough=strikethrough,
         reset=reset,
+        hide=hide,
     )
     builtins.print(text, end=end, file=file)

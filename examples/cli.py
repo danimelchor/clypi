@@ -37,10 +37,7 @@ class RunParallel(Command):
     """
 
     files: Positional[list[str]]
-    exceptions_with_reasons: Path | None = arg(
-        default=None,
-        parser=cp.Path(exists=True),
-    )
+    exceptions_with_reasons: Path | None = arg(None, parser=cp.Path(exists=True))
     env: Env = arg(...)
 
     @debug
@@ -79,9 +76,15 @@ class Run(Command):
     """
 
     subcommand: RunParallel | RunSerial
-    quiet: bool = False
-    env: Env = Env.PROD
-    format: Literal["json", "pretty"] = "pretty"
+    quiet: bool = arg(
+        False,
+        short="q",
+        help="If the runner should omit all stdout messages",
+    )
+    env: Env = arg(Env.PROD, help="The environment to run in")
+    format: Literal["json", "pretty"] = arg(
+        "pretty", help="The format with which to display results"
+    )
 
 
 class Lint(Command):
@@ -92,13 +95,13 @@ class Lint(Command):
 
     files: Positional[list[str]] = arg(help="The list of files to lint")
     quiet: bool = arg(
+        False,
         short="q",
         help="If the linter should omit all stdout messages",
-        default=False,
     )
     timeout: int = arg(help="Disable the termuff cache")
     index: str = arg(
-        default="http://pypi.org",
+        "http://pypi.org",
         help="The index to download termuff from",
         prompt="What index do you want to download termuff from?",
     )
@@ -117,7 +120,7 @@ class Main(Command):
     """
 
     subcommand: Run | Lint | None = None
-    verbose: bool = arg(short="v", default=False)
+    verbose: bool = arg(False, short="v", help="Weather to show more output")
 
     @override
     @classmethod

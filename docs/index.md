@@ -20,20 +20,26 @@ configure(config)
 <!--- mdtest -->
 ```python
 ClypiConfig(
-    help_formatter=ClypiFormatter(boxed=True),
+    help_formatter=ClypiFormatter(
+        boxed=True,
+        show_option_types=True,
+    ),
     help_on_fail=True,
     nice_errors=(ClypiException,),
     theme=Theme(
         usage=Styler(fg="yellow"),
         prog=Styler(bold=True),
+        prog_args=Styler(),
         section_title=Styler(),
         subcommand=Styler(fg="blue", bold=True),
         long_option=Styler(fg="blue", bold=True),
         short_option=Styler(fg="green", bold=True),
         positional=Styler(fg="blue", bold=True),
+        placeholder=Styler(fg="blue"),
         type_str=Styler(fg="yellow", bold=True),
         prompts=Styler(fg="blue", bold=True),
     ),
+    overflow_style="wrap",
 )
 ```
 
@@ -42,6 +48,7 @@ Parameters:
 - `help_on_fail`: weather the help page should be displayed if a user doesn't pass the right params
 - `nice_errors`: a list of errors clypi will catch and display neatly
 - `theme`: a `Theme` object used to format different styles and colors for help pages, prompts, tracebacks, etc.
+- `overflow_style`: either `wrap` or `ellipsis`. If wrap, text that is too long will get wrapped into the next line. If ellipsis, the text will be truncated with an `…` at the end.
 
 
 ## CLI
@@ -50,8 +57,8 @@ Parameters:
 
 ```python
 def arg(
+    default: T | Unset | EllipsisType = UNSET,
     parser: Parser[T] | None = None,
-    default: T | Unset = UNSET,
     default_factory: t.Callable[[], T] | Unset = UNSET,
     help: str | None = None,
     short: str | None = None,
@@ -65,8 +72,8 @@ Utility function to configure how a specific argument should behave when display
 and parsed.
 
 Parameters:
-- `parser`: a function that takes in a string and returns the parsed type (see [`Parser`](#parser[t]))
 - `default`: the default value to return if the user doesn't pass in the argument (or hits enter during the prompt, if any)
+- `parser`: a function that takes in a string and returns the parsed type (see [`Parser`](#parser[t]))
 - `default_factory`: a function that returns a default value. Useful to defer computation or to avoid default mutable values
 - `help`: a brief description to show the user when they pass in `-h` or `--help`
 - `short`: for options it defines a short way to pass in a value (e.g.: `short="v"` allows users to pass in `-v <value>`)
@@ -180,7 +187,7 @@ You can define custom help messages for each argument using our handy `config` h
 from clypi import Command, arg
 
 class MyCommand(Command):
-    verbose: bool = arg(help="Whether to show all of the output", default=True)
+    verbose: bool = arg(True, help="Whether to show all of the output")
 ```
 
 You can also define custom help messages for commands by creating a docstring on the class itself:
@@ -339,22 +346,41 @@ class Formatter(t.Protocol):
 
 ### `ClypiFormatter`
 
-Clypi ships with a pre-made formatter that can display help pages with either boxes or with indented sections:
+```python
+class ClypiFormatter(
+    boxed=True,
+    show_option_types=True,
+    normalize_dots="",
+)
+```
+Parameters:
+- `boxed`: weather to wrap each section in a box made with ASCII characters
+- `show_option_types`: weather to display the expected type for each argument or just a placeholder. E.g.: `--foo TEXT` vs `--foo <FOO>`
+- `normalize_dots`: either `"."`, `""`, or `None`. If a dot, or empty, it will add or remove trailing dots from all help messages to keep a more consistent formatting across the application.
+
+
+Clypi ships with a pre-made formatter that can display help pages with either boxes or with indented sections, and hideor show the option types. You can disable both the boxes and type of each option and display just a placeholder.
+
+With everything enabled:
 
 <!--- mdtest -->
 ```python
-ClypiFormatter(boxed=True)
+ClypiFormatter(boxed=True, show_option_types=True)
 ```
 
-<img width="1701" alt="image" src="https://github.com/user-attachments/assets/20212b97-73b8-4efa-92b0-873405f33c55" />
+<img width="1692" alt="image" src="https://github.com/user-attachments/assets/5e0fee5f-8688-449d-a8d9-7f83ec5314b5" />
 
+With everything disabled:
 
 <!--- mdtest -->
 ```python
-ClypiFormatter(boxed=False)
+ClypiFormatter(boxed=False, show_option_types=False)
 ```
 
-<img width="1696" alt="image" src="https://github.com/user-attachments/assets/d0224cf4-0c91-4720-8e43-746985531912" />
+<img width="1700" alt="image" src="https://github.com/user-attachments/assets/d063c5ef-6223-4153-8f44-33ccbe949e2c" />
+
+
+
 
 
 ## Prompts
@@ -448,6 +474,7 @@ class Styler(
     reverse: bool = False,
     strikethrough: bool = False,
     reset: bool = False,
+    hide: bool = False,
 )
 ```
 Returns a reusable function to style text.
@@ -474,6 +501,7 @@ def style(
     reverse: bool = False,
     strikethrough: bool = False,
     reset: bool = False,
+    hide: bool = False,
 ) -> str
 ```
 Styles text and returns the styled string.
@@ -499,6 +527,8 @@ def print(
     reverse: bool = False,
     strikethrough: bool = False,
     reset: bool = False,
+    hide: bool = False,
+    file: SupportsWrite | None = None,
     end: str | None = "\n",
 ) -> None
 ```

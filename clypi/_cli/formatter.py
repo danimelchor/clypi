@@ -6,7 +6,8 @@ from functools import cached_property
 
 from clypi import boxed, indented, stack
 from clypi._cli import type_util
-from clypi.colors import ColorType
+from clypi._cli.parser import dash_to_snake
+from clypi.colors import ColorType, style
 from clypi.exceptions import format_traceback
 
 if t.TYPE_CHECKING:
@@ -41,8 +42,9 @@ class Formatter(t.Protocol):
 
 @dataclass
 class ClypiFormatter:
-    def __init__(self, boxed: bool = True) -> None:
-        self.boxed = boxed
+    boxed: bool = True
+    show_option_types: bool = False
+    normalize_dots: t.Literal[".", ""] | None = ""
 
     @cached_property
     def theme(self):
@@ -50,10 +52,25 @@ class ClypiFormatter:
 
         return get_config().theme
 
+    def _maybe_norm_help(self, message: str) -> str:
+        """
+        Utility function to add or remove dots from the end of all option/arg
+        descriptions to have a more consistent formatting experience.
+        """
+        if message and self.normalize_dots == "." and message[-1].isalnum():
+            return message + "."
+        if message and self.normalize_dots == "" and message[-1] == ".":
+            return message[:-1]
+        return message
+
     def _maybe_boxed(
         self, *columns: list[str], title: str, color: ColorType | None = None
     ) -> list[str]:
         first_col, *rest = columns
+
+        # Filter out empty columns
+        rest = list(filter(any, rest))
+
         if not self.boxed:
             section_title = self.theme.section_title(title)
 
@@ -65,22 +82,41 @@ class ClypiFormatter:
         stacked = stack(first_col, *rest, lines=True)
         return list(boxed(stacked, width="max", title=title, color=color))
 
-    def _format_option(self, option: Config) -> tuple[str, ...]:
-        name = self.theme.long_option(option.display_name)
-        short_usage = self.theme.short_option(
-            option.short_display_name if option.short else ""
-        )
-        type_str = self.theme.type_str(type_util.type_to_str(option.arg_type).upper())
-        help = option.help or ""
+    def _format_option_value(self, option: Config):
+        if option.nargs == 0:
+            return ""
+        placeholder = dash_to_snake(option.name).upper()
+        return self.theme.placeholder(f"<{placeholder}>")
 
-        return name, short_usage, type_str, help
+    def _format_option(self, option: Config) -> tuple[str, ...]:
+        help = self._maybe_norm_help(option.help or "")
+
+        # E.g.: -r, --requirements <REQUIREMENTS>
+        name = self.theme.long_option(option.display_name)
+        short_usage = (
+            self.theme.short_option(option.short_display_name) if option.short else ""
+        )
+        usage = name
+        if short_usage:
+            usage = short_usage + ", " + usage
+        if not self.show_option_types:
+            usage += " " + self._format_option_value(option)
+
+        # E.g.: TEXT
+        type_str = ""
+        type_upper = str(option.parser).upper()
+        if self.show_option_types:
+            type_str = self.theme.type_str(type_upper)
+        elif type_util.is_not_primitive(option.arg_type):
+            help = help + " " + type_upper if help else type_upper
+
+        return usage, type_str, help
 
     def _format_options(self, options: list[Config]) -> list[str] | None:
         if not options:
             return None
 
-        name: list[str] = []
-        short_usage: list[str] = []
+        usage: list[str] = []
         type_str: list[str] = []
         help: list[str] = []
         for o in options:
@@ -88,22 +124,34 @@ class ClypiFormatter:
             if o.hidden:
                 continue
 
-            u, su, ts, hp = self._format_option(o)
-            name.append(u)
-            short_usage.append(su)
+            u, ts, hp = self._format_option(o)
+            usage.append(u)
             type_str.append(ts)
             help.append(hp)
 
-        return self._maybe_boxed(name, short_usage, type_str, help, title="Options")
+        return self._maybe_boxed(usage, type_str, help, title="Options")
 
-    def _format_positional(self, positional: Config) -> t.Any:
-        name = self.theme.positional(positional.name)
-        help = positional.help or ""
-        type_str = self.theme.type_str(
-            type_util.type_to_str(positional.arg_type).upper()
+    def _format_positional_with_mod(self, positional: Config) -> str:
+        # E.g.: [FILES]...
+        pos_name = positional.name.upper()
+        name = f"[{pos_name}]{positional.modifier}"
+        return name
+
+    def _format_positional(self, positional: Config) -> tuple[str, ...]:
+        # E.g.: [FILES]... or FILES
+        name = (
+            self.theme.positional(self._format_positional_with_mod(positional))
+            if not self.show_option_types
+            else self.theme.positional(positional.name.upper())
         )
 
-        return name, type_str, help
+        help = positional.help or ""
+        type_str = (
+            self.theme.type_str(str(positional.parser).upper())
+            if self.show_option_types
+            else ""
+        )
+        return name, type_str, self._maybe_norm_help(help)
 
     def _format_positionals(self, positionals: list[Config]) -> list[str] | str | None:
         if not positionals:
@@ -118,12 +166,12 @@ class ClypiFormatter:
             type_str.append(ts)
             help.append(hp)
 
-        return self._maybe_boxed(name, type_str, help, title="Configs")
+        return self._maybe_boxed(name, type_str, help, title="Arguments")
 
     def _format_subcommand(self, subcmd: type[Command]) -> tuple[str, str]:
         name = self.theme.subcommand(subcmd.prog())
         help = subcmd.help() or ""
-        return name, help
+        return name, self._maybe_norm_help(help)
 
     def _format_subcommands(
         self, subcommands: list[type[Command]]
@@ -150,33 +198,40 @@ class ClypiFormatter:
         prefix = self.theme.usage("Usage:")
         prog_str = self.theme.prog(" ".join(prog))
 
-        option = " [" + self.theme.long_option("OPTIONS") + "]" if options else ""
-        command = self.theme.subcommand(" COMMAND") if subcommands else ""
-        positional = (
-            " " + " ".join(self.theme.positional(p.name.upper()) for p in positionals)
-            if positionals
-            else ""
-        )
+        option = self.theme.prog_args(" [OPTIONS]") if options else ""
+        command = self.theme.prog_args(" COMMAND") if subcommands else ""
+
+        positionals_str = []
+        for pos in positionals:
+            name = self._format_positional_with_mod(pos)
+            positionals_str.append(self.theme.prog_args(name))
+        positional = " " + " ".join(positionals_str) if positionals else ""
 
         return [f"{prefix} {prog_str}{option}{command}{positional}", ""]
 
     def _format_description(self, description: str | None) -> list[str] | str | None:
         if not description:
             return None
-        return [description, ""]
+        return [self._maybe_norm_help(description), ""]
 
     def _format_epilog(self, epilog: str | None) -> list[str] | str | None:
         if not epilog:
             return None
-        return ["", epilog]
+        return ["", self._maybe_norm_help(epilog)]
 
     def _format_exception(self, exception: Exception | None) -> list[str] | str | None:
         if not exception:
             return None
 
-        return self._maybe_boxed(
-            format_traceback(exception), title="Error", color="red"
-        )
+        if self.boxed:
+            return self._maybe_boxed(
+                format_traceback(exception), title="Error", color="red"
+            )
+
+        # Special section title since it's an error
+        section_title = style("Error:", fg="red", bold=True)
+        stacked = indented(format_traceback(exception, color=None))
+        return [section_title] + stacked + [""]
 
     def format_help(
         self,

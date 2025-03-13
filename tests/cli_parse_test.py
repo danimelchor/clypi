@@ -31,7 +31,7 @@ class ExampleSub(Command):
 
 class Example(Command):
     pos: Positional[Path]
-    flag: bool = arg(default=False, short="f")
+    flag: bool = arg(False, short="f")
     subcommand: ExampleSub | None = None
     option: list[str] = arg(default_factory=list, short="o")
 

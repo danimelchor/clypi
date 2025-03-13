@@ -64,12 +64,12 @@ class Add(Command):
         help="The packages to add, as PEP 508 requirements (e.g., `ruff==0.5.0`)",
     )
     requirements: Path | None = arg(
-        default=None,
+        None,
         short="r",
         help="Add all packages listed in the given `requirements.txt` files",
     )
     dev: bool = arg(
-        default=False, help="Add the requirements to the development dependency group"
+        False, help="Add the requirements to the development dependency group"
     )
 
     async def run(self) -> None:
