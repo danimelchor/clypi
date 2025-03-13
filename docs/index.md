@@ -353,7 +353,7 @@ Clypi ships with a pre-made formatter that can display help pages with either bo
 ClypiFormatter(boxed=True, show_option_types=True)
 ```
 
-<img width="1701" alt="image" src="https://github.com/user-attachments/assets/20212b97-73b8-4efa-92b0-873405f33c55" />
+<img width="1684" alt="image" src="https://github.com/user-attachments/assets/1dda7148-197e-4871-8556-e526e5e93428" />
 
 
 <!--- mdtest -->
@@ -361,7 +361,7 @@ ClypiFormatter(boxed=True, show_option_types=True)
 ClypiFormatter(boxed=False, show_option_types=False)
 ```
 
-<img width="1696" alt="image" src="https://github.com/user-attachments/assets/d0224cf4-0c91-4720-8e43-746985531912" />
+<img width="1703" alt="image" src="https://github.com/user-attachments/assets/e8fe5a82-e6db-4595-8771-c6466e128eea" />
 
 
 ## Prompts
