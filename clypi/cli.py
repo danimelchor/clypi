@@ -9,10 +9,12 @@ import typing as t
 from dataclasses import dataclass
 from types import NoneType, UnionType
 
+from clypi import parsers
 from clypi._cli import autocomplete as _auto
 from clypi._cli import config as _conf
 from clypi._cli import parser, type_util
 from clypi._cli.config import Positional, arg
+from clypi._cli.context import CurrentCtx, Nargs
 from clypi._cli.formatter import ClypiFormatter, Formatter
 from clypi._levenshtein import distance
 from clypi._util import UNSET
@@ -51,7 +53,7 @@ class Argument:
     short: str | None = None
 
     @property
-    def nargs(self) -> parser.Nargs:
+    def nargs(self) -> Nargs:
         if self.arg_type is bool:
             return 0
 
@@ -118,13 +120,13 @@ class _CommandMeta(type):
             if isinstance(default, _conf.PartialConfig):
                 value = _conf.Config.from_partial(
                     default,
-                    parser=default.parser or parser.from_type(_type),
+                    parser=default.parser or parsers.from_type(_type),
                     arg_type=_type,
                 )
             else:
                 value = _conf.Config(
                     default=default,
-                    parser=parser.from_type(_type),
+                    parser=parsers.from_type(_type),
                     arg_type=_type,
                 )
 
@@ -389,7 +391,7 @@ class Command(metaclass=_CommandMeta):
         unparsed: dict[str, str | list[str]] = {}
 
         # The current option or positional arg being parsed
-        current_attr: parser.CurrentCtx = parser.CurrentCtx()
+        current_attr: CurrentCtx = CurrentCtx()
 
         def flush_ctx():
             nonlocal current_attr
@@ -397,7 +399,7 @@ class Command(metaclass=_CommandMeta):
                 raise ValueError(f"Not enough values for {current_attr.name}")
             elif current_attr:
                 unparsed[current_attr.name] = current_attr.collected
-                current_attr = parser.CurrentCtx()
+                current_attr = CurrentCtx()
 
         # The subcommand we need to parse
         subcommand: type[Command] | None = None
@@ -428,14 +430,12 @@ class Command(metaclass=_CommandMeta):
                 if option.nargs == 0:
                     unparsed[long_name] = "yes"
                 else:
-                    current_attr = parser.CurrentCtx(
-                        option.name, option.nargs, option.nargs
-                    )
+                    current_attr = CurrentCtx(option.name, option.nargs, option.nargs)
                 continue
 
             # ---- Try to assign to the current positional ----
             if not current_attr.name and (pos := cls._next_positional(unparsed)):
-                current_attr = parser.CurrentCtx(pos.name, pos.nargs, pos.nargs)
+                current_attr = CurrentCtx(pos.name, pos.nargs, pos.nargs)
 
             # ---- Try to assign to the current ctx ----
             if current_attr.name and current_attr.has_more():

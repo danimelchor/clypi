@@ -49,7 +49,7 @@ def assert_prompted_times(prompted: io.StringIO, times: int):
     assert len(lines) == times
 
 
-def _raise_error(x: str) -> None:
+def _raise_error(x: str | list[str]) -> None:
     raise ValueError(f"Invalid number {x}")
 
 
@@ -142,7 +142,10 @@ class TestCase:
 
     def test_prompt_with_good_parser(self):
         with replace_stdin("2") as _:
-            res = clypi.prompt("Some prompt", parser=lambda x: int(x) * 2)
+            res = clypi.prompt(
+                "Some prompt",
+                parser=lambda x: int(x) * 2 if isinstance(x, str) else len(x),
+            )
             assert res == 4
 
     def test_prompt_with_bad_validate(self):

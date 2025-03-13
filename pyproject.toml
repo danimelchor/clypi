@@ -6,7 +6,7 @@ build-backend = "hatchling.build"
 name = "clypi"
 description = "Your all-in-one for beautiful, lightweight, prod-ready CLIs"
 readme = "README.md"
-version = "1.0.7"
+version = "1.0.8"
 license = "MIT"
 license-files = ["LICEN[CS]E*"]
 requires-python = ">=3.11"
@@ -15,7 +15,8 @@ authors = [
 ]
 keywords = ["cli", "terminal", "ui"]
 dependencies = [
-    "typing-extensions>=4.12.2",
+    "python-dateutil>=2.9.0.post0",
+    "typing-extensions>=4.4.0",
 ]
 
 
@@ -33,9 +34,7 @@ dev = [
   "pytest>=8.3.5",
   "codespell>=2.4.1",
   "anyio>=4.8.0",
-]
-examples = [
-  "v6e>=0.1.18",
+  "types-python-dateutil>=2.9.0.20241206",
 ]
 
 [tool.pytest.ini_options]

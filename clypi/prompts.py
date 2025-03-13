@@ -4,7 +4,7 @@ import typing as t
 from getpass import getpass
 
 import clypi
-from clypi._cli import parser
+from clypi import parsers
 from clypi._util import UNSET, Unset
 from clypi.configuration import get_config
 from clypi.exceptions import AbortException, MaxAttemptsException
@@ -16,17 +16,14 @@ def _error(msg: str):
     clypi.print(msg, fg="red")
 
 
-def _input(
-    prompt: str,
-    default: T | Unset = UNSET,
-    hide_input: bool = False,
-) -> str | T | Unset:
+def _input(prompt: str, hide_input: bool = False) -> str:
+    """
+    Prompts the user for a value or uses the default and returns the
+    value and if we're using the default
+    """
     fun = getpass if hide_input else input
     styled_prompt = get_config().theme.prompts(prompt)
-    res = fun(styled_prompt)
-    if res:
-        return res
-    return default
+    return fun(styled_prompt)
 
 
 def _display_default(default: t.Any) -> str:
@@ -62,7 +59,7 @@ def confirm(
         text=text,
         default=default,
         max_attempts=max_attempts,
-        parser=parser.from_type(bool),
+        parser=parsers.from_type(bool),
     )
     if abort and not parsed_inp:
         raise AbortException()
@@ -70,8 +67,6 @@ def confirm(
 
 
 T = t.TypeVar("T")
-
-Parser: t.TypeAlias = t.Callable[[t.Any], T]
 
 
 @t.overload
@@ -88,7 +83,7 @@ def prompt(
 def prompt(
     text: str,
     *,
-    parser: Parser[T] | type[T],
+    parser: parsers.Parser[T] | type[T],
     default: T | Unset = UNSET,
     hide_input: bool = False,
     max_attempts: int = MAX_ATTEMPTS,
@@ -98,7 +93,7 @@ def prompt(
 def prompt(
     text: str,
     *,
-    parser: Parser[T] | type[T] | type[str] = str,
+    parser: parsers.Parser[T] | type[T] | type[str] = str,
     default: T | Unset = UNSET,
     hide_input: bool = False,
     max_attempts: int = MAX_ATTEMPTS,
@@ -118,16 +113,23 @@ def prompt(
 
     # Loop until we get a valid value
     for _ in range(max_attempts):
-        inp = _input(prompt, default=default, hide_input=hide_input)
-        if inp is UNSET:
+        inp = _input(prompt, hide_input=hide_input)
+        if not inp and default is UNSET:
             _error("A value is required.")
             continue
 
         # User answered the prompt -- Parse
         try:
             if t.TYPE_CHECKING:
-                parser = t.cast(Parser[T], parser)
-            parsed_inp = parser(inp)
+                parser = t.cast(parsers.Parser[T], parser)
+
+            # If no input, use the default without parsing
+            if not inp and default is not UNSET:
+                parsed_inp = default
+
+            # Otherwise try parsing the string
+            else:
+                parsed_inp = parser(inp)
         except (ValueError, TypeError) as e:
             _error(f"Unable to parse {inp!r}, please provide a valid value.\n  ↳  {e}")
             continue
