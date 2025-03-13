@@ -1,4 +1,4 @@
-from clypi.colors import style
+from clypi.colors import ColorType, style
 
 
 class ClypiException(Exception):
@@ -13,7 +13,7 @@ class AbortException(ClypiException):
     pass
 
 
-def format_traceback(err: BaseException) -> list[str]:
+def format_traceback(err: BaseException, color: ColorType | None = "red") -> list[str]:
     # Get the traceback bottom up
     tb: list[BaseException] = [err]
     while tb[-1].__cause__ is not None:
@@ -22,7 +22,7 @@ def format_traceback(err: BaseException) -> list[str]:
     lines: list[str] = []
     for i, e in enumerate(reversed(tb)):
         icon = "  " * (i - 1) + " ↳ " if i != 0 else ""
-        s = style(f"{icon}{str(e)}", fg="red")
+        s = style(f"{icon}{str(e)}", fg=color)
         lines.append(s)
     return lines
 

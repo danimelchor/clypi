@@ -7,7 +7,7 @@ from functools import cached_property
 from clypi import boxed, indented, stack
 from clypi._cli import type_util
 from clypi._cli.parser import dash_to_snake
-from clypi.colors import ColorType
+from clypi.colors import ColorType, style
 from clypi.exceptions import format_traceback
 
 if t.TYPE_CHECKING:
@@ -223,9 +223,15 @@ class ClypiFormatter:
         if not exception:
             return None
 
-        return self._maybe_boxed(
-            format_traceback(exception), title="Error", color="red"
-        )
+        if self.boxed:
+            return self._maybe_boxed(
+                format_traceback(exception), title="Error", color="red"
+            )
+
+        # Special section title since it's an error
+        section_title = style("Error:", fg="red", bold=True)
+        stacked = indented(format_traceback(exception, color=None))
+        return [section_title] + stacked + [""]
 
     def format_help(
         self,
