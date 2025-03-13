@@ -42,7 +42,7 @@ class Formatter(t.Protocol):
 @dataclass
 class ClypiFormatter:
     boxed: bool = True
-    show_option_types: bool = True
+    show_option_types: bool = False
 
     @cached_property
     def theme(self):

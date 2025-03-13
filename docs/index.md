@@ -346,7 +346,9 @@ class Formatter(t.Protocol):
 
 ### `ClypiFormatter`
 
-Clypi ships with a pre-made formatter that can display help pages with either boxes or with indented sections:
+Clypi ships with a pre-made formatter that can display help pages with either boxes or with indented sections, and hideor show the option types. You can disable both the boxes and type of each option and display just a placeholder.
+
+With everything enabled:
 
 <!--- mdtest -->
 ```python
@@ -355,6 +357,7 @@ ClypiFormatter(boxed=True, show_option_types=True)
 
 <img width="1684" alt="image" src="https://github.com/user-attachments/assets/1dda7148-197e-4871-8556-e526e5e93428" />
 
+With everything disabled:
 
 <!--- mdtest -->
 ```python
