@@ -40,9 +40,9 @@ def main() -> None:
     style_block.append(clypi.style("I am strikethrough", strikethrough=True))
 
     stacked_colors = clypi.stack(
-        clypi.boxed(fg_block, width=35, title="Foregrounds"),
-        clypi.boxed(bg_block, width=30, title="Backgrounds"),
-        clypi.boxed(style_block, width=22, title="Styles"),
+        clypi.boxed(fg_block, title="Foregrounds"),
+        clypi.boxed(bg_block, title="Backgrounds"),
+        clypi.boxed(style_block, title="Styles"),
     )
     print(stacked_colors)
 

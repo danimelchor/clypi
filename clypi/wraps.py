@@ -1,6 +1,6 @@
 import typing as t
 
-from clypi._util import UNSET, Unset
+from clypi._util import UNSET, Unset, visible_width
 
 OverflowStyle = t.Literal["ellipsis", "wrap"]
 
@@ -12,7 +12,7 @@ def wrap(
     If a string is larger than width, it either wraps the string into new
     lines or appends an ellipsis
     """
-    if len(s) <= width:
+    if visible_width(s) <= width:
         return [s]
 
     if overflow_style is UNSET:
@@ -24,7 +24,8 @@ def wrap(
         return [s[: width - 1] + "…"]
 
     res = []
-    for i in range(0, len(s), width):
-        res.append(s[i : i + width])
+    while s:
+        res.append(s[:width])
+        s = s[width:].strip()
 
     return res
