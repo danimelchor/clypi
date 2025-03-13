@@ -86,7 +86,7 @@ def is_enum(_type: t.Any) -> t.TypeGuard[type[Enum]]:
 
 @ignore_annotated
 def has_metavar(_type: t.Any) -> bool:
-    return is_enum(_type) or is_literal(_type) or is_union(_type)
+    return is_enum(_type) or is_literal(_type)
 
 
 @ignore_annotated
