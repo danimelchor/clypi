@@ -108,7 +108,7 @@ class ClypiFormatter:
         if self.show_option_types:
             type_str = self.theme.type_str(type_upper)
         elif type_util.is_not_primitive(option.arg_type):
-            help += help + " " + type_upper if help else type_upper
+            help = help + " " + type_upper if help else type_upper
 
         return usage, type_str, help
 
