@@ -135,6 +135,7 @@ class _CommandMeta(type):
         setattr(self, CLYPI_SUBCOMMANDS, subcmds)
 
 
+@t.dataclass_transform()
 class Command(metaclass=_CommandMeta):
     def __init__(self, _from_parser=False) -> None:
         if not _from_parser:

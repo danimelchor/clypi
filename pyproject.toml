@@ -43,11 +43,14 @@ addopts = "-ra -q"
 testpaths = ["tests"]
 
 [tool.pyright]
-exclude = [
-    "**/__pycache__",
+include = [
+    "examples",
+    "tests",
+    "type_tests",
+    "clypi",
 ]
-# strict = ["clypi/"]
 reportMissingTypeStubs = false
+reportUninitializedInstanceVariable = true
 
 [tool.bandit]
 skips = ["B101"]
