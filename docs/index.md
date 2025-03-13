@@ -370,7 +370,7 @@ ClypiFormatter(boxed=True, show_option_types=True)
 
 <img width="1692" alt="image" src="https://github.com/user-attachments/assets/5e0fee5f-8688-449d-a8d9-7f83ec5314b5" />
 
-With everything disabled:
+With everything disabled
 
 <!--- mdtest -->
 ```python
