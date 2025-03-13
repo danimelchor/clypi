@@ -19,6 +19,7 @@ class Uv(Command):
     no_cache: bool = arg(
         default=False,
         help="Avoid reading from or writing to the cache, instead using a temporary directory for the duration of the operation",
+        hidden=True,
     )
 
     async def run(self) -> None:
