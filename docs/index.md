@@ -31,7 +31,7 @@ ClypiConfig(
         long_option=Styler(fg="blue", bold=True),
         short_option=Styler(fg="green", bold=True),
         positional=Styler(fg="blue", bold=True),
-        type_str=Styler(fg="yellow", bold=True),
+        type_str=Styler(hide=True),
         prompts=Styler(fg="blue", bold=True),
     ),
 )

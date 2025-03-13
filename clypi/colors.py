@@ -121,8 +121,13 @@ class Styler:
     reverse: bool = False
     strikethrough: bool = False
     reset: bool = False
+    hide: bool = False
 
     def __call__(self, *messages: t.Any) -> str:
+        # Utility so that strings can be dynamically removed
+        if self.hide:
+            return ""
+
         text = " ".join(str(m) for m in messages)
         text = _apply_fg(text, self.fg) if self.fg else text
         text = _apply_bg(text, self.bg) if self.bg else text

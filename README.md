@@ -31,7 +31,7 @@ Read [the API docs](https://github.com/danimelchor/clypi/blob/master/docs/index.
 
 Read the [docs](https://github.com/danimelchor/clypi/blob/master/docs/index.md#cli)
 
-<!--- mdtest-args -v -->
+<!--- mdtest-args -v ./README.md -->
 ```python
 # examples/basic_cli.py
 from clypi import Command, Positional, arg
@@ -48,7 +48,10 @@ class MyCli(Command):
     my-cli is a very nifty demo CLI tool
     """
     subcommand: Lint | None = None
-    config: Path | None = arg(parser=cp.Path(exists=True))
+    config: Path | None = arg(
+        # Built-in adatpters for useful validations
+        parser=cp.Path(exists=True),
+    )
     verbose: bool = arg(
         help="Whether to show extra logs",
         prompt="Do you want to see extra logs?",
@@ -88,10 +91,10 @@ configure(
             usage=Styler(fg="green", bold=True),
             prog=Styler(fg="cyan", bold=True),
             section_title=Styler(fg="green", bold=True),
-            subcommand=Styler(fg="cyan"),
-            long_option=Styler(fg="cyan"),
-            short_option=Styler(fg="cyan"),
-            positional=Styler(fg="cyan"),
+            subcommand=Styler(fg="cyan", bold=True),
+            long_option=Styler(fg="cyan", bold=True),
+            short_option=Styler(fg="cyan", bold=True),
+            positional=Styler(fg="cyan", bold=True),
             type_str=Styler(fg="cyan"),
             prompts=Styler(fg="green", bold=True),
         ),

@@ -54,6 +54,10 @@ class ClypiFormatter:
         self, *columns: list[str], title: str, color: ColorType | None = None
     ) -> list[str]:
         first_col, *rest = columns
+
+        # Filter out empty columns
+        rest = list(filter(any, rest))
+
         if not self.boxed:
             section_title = self.theme.section_title(title)
 

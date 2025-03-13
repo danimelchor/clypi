@@ -24,7 +24,7 @@ class Theme:
     # Positionals
     positional: Styler = field(default_factory=lambda: Styler(fg="blue", bold=True))
 
-    type_str: Styler = field(default_factory=lambda: Styler(fg="yellow", bold=True))
+    type_str: Styler = field(default_factory=lambda: Styler(hide=True))
     prompts: Styler = field(default_factory=lambda: Styler(fg="blue", bold=True))
 
 
