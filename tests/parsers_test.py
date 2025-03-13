@@ -6,6 +6,7 @@ from pathlib import Path
 import pytest
 
 import clypi.parsers as cp
+from clypi import Positional
 
 
 class Color(enum.Enum):
@@ -139,6 +140,7 @@ def test_successfull_two_item_tuple_parsers(
 @pytest.mark.parametrize(
     "_type,expected",
     [
+        (Positional[int], cp.Int()),
         (int, cp.Int()),
         (float, cp.Float()),
         (bool, cp.Bool()),
