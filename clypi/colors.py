@@ -156,6 +156,7 @@ def style(
     reverse: bool = False,
     strikethrough: bool = False,
     reset: bool = False,
+    hide: bool = False,
 ) -> str:
     return Styler(
         fg=fg,
@@ -168,6 +169,7 @@ def style(
         reverse=reverse,
         strikethrough=strikethrough,
         reset=reset,
+        hide=hide,
     )(*messages)
 
 
@@ -187,6 +189,7 @@ def print(
     reverse: bool = False,
     strikethrough: bool = False,
     reset: bool = False,
+    hide: bool = False,
     file: SupportsWrite | None = None,
     end: str | None = "\n",
 ):
@@ -202,5 +205,6 @@ def print(
         reverse=reverse,
         strikethrough=strikethrough,
         reset=reset,
+        hide=hide,
     )
     builtins.print(text, end=end, file=file)

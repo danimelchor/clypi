@@ -50,8 +50,8 @@ Parameters:
 
 ```python
 def arg(
+    default: T | Unset | EllipsisType = UNSET,
     parser: Parser[T] | None = None,
-    default: T | Unset = UNSET,
     default_factory: t.Callable[[], T] | Unset = UNSET,
     help: str | None = None,
     short: str | None = None,
@@ -65,8 +65,8 @@ Utility function to configure how a specific argument should behave when display
 and parsed.
 
 Parameters:
-- `parser`: a function that takes in a string and returns the parsed type (see [`Parser`](#parser[t]))
 - `default`: the default value to return if the user doesn't pass in the argument (or hits enter during the prompt, if any)
+- `parser`: a function that takes in a string and returns the parsed type (see [`Parser`](#parser[t]))
 - `default_factory`: a function that returns a default value. Useful to defer computation or to avoid default mutable values
 - `help`: a brief description to show the user when they pass in `-h` or `--help`
 - `short`: for options it defines a short way to pass in a value (e.g.: `short="v"` allows users to pass in `-v <value>`)
@@ -448,6 +448,7 @@ class Styler(
     reverse: bool = False,
     strikethrough: bool = False,
     reset: bool = False,
+    hide: bool = False,
 )
 ```
 Returns a reusable function to style text.
@@ -474,6 +475,7 @@ def style(
     reverse: bool = False,
     strikethrough: bool = False,
     reset: bool = False,
+    hide: bool = False,
 ) -> str
 ```
 Styles text and returns the styled string.
@@ -499,6 +501,8 @@ def print(
     reverse: bool = False,
     strikethrough: bool = False,
     reset: bool = False,
+    hide: bool = False,
+    file: SupportsWrite | None = None,
     end: str | None = "\n",
 ) -> None
 ```
