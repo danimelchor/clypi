@@ -377,7 +377,8 @@ With everything disabled:
 ClypiFormatter(boxed=False, show_option_types=False)
 ```
 
-<img width="1697" alt="image" src="https://github.com/user-attachments/assets/a70125e9-186b-4f20-af3b-b47a71cacc1d" />
+<img width="1700" alt="image" src="https://github.com/user-attachments/assets/d063c5ef-6223-4153-8f44-33ccbe949e2c" />
+
 
 
 
