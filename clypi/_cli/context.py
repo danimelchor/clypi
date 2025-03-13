@@ -1,7 +1,6 @@
-import typing as t
 from dataclasses import dataclass, field
 
-Nargs: t.TypeAlias = t.Literal["*", "+"] | float
+from clypi._cli.config import Nargs
 
 
 @dataclass

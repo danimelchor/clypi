@@ -6,15 +6,14 @@ import logging
 import re
 import sys
 import typing as t
-from dataclasses import dataclass
 from types import NoneType, UnionType
 
 from clypi import parsers
 from clypi._cli import autocomplete as _auto
 from clypi._cli import config as _conf
 from clypi._cli import parser, type_util
-from clypi._cli.config import Positional, arg
-from clypi._cli.context import CurrentCtx, Nargs
+from clypi._cli.config import Config, Positional, arg
+from clypi._cli.context import CurrentCtx
 from clypi._cli.formatter import ClypiFormatter, Formatter
 from clypi._levenshtein import distance
 from clypi._util import UNSET
@@ -42,42 +41,6 @@ CLYPI_PARENTS = "__clypi_parents__"
 
 def _camel_to_dashed(s: str):
     return re.sub(r"(?<!^)(?=[A-Z])", "-", s).lower()
-
-
-@dataclass
-class Argument:
-    name: str
-    arg_type: t.Any
-    help: str | None
-    is_opt: bool = False
-    short: str | None = None
-
-    @property
-    def nargs(self) -> Nargs:
-        if self.arg_type is bool:
-            return 0
-
-        if type_util.is_list(self.arg_type):
-            return "*"
-
-        if type_util.is_tuple(self.arg_type):
-            sz = type_util.tuple_size(self.arg_type)
-            return "+" if sz == float("inf") else sz
-
-        return 1
-
-    @property
-    def display_name(self):
-        name = parser.snake_to_dash(self.name)
-        if self.is_opt:
-            return f"--{name}"
-        return name
-
-    @property
-    def short_display_name(self):
-        assert self.short, f"Expected short to be set in {self}"
-        name = parser.snake_to_dash(self.short)
-        return f"-{name}"
 
 
 class _CommandMeta(type):
@@ -119,12 +82,14 @@ class _CommandMeta(type):
             default = getattr(self, field, UNSET)
             if isinstance(default, _conf.PartialConfig):
                 value = _conf.Config.from_partial(
-                    default,
+                    partial=default,
+                    name=field,
                     parser=default.parser or parsers.from_type(_type),
                     arg_type=_type,
                 )
             else:
                 value = _conf.Config(
+                    name=field,
                     default=default,
                     parser=parsers.from_type(_type),
                     arg_type=_type,
@@ -235,17 +200,17 @@ class Command(metaclass=_CommandMeta):
 
     @t.final
     @classmethod
-    def _next_positional(cls, kwargs: dict[str, t.Any]) -> Argument | None:
+    def _next_positional(cls, kwargs: dict[str, t.Any]) -> Config | None:
         """
         Traverse the current collected arguments and find the next positional
         arg we can assign to.
         """
-        for pos in cls.positionals().values():
+        for name, pos in cls.positionals().items():
             # List positionals are a catch-all
             if type_util.is_list(pos.arg_type):
                 return pos
 
-            if pos.name not in kwargs:
+            if name not in kwargs:
                 return pos
 
         return None
@@ -279,34 +244,24 @@ class Command(metaclass=_CommandMeta):
 
     @t.final
     @classmethod
-    def options(cls) -> dict[str, Argument]:
-        options: dict[str, Argument] = {}
+    def options(cls) -> dict[str, Config]:
+        options: dict[str, Config] = {}
         for field, field_conf in cls.fields().items():
-            if field_conf.forwarded or field_conf.is_positional():
+            if field_conf.forwarded or field_conf.is_positional:
                 continue
 
-            options[field] = Argument(
-                field,
-                type_util.remove_optionality(field_conf.arg_type),
-                help=field_conf.help,
-                short=field_conf.short,
-                is_opt=True,
-            )
+            options[field] = field_conf
         return options
 
     @t.final
     @classmethod
-    def positionals(cls) -> dict[str, Argument]:
-        positionals: dict[str, Argument] = {}
+    def positionals(cls) -> dict[str, Config]:
+        positionals: dict[str, Config] = {}
         for field, field_conf in cls.fields().items():
-            if field_conf.forwarded or not field_conf.is_positional():
+            if field_conf.forwarded or field_conf.is_opt:
                 continue
 
-            positionals[field] = Argument(
-                field,
-                field_conf.arg_type,
-                help=field_conf.help,
-            )
+            positionals[field] = field_conf
         return positionals
 
     @t.final
@@ -321,7 +276,7 @@ class Command(metaclass=_CommandMeta):
         if arg.is_pos():
             all_pos: list[str] = [
                 *[s for s in cls.subcommands() if s],
-                *[p.name for p in cls.positionals().values()],
+                *[name for name in cls.positionals()],
             ]
             for pos in all_pos:
                 if distance(pos, arg.value) < 3:
@@ -473,15 +428,12 @@ class Command(metaclass=_CommandMeta):
                     value = field_conf.get_default()
 
                 # If the field comes from a parent command, use that
-                elif field_conf.forwarded:
-                    if field not in parent_attrs:
-                        what = "argument" if field_conf.is_positional() else "option"
-                        raise ValueError(f"Missing required {what} {field!r}")
+                elif field_conf.forwarded and field in parent_attrs:
                     value = parent_attrs[field]
 
                 # Whoops!
                 else:
-                    what = "argument" if field_conf.is_positional() else "option"
+                    what = "argument" if field_conf.is_positional else "option"
                     raise ValueError(f"Missing required {what} {field!r}")
 
                 # Try parsing the string as the right type

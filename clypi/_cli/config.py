@@ -1,11 +1,14 @@
 import typing as t
 from dataclasses import asdict, dataclass
 
+from clypi._cli import parser, type_util
 from clypi._util import UNSET, Unset
 from clypi.parsers import Parser
 from clypi.prompts import MAX_ATTEMPTS
 
 T = t.TypeVar("T")
+
+Nargs: t.TypeAlias = t.Literal["*", "+"] | float
 
 
 @dataclass
@@ -19,6 +22,7 @@ class PartialConfig(t.Generic[T]):
     hide_input: bool = False
     max_attempts: int = MAX_ATTEMPTS
     forwarded: bool = False
+    hidden: bool = False
 
     def has_default(self) -> bool:
         return self.default is not UNSET or self.default_factory is not UNSET
@@ -35,6 +39,7 @@ class PartialConfig(t.Generic[T]):
 
 @dataclass
 class Config(t.Generic[T]):
+    name: str
     parser: Parser[T]
     arg_type: t.Any
     default: T | Unset = UNSET
@@ -45,6 +50,7 @@ class Config(t.Generic[T]):
     hide_input: bool = False
     max_attempts: int = MAX_ATTEMPTS
     forwarded: bool = False
+    hidden: bool = False
 
     def has_default(self) -> bool:
         return not isinstance(self.default, Unset) or not isinstance(
@@ -64,6 +70,32 @@ class Config(t.Generic[T]):
             return self.default_factory()
         return UNSET
 
+    @classmethod
+    def from_partial(
+        cls,
+        partial: PartialConfig[T],
+        name: str,
+        parser: Parser[T],
+        arg_type: t.Any,
+    ):
+        kwargs = asdict(partial)
+        kwargs.update(name=name, parser=parser, arg_type=arg_type)
+        return cls(**kwargs)
+
+    @property
+    def display_name(self):
+        name = parser.snake_to_dash(self.name)
+        if self.is_opt:
+            return f"--{name}"
+        return name
+
+    @property
+    def short_display_name(self):
+        assert self.short, f"Expected short to be set in {self}"
+        name = parser.snake_to_dash(self.short)
+        return f"-{name}"
+
+    @property
     def is_positional(self) -> bool:
         if t.get_origin(self.arg_type) != t.Annotated:
             return False
@@ -75,13 +107,23 @@ class Config(t.Generic[T]):
 
         return False
 
-    @classmethod
-    def from_partial(
-        cls, partial: PartialConfig[T], parser: Parser[T], arg_type: t.Any
-    ):
-        kwargs = asdict(partial)
-        kwargs.update(parser=parser, arg_type=arg_type)
-        return cls(**kwargs)
+    @property
+    def is_opt(self) -> bool:
+        return not self.is_positional
+
+    @property
+    def nargs(self) -> Nargs:
+        if self.arg_type is bool:
+            return 0
+
+        if type_util.is_list(self.arg_type):
+            return "*"
+
+        if type_util.is_tuple(self.arg_type):
+            sz = type_util.tuple_size(self.arg_type)
+            return "+" if sz == float("inf") else sz
+
+        return 1
 
 
 def arg(
@@ -95,6 +137,7 @@ def arg(
     hide_input: bool = False,
     max_attempts: int = MAX_ATTEMPTS,
     forwarded: bool = False,
+    hidden: bool = False,
 ) -> T:
     forwarded = forwarded or (bool(args) and args[0] is Ellipsis)
     return PartialConfig(
@@ -107,6 +150,7 @@ def arg(
         hide_input=hide_input,
         max_attempts=max_attempts,
         forwarded=forwarded,
+        hidden=hidden,
     )  # type: ignore
 
 
