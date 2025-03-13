@@ -364,7 +364,8 @@ With everything disabled:
 ClypiFormatter(boxed=False, show_option_types=False)
 ```
 
-<img width="1703" alt="image" src="https://github.com/user-attachments/assets/e8fe5a82-e6db-4595-8771-c6466e128eea" />
+<img width="1700" alt="image" src="https://github.com/user-attachments/assets/ebe28474-fdf6-4194-86f6-0512a69c827f" />
+
 
 
 ## Prompts
