@@ -122,7 +122,7 @@ async def run_test(test: Test) -> tuple[str, str]:
     return test.name, "\n".join(error)
 
 
-async def run_mdtests(tests: list[Test]):
+async def run_mdtests(tests: list[Test]) -> int:
     errors = []
     async with Spinner("Running Markdown Tests") as s:
         coros = [run_test(test) for test in tests]
@@ -139,6 +139,8 @@ async def run_mdtests(tests: list[Test]):
 
     for err in errors:
         print(err)
+
+    return 1 if errors else 0
 
 
 class Mdtest(Command):
@@ -166,10 +168,12 @@ class Mdtest(Command):
             all_tests = [test for file in per_file for test in file]
 
         # Run each file
-        await run_mdtests(all_tests)
+        code = await run_mdtests(all_tests)
 
         # Cleanup
         shutil.rmtree(MDTEST_DIR)
+
+        raise SystemExit(code)
 
 
 if __name__ == "__main__":

@@ -31,7 +31,7 @@ Read [the API docs](https://github.com/danimelchor/clypi/blob/master/docs/index.
 
 Read the [docs](https://github.com/danimelchor/clypi/blob/master/docs/index.md#cli)
 
-<!--- mdtest-args -v ./README.md -->
+<!--- mdtest-args -v --config ./README.md -->
 ```python
 # examples/basic_cli.py
 from clypi import Command, Positional, arg
