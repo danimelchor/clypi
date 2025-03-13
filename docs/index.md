@@ -209,6 +209,20 @@ class MyCommand(Command):
 
 On runtime, if the user didn't provide a value for `--name`, the program will ask the user to provide one until they do. You can also pass in a `default` value to `config` to allow the user to just hit enter to accept the default.
 
+#### Built-in parsers
+
+CLypi comes with built-in parsers for all common Python types. See the [`Parsers`](#parsers) section below to find all supported types and validations. Most often, using a normal Python type will automatically load the right parser, but if you want more control or extra features you can use these directly:
+
+<!--- mdtest -->
+```python
+import typing as t
+from clypi import Command, arg
+import clypi.parsers as cp
+
+class MyCommand(Command):
+    file: Path = arg(parser=cp.Path(exists=True))
+```
+
 #### Custom parsers
 
 If the type you want to parse from the user is too complex, you can define your own parser
@@ -707,3 +721,182 @@ Examples:
 > clypi.align("foo", "right", 10) # -> "          foo"
 > clypi.align("foo", "center", 10) # -> "   foo   "
 >```
+
+## Parsers
+
+For this section, parsers will be imported as such:
+```python
+import clypi.parsers as cp
+```
+
+### `Int`
+
+The `Int` parser converts string input into an integer.
+
+```python
+Int()
+```
+
+### `Float`
+
+The `Float` parser converts string input into a floating-point number.
+
+```python
+Float()
+```
+
+### `Bool`
+
+The `Bool` parser converts string input into a boolean.
+
+```python
+Bool()
+```
+
+Accepted values:
+- `true`, `yes`, `y` → `True`
+- `false`, `no`, `n` → `False`
+
+### `Str`
+
+The `Str` parser returns the string input as-is.
+
+```python
+Str()
+```
+
+### `DateTime`
+
+The `DateTime` parser converts string input into a `datetime` object.
+
+```python
+DateTime()
+```
+
+### `TimeDelta`
+
+The `TimeDelta` parser converts string input into a `timedelta` object.
+
+```python
+TimeDelta()
+```
+
+Supported time units:
+- `weeks (w)`, `days (d)`, `hours (h)`, `minutes (m)`, `seconds (s)`, `milliseconds (ms)`, `microseconds (us)`
+
+### `Path`
+
+The `Path` parser is useful to parse file or directory-like arguments from the CLI.
+
+```python
+Path(exists: bool = False)
+```
+
+E.g.:
+<!--- mdtest -->
+```python
+cp.Path(exists=True)
+```
+
+Parameters:
+- `exists`: If `True`, it checks whether the provided path exists.
+
+### `List`
+
+The `List` parser parses comma-separated values into a list of parsed elements.
+
+```python
+List(inner: Parser[T])
+```
+
+E.g.:
+<!--- mdtest -->
+```python
+cp.List(cp.Int())
+```
+
+Parameters:
+- `inner`: The parser used to convert each list element.
+
+### `Tuple`
+
+The `Tuple` parser parses a string input into a tuple of values.
+
+```python
+Tuple(*inner: Parser, num: int | None = None)
+```
+
+E.g.:
+<!--- mdtest -->
+```python
+# tuple[str, ...]
+cp.Tuple(cp.Str())
+
+# tuple[str, int]
+cp.Tuple(cp.Str(), cp.Int(), num=2)
+```
+
+Parameters:
+- `inner`: List of parsers for each tuple element.
+- `num`: Expected tuple length (optional).
+
+### `Union`
+
+The `Union` parser attempts to parse input using multiple parsers.
+
+```python
+Union(left: Parser[X], right: Parser[Y])
+```
+
+You can also use the short hand `|` syntax for two parsers, e.g.:
+<!--- mdtest -->
+```python
+cp.Path(exists=True) | cp.Str()
+```
+
+### `Literal`
+
+The `Literal` parser ensures that input matches one of the predefined values.
+
+```python
+Literal(*values: t.Any)
+```
+
+E.g.:
+<!--- mdtest -->
+```python
+cp.Literal(1, "foo")
+```
+
+### `Enum`
+
+The `Enum` parser maps string input to a valid enum value.
+
+```python
+Enum(enum: type[enum.Enum])
+```
+
+E.g.:
+<!--- mdtest -->
+```python
+class Color(Enum):
+    RED = 1
+    BLUE = 2
+
+cp.Enum(Color)
+```
+
+### `from_type`
+
+The `from_type` function returns the appropriate parser for a given type.
+
+```python
+@tu.ignore_annotated
+def from_type(_type: type) -> Parser: ...
+```
+
+E.g.:
+<!--- mdtest -->
+```python
+assert cp.from_type(bool) == cp.Bool()
+```

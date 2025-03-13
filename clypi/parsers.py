@@ -174,8 +174,8 @@ class List(ClypiParser[list[X]]):
 
 
 class Tuple(ClypiParser[tuple[t.Any]]):
-    def __init__(self, inner: list[Parser[t.Any]], num: int | None) -> None:
-        self._inner = inner
+    def __init__(self, *inner: Parser[t.Any], num: int | None = None) -> None:
+        self._inner = list(inner)
         self._num = num
 
     # TODO: can we return the right type here?
@@ -228,7 +228,7 @@ class Union(ClypiParser[t.Union[X, Y]]):
 
 
 class Literal(ClypiParser[t.Any]):
-    def __init__(self, values: list[t.Any]) -> None:
+    def __init__(self, *values: t.Any) -> None:
         self._values = values
 
     # TODO: can we return the right type here?
@@ -297,7 +297,7 @@ def from_type(_type: type) -> Parser[t.Any]:
     if tu.is_tuple(_type):
         inner_types, num = tu.tuple_inner(_type)
         inner_parsers = [from_type(it) for it in inner_types]
-        return Tuple(inner_parsers, num)
+        return Tuple(*inner_parsers, num=num)
 
     if tu.is_union(_type):
         union_inner = tu.union_inner(_type)
@@ -307,7 +307,7 @@ def from_type(_type: type) -> Parser[t.Any]:
         return trav
 
     if tu.is_literal(_type):
-        return Literal(tu.literal_inner(_type))
+        return Literal(*tu.literal_inner(_type))
 
     if tu.is_none(_type):
         return NoneParser()

@@ -44,8 +44,8 @@ SUCCESS_PRIMITIVES = [
     ),
     ("y", cp.Union(cp.Int(), cp.Bool()), True),
     ("1", cp.Union(cp.Int(), cp.Bool()), 1),
-    ("1", cp.Literal(["1", "foo"]), "1"),
-    ("foo", cp.Literal(["1", "foo"]), "foo"),
+    ("1", cp.Literal("1", "foo"), "1"),
+    ("foo", cp.Literal("1", "foo"), "foo"),
     ("red", cp.Enum(Color), Color.RED),
     ("blue", cp.Enum(Color), Color.BLUE),
 ]
@@ -65,7 +65,7 @@ FAILURE_PRIMITIVES = [
         cp.Path(exists=True),
     ),
     ("a", cp.Union(cp.Int(), cp.Bool())),
-    ("2", cp.Literal(["1", "foo"])),
+    ("2", cp.Literal("1", "foo")),
     ("green", cp.Enum(Color)),
 ]
 
@@ -110,7 +110,7 @@ def test_successfull_two_item_list_parsers(
 
 @pytest.mark.parametrize(
     "value,parser,expected",
-    [(v, cp.Tuple([p], 1), (e,)) for (v, p, e) in SUCCESS_PRIMITIVES],
+    [(v, cp.Tuple(p, num=1), (e,)) for (v, p, e) in SUCCESS_PRIMITIVES],
 )
 def test_successfull_tuple_parsers(
     value: t.Any, parser: cp.Parser[t.Any], expected: t.Any
@@ -120,7 +120,7 @@ def test_successfull_tuple_parsers(
 
 @pytest.mark.parametrize(
     "value,parser",
-    [(v, cp.Tuple([p], 1)) for (v, p) in FAILURE_PRIMITIVES],
+    [(v, cp.Tuple(p, num=1)) for (v, p) in FAILURE_PRIMITIVES],
 )
 def test_failed_tuple_parsers(value: t.Any, parser: cp.Parser[t.Any]):
     with pytest.raises(Exception):
@@ -129,7 +129,7 @@ def test_failed_tuple_parsers(value: t.Any, parser: cp.Parser[t.Any]):
 
 @pytest.mark.parametrize(
     "value,parser,expected",
-    [(v + "," + v, cp.Tuple([p, p], 2), (e, e)) for (v, p, e) in SUCCESS_PRIMITIVES],
+    [(v + "," + v, cp.Tuple(p, p, num=2), (e, e)) for (v, p, e) in SUCCESS_PRIMITIVES],
 )
 def test_successfull_two_item_tuple_parsers(
     value: t.Any, parser: cp.Parser[t.Any], expected: t.Any
@@ -150,7 +150,7 @@ def test_successfull_two_item_tuple_parsers(
         (Path, cp.Path()),
         (int | bool, cp.Union(cp.Int(), cp.Bool())),
         (int | bool | str, cp.Int() | cp.Bool() | cp.Str()),
-        (t.Literal[1, "foo"], cp.Literal(["1", "foo"])),
+        (t.Literal[1, "foo"], cp.Literal("1", "foo")),
         (Color, cp.Enum(Color)),
     ],
 )
@@ -170,7 +170,7 @@ def test_parser_from_type(_type: t.Any, expected: cp.Parser[t.Any]):
         (cp.Path(), "path"),
         (cp.Union(cp.Int(), cp.Bool()), "(int|bool)"),
         (cp.Int() | cp.Bool() | cp.Str(), "(int|bool|str)"),
-        (cp.Literal(["1", "foo"]), "{1|foo}"),
+        (cp.Literal("1", "foo"), "{1|foo}"),
         (cp.Enum(Color), "{red|blue}"),
     ],
 )
