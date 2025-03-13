@@ -44,7 +44,7 @@ class Formatter(t.Protocol):
 class ClypiFormatter:
     boxed: bool = True
     show_option_types: bool = False
-    normalize_dots: t.Literal[".", ""] | None = "."
+    normalize_dots: t.Literal[".", ""] | None = ""
 
     @cached_property
     def theme(self):
