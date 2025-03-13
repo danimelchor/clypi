@@ -1,7 +1,7 @@
 import inspect
 import typing as t
 from enum import Enum
-from types import UnionType
+from types import NoneType, UnionType
 
 P = t.ParamSpec("P")
 R = t.TypeVar("R")
@@ -76,7 +76,7 @@ def tuple_size(_type: t.Any) -> float:
 
 @ignore_annotated
 def is_none(_type: t.Any) -> t.TypeGuard[type[None]]:
-    return _type is None
+    return _type is NoneType
 
 
 @ignore_annotated
