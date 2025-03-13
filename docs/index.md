@@ -368,7 +368,7 @@ With everything enabled:
 ClypiFormatter(boxed=True, show_option_types=True)
 ```
 
-<img width="1684" alt="image" src="https://github.com/user-attachments/assets/1dda7148-197e-4871-8556-e526e5e93428" />
+<img width="1692" alt="image" src="https://github.com/user-attachments/assets/5e0fee5f-8688-449d-a8d9-7f83ec5314b5" />
 
 With everything disabled:
 
@@ -377,7 +377,8 @@ With everything disabled:
 ClypiFormatter(boxed=False, show_option_types=False)
 ```
 
-<img width="1700" alt="image" src="https://github.com/user-attachments/assets/ebe28474-fdf6-4194-86f6-0512a69c827f" />
+<img width="1697" alt="image" src="https://github.com/user-attachments/assets/a70125e9-186b-4f20-af3b-b47a71cacc1d" />
+
 
 
 
