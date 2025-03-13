@@ -2,7 +2,8 @@ import typing as t
 from dataclasses import asdict, dataclass
 
 from clypi._util import UNSET, Unset
-from clypi.prompts import MAX_ATTEMPTS, Parser
+from clypi.parsers import Parser
+from clypi.prompts import MAX_ATTEMPTS
 
 T = t.TypeVar("T")
 

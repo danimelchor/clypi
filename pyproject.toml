@@ -15,6 +15,7 @@ authors = [
 ]
 keywords = ["cli", "terminal", "ui"]
 dependencies = [
+    "python-dateutil>=2.9.0.post0",
     "typing-extensions>=4.12.2",
 ]
 
@@ -33,6 +34,7 @@ dev = [
   "pytest>=8.3.5",
   "codespell>=2.4.1",
   "anyio>=4.8.0",
+  "types-python-dateutil>=2.9.0.20241206",
 ]
 examples = [
   "v6e>=0.1.18",
