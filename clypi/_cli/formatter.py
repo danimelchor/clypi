@@ -5,7 +5,6 @@ from dataclasses import dataclass
 from functools import cached_property
 
 from clypi import boxed, indented, stack
-from clypi._cli import type_util
 from clypi.colors import ColorType
 from clypi.exceptions import format_traceback
 
@@ -71,10 +70,10 @@ class ClypiFormatter:
 
     def _format_option(self, option: Config) -> tuple[str, ...]:
         name = self.theme.long_option(option.display_name)
-        short_usage = self.theme.short_option(
-            option.short_display_name if option.short else ""
+        short_usage = (
+            self.theme.short_option(option.short_display_name) if option.short else ""
         )
-        type_str = self.theme.type_str(type_util.type_to_str(option.arg_type).upper())
+        type_str = self.theme.type_str(str(option.parser).upper())
         help = option.help or ""
 
         return name, short_usage, type_str, help
@@ -83,8 +82,7 @@ class ClypiFormatter:
         if not options:
             return None
 
-        name: list[str] = []
-        short_usage: list[str] = []
+        usage: list[str] = []
         type_str: list[str] = []
         help: list[str] = []
         for o in options:
@@ -93,19 +91,16 @@ class ClypiFormatter:
                 continue
 
             u, su, ts, hp = self._format_option(o)
-            name.append(u)
-            short_usage.append(su)
+            usage.append(su + ", " + u if su else u)
             type_str.append(ts)
             help.append(hp)
 
-        return self._maybe_boxed(name, short_usage, type_str, help, title="Options")
+        return self._maybe_boxed(usage, type_str, help, title="Options")
 
     def _format_positional(self, positional: Config) -> t.Any:
         name = self.theme.positional(positional.name)
         help = positional.help or ""
-        type_str = self.theme.type_str(
-            type_util.type_to_str(positional.arg_type).upper()
-        )
+        type_str = self.theme.type_str(str(positional.parser).upper())
 
         return name, type_str, help
 

@@ -98,39 +98,3 @@ def remove_optionality(_type: t.Any) -> t.Any:
         return new_args[0]
 
     return t.Union[*new_args]
-
-
-@ignore_annotated
-def type_to_str(_type: t.Any) -> str:
-    _map = {
-        "bool": "boolean",
-        "int": "integer",
-        "float": "float",
-        "str": "string",
-        "Path": "Path",
-    }
-    if inspect.isclass(_type) and _type.__name__ in _map:
-        return _map[_type.__name__]
-
-    if t.get_origin(_type) is t.Literal:
-        return "{" + "|".join(type_to_str(tp) for tp in _type.__args__) + "}"
-
-    if inspect.isclass(_type) and issubclass(_type, Enum):
-        return "{" + "|".join(tp.name for tp in _type) + "}"
-
-    if isinstance(_type, UnionType):
-        return "[" + "|".join(type_to_str(tp) for tp in _type.__args__) + "]"
-
-    if is_tuple(_type):
-        args = t.get_args(_type)
-        if args[-1] is Ellipsis:
-            return "(" + type_to_str(args[0]) + ", ...)"
-        else:
-            inner = ", ".join(type_to_str(tp) for tp in args)
-            maybe_comma = "," if len(args) == 1 else ""  # E.g.: ("foo",)
-            return "(" + inner + maybe_comma + ")"
-
-    if is_list(_type):
-        return "list[" + ", ".join(type_to_str(tp) for tp in t.get_args(_type)) + "]"
-
-    return str(_type)
