@@ -370,16 +370,14 @@ ClypiFormatter(boxed=True, show_option_types=True)
 
 <img width="1692" alt="image" src="https://github.com/user-attachments/assets/5e0fee5f-8688-449d-a8d9-7f83ec5314b5" />
 
-With everything disabled
+With everything disabled:
 
 <!--- mdtest -->
 ```python
 ClypiFormatter(boxed=False, show_option_types=False)
 ```
 
-<img width="1700" alt="image" src="https://github.com/user-attachments/assets/d063c5ef-6223-4153-8f44-33ccbe949e2c" />
-
-
+<img width="1691" alt="image" src="https://github.com/user-attachments/assets/3ecd142e-69d6-4d2d-a864-ab549ee9f51c" />
 
 
 
