@@ -48,6 +48,14 @@ class ClypiParser(ABC, t.Generic[X]):
     def __or__(self, other: ClypiParser[Y]) -> Union[X, Y]:
         return Union(self, other)
 
+    def __eq__(self, other: t.Any):
+        if not isinstance(other, ClypiParser):
+            return False
+        if self.__class__ != other.__class__:
+            return False
+        # TODO: fix this comparison. Only for tests so it's ok for now
+        return str(self) == str(other)
+
 
 class Int(ClypiParser[int]):
     def __call__(self, raw: str | list[str], /) -> int:
@@ -146,6 +154,10 @@ class Path(ClypiParser[_Path]):
 
         return p
 
+    @override
+    def _repr_args(self, args: list[tuple[str, t.Any]]) -> str | None:
+        return ", ".join(f"{k}={v}" for k, v in args)
+
 
 class List(ClypiParser[list[X]]):
     def __init__(self, inner: Parser[X]) -> None:
@@ -183,8 +195,11 @@ class Tuple(ClypiParser[tuple[t.Any]]):
             inner_parsers = self._inner
 
         # Parse each item with it's corresponding parser
-        print(raw, inner_parsers)
         return tuple(parser(raw_item) for parser, raw_item in zip(inner_parsers, raw))
+
+    @override
+    def _repr_args(self, args: list[tuple[str, t.Any]]) -> str | None:
+        return ", ".join(str(it) for it in self._inner)
 
 
 class Union(ClypiParser[t.Union[X, Y]]):
@@ -198,6 +213,9 @@ class Union(ClypiParser[t.Union[X, Y]]):
         except Exception:
             return self._right(raw)
 
+    def __repr__(self):
+        return "(" + f"{self._left}|{self._right}" + ")"
+
 
 class Literal(ClypiParser[t.Any]):
     def __init__(self, values: list[t.Any]) -> None:
@@ -209,6 +227,10 @@ class Literal(ClypiParser[t.Any]):
             if v == raw:
                 return v
         raise CannotParseAs(raw, self)
+
+    def __repr__(self):
+        values = "|".join(str(v) for v in self._values)
+        return "{" + values + "}"
 
 
 class NoneParser(ClypiParser[None]):
@@ -230,6 +252,10 @@ class Enum(ClypiParser[type[enum.Enum]]):
 
         raise ValueError(f"Value {raw} is not a valid choice between {self}")
 
+    def __repr__(self):
+        values = "|".join(str(v).lower() for v in self._type)
+        return "{" + values + "}"
+
 
 @tu.ignore_annotated
 def from_type(_type: type) -> Parser[t.Any]:
@@ -239,11 +265,20 @@ def from_type(_type: type) -> Parser[t.Any]:
     if _type is int:
         return Int()
 
+    if _type is float:
+        return Float()
+
     if _type is str:
         return Str()
 
     if _type is _Path:
         return Path()
+
+    if _type is datetime:
+        return DateTime()
+
+    if _type is timedelta:
+        return TimeDelta()
 
     if tu.is_list(_type):
         inner = from_type(tu.list_inner(_type))

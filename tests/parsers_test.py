@@ -134,3 +134,23 @@ def test_successfull_two_item_tuple_parsers(
     value: t.Any, parser: cp.Parser[t.Any], expected: t.Any
 ):
     assert parser(value) == expected
+
+
+@pytest.mark.parametrize(
+    "_type,expected",
+    [
+        (int, cp.Int()),
+        (float, cp.Float()),
+        (bool, cp.Bool()),
+        (str, cp.Str()),
+        (datetime, cp.DateTime()),
+        (timedelta, cp.TimeDelta()),
+        (Path, cp.Path()),
+        (int | bool, cp.Union(cp.Int(), cp.Bool())),
+        (int | bool | str, cp.Int() | cp.Bool() | cp.Str()),
+        (t.Literal[1, "foo"], cp.Literal(["1", "foo"])),
+        (Color, cp.Enum(Color)),
+    ],
+)
+def test_parser_from_type(_type: t.Any, expected: cp.Parser[t.Any]):
+    assert cp.from_type(_type) == expected
