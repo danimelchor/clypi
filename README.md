@@ -37,7 +37,7 @@ Read the [docs](https://github.com/danimelchor/clypi/blob/master/docs/index.md#c
 from clypi import Command, Positional, arg
 
 class Lint(Command):
-    files: Positional[tuple[str, ...]]
+    files: Positional[tuple[Path, ...]]
     verbose: bool = arg(...)  # Comes from MyCli but I want to use it too
 
     async def run(self):
@@ -48,6 +48,7 @@ class MyCli(Command):
     my-cli is a very nifty demo CLI tool
     """
     subcommand: Lint | None = None
+    config: Path | None = arg(parser=cp.Path(exists=True))
     verbose: bool = arg(
         help="Whether to show extra logs",
         prompt="Do you want to see extra logs?",
