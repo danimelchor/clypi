@@ -2,6 +2,7 @@ import typing as t
 from importlib import import_module
 
 if t.TYPE_CHECKING:
+    from clypi import parsers
     from clypi.align import AlignType, align
     from clypi.boxed import Boxes, boxed
     from clypi.cli import ClypiFormatter, Command, Formatter, Positional, arg
@@ -15,8 +16,8 @@ if t.TYPE_CHECKING:
         print_traceback,
     )
     from clypi.indented import indented
+    from clypi.parsers import Parser
     from clypi.prompts import (
-        Parser,
         confirm,
         prompt,
     )
@@ -37,6 +38,7 @@ __all__ = (
     "MaxAttemptsException",
     "OverflowStyle",
     "Parser",
+    "parsers",
     "Positional",
     "Spin",
     "Spinner",
@@ -71,7 +73,8 @@ _dynamic_imports: dict[str, tuple[str | None, str]] = {
     "Formatter": (__spec__.parent, ".cli"),
     "MaxAttemptsException": (__spec__.parent, ".exceptions"),
     "OverflowStyle": (__spec__.parent, ".wraps"),
-    "Parser": (__spec__.parent, ".prompts"),
+    "Parser": (__spec__.parent, ".parsers"),
+    "parsers": (__spec__.parent, ".parsers"),
     "Positional": (__spec__.parent, ".cli"),
     "Spin": (__spec__.parent, ".spinners"),
     "Spinner": (__spec__.parent, ".spinners"),

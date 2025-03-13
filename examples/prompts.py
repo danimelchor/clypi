@@ -5,10 +5,12 @@ import clypi.parsers as cp
 from clypi import colors
 
 
-def _validate_earth_age(x: int) -> int:
-    if x != 4_543_000_000:
-        raise ValueError("The Earth is 4.543 billion years old. Try 4543000000.")
-    return x
+def _validate_earth_age(x: str | list[str]) -> int:
+    if isinstance(x, str):
+        x_int = int(x)
+        if x_int == 4_543_000_000:
+            return x_int
+    raise ValueError("The Earth is 4.543 billion years old. Try 4543000000.")
 
 
 def main() -> None:

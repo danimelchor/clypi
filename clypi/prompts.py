@@ -68,8 +68,6 @@ def confirm(
 
 T = t.TypeVar("T")
 
-Parser: t.TypeAlias = t.Callable[[t.Any], T]
-
 
 @t.overload
 def prompt(
@@ -85,7 +83,7 @@ def prompt(
 def prompt(
     text: str,
     *,
-    parser: Parser[T] | type[T],
+    parser: parsers.Parser[T] | type[T],
     default: T | Unset = UNSET,
     hide_input: bool = False,
     max_attempts: int = MAX_ATTEMPTS,
@@ -95,7 +93,7 @@ def prompt(
 def prompt(
     text: str,
     *,
-    parser: Parser[T] | type[T] | type[str] = str,
+    parser: parsers.Parser[T] | type[T] | type[str] = str,
     default: T | Unset = UNSET,
     hide_input: bool = False,
     max_attempts: int = MAX_ATTEMPTS,
@@ -123,7 +121,7 @@ def prompt(
         # User answered the prompt -- Parse
         try:
             if t.TYPE_CHECKING:
-                parser = t.cast(Parser[T], parser)
+                parser = t.cast(parsers.Parser[T], parser)
 
             # If no input, use the default without parsing
             if not inp and default is not UNSET:

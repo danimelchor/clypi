@@ -6,7 +6,7 @@ build-backend = "hatchling.build"
 name = "clypi"
 description = "Your all-in-one for beautiful, lightweight, prod-ready CLIs"
 readme = "README.md"
-version = "1.0.7"
+version = "1.0.8"
 license = "MIT"
 license-files = ["LICEN[CS]E*"]
 requires-python = ">=3.11"
@@ -16,7 +16,7 @@ authors = [
 keywords = ["cli", "terminal", "ui"]
 dependencies = [
     "python-dateutil>=2.9.0.post0",
-    "typing-extensions>=4.12.2",
+    "typing-extensions>=4.4.0",
 ]
 
 

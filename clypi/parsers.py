@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import enum
 import re
 import typing as t
@@ -38,10 +40,13 @@ class ClypiParser(ABC, t.Generic[X]):
     def __repr__(self):
         name = self.__class__.__name__.lower()
         args = [(k, v) for k, v in vars(self).items() if not k.startswith("_")]
-        if not args:
+        args_str = self._repr_args(args)
+        if args_str is None:
             return name
+        return f"{name}({args_str})"
 
-        return f"{name}({self._repr_args(args)})"
+    def __or__(self, other: ClypiParser[Y]) -> Union[X, Y]:
+        return Union(self, other)
 
 
 class Int(ClypiParser[int]):
@@ -137,7 +142,7 @@ class Path(ClypiParser[_Path]):
 
         # Validations on the path
         if self.exists and not p.exists():
-            raise ValueError(f"File {p} does not exist!")
+            raise ValueError(f"File {p.resolve()} does not exist!")
 
         return p
 
@@ -178,6 +183,7 @@ class Tuple(ClypiParser[tuple[t.Any]]):
             inner_parsers = self._inner
 
         # Parse each item with it's corresponding parser
+        print(raw, inner_parsers)
         return tuple(parser(raw_item) for parser, raw_item in zip(inner_parsers, raw))
 
 

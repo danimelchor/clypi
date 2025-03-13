@@ -18,7 +18,7 @@ wheels = [
 
 [[package]]
 name = "clypi"
-version = "1.0.7"
+version = "1.0.8"
 source = { editable = "." }
 dependencies = [
     { name = "python-dateutil" },
@@ -46,7 +46,7 @@ requires-dist = [
     { name = "python-dateutil", specifier = ">=2.9.0.post0" },
     { name = "ruff", marker = "extra == 'dev'", specifier = ">=0.9.7" },
     { name = "types-python-dateutil", marker = "extra == 'dev'", specifier = ">=2.9.0.20241206" },
-    { name = "typing-extensions", specifier = ">=4.12.2" },
+    { name = "typing-extensions", specifier = ">=4.4.0" },
 ]
 provides-extras = ["dev"]
 
