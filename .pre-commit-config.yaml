@@ -38,6 +38,7 @@ repos:
       pass_filenames: false
       always_run: true
       additional_dependencies: ["pytest==8.3.4"]
+      stages: [pre-push]
 
     # Ruff - Format all files
     - id: ruff-format
@@ -77,3 +78,4 @@ repos:
       language: python
       pass_filenames: false
       always_run: true
+      stages: [pre-push]
