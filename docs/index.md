@@ -180,7 +180,7 @@ You can define custom help messages for each argument using our handy `config` h
 from clypi import Command, arg
 
 class MyCommand(Command):
-    verbose: bool = arg(help="Whether to show all of the output", default=True)
+    verbose: bool = arg(True, help="Whether to show all of the output")
 ```
 
 You can also define custom help messages for commands by creating a docstring on the class itself:

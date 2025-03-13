@@ -14,10 +14,10 @@ class Uv(Command):
     """
 
     subcommand: Add | Init | Pip | Remove | None
-    quiet: bool = arg(default=False, short="q", help="Do not print any output")
-    version: bool = arg(default=False, short="V", help="Display the uv version")
+    quiet: bool = arg(False, short="q", help="Do not print any output")
+    version: bool = arg(False, short="V", help="Display the uv version")
     no_cache: bool = arg(
-        default=False,
+        False,
         help="Avoid reading from or writing to the cache, instead using a temporary directory for the duration of the operation",
         hidden=True,
     )

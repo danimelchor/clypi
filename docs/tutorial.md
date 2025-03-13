@@ -51,7 +51,7 @@ A quick summary at the time of writing is:
         """
         A git clone, but much slower ;)
         """
-        verbose: bool = arg(default=False, short="v")
+        verbose: bool = arg(False, short="v")
 
         async def run(self):
             clypi.print("Sorry I don't know how to use git, it's too hard!", fg="yellow")

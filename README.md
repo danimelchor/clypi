@@ -53,9 +53,9 @@ class MyCli(Command):
         parser=cp.Path(exists=True),
     )
     verbose: bool = arg(
+        False,
         help="Whether to show extra logs",
         prompt="Do you want to see extra logs?",
-        default=False,
         short="v",  # User can pass in --verbose or -v
     )
 

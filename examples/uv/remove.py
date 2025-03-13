@@ -9,7 +9,7 @@ class Remove(Command):
         help="The names of the dependencies to remove (e.g., `ruff`)"
     )
     dev: bool = arg(
-        default=False, help="Remove the packages from the development dependency group"
+        False, help="Remove the packages from the development dependency group"
     )
 
     async def run(self) -> None:

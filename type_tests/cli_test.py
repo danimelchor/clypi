@@ -12,7 +12,7 @@ class MyCommand(Command):
     subcommand: MySub
     foo: bool
     bar: str = arg(help="help!")
-    baz: Path = arg(default=Path.cwd())
+    baz: Path = arg(Path.cwd())
     qux: list[str] = arg(default_factory=list)
 
 
