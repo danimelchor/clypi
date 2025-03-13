@@ -1,8 +1,11 @@
 import enum
 import re
 import typing as t
+from abc import ABC, abstractmethod
 from datetime import datetime, timedelta
 from pathlib import Path as _Path
+
+from typing_extensions import override
 
 from clypi._cli import type_util as tu
 
@@ -25,7 +28,23 @@ class CannotParseAs(Exception):
         super().__init__(message)
 
 
-class Int:
+class ClypiParser(ABC, t.Generic[X]):
+    @abstractmethod
+    def __call__(self, raw: str | list[str], /) -> X: ...
+
+    def _repr_args(self, args: list[tuple[str, t.Any]]) -> str | None:
+        return None
+
+    def __repr__(self):
+        name = self.__class__.__name__.lower()
+        args = [(k, v) for k, v in vars(self).items() if not k.startswith("_")]
+        if not args:
+            return name
+
+        return f"{name}({self._repr_args(args)})"
+
+
+class Int(ClypiParser[int]):
     def __call__(self, raw: str | list[str], /) -> int:
         if isinstance(raw, list):
             raise CannotParseAs(raw, self)
@@ -34,14 +53,14 @@ class Int:
         return int(raw)
 
 
-class Float:
+class Float(ClypiParser[float]):
     def __call__(self, raw: str | list[str], /) -> float:
         if isinstance(raw, list):
             raise CannotParseAs(raw, self)
         return float(raw)
 
 
-class Bool:
+class Bool(ClypiParser[bool]):
     TRUE_BOOL_STR_LITERALS: set[str] = {"true", "yes", "y"}
     FALSE_BOOL_STR_LITERALS: set[str] = {"false", "no", "n"}
 
@@ -58,14 +77,14 @@ class Bool:
         return raw_lower in self.TRUE_BOOL_STR_LITERALS
 
 
-class Str:
+class Str(ClypiParser[str]):
     def __call__(self, raw: str | list[str], /) -> str:
         if isinstance(raw, list):
             raise CannotParseAs(raw, self)
         return raw
 
 
-class DateTime:
+class DateTime(ClypiParser[datetime]):
     def __call__(self, raw: str | list[str], /) -> datetime:
         from dateutil.parser import parse
 
@@ -74,7 +93,7 @@ class DateTime:
         return parse(raw)
 
 
-class TimeDelta:
+class TimeDelta(ClypiParser[timedelta]):
     TIMEDELTA_UNITS = {
         ("weeks", "week", "w"): "weeks",
         ("days", "day", "d"): "days",
@@ -107,9 +126,9 @@ class TimeDelta:
         raise ValueError(f"Invalid timedelta {raw!r}.")
 
 
-class Path:
+class Path(ClypiParser[_Path]):
     def __init__(self, *, exists: bool = False) -> None:
-        self._exists = exists
+        self.exists = exists
 
     def __call__(self, raw: str | list[str], /) -> _Path:
         if isinstance(raw, list):
@@ -117,23 +136,27 @@ class Path:
         p = _Path(raw)
 
         # Validations on the path
-        if self._exists and not p.exists():
+        if self.exists and not p.exists():
             raise ValueError(f"File {p} does not exist!")
 
         return p
 
 
-class List(t.Generic[T]):
-    def __init__(self, inner: Parser[T]) -> None:
+class List(ClypiParser[list[X]]):
+    def __init__(self, inner: Parser[X]) -> None:
         self._inner = inner
 
-    def __call__(self, raw: str | list[str], /) -> list[T]:
+    def __call__(self, raw: str | list[str], /) -> list[X]:
         if isinstance(raw, str):
             raw = raw.split(",")
         return [self._inner(item) for item in raw]
 
+    @override
+    def _repr_args(self, args):
+        return str(args[0])
 
-class Tuple:
+
+class Tuple(ClypiParser[tuple[t.Any]]):
     def __init__(self, inner: list[Parser[t.Any]], num: int | None) -> None:
         self._inner = inner
         self._num = num
@@ -158,7 +181,7 @@ class Tuple:
         return tuple(parser(raw_item) for parser, raw_item in zip(inner_parsers, raw))
 
 
-class Union(t.Generic[X, Y]):
+class Union(ClypiParser[t.Union[X, Y]]):
     def __init__(self, left: Parser[X], right: Parser[Y]) -> None:
         self._left = left
         self._right = right
@@ -170,7 +193,7 @@ class Union(t.Generic[X, Y]):
             return self._right(raw)
 
 
-class Literal(t.Generic[T]):
+class Literal(ClypiParser[t.Any]):
     def __init__(self, values: list[t.Any]) -> None:
         self._values = values
 
@@ -182,12 +205,12 @@ class Literal(t.Generic[T]):
         raise CannotParseAs(raw, self)
 
 
-class NoneParser:
+class NoneParser(ClypiParser[None]):
     def __call__(self, raw: str | list[str], /) -> t.Any:
         raise UnparseableException()
 
 
-class Enum:
+class Enum(ClypiParser[type[enum.Enum]]):
     def __init__(self, _type: type[enum.Enum]) -> None:
         self._type = _type
 
