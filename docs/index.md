@@ -279,7 +279,7 @@ set up shell completions for your built CLI.
 ```python
 @t.final
 @classmethod
-def name(cls)
+def prog(cls)
 ```
 The name of the command. Can be overridden to provide a custom name
 or will default to the class name extending `Command`.

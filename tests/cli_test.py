@@ -25,7 +25,7 @@ class ExampleCommand(Command):
 
     @override
     @classmethod
-    def name(cls):
+    def prog(cls):
         return "example"
 
     @override
@@ -39,7 +39,7 @@ class ExampleCommand(Command):
 
 def test_expected_base():
     assert ExampleCommand.help() == "Some sample documentation for the main command"
-    assert ExampleCommand.name() == "example"
+    assert ExampleCommand.prog() == "example"
     assert ExampleCommand.full_command() == ["example"]
     assert ExampleCommand.epilog() == "Some text to display after..."
 
@@ -74,7 +74,7 @@ def test_expected_subcommands():
 
     sub = ec["example-sub-command"]
     assert sub is ExampleSubCommand
-    assert sub._name() == "example-sub-command"
+    assert sub.prog() == "example-sub-command"
     assert sub.help() == "Some sample docs"
 
 

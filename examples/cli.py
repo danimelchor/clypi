@@ -131,7 +131,7 @@ class Main(Command):
 
     @override
     @classmethod
-    def name(cls):
+    def prog(cls):
         return "termuff"
 
     @override

@@ -26,7 +26,7 @@ class AutocompleteInstaller(ABC):
     """
 
     def __init__(self, command: type[Command]) -> None:
-        self.name = command._name()
+        self.name = command.prog()
         self._options = list(command.options().values())
         self._subcommands = list(command.subcommands().values())
 
@@ -40,7 +40,7 @@ class AutocompleteInstaller(ABC):
         sys.stdout.write(
             "\n".join(
                 [
-                    *[s._name() for s in self._subcommands if s],
+                    *[s.prog() for s in self._subcommands if s],
                     *[p.display_name for p in self._options],
                 ]
             ),
