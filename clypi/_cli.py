@@ -12,9 +12,9 @@ from clypi import _arg_config, _arg_parser, _autocomplete, _type_util, parsers
 from clypi._arg_config import Config, Positional, arg
 from clypi._configuration import get_config
 from clypi._context import CurrentCtx
+from clypi._distance import closest
 from clypi._exceptions import ClypiException, print_traceback
 from clypi._formatter import ClypiFormatter, Formatter
-from clypi._levenshtein import distance
 from clypi._prompts import prompt
 from clypi._util import UNSET
 
@@ -274,20 +274,21 @@ class Command(metaclass=_CommandMeta):
         if arg.is_pos():
             all_pos: list[str] = [
                 *[s for s in cls.subcommands() if s],
-                *[name for name in cls.positionals()],
+                *list(cls.positionals()),
             ]
-            for pos in all_pos:
-                if distance(pos, arg.value) < 3:
-                    similar = pos
-                    break
+            pos, dist = closest(arg.value, all_pos)
+            # 2 is ~good for typos (e.g.: vresion -> version)
+            if dist <= 2:
+                similar = pos
         else:
-            for opt in cls.options().values():
-                if distance(opt.name, arg.value) <= 2:
-                    similar = opt.display_name
-                    break
-                if opt.short and distance(opt.short, arg.value) <= 1:
-                    similar = opt.short_display_name
-                    break
+            all_pos: list[str] = [
+                *list(cls.options()),
+                *[o.short for o in cls.options().values() if o.short],
+            ]
+            pos, dist = closest(arg.value, all_pos)
+            # 2 is ~good for typos (e.g.: vresion -> version)
+            if dist <= 2:
+                similar = pos
 
         what = "argument" if arg.is_pos() else "option"
         error = f"Unknown {what} {arg.orig!r}"
