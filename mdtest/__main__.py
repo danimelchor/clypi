@@ -104,8 +104,9 @@ def error_msg(test: Test, stdout: str | None = None, stderr: str | None = None) 
 
 
 class Runner:
-    def __init__(self, parallel: int) -> None:
+    def __init__(self, parallel: int, timeout: int) -> None:
         self.sm = asyncio.Semaphore(parallel)
+        self.timeout = timeout
 
     async def run_test(self, test: Test) -> tuple[str, list[str]]:
         # Save test to temp file
@@ -148,7 +149,7 @@ class Runner:
         await self.sm.acquire()
         start = time.perf_counter()
         try:
-            async with asyncio.timeout(4):
+            async with asyncio.timeout(self.timeout):
                 return await self.run_test(test)
         except TimeoutError:
             error = error_msg(
@@ -191,6 +192,7 @@ class Mdtest(Command):
         default=None,
     )
     parallel: int | None = arg(None, parser=cp.Int(positive=True))
+    timeout: int = arg(4, parser=cp.Int(positive=True))
     config: Path = Path("./pyproject.toml")
 
     def load_config(self):
@@ -238,7 +240,7 @@ class Mdtest(Command):
 
             # Run each file
             print()
-            code = await Runner(parallel).run_mdtests(all_tests)
+            code = await Runner(parallel, self.timeout).run_mdtests(all_tests)
         finally:
             # Cleanup
             shutil.rmtree(MDTEST_DIR)
