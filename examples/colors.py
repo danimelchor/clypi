@@ -2,8 +2,7 @@ from __future__ import annotations
 
 from typing import Generator
 
-import clypi
-from clypi.colors import ALL_COLORS, ColorType
+from clypi import ALL_COLORS, ColorType, boxed, stack, style
 
 
 # --- DEMO UTILS ---
@@ -19,30 +18,30 @@ def main() -> None:
     fg_block: list[str] = []
     for color, bright_color in _all_colors():
         fg_block.append(
-            clypi.style("██ " + color.ljust(9), fg=color)
-            + clypi.style("██ " + bright_color.ljust(16), fg=bright_color)
+            style("██ " + color.ljust(9), fg=color)
+            + style("██ " + bright_color.ljust(16), fg=bright_color)
         )
 
     bg_block: list[str] = []
     for color, bright_color in _all_colors():
         bg_block.append(
-            clypi.style(color.ljust(9), bg=color)
+            style(color.ljust(9), bg=color)
             + " "
-            + clypi.style(bright_color.ljust(16), bg=bright_color)
+            + style(bright_color.ljust(16), bg=bright_color)
         )
 
     style_block: list[str] = []
-    style_block.append(clypi.style("I am bold", bold=True))
-    style_block.append(clypi.style("I am dim", dim=True))
-    style_block.append(clypi.style("I am underline", underline=True))
-    style_block.append(clypi.style("I am blink", blink=True))
-    style_block.append(clypi.style("I am reverse", reverse=True))
-    style_block.append(clypi.style("I am strikethrough", strikethrough=True))
+    style_block.append(style("I am bold", bold=True))
+    style_block.append(style("I am dim", dim=True))
+    style_block.append(style("I am underline", underline=True))
+    style_block.append(style("I am blink", blink=True))
+    style_block.append(style("I am reverse", reverse=True))
+    style_block.append(style("I am strikethrough", strikethrough=True))
 
-    stacked_colors = clypi.stack(
-        clypi.boxed(fg_block, title="Foregrounds"),
-        clypi.boxed(bg_block, title="Backgrounds"),
-        clypi.boxed(style_block, title="Styles"),
+    stacked_colors = stack(
+        boxed(fg_block, title="Foregrounds"),
+        boxed(bg_block, title="Backgrounds"),
+        boxed(style_block, title="Styles"),
     )
     print(stacked_colors)
 

@@ -513,7 +513,7 @@ Examples:
 ### `print`
 
 ```python
-def print(
+def cprint(
     *messages: t.Any,
     fg: ColorType | None = None,
     bg: ColorType | None = None,
@@ -530,12 +530,12 @@ def print(
     end: str | None = "\n",
 ) -> None
 ```
-Styles and prints text directly.
+Styles and prints colored and styled text directly.
 
 Examples:
 <!--- mdtest -->
 > ```python
-> clypi.print("Some colorful text", fg="green", reverse=True, bold=True, italic=True)
+> clypi.cprint("Some colorful text", fg="green", reverse=True, bold=True, italic=True)
 > ```
 
 ## Spinners

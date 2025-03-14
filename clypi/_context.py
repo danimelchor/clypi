@@ -1,6 +1,6 @@
 from dataclasses import dataclass, field
 
-from clypi._cli.config import Nargs
+from clypi._arg_config import Nargs
 
 
 @dataclass

@@ -11,7 +11,7 @@ from pytest import mark
 
 import clypi
 from clypi import AbortException, MaxAttemptsException
-from clypi.configuration import get_config
+from clypi._configuration import get_config
 
 
 @contextmanager

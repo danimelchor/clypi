@@ -30,7 +30,7 @@ async def from_packages(packages: list[str]):
 
     packages_with_versions: dict[str, str] = {}
 
-    clypi.print("\nAdded new packages", fg="blue", bold=True)
+    clypi.cprint("\nAdded new packages", fg="blue", bold=True)
     for p in packages:
         package = re.search(r"(\w+)[>=<]+([0-9\.]+)", p)
         if not package:
@@ -50,7 +50,7 @@ async def _install_packages(packages: dict[str, str]):
             print("Installed", name)
             await asyncio.sleep(0.3)
 
-    clypi.print("\nAdded new packages", fg="blue", bold=True)
+    clypi.cprint("\nAdded new packages", fg="blue", bold=True)
     for name, version in packages.items():
         icon = clypi.style("+", fg="green", bold=True)
         print(f"[{icon}] {name} {version}")
@@ -73,7 +73,7 @@ class Add(Command):
     )
 
     async def run(self) -> None:
-        clypi.print("Running `uv add` command...\n", fg="blue", bold=True)
+        clypi.cprint("Running `uv add` command...\n", fg="blue", bold=True)
 
         # Download from requirements.txt file
         if self.requirements:

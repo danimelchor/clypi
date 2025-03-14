@@ -25,7 +25,7 @@ class Uv(Command):
     async def run(self) -> None:
         # If the version was requested, print it
         if self.version:
-            clypi.print("clypi's UV 0.0.1", fg="green")
+            clypi.cprint("clypi's UV 0.0.1", fg="green")
             sys.exit(0)
 
         if not self.quiet:

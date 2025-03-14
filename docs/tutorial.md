@@ -54,9 +54,9 @@ A quick summary at the time of writing is:
         verbose: bool = arg(False, short="v")
 
         async def run(self):
-            clypi.print("Sorry I don't know how to use git, it's too hard!", fg="yellow")
+            clypi.cprint("Sorry I don't know how to use git, it's too hard!", fg="yellow")
             if self.verbose:
-                clypi.print("asdkjnbsvaeusbvkajhfnuehfvousadhvuashfqei" * 100)
+                clypi.cprint("asdkjnbsvaeusbvkajhfnuehfvousadhvuashfqei" * 100)
 
     def main():
         """

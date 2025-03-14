@@ -5,15 +5,15 @@ from getpass import getpass
 
 import clypi
 from clypi import parsers
+from clypi._configuration import get_config
+from clypi._exceptions import AbortException, MaxAttemptsException
 from clypi._util import UNSET, Unset
-from clypi.configuration import get_config
-from clypi.exceptions import AbortException, MaxAttemptsException
 
 MAX_ATTEMPTS: int = 20
 
 
 def _error(msg: str):
-    clypi.print(msg, fg="red")
+    clypi.cprint(msg, fg="red")
 
 
 def _input(prompt: str, hide_input: bool = False) -> str:

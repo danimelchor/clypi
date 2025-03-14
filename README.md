@@ -127,7 +127,7 @@ import clypi
 print(clypi.style("This is blue", fg="blue"), "and", clypi.style("this is red", fg="red"))
 
 # Print with colors directly
-clypi.print("Some colorful text", fg="green", reverse=True, bold=True, italic=True)
+clypi.cprint("Some colorful text", fg="green", reverse=True, bold=True, italic=True)
 
 # Store a styler and reuse it
 wrong = clypi.Styler(fg="red", strikethrough=True)

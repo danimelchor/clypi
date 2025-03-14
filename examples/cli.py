@@ -6,9 +6,8 @@ from types import CoroutineType
 
 from typing_extensions import override
 
-import clypi
 import clypi.parsers as cp
-from clypi import Command, Positional, arg
+from clypi import Command, Positional, Spinner, arg, boxed, cprint, style
 
 # ---- START DEMO UTILS ----
 P = t.ParamSpec("P")
@@ -24,10 +23,8 @@ def debug(fun: AsyncFunc[CommandT, P]) -> AsyncFunc[CommandT, P]:
     """
 
     def inner(self: CommandT, *args: P.args, **kwargs: P.kwargs):
-        boxed = clypi.boxed(
-            clypi.style(self, bold=True), title="Debug", color="magenta"
-        )
-        print(boxed, end="\n\n")
+        box = boxed(style(self, bold=True), title="Debug", color="magenta")
+        print(box, end="\n\n")
         return fun(self, *args, **kwargs)
 
     return inner
@@ -52,15 +49,15 @@ class RunParallel(Command):
 
     @debug
     async def run(self):
-        clypi.print(f"{self.env.name} - Running all files", fg="blue", bold=True)
+        cprint(f"{self.env.name} - Running all files", fg="blue", bold=True)
 
-        async with clypi.Spinner(f"Running {', '.join(self.files)} in parallel"):
+        async with Spinner(f"Running {', '.join(self.files)} in parallel"):
             await asyncio.sleep(2)
 
-        async with clypi.Spinner(f"Linting {', '.join(self.files)} in parallel"):
+        async with Spinner(f"Linting {', '.join(self.files)} in parallel"):
             await asyncio.sleep(2)
 
-        clypi.print("\nDone!", fg="green", bold=True)
+        cprint("\nDone!", fg="green", bold=True)
 
 
 class RunSerial(Command):
@@ -73,11 +70,11 @@ class RunSerial(Command):
 
     @debug
     async def run(self):
-        clypi.print(f"{self.env.name} - Running all files", fg="blue", bold=True)
+        cprint(f"{self.env.name} - Running all files", fg="blue", bold=True)
         for f in self.files:
-            async with clypi.Spinner(f"Running {f.as_posix()} in parallel"):
+            async with Spinner(f"Running {f.as_posix()} in parallel"):
                 await asyncio.sleep(2)
-        clypi.print("\nDone!", fg="green", bold=True)
+        cprint("\nDone!", fg="green", bold=True)
 
 
 class Run(Command):
@@ -118,9 +115,9 @@ class Lint(Command):
 
     @debug
     async def run(self) -> None:
-        async with clypi.Spinner(f"Linting {', '.join(self.files)}"):
+        async with Spinner(f"Linting {', '.join(self.files)}"):
             await asyncio.sleep(self.timeout)
-        clypi.print("\nDone!", fg="green", bold=True)
+        cprint("\nDone!", fg="green", bold=True)
 
 
 class Main(Command):

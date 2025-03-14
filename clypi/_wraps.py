@@ -16,14 +16,14 @@ def wrap(
         return [s]
 
     if overflow_style is UNSET:
-        from clypi.configuration import get_config
+        from clypi._configuration import get_config
 
         overflow_style = get_config().overflow_style
 
     if overflow_style == "ellipsis":
         return [s[: width - 1] + "…"]
 
-    res = []
+    res: list[str] = []
     while s:
         res.append(s[:width])
         s = s[width:].strip()
