@@ -561,10 +561,10 @@ from clypi import Spinner
 
 async def main():
     async with Spinner("Doing something", capture=True) as s:
-        await asyncio.sleep(2)
+        await asyncio.sleep(1)
         s.title = "Slept for a bit"
         print("I slept for a bit, will sleep a bit more")
-        await asyncio.sleep(2)
+        await asyncio.sleep(1)
 
 asyncio.run(main())
 ```
@@ -652,7 +652,7 @@ from clypi import spinner
 
 @spinner("Doing work", capture=True)
 async def do_some_work():
-    await asyncio.sleep(5)
+    await asyncio.sleep(2)
 
 asyncio.run(do_some_work())
 ```

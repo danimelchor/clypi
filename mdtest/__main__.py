@@ -1,6 +1,7 @@
 import asyncio
 import re
 import shutil
+import time
 from dataclasses import dataclass
 from pathlib import Path
 from textwrap import dedent
@@ -36,7 +37,7 @@ class Test:
     stdin: str
 
 
-async def parse_file(file: Path) -> list[Test]:
+async def parse_file(sm: asyncio.Semaphore, file: Path) -> list[Test]:
     tests: list[Test] = []
     base_name = (
         file.relative_to(Path.cwd())
@@ -46,8 +47,12 @@ async def parse_file(file: Path) -> list[Test]:
         .lower()
     )
 
+    # Wait for turn
+    await sm.acquire()
+
     async with await anyio.open_file(file, "r") as f:
-        in_test, current_test, args, stdin = False, [], "", ""
+        current_test: list[str] = []
+        in_test, args, stdin = False, "", ""
         async for line in f:
             # End of a code block
             if "```" in line and current_test:
@@ -81,77 +86,101 @@ async def parse_file(file: Path) -> list[Test]:
             elif g := re.search("<!--- mdtest -->", line):
                 in_test = True
 
+    sm.release()
     return tests
 
 
-async def run_test(test: Test) -> tuple[str, str]:
-    # Save test to temp file
-    test_file = MDTEST_DIR / f"{test.name}.py"
-    test_file.write_text(test.code)
+def error_msg(test: Test, stdout: str | None = None, stderr: str | None = None) -> str:
+    error: list[str] = []
+    error.append(style(f"\n\nError running test {test.name!r}\n", fg="red", bold=True))
+    error.append(boxed(test.orig, title="Code", width="max"))
 
-    file_rel = test_file.relative_to(Path.cwd())
-    commands = [f"uv run --all-extras {file_rel}"]
-    if test.args:
-        commands[0] += f" {test.args}"
-    commands.append(f"uv run --all-extras pyright {file_rel}")
+    if stdout:
+        error.append("")
+        error.append(boxed(stdout.strip(), title="Stdout", width="max"))
 
-    # Run the test
-    errors: list[list[str]] = []
-    for command in commands:
-        # Await the subprocess to run it
-        proc = await asyncio.create_subprocess_shell(
-            command,
-            stdout=asyncio.subprocess.PIPE,
-            stdin=asyncio.subprocess.PIPE,
-            stderr=asyncio.subprocess.PIPE,
-        )
-        stdout, stderr = await proc.communicate(test.stdin.encode())
+    if stderr:
+        error.append("")
+        error.append(boxed(stderr.strip(), title="Stderr", width="max"))
 
-        # If no errors, return
-        if proc.returncode == 0:
-            continue
-
-        # If there was an error, pretty print it
-        error: list[str] = []
-        error.append(
-            style(f"\n\nError running test {test.name!r}\n", fg="red", bold=True)
-        )
-        error.append(boxed(test.orig, title="Code", width="max"))
-
-        if stdout.decode():
-            error.append("")
-            error.append(boxed(stdout.decode().strip(), title="Stdout", width="max"))
-
-        if stderr.decode():
-            error.append("")
-            error.append(boxed(stderr.decode().strip(), title="Stderr", width="max"))
-
-        errors.append(error)
-
-    if not errors:
-        return test.name, ""
-    return test.name, "\n\n".join("\n".join(err) for err in errors)
+    return "\n".join(error)
 
 
-async def run_mdtests(tests: list[Test]) -> int:
-    errors = []
-    async with Spinner("Running Markdown Tests") as s:
-        coros = [run_test(test) for test in tests]
-        for task in asyncio.as_completed(coros):
-            idx, err = await task
-            if not err:
-                s.log(style("✔", fg="green") + f" Finished test {idx}")
-            else:
-                errors.append(err)
-                s.log(style("×", fg="red") + f" Finished test {idx}")
+class Runner:
+    def __init__(self) -> None:
+        self.sm = asyncio.Semaphore(5)
 
-        if errors:
-            await s.fail()
+    async def run_test(self, test: Test) -> tuple[str, list[str]]:
+        # Save test to temp file
+        test_file = MDTEST_DIR / f"{test.name}.py"
+        test_file.write_text(test.code)
 
-    for err in errors:
-        cprint(err)
+        file_rel = test_file.relative_to(Path.cwd())
+        commands = [f"uv run --all-extras {file_rel}"]
+        if test.args:
+            commands[0] += f" {test.args}"
+        commands.append(f"uv run --all-extras pyright {file_rel}")
 
-    return 1 if errors else 0
+        # Run the test
+        errors: list[str] = []
+        for command in commands:
+            # Await the subprocess to run it
+            proc = await asyncio.create_subprocess_shell(
+                command,
+                stdout=asyncio.subprocess.PIPE,
+                stdin=asyncio.subprocess.PIPE,
+                stderr=asyncio.subprocess.PIPE,
+            )
+            try:
+                stdout, stderr = await proc.communicate(test.stdin.encode())
+            except:
+                proc.terminate()
+                raise
+
+            # If no errors, return
+            if proc.returncode == 0:
+                continue
+
+            # If there was an error, pretty print it
+            errors.append(error_msg(test, stdout.decode(), stderr.decode()))
+
+        self.sm.release()
+        if not errors:
+            return test.name, []
+        return test.name, errors
+
+    async def run_test_with_timeout(self, test: Test) -> tuple[str, list[str]]:
+        await self.sm.acquire()
+        start = time.perf_counter()
+        try:
+            async with asyncio.timeout(4):
+                return await self.run_test(test)
+        except TimeoutError:
+            error = error_msg(
+                test,
+                stderr=f"Test timed out after {time.perf_counter() - start:.3f}s",
+            )
+            return test.name, [error]
+
+    async def run_mdtests(self, tests: list[Test]) -> int:
+        errors: list[str] = []
+        async with Spinner("Running Markdown Tests", capture=True) as s:
+            coros = [self.run_test_with_timeout(test) for test in tests]
+            for task in asyncio.as_completed(coros):
+                idx, err = await task
+                if not err:
+                    cprint(style("✔", fg="green") + f" Finished test {idx}")
+                else:
+                    errors.extend(err)
+                    cprint(style("×", fg="red") + f" Finished test {idx}")
+
+            if errors:
+                await s.fail()
+
+        for err in errors:
+            cprint(err)
+
+        return 1 if errors else 0
 
 
 class Mdtest(Command):
@@ -173,16 +202,20 @@ class Mdtest(Command):
         for file in self.files:
             assert file.exists(), f"File {file} does not exist!"
 
-        # Collect tests
-        async with Spinner("Collecting Markdown Tests"):
-            per_file = await asyncio.gather(*(parse_file(file) for file in self.files))
-            all_tests = [test for file in per_file for test in file]
+        try:
+            # Collect tests
+            async with Spinner("Collecting Markdown Tests"):
+                sm = asyncio.Semaphore(5)
+                per_file = await asyncio.gather(
+                    *(parse_file(sm, file) for file in self.files)
+                )
+                all_tests = [test for file in per_file for test in file]
 
-        # Run each file
-        code = await run_mdtests(all_tests)
-
-        # Cleanup
-        shutil.rmtree(MDTEST_DIR)
+            # Run each file
+            code = await Runner().run_mdtests(all_tests)
+        finally:
+            # Cleanup
+            shutil.rmtree(MDTEST_DIR)
 
         raise SystemExit(code)
 
