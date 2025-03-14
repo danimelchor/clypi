@@ -95,6 +95,12 @@ class Bool(ClypiParser[bool]):
     def __repr__(self):
         return "{yes|no}"
 
+    def _parts(self):
+        """
+        Required so that it can be flattened when inside unions or literals
+        """
+        return ["yes", "no"]
+
 
 class Str(ClypiParser[str]):
     name = "text"
@@ -221,14 +227,21 @@ class Union(ClypiParser[t.Union[X, Y]]):
         """
         Some recursive magic here to "flatten" unions
         """
-        left = self._left._parts() if isinstance(self._left, Union) else str(self._left)
-        right = (
-            self._right._parts() if isinstance(self._right, Union) else str(self._right)
-        )
-        return f"{left}|{right}"
+        parts: list[str] = []
+        if left_parts := getattr(self._left, "_parts", None):
+            parts.extend(left_parts())
+        else:
+            parts.append(str(self._left))
+
+        if right_parts := getattr(self._right, "_parts", None):
+            parts.extend(right_parts())
+        else:
+            parts.append(str(self._right))
+
+        return parts
 
     def __repr__(self):
-        return "(" + self._parts() + ")"
+        return "(" + "|".join(self._parts()) + ")"
 
 
 class Literal(ClypiParser[t.Any]):
