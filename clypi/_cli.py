@@ -277,7 +277,7 @@ class Command(metaclass=_CommandMeta):
                 *list(cls.positionals()),
             ]
             pos, dist = closest(arg.value, all_pos)
-            # 2 is ~good for typos (e.g.: vresion -> version)
+            # 2 is ~good for typos (e.g.: this -> that)
             if dist <= 2:
                 similar = pos
         else:
@@ -286,7 +286,7 @@ class Command(metaclass=_CommandMeta):
                 *[o.short for o in cls.options().values() if o.short],
             ]
             pos, dist = closest(arg.value, all_pos)
-            # 2 is ~good for typos (e.g.: vresion -> version)
+            # 2 is ~good for typos (e.g.: this -> that)
             if dist <= 2:
                 similar = pos
 
