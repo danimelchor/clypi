@@ -4,10 +4,13 @@ import typing as t
 from dataclasses import dataclass
 from functools import cached_property
 
-from clypi import _type_util, boxed, indented, stack
+from clypi import _type_util
 from clypi._arg_parser import dash_to_snake
+from clypi._boxed import boxed
 from clypi._colors import ColorType, style
 from clypi._exceptions import format_traceback
+from clypi._indented import indented
+from clypi._stack import stack
 
 if t.TYPE_CHECKING:
     from clypi import Command

@@ -8,8 +8,7 @@ from abc import ABC, abstractmethod
 from pathlib import Path
 from textwrap import dedent
 
-import clypi
-from clypi import _arg_parser
+from clypi import _arg_parser, _colors
 
 if t.TYPE_CHECKING:
     from clypi import Command
@@ -61,10 +60,10 @@ class AutocompleteInstaller(ABC):
         with open(p, "w") as f:
             f.write(self.script())
         self.post_install(p)
-        clypi.print(
+        _colors.print(
             "Successfully installed autocomplete for fish", fg="green", bold=True
         )
-        clypi.print(f"  󰘍 {self.path()}")
+        _colors.print(f"  󰘍 {self.path()}")
         sys.exit(0)
 
     def post_install(self, path: Path):

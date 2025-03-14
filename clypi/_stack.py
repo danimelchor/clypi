@@ -1,7 +1,7 @@
 from typing import overload
 
-from clypi import wrap
 from clypi._util import get_term_width, visible_width
+from clypi._wraps import wrap
 
 
 def _safe_get(ls: list[str], idx: int) -> str:
