@@ -153,7 +153,6 @@ class _CommandMeta(type):
         for v in subcmds_tmp:
             if inspect.isclass(v) and issubclass(v, Command):
                 subcmds[v.name()] = v
-                setattr(v, CLYPI_PARENTS, self.parents() + [self.name()])
             elif v is NoneType:
                 subcmds[None] = None
             else:
@@ -205,13 +204,6 @@ class _CommandMeta(type):
         if conf := self.forwarded().get(name):
             return conf
         raise ValueError(f"Unknown field {name}")
-
-    @t.final
-    def parents(self) -> list[str]:
-        """
-        A list of parent commands for this command. E.g.: pip
-        """
-        return getattr(self, CLYPI_PARENTS, [])
 
 
 @t.dataclass_transform()
@@ -297,6 +289,13 @@ class Command(metaclass=_CommandMeta):
         Optionally define text to display after the help message
         """
         return None
+
+    @classmethod
+    def parents(cls) -> list[str]:
+        """
+        A list of parent commands for this command. E.g.: pip
+        """
+        return getattr(cls, CLYPI_PARENTS, [])
 
     @t.final
     @classmethod

@@ -194,6 +194,7 @@ def test_expected_parsing_subcommand(
 
     sc = ec.subcommand
     assert sc is not None
+    assert sc.parents() == ["example"]
     for k, v in subcmd_expected.items():
         assert getattr(sc, k) == v
 
