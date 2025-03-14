@@ -1,8 +1,10 @@
 from pathlib import Path
 
+import pytest
 from typing_extensions import override
 
 from clypi import Command, Positional, arg
+from clypi._arg_parser import Arg
 
 
 class ExampleSubCommand(Command):
@@ -123,3 +125,45 @@ def test_expected_repr():
         str(cmd)
         == "ExampleCommand(flag=True, option=['f'], subcommand=ExampleSubCommand(positional=('g',)))"
     )
+
+
+def test_get_similar_opt_error():
+    with pytest.raises(ValueError) as exc_info:
+        raise ExampleCommand.get_similar_arg_error(
+            Arg(
+                "falg",  # codespell:ignore
+                "--falg",
+                "long-opt",
+            )
+        )
+
+    assert exc_info.value.args[0] == "Unknown option '--falg'. Did you mean 'flag'?"
+
+
+def test_get_similar_subcmd_error():
+    with pytest.raises(ValueError) as exc_info:
+        raise ExampleCommand.get_similar_arg_error(
+            Arg(
+                "example-suv-command",
+                "example-suv-command",
+                "pos",
+            )
+        )
+
+    assert (
+        exc_info.value.args[0]
+        == "Unknown argument 'example-suv-command'. Did you mean 'example-sub-command'?"
+    )
+
+
+def test_get_similar_non_similar():
+    with pytest.raises(ValueError) as exc_info:
+        raise ExampleCommand.get_similar_arg_error(
+            Arg(
+                "foo",
+                "foo",
+                "pos",
+            )
+        )
+
+    assert exc_info.value.args[0] == "Unknown argument 'foo'"

@@ -357,7 +357,7 @@ class Command(metaclass=_CommandMeta):
 
     @t.final
     @classmethod
-    def _get_similar_arg_error(cls, arg: _arg_parser.Arg) -> ValueError:
+    def get_similar_arg_error(cls, arg: _arg_parser.Arg) -> ValueError:
         """
         Utility function to find arguments similar to the one the
         user passed in to correct typos.
@@ -469,7 +469,7 @@ class Command(metaclass=_CommandMeta):
             is_valid_long = parsed.is_long_opt() and parsed.value in cls.options()
             is_valid_short = parsed.is_short_opt() and cls._get_long_name(parsed.value)
             if parsed.is_opt() and not (is_valid_long or is_valid_short):
-                raise cls._get_similar_arg_error(parsed)
+                raise cls.get_similar_arg_error(parsed)
 
             if is_valid_long or is_valid_short:
                 long_name = cls._get_long_name(parsed.value) or parsed.value
@@ -494,7 +494,7 @@ class Command(metaclass=_CommandMeta):
                     flush_ctx()
                 continue
 
-            raise cls._get_similar_arg_error(parsed)
+            raise cls.get_similar_arg_error(parsed)
 
         # Flush the context after the loop in case anything is left uncollected
         flush_ctx()
