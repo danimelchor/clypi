@@ -91,8 +91,8 @@ configure(
     ClypiConfig(
         theme=Theme(
             usage=Styler(fg="green", bold=True),
-            prog=Styler(fg="cyan", bold=True),
-            prog_args=Styler(fg="cyan"),
+            usage_command=Styler(fg="cyan", bold=True),
+            usage_args=Styler(fg="cyan"),
             section_title=Styler(fg="green", bold=True),
             subcommand=Styler(fg="cyan", bold=True),
             long_option=Styler(fg="cyan", bold=True),

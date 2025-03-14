@@ -11,8 +11,8 @@ from clypi._wraps import OverflowStyle
 @dataclass
 class Theme:
     usage: Styler = field(default_factory=lambda: Styler(fg="yellow"))
-    prog: Styler = field(default_factory=lambda: Styler(bold=True))
-    prog_args: Styler = field(default_factory=lambda: Styler())
+    usage_command: Styler = field(default_factory=lambda: Styler(bold=True))
+    usage_args: Styler = field(default_factory=lambda: Styler())
     section_title: Styler = field(default_factory=lambda: Styler())
 
     # Subcommands

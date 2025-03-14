@@ -26,7 +26,7 @@ class AutocompleteInstaller(ABC):
     """
 
     def __init__(self, command: type[Command]) -> None:
-        self.prog = command.prog()
+        self.name = command.prog()
         self._options = list(command.options().values())
         self._subcommands = list(command.subcommands().values())
 
@@ -52,7 +52,7 @@ class AutocompleteInstaller(ABC):
     def gen_args(self) -> str:
         # We use get_current_args to pass in what the user has typed so far
         get_current_args = f"{_CLYPI_CURRENT_ARGS}=(commandline -cp)"
-        return f"env {get_current_args} {self.prog}"
+        return f"env {get_current_args} {self.name}"
 
     def install(self) -> None:
         p = self.path()
@@ -72,10 +72,10 @@ class AutocompleteInstaller(ABC):
 
 class FishInstaller(AutocompleteInstaller):
     def path(self) -> Path:
-        return Path.home() / ".config" / "fish" / "completions" / f"{self.prog}.fish"
+        return Path.home() / ".config" / "fish" / "completions" / f"{self.name}.fish"
 
     def script(self) -> str:
-        return f'complete -c {self.prog} --no-files -a "({self.gen_args})" -n "{self.gen_args}"'
+        return f'complete -c {self.name} --no-files -a "({self.gen_args})" -n "{self.gen_args}"'
 
 
 class BashInstaller(AutocompleteInstaller):
@@ -83,7 +83,7 @@ class BashInstaller(AutocompleteInstaller):
         base = Path("/etc/bash_completion.d/")
         if Path("/usr/local/etc/bash_completion.d").exists():
             base = Path("/usr/local/etc/bash_completion.d")
-        return base / self.prog
+        return base / self.name
 
     def post_install(self, path: Path):
         bashrc = Path.home() / ".bashrc"
@@ -97,21 +97,21 @@ class BashInstaller(AutocompleteInstaller):
     def script(self) -> str:
         return dedent(
             """
-            _complete_%(prog)s() {
+            _complete_%(name)s() {
                 _script_commands=$(env %(env_var)s="${COMP_WORDS[*]}" $1)
                 local cur="${COMP_WORDS[COMP_CWORD]}"
                 COMPREPLY=( $(compgen -W "${_script_commands}" -- ${cur}) )
             }
 
-            complete -o default -F _complete_%(prog)s %(prog)s
+            complete -o default -F _complete_%(name)s %(name)s
             """
-            % dict(prog=self.prog, env_var=_CLYPI_CURRENT_ARGS)
+            % dict(name=self.name, env_var=_CLYPI_CURRENT_ARGS)
         ).strip()
 
 
 class ZshInstaller(AutocompleteInstaller):
     def path(self) -> Path:
-        return Path.home() / ".zfunc" / f"_{self.prog}"
+        return Path.home() / ".zfunc" / f"_{self.name}"
 
     def post_install(self, path: Path):
         autoload_comp = "fpath+=~/.zfunc; autoload -Uz compinit; compinit"
@@ -126,10 +126,10 @@ class ZshInstaller(AutocompleteInstaller):
     def script(self) -> str:
         return dedent(
             """
-            #compdef %(prog)s
+            #compdef %(name)s
 
-            _complete_%(prog)s() {
-              IFS=$'\\n' completions=( $(env %(env_var)s="${words[1,$CURRENT]}" %(prog)s) )
+            _complete_%(name)s() {
+              IFS=$'\\n' completions=( $(env %(env_var)s="${words[1,$CURRENT]}" %(name)s) )
 
               local -a filtered
               for item in "${completions[@]}"; do
@@ -140,9 +140,9 @@ class ZshInstaller(AutocompleteInstaller):
               compadd -U -V unsorted -a filtered
             }
 
-            compdef _complete_%(prog)s %(prog)s
+            compdef _complete_%(name)s %(name)s
             """
-            % dict(prog=self.prog, env_var=_CLYPI_CURRENT_ARGS)
+            % dict(name=self.name, env_var=_CLYPI_CURRENT_ARGS)
         ).strip()
 
 
