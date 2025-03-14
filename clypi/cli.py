@@ -59,7 +59,7 @@ class _CommandMeta(type):
     def _configure_fields(self) -> None:
         """
         Parses the type hints from the class extending Command and assigns each
-        a _Config field with all the necessary info to display and parse them.
+        a _Config[t.Any]field with all the necessary info to display and parse them.
         """
         annotations: dict[str, t.Any] = inspect.get_annotations(self, eval_str=True)
 
@@ -98,7 +98,7 @@ class _CommandMeta(type):
             fields[field] = value
 
             # Set the values in the class properly instead of keeping the
-            # _Config classes around
+            # _Config[t.Any]classes around
             if not value.has_default() and hasattr(self, field):
                 delattr(self, field)
             elif value.has_default():
@@ -135,8 +135,9 @@ class _CommandMeta(type):
         setattr(self, CLYPI_SUBCOMMANDS, subcmds)
 
 
+@t.dataclass_transform()
 class Command(metaclass=_CommandMeta):
-    def __init__(self, _from_parser=False) -> None:
+    def __init__(self, _from_parser: bool = False) -> None:
         if not _from_parser:
             raise ClypiException(
                 "Please, call `.parse()` on your command instead of instantiating it directly"
@@ -194,13 +195,13 @@ class Command(metaclass=_CommandMeta):
     def fields(cls) -> dict[str, _conf.Config[t.Any]]:
         """
         Parses the type hints from the class extending Command and assigns each
-        a _Config field with all the necessary info to display and parse them.
+        a Config field with all the necessary info to display and parse them.
         """
         return getattr(cls, CLYPI_FIELDS)
 
     @t.final
     @classmethod
-    def _next_positional(cls, kwargs: dict[str, t.Any]) -> Config | None:
+    def _next_positional(cls, kwargs: dict[str, t.Any]) -> Config[t.Any] | None:
         """
         Traverse the current collected arguments and find the next positional
         arg we can assign to.
@@ -244,8 +245,8 @@ class Command(metaclass=_CommandMeta):
 
     @t.final
     @classmethod
-    def options(cls) -> dict[str, Config]:
-        options: dict[str, Config] = {}
+    def options(cls) -> dict[str, Config[t.Any]]:
+        options: dict[str, Config[t.Any]] = {}
         for field, field_conf in cls.fields().items():
             if field_conf.forwarded or field_conf.is_positional:
                 continue
@@ -255,8 +256,8 @@ class Command(metaclass=_CommandMeta):
 
     @t.final
     @classmethod
-    def positionals(cls) -> dict[str, Config]:
-        positionals: dict[str, Config] = {}
+    def positionals(cls) -> dict[str, Config[t.Any]]:
+        positionals: dict[str, Config[t.Any]] = {}
         for field, field_conf in cls.fields().items():
             if field_conf.forwarded or field_conf.is_opt:
                 continue

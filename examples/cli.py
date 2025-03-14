@@ -1,7 +1,8 @@
 import asyncio
+import typing as t
 from enum import Enum
 from pathlib import Path
-from typing import Literal
+from types import CoroutineType
 
 from typing_extensions import override
 
@@ -9,21 +10,30 @@ import clypi
 import clypi.parsers as cp
 from clypi import Command, Positional, arg
 
+# ---- START DEMO UTILS ----
+P = t.ParamSpec("P")
+R = t.TypeVar("R")
+CommandT = t.TypeVar("CommandT", bound=Command)
+AsyncFunc = t.Callable[t.Concatenate[CommandT, P], CoroutineType[t.Any, t.Any, None]]
 
-def debug(fun):
+
+def debug(fun: AsyncFunc[CommandT, P]) -> AsyncFunc[CommandT, P]:
     """
     Just a utility decorator to display the commands being passed in a somewhat
     nice way
     """
 
-    async def inner(self):
+    def inner(self: CommandT, *args: P.args, **kwargs: P.kwargs):
         boxed = clypi.boxed(
             clypi.style(self, bold=True), title="Debug", color="magenta"
         )
         print(boxed, end="\n\n")
-        await fun(self)
+        return fun(self, *args, **kwargs)
 
     return inner
+
+
+# ---- END DEMO UTILS ----
 
 
 class Env(Enum):
@@ -82,7 +92,7 @@ class Run(Command):
         help="If the runner should omit all stdout messages",
     )
     env: Env = arg(Env.PROD, help="The environment to run in")
-    format: Literal["json", "pretty"] = arg(
+    format: t.Literal["json", "pretty"] = arg(
         "pretty", help="The format with which to display results"
     )
 
@@ -107,7 +117,7 @@ class Lint(Command):
     )
 
     @debug
-    async def run(self):
+    async def run(self) -> None:
         async with clypi.Spinner(f"Linting {', '.join(self.files)}"):
             await asyncio.sleep(self.timeout)
         clypi.print("\nDone!", fg="green", bold=True)
