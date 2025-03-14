@@ -2,10 +2,10 @@ import typing as t
 from dataclasses import asdict, dataclass
 from types import EllipsisType
 
-from clypi._cli import parser, type_util
+from clypi import _arg_parser, _type_util
+from clypi._prompts import MAX_ATTEMPTS
 from clypi._util import UNSET, Unset
 from clypi.parsers import Parser
-from clypi.prompts import MAX_ATTEMPTS
 
 T = t.TypeVar("T")
 
@@ -85,7 +85,7 @@ class Config(t.Generic[T]):
 
     @property
     def display_name(self):
-        name = parser.snake_to_dash(self.name)
+        name = _arg_parser.snake_to_dash(self.name)
         if self.is_opt:
             return f"--{name}"
         return name
@@ -93,7 +93,7 @@ class Config(t.Generic[T]):
     @property
     def short_display_name(self):
         assert self.short, f"Expected short to be set in {self}"
-        name = parser.snake_to_dash(self.short)
+        name = _arg_parser.snake_to_dash(self.short)
         return f"-{name}"
 
     @property
@@ -117,11 +117,11 @@ class Config(t.Generic[T]):
         if self.arg_type is bool:
             return 0
 
-        if type_util.is_list(self.arg_type):
+        if _type_util.is_list(self.arg_type):
             return "*"
 
-        if type_util.is_tuple(self.arg_type):
-            sz = type_util.tuple_size(self.arg_type)
+        if _type_util.is_tuple(self.arg_type):
+            sz = _type_util.tuple_size(self.arg_type)
             return "+" if sz == float("inf") else sz
 
         return 1

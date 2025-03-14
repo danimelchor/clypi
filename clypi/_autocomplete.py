@@ -9,10 +9,10 @@ from pathlib import Path
 from textwrap import dedent
 
 import clypi
-from clypi._cli.parser import parse_as_attr
+from clypi import _arg_parser
 
 if t.TYPE_CHECKING:
-    from clypi.cli import Command
+    from clypi import Command
 
 _CLYPI_CURRENT_ARGS = "_CLYPI_CURRENT_ARGS"
 
@@ -171,7 +171,7 @@ def list_arguments(command: type[Command]):
 def requested_autocomplete_install(args: t.Sequence[str]) -> bool:
     if not args:
         return False
-    parsed = parse_as_attr(args[-1])
+    parsed = _arg_parser.parse_as_attr(args[-1])
     return parsed.is_long_opt() and parsed.value == "install_autocomplete"
 
 

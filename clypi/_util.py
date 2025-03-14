@@ -3,7 +3,7 @@ from __future__ import annotations
 import os
 from enum import Enum, auto
 
-from clypi.colors import remove_style
+from clypi._colors import remove_style
 
 
 class Unset(Enum):

@@ -8,18 +8,15 @@ import sys
 import typing as t
 from types import NoneType, UnionType
 
-from clypi import parsers
-from clypi._cli import autocomplete as _auto
-from clypi._cli import config as _conf
-from clypi._cli import parser, type_util
-from clypi._cli.config import Config, Positional, arg
-from clypi._cli.context import CurrentCtx
-from clypi._cli.formatter import ClypiFormatter, Formatter
+from clypi import _arg_config, _arg_parser, _autocomplete, _type_util, parsers
+from clypi._arg_config import Config, Positional, arg
+from clypi._configuration import get_config
+from clypi._context import CurrentCtx
+from clypi._exceptions import ClypiException, print_traceback
+from clypi._formatter import ClypiFormatter, Formatter
 from clypi._levenshtein import distance
+from clypi._prompts import prompt
 from clypi._util import UNSET
-from clypi.configuration import get_config
-from clypi.exceptions import ClypiException, print_traceback
-from clypi.prompts import prompt
 
 logger = logging.getLogger(__name__)
 
@@ -52,14 +49,14 @@ class _CommandMeta(type):
         /,
         **kwds: t.Any,
     ) -> None:
-        self._configure_fields()
-        self._configure_subcommands()
+        self._arg_configigure_fields()
+        self._arg_configigure_subcommands()
 
     @t.final
-    def _configure_fields(self) -> None:
+    def _arg_configigure_fields(self) -> None:
         """
         Parses the type hints from the class extending Command and assigns each
-        a _Config[t.Any]field with all the necessary info to display and parse them.
+        a _arg_configig[t.Any]field with all the necessary info to display and parse them.
         """
         annotations: dict[str, t.Any] = inspect.get_annotations(self, eval_str=True)
 
@@ -74,21 +71,21 @@ class _CommandMeta(type):
                 raise TypeError(f"{name!r} has no type annotation")
 
         # Get the field config for each field
-        fields: dict[str, _conf.Config[t.Any]] = {}
+        fields: dict[str, _arg_config.Config[t.Any]] = {}
         for field, _type in annotations.items():
             if field == "subcommand":
                 continue
 
             default = getattr(self, field, UNSET)
-            if isinstance(default, _conf.PartialConfig):
-                value = _conf.Config.from_partial(
+            if isinstance(default, _arg_config.PartialConfig):
+                value = _arg_config.Config.from_partial(
                     partial=default,
                     name=field,
                     parser=default.parser or parsers.from_type(_type),
                     arg_type=_type,
                 )
             else:
-                value = _conf.Config(
+                value = _arg_config.Config(
                     name=field,
                     default=default,
                     parser=parsers.from_type(_type),
@@ -98,7 +95,7 @@ class _CommandMeta(type):
             fields[field] = value
 
             # Set the values in the class properly instead of keeping the
-            # _Config[t.Any]classes around
+            # _arg_configig[t.Any]classes around
             if not value.has_default() and hasattr(self, field):
                 delattr(self, field)
             elif value.has_default():
@@ -107,7 +104,7 @@ class _CommandMeta(type):
         setattr(self, CLYPI_FIELDS, fields)
 
     @t.final
-    def _configure_subcommands(self) -> None:
+    def _arg_configigure_subcommands(self) -> None:
         """
         Parses the type hints from the class extending Command and stores the
         subcommand class if any
@@ -137,8 +134,8 @@ class _CommandMeta(type):
 
 @t.dataclass_transform()
 class Command(metaclass=_CommandMeta):
-    def __init__(self, _from_parser: bool = False) -> None:
-        if not _from_parser:
+    def __init__(self, _from_arg_parser: bool = False) -> None:
+        if not _from_arg_parser:
             raise ClypiException(
                 "Please, call `.parse()` on your command instead of instantiating it directly"
             )
@@ -192,7 +189,7 @@ class Command(metaclass=_CommandMeta):
 
     @t.final
     @classmethod
-    def fields(cls) -> dict[str, _conf.Config[t.Any]]:
+    def fields(cls) -> dict[str, _arg_config.Config[t.Any]]:
         """
         Parses the type hints from the class extending Command and assigns each
         a Config field with all the necessary info to display and parse them.
@@ -208,7 +205,7 @@ class Command(metaclass=_CommandMeta):
         """
         for name, pos in cls.positionals().items():
             # List positionals are a catch-all
-            if type_util.is_list(pos.arg_type):
+            if _type_util.is_list(pos.arg_type):
                 return pos
 
             if name not in kwargs:
@@ -220,8 +217,8 @@ class Command(metaclass=_CommandMeta):
     @classmethod
     def _get_long_name(cls, short: str) -> str | None:
         fields = cls.fields()
-        for field, field_conf in fields.items():
-            if field_conf.short == short:
+        for field, field_arg_config in fields.items():
+            if field_arg_config.short == short:
                 return field
         return None
 
@@ -247,27 +244,27 @@ class Command(metaclass=_CommandMeta):
     @classmethod
     def options(cls) -> dict[str, Config[t.Any]]:
         options: dict[str, Config[t.Any]] = {}
-        for field, field_conf in cls.fields().items():
-            if field_conf.forwarded or field_conf.is_positional:
+        for field, field_arg_config in cls.fields().items():
+            if field_arg_config.forwarded or field_arg_config.is_positional:
                 continue
 
-            options[field] = field_conf
+            options[field] = field_arg_config
         return options
 
     @t.final
     @classmethod
     def positionals(cls) -> dict[str, Config[t.Any]]:
         positionals: dict[str, Config[t.Any]] = {}
-        for field, field_conf in cls.fields().items():
-            if field_conf.forwarded or field_conf.is_opt:
+        for field, field_arg_config in cls.fields().items():
+            if field_arg_config.forwarded or field_arg_config.is_opt:
                 continue
 
-            positionals[field] = field_conf
+            positionals[field] = field_arg_config
         return positionals
 
     @t.final
     @classmethod
-    def _find_similar_exc(cls, arg: parser.Arg) -> ValueError:
+    def _find_similar_exc(cls, arg: _arg_parser.Arg) -> ValueError:
         """
         Utility function to find arguments similar to the one the
         user passed in to correct typos.
@@ -319,8 +316,8 @@ class Command(metaclass=_CommandMeta):
             # The user might have started typing a subcommand but not
             # finished it so we cannot fully parse it, but we can recommend
             # the current command's args to autocomplete it
-            if _auto.get_autocomplete_args() is not None:
-                _auto.list_arguments(cls)
+            if _autocomplete.get_autocomplete_args() is not None:
+                _autocomplete.list_arguments(cls)
 
             # Otherwise, help page
             cls.print_help(exception=e)
@@ -362,7 +359,7 @@ class Command(metaclass=_CommandMeta):
 
         requested_help = sys.argv[-1].lower() in HELP_ARGS
         for a in args:
-            parsed = parser.parse_as_attr(a)
+            parsed = _arg_parser.parse_as_attr(a)
             if parsed.orig.lower() in HELP_ARGS:
                 cls.print_help()
 
@@ -409,32 +406,32 @@ class Command(metaclass=_CommandMeta):
         parsed_kwargs: dict[str, t.Any] = {}
         if not requested_help:
             # --- Parse as the correct values ---
-            for field, field_conf in cls.fields().items():
+            for field, field_arg_config in cls.fields().items():
                 # If the field was provided through args
                 if field in unparsed:
-                    value = field_conf.parser(unparsed[field])
+                    value = field_arg_config.parser(unparsed[field])
 
                 # If the field was not provided but we can prompt, do so
-                elif field_conf.prompt is not None:
+                elif field_arg_config.prompt is not None:
                     value = prompt(
-                        field_conf.prompt,
-                        default=field_conf.get_default_or_missing(),
-                        hide_input=field_conf.hide_input,
-                        max_attempts=field_conf.max_attempts,
-                        parser=field_conf.parser,
+                        field_arg_config.prompt,
+                        default=field_arg_config.get_default_or_missing(),
+                        hide_input=field_arg_config.hide_input,
+                        max_attempts=field_arg_config.max_attempts,
+                        parser=field_arg_config.parser,
                     )
 
                 # If the field is not provided yet but it has a default, use that
-                elif field_conf.has_default():
-                    value = field_conf.get_default()
+                elif field_arg_config.has_default():
+                    value = field_arg_config.get_default()
 
                 # If the field comes from a parent command, use that
-                elif field_conf.forwarded and field in parent_attrs:
+                elif field_arg_config.forwarded and field in parent_attrs:
                     value = parent_attrs[field]
 
                 # Whoops!
                 else:
-                    what = "argument" if field_conf.is_positional else "option"
+                    what = "argument" if field_arg_config.is_positional else "option"
                     raise ValueError(f"Missing required {what} {field!r}")
 
                 # Try parsing the string as the right type
@@ -452,7 +449,7 @@ class Command(metaclass=_CommandMeta):
             )
 
         # Assign to an instance
-        instance = cls(_from_parser=True)
+        instance = cls(_from_arg_parser=True)
         for k, v in parsed_kwargs.items():
             setattr(instance, k, v)
         return instance
@@ -466,19 +463,19 @@ class Command(metaclass=_CommandMeta):
         completions for shells to provide autocomplete
         """
         args = args or sys.argv[1:]
-        if _auto.requested_autocomplete_install(args):
-            _auto.install_autocomplete(cls)
+        if _autocomplete.requested_autocomplete_install(args):
+            _autocomplete.install_autocomplete(cls)
 
         # If this is an autocomplete call, we need the args from the env var passed in
         # by the shell's complete function
-        if auto_args := _auto.get_autocomplete_args():
+        if auto_args := _autocomplete.get_autocomplete_args():
             args = auto_args
 
-        norm_args = parser.normalize_args(args)
+        norm_args = _arg_parser.normalize_args(args)
         args_iter = iter(norm_args)
         instance = cls._safe_parse(args_iter)
-        if _auto.get_autocomplete_args() is not None:
-            _auto.list_arguments(cls)
+        if _autocomplete.get_autocomplete_args() is not None:
+            _autocomplete.list_arguments(cls)
         if list(args_iter):
             raise ValueError(f"Unknown arguments {list(args_iter)}")
 

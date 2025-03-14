@@ -6,8 +6,8 @@ from getpass import getpass
 import clypi
 from clypi import parsers
 from clypi._util import UNSET, Unset
-from clypi.configuration import get_config
-from clypi.exceptions import AbortException, MaxAttemptsException
+from clypi._configuration import get_config
+from clypi._exceptions import AbortException, MaxAttemptsException
 
 MAX_ATTEMPTS: int = 20
 

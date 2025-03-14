@@ -3,7 +3,7 @@ from __future__ import annotations
 import random
 
 import clypi
-from clypi.colors import ALL_COLORS
+from clypi._colors import ALL_COLORS
 
 
 def main() -> None:

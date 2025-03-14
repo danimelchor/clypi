@@ -2,7 +2,6 @@ from __future__ import annotations
 
 import clypi
 import clypi.parsers as cp
-from clypi import colors
 
 
 def _validate_earth_age(x: str | list[str]) -> int:
@@ -39,8 +38,8 @@ def main() -> None:
 
     # -----------
     print()
-    colors.print("🚀 Summary", bold=True, fg="green")
-    answer = colors.Styler(fg="magenta", bold=True)
+    clypi.print("🚀 Summary", bold=True, fg="green")
+    answer = clypi.Styler(fg="magenta", bold=True)
     print(" ↳  Name:", answer(name))
     print(" ↳  Clypi is cool:", answer(is_cool))
     print(" ↳  Age:", answer(age))

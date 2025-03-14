@@ -1,11 +1,11 @@
 import typing as t
 
 from clypi import wrap
+from clypi._align import AlignType
+from clypi._align import align as _align
+from clypi._colors import ColorType, Styler
 from clypi._data.boxes import Boxes as _Boxes
 from clypi._util import get_term_width, visible_width
-from clypi.align import AlignType
-from clypi.align import align as _align
-from clypi.colors import ColorType, Styler
 
 Boxes = _Boxes
 

@@ -9,7 +9,7 @@ from pathlib import Path as _Path
 
 from typing_extensions import override
 
-from clypi._cli import type_util as tu
+from clypi import _type_util as tu
 
 T = t.TypeVar("T", covariant=True)
 X = t.TypeVar("X")

@@ -4,14 +4,14 @@ import typing as t
 from dataclasses import dataclass
 from functools import cached_property
 
-from clypi import boxed, indented, stack
-from clypi._cli import type_util
-from clypi._cli.parser import dash_to_snake
-from clypi.colors import ColorType, style
-from clypi.exceptions import format_traceback
+from clypi import _type_util, boxed, indented, stack
+from clypi._arg_parser import dash_to_snake
+from clypi._colors import ColorType, style
+from clypi._exceptions import format_traceback
 
 if t.TYPE_CHECKING:
-    from clypi.cli import Command, Config
+    from clypi import Command
+    from clypi._arg_config import Config
 
 
 @dataclass
@@ -48,7 +48,7 @@ class ClypiFormatter:
 
     @cached_property
     def theme(self):
-        from clypi.configuration import get_config
+        from clypi._configuration import get_config
 
         return get_config().theme
 
@@ -107,7 +107,7 @@ class ClypiFormatter:
         type_upper = str(option.parser).upper()
         if self.show_option_types:
             type_str = self.theme.type_str(type_upper)
-        elif type_util.has_metavar(option.arg_type):
+        elif _type_util.has_metavar(option.arg_type):
             help = help + " " + type_upper if help else type_upper
 
         return usage, type_str, help

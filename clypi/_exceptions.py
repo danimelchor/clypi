@@ -1,4 +1,4 @@
-from clypi.colors import ColorType, style
+from clypi._colors import ColorType, style
 
 
 class ClypiException(Exception):

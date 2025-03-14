@@ -3,7 +3,7 @@ from __future__ import annotations
 from typing import Generator
 
 import clypi
-from clypi.colors import ALL_COLORS, ColorType
+from clypi._colors import ALL_COLORS, ColorType
 
 
 # --- DEMO UTILS ---

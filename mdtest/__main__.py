@@ -8,7 +8,7 @@ from textwrap import dedent
 import anyio
 
 from clypi import Command, Positional, Spinner, arg, boxed, print
-from clypi.colors import style
+from clypi._colors import style
 
 MDTEST_DIR = Path.cwd() / ".mdtest"
 PREAMBLE = """\
