@@ -48,9 +48,10 @@ class MyCli(Command):
     my-cli is a very nifty demo CLI tool
     """
     subcommand: Lint | None = None
-    config: Path | None = arg(
-        # Built-in adatpters for useful validations
-        parser=cp.Path(exists=True),
+    threads: int = arg(
+        default=4,
+        # Built-in parsers for useful validations
+        parser=cp.Int(min=1, max=10),
     )
     verbose: bool = arg(
         False,
