@@ -113,3 +113,13 @@ def test_expected_init_with_mixed_args_kwargs():
     assert cmd.option == ["f"]
     assert cmd.subcommand is not None
     assert cmd.subcommand.positional == tuple("g")
+
+
+def test_expected_repr():
+    cmd = ExampleCommand(
+        flag=True, option=["f"], subcommand=ExampleSubCommand(positional=tuple("g"))
+    )
+    assert (
+        str(cmd)
+        == "ExampleCommand(flag=True, option=['f'], subcommand=ExampleSubCommand(positional=('g',)))"
+    )
