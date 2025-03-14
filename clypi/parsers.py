@@ -94,6 +94,7 @@ class Int(ClypiParser[int]):
         return "integer"
 
 
+@dataclass
 class Float(ClypiParser[float]):
     gt: float | None = None
     gte: float | None = None
@@ -201,6 +202,7 @@ class Str(ClypiParser[str]):
         return "text"
 
 
+@dataclass
 class DateTime(ClypiParser[datetime]):
     tz: timezone | None = None
 
@@ -220,7 +222,12 @@ class DateTime(ClypiParser[datetime]):
         return "datetime"
 
 
+@dataclass
 class TimeDelta(ClypiParser[timedelta]):
+    gt: timedelta | None = None
+    gte: timedelta | None = None
+    lt: timedelta | None = None
+    lte: timedelta | None = None
     max: timedelta | None = None
     min: timedelta | None = None
 
@@ -258,6 +265,14 @@ class TimeDelta(ClypiParser[timedelta]):
         if parsed is None:
             raise ValueError(f"Invalid timedelta {raw!r}.")
 
+        if self.gt is not None:
+            assert parsed > self.gt
+        if self.gte is not None:
+            assert parsed >= self.gte
+        if self.lt is not None:
+            assert parsed < self.lt
+        if self.lte is not None:
+            assert parsed <= self.lte
         if self.max is not None:
             assert parsed <= self.max
         if self.min is not None:
