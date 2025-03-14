@@ -28,8 +28,8 @@ ClypiConfig(
     nice_errors=(ClypiException,),
     theme=Theme(
         usage=Styler(fg="yellow"),
-        prog=Styler(bold=True),
-        prog_args=Styler(),
+        usage_command=Styler(bold=True),
+        usage_args=Styler(),
         section_title=Styler(),
         subcommand=Styler(fg="blue", bold=True),
         long_option=Styler(fg="blue", bold=True),
@@ -275,11 +275,11 @@ set up shell completions for your built CLI.
 > This feature is brand new and might contain some bugs. Please file a ticket
 > if you run into any!
 
-#### `prog`
+#### `name`
 ```python
 @t.final
 @classmethod
-def prog(cls)
+def name(cls)
 ```
 The name of the command. Can be overridden to provide a custom name
 or will default to the class name extending `Command`.
@@ -334,7 +334,7 @@ the help page. The `Formatter` implementation should try to use the provided con
 class Formatter(t.Protocol):
     def format_help(
         self,
-        prog: list[str],
+        full_command: list[str],
         description: str | None,
         epilog: str | None,
         options: list[Argument],

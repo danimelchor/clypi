@@ -17,11 +17,6 @@ if t.TYPE_CHECKING:
     from clypi._arg_config import Config
 
 
-@dataclass
-class ProgramConfig:
-    prog: str
-
-
 def _ext(ls: list[str], s: str | list[str] | None) -> None:
     if isinstance(s, str):
         ls.append(s)
@@ -33,7 +28,7 @@ def _ext(ls: list[str], s: str | list[str] | None) -> None:
 class Formatter(t.Protocol):
     def format_help(
         self,
-        prog: list[str],
+        full_command: list[str],
         description: str | None,
         epilog: str | None,
         options: list[Config[t.Any]],
@@ -174,7 +169,7 @@ class ClypiFormatter:
         return self._maybe_boxed(name, type_str, help, title="Arguments")
 
     def _format_subcommand(self, subcmd: type[Command]) -> tuple[str, str]:
-        name = self.theme.subcommand(subcmd.prog())
+        name = self.theme.subcommand(subcmd.name())
         help = subcmd.help() or ""
         return name, self._maybe_norm_help(help)
 
@@ -195,24 +190,24 @@ class ClypiFormatter:
 
     def _format_header(
         self,
-        prog: list[str],
+        full_command: list[str],
         options: list[Config[t.Any]],
         positionals: list[Config[t.Any]],
         subcommands: list[type[Command]],
     ) -> list[str] | str | None:
         prefix = self.theme.usage("Usage:")
-        prog_str = self.theme.prog(" ".join(prog))
+        command_str = self.theme.usage_command(" ".join(full_command))
 
-        option = self.theme.prog_args(" [OPTIONS]") if options else ""
-        command = self.theme.prog_args(" COMMAND") if subcommands else ""
+        option = self.theme.usage_args(" [OPTIONS]") if options else ""
+        command = self.theme.usage_args(" COMMAND") if subcommands else ""
 
         positionals_str: list[str] = []
         for pos in positionals:
             name = self._format_positional_with_mod(pos)
-            positionals_str.append(self.theme.prog_args(name))
+            positionals_str.append(self.theme.usage_args(name))
         positional = " " + " ".join(positionals_str) if positionals else ""
 
-        return [f"{prefix} {prog_str}{option}{command}{positional}", ""]
+        return [f"{prefix} {command_str}{option}{command}{positional}", ""]
 
     def _format_description(self, description: str | None) -> list[str] | str | None:
         if not description:
@@ -240,7 +235,7 @@ class ClypiFormatter:
 
     def format_help(
         self,
-        prog: list[str],
+        full_command: list[str],
         description: str | None,
         epilog: str | None,
         options: list[Config[t.Any]],
@@ -251,7 +246,9 @@ class ClypiFormatter:
         lines: list[str] = []
 
         # Header
-        _ext(lines, self._format_header(prog, options, positionals, subcommands))
+        _ext(
+            lines, self._format_header(full_command, options, positionals, subcommands)
+        )
 
         # Description
         _ext(lines, self._format_description(description))

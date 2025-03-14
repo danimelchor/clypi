@@ -88,6 +88,7 @@ class _CommandMeta(type):
 
         # Get the config for each field
         for field, _type in annotations.items():
+            field_names.append(field)
             if field == "subcommand":
                 continue
 
@@ -112,7 +113,6 @@ class _CommandMeta(type):
                 )
 
             # Store in the right dict
-            field_names.append(field)
             if field_conf.forwarded:
                 forwarded[field] = field_conf
             elif field_conf.is_positional:
@@ -152,7 +152,8 @@ class _CommandMeta(type):
         subcmds: dict[str | None, type[Command] | None] = {}
         for v in subcmds_tmp:
             if inspect.isclass(v) and issubclass(v, Command):
-                subcmds[v.prog()] = v
+                subcmds[v.name()] = v
+                setattr(v, CLYPI_PARENTS, self.parents() + [self.name()])
             elif v is NoneType:
                 subcmds[None] = None
             else:
@@ -205,45 +206,105 @@ class _CommandMeta(type):
             return conf
         raise ValueError(f"Unknown field {name}")
 
+    @t.final
+    def parents(self) -> list[str]:
+        """
+        A list of parent commands for this command. E.g.: pip
+        """
+        return getattr(self, CLYPI_PARENTS, [])
+
 
 @t.dataclass_transform()
 class Command(metaclass=_CommandMeta):
     def __init__(self, *args: t.Any, **kwargs: t.Any) -> None:
-        super().__init__()
+        """
+        Implementation of the init function for Commands. Similar to
+        dataclasses, we only check for the field's existence and for the
+        order the fields are provided in, but we do not check the data type
+        for the actual provided values due to complication of checking types
+        from type hints to real variables.
+        """
+        cls = self.__class__
+
         field_map: dict[str, t.Any] = {}
-        field_names = list(reversed(self.__class__.field_names()))
+
+        # Reversed so that we can `.pop()` in order
+        field_names = list(reversed(cls.field_names()))
         arg_ls = list(reversed(args))
+
+        # From *args
         while arg_ls:
             field = field_names.pop()
             arg = arg_ls.pop()
             field_map[field] = arg
 
+        # From *kwargs
         for k, v in kwargs.items():
-            if hasattr(self, k):
-                raise TypeError(f"Found duplicate field {k}")
+            if k in field_map:
+                raise TypeError(f"Found duplicate field {k} for {cls.__name__}")
+            if k not in field_names:
+                raise TypeError(f"Invalid argument {k} for {cls.__name__}")
+
+            field_map[k] = v
+            field_names.remove(k)
+
+        # Check if subcommand is missing
+        if "subcommand" in field_names:
+            # If command is optional, set it to None
+            if None in cls.subcommands():
+                setattr(self, "subcommand", None)
+                field_names.remove("subcommand")
+            else:
+                raise TypeError(f"Missing required subcommand for {cls.__name__}")
+
+        # Set defaults
+        missing_field_names: list[str] = []
+        for field in field_names:
+            conf = cls.get_field_conf(field)
+            if conf.has_default():
+                field_map[field] = conf.get_default()
+            else:
+                missing_field_names.append(field)
+
+        # The user did not provide all of the necessary fields
+        if missing_field_names:
+            raise TypeError(
+                f"Missing required arguments {', '.join(missing_field_names)} for {cls.__name__}"
+            )
+
+        # Save all fields to current instance
+        for k, v in field_map.items():
             setattr(self, k, v)
 
     @classmethod
-    def prog(cls) -> str:
+    def name(cls) -> str:
+        """
+        The name of the command being executed. E.g.: install
+        """
         return _camel_to_dashed(cls.__name__)
+
+    @t.final
+    @classmethod
+    def full_command(cls) -> list[str]:
+        """
+        The full path to the current command being ran. E.g.: pip install
+        """
+        return cls.parents() + [cls.name()]
 
     @classmethod
     def epilog(cls) -> str | None:
+        """
+        Optionally define text to display after the help message
+        """
         return None
-
-    @classmethod
-    def _parents(cls) -> list[str]:
-        return getattr(cls, CLYPI_PARENTS, [])
 
     @t.final
     @classmethod
     def help(cls):
-        doc = inspect.getdoc(cls)
-
-        # Dataclass sets a default docstring so ignore that
-        if not doc or doc.startswith(cls.__name__ + "("):
-            return None
-
+        """
+        A brief description for the command
+        """
+        doc = inspect.getdoc(cls) or ""
         return doc.replace("\n", " ")
 
     async def run(self) -> None:
@@ -297,7 +358,7 @@ class Command(metaclass=_CommandMeta):
 
     @t.final
     @classmethod
-    def _find_similar_exc(cls, arg: _arg_parser.Arg) -> ValueError:
+    def _get_similar_arg_error(cls, arg: _arg_parser.Arg) -> ValueError:
         """
         Utility function to find arguments similar to the one the
         user passed in to correct typos.
@@ -389,13 +450,18 @@ class Command(metaclass=_CommandMeta):
         # The subcommand we need to parse
         subcommand: type[Command] | None = None
 
+        # If the user is trying to display the help page we can skip some parts
         requested_help = sys.argv[-1].lower() in HELP_ARGS
+
+        # Parse the cmd line arguments
         for a in args:
             parsed = _arg_parser.parse_as_attr(a)
+
+            # If we've reached -h or --help
             if parsed.orig.lower() in HELP_ARGS:
                 cls.print_help()
 
-            # ---- Try to parse as a subcommand ----
+            # Try to parse as a subcommand
             if parsed.is_pos() and parsed.value in cls.subcommands():
                 subcommand = cls.subcommands()[parsed.value]
                 break
@@ -404,7 +470,7 @@ class Command(metaclass=_CommandMeta):
             is_valid_long = parsed.is_long_opt() and parsed.value in cls.options()
             is_valid_short = parsed.is_short_opt() and cls._get_long_name(parsed.value)
             if parsed.is_opt() and not (is_valid_long or is_valid_short):
-                raise cls._find_similar_exc(parsed)
+                raise cls._get_similar_arg_error(parsed)
 
             if is_valid_long or is_valid_short:
                 long_name = cls._get_long_name(parsed.value) or parsed.value
@@ -418,18 +484,18 @@ class Command(metaclass=_CommandMeta):
                     current_attr = CurrentCtx(option.name, option.nargs, option.nargs)
                 continue
 
-            # ---- Try to assign to the current positional ----
+            # Try to assign to the current positional
             if not current_attr.name and (pos := cls._next_positional(unparsed)):
                 current_attr = CurrentCtx(pos.name, pos.nargs, pos.nargs)
 
-            # ---- Try to assign to the current ctx ----
+            # Try to assign to the current ctx
             if current_attr.name and current_attr.has_more():
                 current_attr.collect(parsed.value)
                 if not current_attr.has_more():
                     flush_ctx()
                 continue
 
-            raise cls._find_similar_exc(parsed)
+            raise cls._get_similar_arg_error(parsed)
 
         # Flush the context after the loop in case anything is left uncollected
         flush_ctx()
@@ -439,15 +505,21 @@ class Command(metaclass=_CommandMeta):
         if not requested_help:
             # --- Parse as the correct values ---
             for field in cls.field_names():
+                if field == "subcommand":
+                    continue
                 field_conf = cls.get_field_conf(field)
+
+                # If the field comes from a parent command, use that
+                if field_conf.forwarded and field in parent_attrs:
+                    parsed_kwargs[field] = parent_attrs[field]
 
                 # If the field was provided through args
                 if field in unparsed:
-                    value = field_conf.parser(unparsed[field])
+                    parsed_kwargs[field] = field_conf.parser(unparsed[field])
 
                 # If the field was not provided but we can prompt, do so
                 elif field_conf.prompt is not None:
-                    value = prompt(
+                    parsed_kwargs[field] = prompt(
                         field_conf.prompt,
                         default=field_conf.get_default_or_missing(),
                         hide_input=field_conf.hide_input,
@@ -455,39 +527,17 @@ class Command(metaclass=_CommandMeta):
                         parser=field_conf.parser,
                     )
 
-                # If the field is not provided yet but it has a default, use that
-                elif field_conf.has_default():
-                    value = field_conf.get_default()
-
-                # If the field comes from a parent command, use that
-                elif field_conf.forwarded and field in parent_attrs:
-                    value = parent_attrs[field]
-
-                # Whoops!
-                else:
-                    what = "argument" if field_conf.is_positional else "option"
-                    raise ValueError(f"Missing required {what} {field!r}")
-
-                # Try parsing the string as the right type
-                parsed_kwargs[field] = value
-
-        # --- Parse the subcommand passing in the parsed types ---
-        subcommand_is_optional = None in cls.subcommands()
-        if subcommand is None and not subcommand_is_optional:
-            raise ValueError("Missing required subcommand")
-        elif subcommand:
+        # Parse the subcommand passing in the parsed types
+        if subcommand:
             # Pass parent configs to child to get parenthood + config
-            setattr(subcommand, CLYPI_PARENTS, cls._parents() + [cls.prog()])
+            setattr(subcommand, CLYPI_PARENTS, cls.full_command())
 
             parsed_kwargs["subcommand"] = subcommand._safe_parse(
                 args, parent_attrs=parsed_kwargs
             )
 
-        # Assign to an instance
-        instance = cls(_from_arg_parser=True)
-        for k, v in parsed_kwargs.items():
-            setattr(instance, k, v)
-        return instance
+        # Initialize the instance
+        return cls(**parsed_kwargs)
 
     @t.final
     @classmethod
@@ -519,7 +569,7 @@ class Command(metaclass=_CommandMeta):
     @classmethod
     def print_help(cls, exception: Exception | None = None) -> t.NoReturn:
         help_str = get_config().help_formatter.format_help(
-            prog=cls._parents() + [cls.prog()],
+            full_command=cls.full_command(),
             description=cls.help(),
             epilog=cls.epilog(),
             options=list(cls.options().values()),

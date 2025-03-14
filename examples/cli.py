@@ -120,7 +120,7 @@ class Lint(Command):
         cprint("\nDone!", fg="green", bold=True)
 
 
-class Main(Command):
+class Main(Command, name="termuff"):
     """
     Termuff is a powerful command line interface to lint and
     run arbitrary files.
@@ -128,11 +128,6 @@ class Main(Command):
 
     subcommand: Run | Lint | None = None
     verbose: bool = arg(False, short="v", help="Weather to show more output")
-
-    @override
-    @classmethod
-    def prog(cls):
-        return "termuff"
 
     @override
     @classmethod

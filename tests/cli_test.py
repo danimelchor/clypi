@@ -25,7 +25,7 @@ class ExampleCommand(Command):
 
     @override
     @classmethod
-    def prog(cls):
+    def name(cls):
         return "example"
 
     @override
@@ -39,7 +39,8 @@ class ExampleCommand(Command):
 
 def test_expected_base():
     assert ExampleCommand.help() == "Some sample documentation for the main command"
-    assert ExampleCommand.prog() == "example"
+    assert ExampleCommand.name() == "example"
+    assert ExampleCommand.full_command() == ["example"]
     assert ExampleCommand.epilog() == "Some text to display after..."
 
 
@@ -66,16 +67,49 @@ def test_expected_positional():
 
 
 def test_expected_subcommands():
-    pos = ExampleCommand.subcommands()
-    assert len(pos) == 2
+    ec = ExampleCommand.subcommands()
+    assert len(ec) == 2
 
-    assert pos[None] is None
+    assert ec[None] is None
 
-    sub = pos["example-sub-command"]
+    sub = ec["example-sub-command"]
     assert sub is ExampleSubCommand
-    assert sub.prog() == "example-sub-command"
+    assert sub.name() == "example-sub-command"
     assert sub.help() == "Some sample docs"
 
 
 def test_expected_cls_introspection():
     assert ExampleCommand.option == []
+
+
+def test_expected_init():
+    cmd = ExampleCommand()
+    assert cmd.flag is False
+    assert cmd.option == []
+    assert cmd.subcommand is None
+
+
+def test_expected_init_with_kwargs():
+    cmd = ExampleCommand(
+        flag=True, option=["f"], subcommand=ExampleSubCommand(positional=tuple("g"))
+    )
+    assert cmd.flag is True
+    assert cmd.option == ["f"]
+    assert cmd.subcommand is not None
+    assert cmd.subcommand.positional == tuple("g")
+
+
+def test_expected_init_with_args():
+    cmd = ExampleCommand(True, ExampleSubCommand(tuple("g")), ["f"])
+    assert cmd.flag is True
+    assert cmd.option == ["f"]
+    assert cmd.subcommand is not None
+    assert cmd.subcommand.positional == tuple("g")
+
+
+def test_expected_init_with_mixed_args_kwargs():
+    cmd = ExampleCommand(True, ExampleSubCommand(tuple("g")), option=["f"])
+    assert cmd.flag is True
+    assert cmd.option == ["f"]
+    assert cmd.subcommand is not None
+    assert cmd.subcommand.positional == tuple("g")
