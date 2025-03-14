@@ -193,9 +193,9 @@ class Mdtest(Command):
     parallel: int | None = arg(None, parser=cp.Int(positive=True))
     config: Path = Path("./pyproject.toml")
 
-    def load_config(self) -> tuple[list[Path] | None, int | None]:
+    def load_config(self):
         if not self.config.exists():
-            return None, None
+            return Mdtest()
 
         with open(self.config, "rb") as f:
             conf = tomllib.load(f)
@@ -204,14 +204,14 @@ class Mdtest(Command):
             data = conf["tool"]["mdtest"]
             parallel = int(data["parallel"]) if "parallel" in data else None
             files = [p for f in data["include"] for p in Path().glob(f)]
-            return files, parallel
+            return Mdtest(files, parallel)
 
-        return None, None
+        return Mdtest()
 
     async def run(self) -> None:
-        conf_files, conf_parallel = self.load_config()
-        files = self.files or conf_files
-        parallel = self.parallel or conf_parallel or 1
+        conf = self.load_config()
+        files = self.files or conf.files
+        parallel = self.parallel or conf.parallel or 1
         if files is None:
             cprint("No files to run!", fg="yellow")
             return
