@@ -23,6 +23,13 @@ class Parser(t.Protocol[T]):
     def __call__(self, raw: str | list[str], /) -> T: ...
 
 
+CATCH_ERRORS: tuple[type[Exception], ...] = (
+    ValueError,
+    TypeError,
+    IndexError,
+)
+
+
 class CannotParseAs(Exception):
     def __init__(self, value: t.Any, parser: Parser[t.Any]) -> None:
         message = f"Cannot parse {value!r} as {parser}"
@@ -47,6 +54,14 @@ class ClypiParser(ABC, t.Generic[X]):
         return str(self) == str(other)
 
 
+def a(cond: bool, value: t.Any, error_msg: str):
+    """
+    Short hand for assertions with error messages
+    """
+    if not cond:
+        raise ValueError(f"{value} {error_msg}")
+
+
 @dataclass
 class Int(ClypiParser[int]):
     gt: int | None = None
@@ -68,25 +83,25 @@ class Int(ClypiParser[int]):
 
         parsed = int(raw)
         if self.gt is not None:
-            assert parsed > self.gt
+            a(parsed > self.gt, parsed, f"is not greater than {self.gt}")
         if self.gte is not None:
-            assert parsed >= self.gte
+            a(parsed >= self.gte, parsed, f"is not greater than or equal to {self.gte}")
         if self.lt is not None:
-            assert parsed < self.lt
+            a(parsed < self.lt, parsed, f"is not less than {self.lt}")
         if self.lte is not None:
-            assert parsed <= self.lte
+            a(parsed <= self.lte, parsed, f"is not less than or equal to {self.lte}")
         if self.max is not None:
-            assert parsed <= self.max
+            a(parsed <= self.max, parsed, f"is not less than or equal to {self.max}")
         if self.min is not None:
-            assert parsed >= self.min
+            a(parsed >= self.min, parsed, f"is not greater than or equal to {self.min}")
         if self.positive:
-            assert parsed > 0
+            a(parsed > 0, parsed, "is not positive")
         if self.nonpositive:
-            assert parsed <= 0
+            a(parsed <= 0, parsed, "is not non-positive")
         if self.negative:
-            assert parsed < 0
+            a(parsed < 0, parsed, "is not negative")
         if self.nonnegative:
-            assert parsed >= 0
+            a(parsed >= 0, parsed, "is non non-negative")
 
         return parsed
 
@@ -113,25 +128,25 @@ class Float(ClypiParser[float]):
 
         parsed = float(raw)
         if self.gt is not None:
-            assert parsed > self.gt
+            a(parsed > self.gt, parsed, f"is not greater than {self.gt}")
         if self.gte is not None:
-            assert parsed >= self.gte
+            a(parsed >= self.gte, parsed, f"is not greater than or equal to {self.gte}")
         if self.lt is not None:
-            assert parsed < self.lt
+            a(parsed < self.lt, parsed, f"is not less than {self.lt}")
         if self.lte is not None:
-            assert parsed <= self.lte
+            a(parsed <= self.lte, parsed, f"is not less than or equal to {self.lte}")
         if self.max is not None:
-            assert parsed <= self.max
+            a(parsed <= self.max, parsed, f"is not less than or equal to {self.max}")
         if self.min is not None:
-            assert parsed >= self.min
+            a(parsed >= self.min, parsed, f"is not greater than or equal to {self.min}")
         if self.positive:
-            assert parsed > 0
+            a(parsed > 0, parsed, "is not positive")
         if self.nonpositive:
-            assert parsed <= 0
+            a(parsed <= 0, parsed, "is not non-positive")
         if self.negative:
-            assert parsed < 0
+            a(parsed < 0, parsed, "is not negative")
         if self.nonnegative:
-            assert parsed >= 0
+            a(parsed >= 0, parsed, "is non non-negative")
         return parsed
 
     def __repr__(self) -> str:
@@ -179,19 +194,23 @@ class Str(ClypiParser[str]):
             raise CannotParseAs(raw, self)
 
         if self.length is not None:
-            assert len(raw) == self.length
+            a(len(raw) == self.length, len, f"'s length is not {self.length}")
         if self.max is not None:
-            assert len(raw) <= self.max
+            a(len(raw) <= self.max, len, f"'s length is not less than {self.max}")
         if self.min is not None:
-            assert len(raw) >= self.min
+            a(len(raw) >= self.min, len, f"'s length is not greater than {self.min}")
         if self.startswith is not None:
-            assert raw.startswith(self.startswith)
+            a(
+                raw.startswith(self.startswith),
+                raw,
+                f"does not start with {self.startswith}",
+            )
         if self.endswith is not None:
-            assert raw.endswith(self.endswith)
+            a(raw.endswith(self.endswith), raw, f"does not end with {self.endswith}")
         if self.regex is not None:
             m = re.search(self.regex, raw)
-            assert m
-            if self.regex_group is not None:
+            a(m is not None, raw, f"does not match the regular expression {self.regex}")
+            if m and self.regex_group is not None:
                 val = m.group(self.regex_group)
                 assert isinstance(val, str)
                 raw = val
@@ -266,17 +285,17 @@ class TimeDelta(ClypiParser[timedelta]):
             raise ValueError(f"Invalid timedelta {raw!r}.")
 
         if self.gt is not None:
-            assert parsed > self.gt
+            a(parsed > self.gt, parsed, f"is not greater than {self.gt}")
         if self.gte is not None:
-            assert parsed >= self.gte
+            a(parsed >= self.gte, parsed, f"is not greater than or equal to {self.gte}")
         if self.lt is not None:
-            assert parsed < self.lt
+            a(parsed < self.lt, parsed, f"is not less than {self.lt}")
         if self.lte is not None:
-            assert parsed <= self.lte
+            a(parsed <= self.lte, parsed, f"is not less than or equal to {self.lte}")
         if self.max is not None:
-            assert parsed <= self.max
+            a(parsed <= self.max, parsed, f"is not less than or equal to {self.max}")
         if self.min is not None:
-            assert parsed >= self.min
+            a(parsed >= self.min, parsed, f"is not greater than or equal to {self.min}")
 
         return parsed
 

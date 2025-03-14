@@ -310,7 +310,7 @@ class Command(metaclass=_CommandMeta):
         """
         try:
             return cls._parse(args, parent_attrs)
-        except (ValueError, TypeError) as e:
+        except parsers.CATCH_ERRORS as e:
             if not get_config().help_on_fail:
                 raise
 
