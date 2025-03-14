@@ -2,14 +2,16 @@ import asyncio
 import re
 import shutil
 import time
+from contextlib import suppress
 from dataclasses import dataclass
 from pathlib import Path
 from textwrap import dedent
 
 import anyio
+import tomllib
 
-from clypi import Command, Positional, Spinner, arg, boxed, cprint
-from clypi._colors import style
+import clypi.parsers as cp
+from clypi import Command, Positional, Spinner, arg, boxed, cprint, style
 
 MDTEST_DIR = Path.cwd() / ".mdtest"
 PREAMBLE = """\
@@ -39,13 +41,7 @@ class Test:
 
 async def parse_file(sm: asyncio.Semaphore, file: Path) -> list[Test]:
     tests: list[Test] = []
-    base_name = (
-        file.relative_to(Path.cwd())
-        .as_posix()
-        .replace("/", "-")
-        .replace(".md", "")
-        .lower()
-    )
+    base_name = file.as_posix().replace("/", "-").replace(".md", "").lower()
 
     # Wait for turn
     await sm.acquire()
@@ -87,6 +83,7 @@ async def parse_file(sm: asyncio.Semaphore, file: Path) -> list[Test]:
                 in_test = True
 
     sm.release()
+    cprint(style("✔", fg="green") + f" Collected {len(tests)} tests for {file}")
     return tests
 
 
@@ -107,19 +104,19 @@ def error_msg(test: Test, stdout: str | None = None, stderr: str | None = None) 
 
 
 class Runner:
-    def __init__(self) -> None:
-        self.sm = asyncio.Semaphore(5)
+    def __init__(self, parallel: int, timeout: int) -> None:
+        self.sm = asyncio.Semaphore(parallel)
+        self.timeout = timeout
 
     async def run_test(self, test: Test) -> tuple[str, list[str]]:
         # Save test to temp file
         test_file = MDTEST_DIR / f"{test.name}.py"
         test_file.write_text(test.code)
 
-        file_rel = test_file.relative_to(Path.cwd())
-        commands = [f"uv run --all-extras {file_rel}"]
+        commands = [f"uv run --all-extras {test_file}"]
         if test.args:
             commands[0] += f" {test.args}"
-        commands.append(f"uv run --all-extras pyright {file_rel}")
+        commands.append(f"uv run --all-extras pyright {test_file}")
 
         # Run the test
         errors: list[str] = []
@@ -152,7 +149,7 @@ class Runner:
         await self.sm.acquire()
         start = time.perf_counter()
         try:
-            async with asyncio.timeout(4):
+            async with asyncio.timeout(self.timeout):
                 return await self.run_test(test)
         except TimeoutError:
             error = error_msg(
@@ -190,30 +187,60 @@ class Mdtest(Command):
     runnable.
     """
 
-    files: Positional[list[Path]] = arg(
+    files: Positional[list[Path] | None] = arg(
         help="The list of markdown files to test",
-        default_factory=lambda: list(Path.cwd().glob("**/*.md")),
+        default=None,
     )
+    parallel: int | None = arg(None, parser=cp.Int(positive=True))
+    timeout: int = arg(4, parser=cp.Int(positive=True))
+    config: Path = Path("./pyproject.toml")
+
+    def load_config(self):
+        if not self.config.exists():
+            return Mdtest()
+
+        with open(self.config, "rb") as f:
+            conf = tomllib.load(f)
+
+        with suppress(KeyError):
+            data = conf["tool"]["mdtest"]
+            parallel = int(data["parallel"]) if "parallel" in data else None
+            files = [p for f in data["include"] for p in Path().glob(f)]
+            return Mdtest(files, parallel)
+
+        return Mdtest()
 
     async def run(self) -> None:
+        conf = self.load_config()
+        files = self.files or conf.files
+        parallel = self.parallel or conf.parallel or 1
+        if files is None:
+            cprint("No files to run!", fg="yellow")
+            return
+
         # Setup test dir
         MDTEST_DIR.mkdir(exist_ok=True)
 
         # Assert each file exists
-        for file in self.files:
+        for file in files:
             assert file.exists(), f"File {file} does not exist!"
 
         try:
             # Collect tests
-            async with Spinner("Collecting Markdown Tests"):
-                sm = asyncio.Semaphore(5)
+            async with Spinner("Collecting Markdown Tests", capture=True):
+                sm = asyncio.Semaphore(parallel)
                 per_file = await asyncio.gather(
-                    *(parse_file(sm, file) for file in self.files)
+                    *(
+                        parse_file(sm, file)
+                        for file in files
+                        if not file.parents[-1].name.startswith(".")
+                    )
                 )
                 all_tests = [test for file in per_file for test in file]
 
             # Run each file
-            code = await Runner().run_mdtests(all_tests)
+            print()
+            code = await Runner(parallel, self.timeout).run_mdtests(all_tests)
         finally:
             # Cleanup
             shutil.rmtree(MDTEST_DIR)
