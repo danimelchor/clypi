@@ -74,7 +74,7 @@ def test_expected_subcommands():
 
     sub = ec["example-sub-command"]
     assert sub is ExampleSubCommand
-    assert sub.name() == "example-sub-command"
+    assert sub._name() == "example-sub-command"
     assert sub.help() == "Some sample docs"
 
 

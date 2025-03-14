@@ -169,7 +169,7 @@ class ClypiFormatter:
         return self._maybe_boxed(name, type_str, help, title="Arguments")
 
     def _format_subcommand(self, subcmd: type[Command]) -> tuple[str, str]:
-        name = self.theme.subcommand(subcmd.name())
+        name = self.theme.subcommand(subcmd._name())
         help = subcmd.help() or ""
         return name, self._maybe_norm_help(help)
 

@@ -152,7 +152,7 @@ class _CommandMeta(type):
         subcmds: dict[str | None, type[Command] | None] = {}
         for v in subcmds_tmp:
             if inspect.isclass(v) and issubclass(v, Command):
-                subcmds[v.name()] = v
+                subcmds[v._name()] = v
             elif v is NoneType:
                 subcmds[None] = None
             else:
@@ -269,7 +269,7 @@ class Command(metaclass=_CommandMeta):
             setattr(self, k, v)
 
     @classmethod
-    def name(cls) -> str:
+    def _name(cls) -> str:
         """
         The name of the command being executed. E.g.: install
         """
@@ -281,7 +281,7 @@ class Command(metaclass=_CommandMeta):
         """
         The full path to the current command being ran. E.g.: pip install
         """
-        return cls.parents() + [cls.name()]
+        return cls.parents() + [cls._name()]
 
     @classmethod
     def epilog(cls) -> str | None:
