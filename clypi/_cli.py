@@ -13,7 +13,7 @@ from clypi._arg_config import Config, Positional, arg
 from clypi._configuration import get_config
 from clypi._context import CurrentCtx
 from clypi._distance import closest
-from clypi._exceptions import ClypiException, print_traceback
+from clypi._exceptions import print_traceback
 from clypi._formatter import ClypiFormatter, Formatter
 from clypi._prompts import prompt
 from clypi._util import UNSET
@@ -48,22 +48,21 @@ class _CommandMeta(type):
         self,
         name: str,
         bases: tuple[type, ...],
-        dict: dict[str, t.Any],
+        attrs: dict[str, t.Any],
         /,
         **kwds: t.Any,
     ) -> None:
+        super(_CommandMeta, self).__init__(name, bases, attrs)
+        self._ensure_fields_are_annotated()
         self._configure_subcommands()
         self._configure_fields()
 
     @t.final
-    def _configure_fields(self) -> None:
+    def _ensure_fields_are_annotated(self) -> None:
         """
-        Parses the type hints from the class extending Command and assigns each
-        a field Config with all the necessary info to display and parse them.
+        Ensures that every single field is annotated with type hints
         """
         annotations: dict[str, t.Any] = inspect.get_annotations(self, eval_str=True)
-
-        # Ensure each field is annotated
         for name, value in self.__dict__.items():
             if (
                 not name.startswith("_")
@@ -73,6 +72,15 @@ class _CommandMeta(type):
             ):
                 raise TypeError(f"{name!r} has no type annotation")
 
+    @t.final
+    def _configure_fields(self) -> None:
+        """
+        Parses the type hints from the class extending Command and assigns each
+        a field Config with all the necessary info to display and parse them.
+        """
+        annotations: dict[str, t.Any] = inspect.get_annotations(self, eval_str=True)
+
+        # Mappings for each arg type
         options: dict[str, _arg_config.Config[t.Any]] = {}
         positionals: dict[str, _arg_config.Config[t.Any]] = {}
         forwarded: dict[str, _arg_config.Config[t.Any]] = {}
@@ -83,7 +91,10 @@ class _CommandMeta(type):
             if field == "subcommand":
                 continue
 
+            # Get the specified default for the field (e.g.: foo: bool)
             default = getattr(self, field, UNSET)
+
+            # Check if it comes from `arg()` or if it's a real value
             if isinstance(default, _arg_config.PartialConfig):
                 field_conf = _arg_config.Config.from_partial(
                     partial=default,
@@ -92,6 +103,7 @@ class _CommandMeta(type):
                     arg_type=_type,
                 )
             else:
+                # If it's a real value then the default is the value itself
                 field_conf = _arg_config.Config(
                     name=field,
                     default=default,
@@ -134,8 +146,9 @@ class _CommandMeta(type):
         _type = annotations["subcommand"]
         subcmds_tmp = [_type]
         if isinstance(_type, UnionType):
-            subcmds_tmp = [s for s in _type.__args__ if s]
+            subcmds_tmp = _type_util.union_inner(_type)
 
+        # Store in mapping (name -> type)
         subcmds: dict[str | None, type[Command] | None] = {}
         for v in subcmds_tmp:
             if inspect.isclass(v) and issubclass(v, Command):
@@ -151,7 +164,7 @@ class _CommandMeta(type):
         default = getattr(self, "subcommand", UNSET)
         if default is not UNSET:
             setattr(self, "subcommand", default)
-        else:
+        elif hasattr(self, "subcommand"):
             delattr(self, "subcommand")
 
         # Store list of subcommands
@@ -179,6 +192,11 @@ class _CommandMeta(type):
 
     @t.final
     def get_field_conf(self, name: str) -> Config[t.Any]:
+        """
+        Helper function to find a field config with a given name. We need this
+        since we store the args in different dicts yet we want to iterate through
+        them in order to parse them how the user specified.
+        """
         if conf := self.positionals().get(name):
             return conf
         if conf := self.options().get(name):
@@ -190,11 +208,20 @@ class _CommandMeta(type):
 
 @t.dataclass_transform()
 class Command(metaclass=_CommandMeta):
-    def __init__(self, _from_arg_parser: bool = False) -> None:
-        if not _from_arg_parser:
-            raise ClypiException(
-                "Please, call `.parse()` on your command instead of instantiating it directly"
-            )
+    def __init__(self, *args: t.Any, **kwargs: t.Any) -> None:
+        super().__init__()
+        field_map: dict[str, t.Any] = {}
+        field_names = list(reversed(self.__class__.field_names()))
+        arg_ls = list(reversed(args))
+        while arg_ls:
+            field = field_names.pop()
+            arg = arg_ls.pop()
+            field_map[field] = arg
+
+        for k, v in kwargs.items():
+            if hasattr(self, k):
+                raise TypeError(f"Found duplicate field {k}")
+            setattr(self, k, v)
 
     @classmethod
     def prog(cls) -> str:
