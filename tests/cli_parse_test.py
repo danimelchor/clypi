@@ -1,4 +1,5 @@
 import shlex
+import typing as t
 from enum import Enum
 from pathlib import Path
 
@@ -9,8 +10,8 @@ from clypi import Command, Positional, arg
 from clypi.configuration import get_config
 
 
-def parametrize(args: str, cases: list[tuple]):
-    def wrapper(fn):
+def parametrize(args: str, cases: list[tuple[t.Any, ...]]):
+    def wrapper(fn: t.Callable[..., t.Any]):
         return pytest.mark.parametrize(args, cases, ids=ids(cases))(fn)
 
     return wrapper
@@ -40,11 +41,11 @@ class Example(Command):
         print("main")
 
 
-def ids(cases: list[tuple]):
+def ids(cases: list[tuple[t.Any]]):
     return list(map(lambda x: shlex.join(x[0]), cases))
 
 
-COMMAND = [
+COMMAND: list[tuple[t.Any, ...]] = [
     (["./some-path"], {"flag": False, "pos": Path("./some-path"), "option": []}),
     (
         ["--flag", "./some-path"],
@@ -90,13 +91,13 @@ COMMAND = [
 
 
 @parametrize("args,expected", COMMAND)
-def test_expected_parsing_no_subcommand(args, expected):
+def test_expected_parsing_no_subcommand(args: list[str], expected: dict[str, t.Any]):
     ec = Example.parse(args)
     for k, v in expected.items():
         assert getattr(ec, k) == v
 
 
-SUBCMD = [
+SUBCMD: list[tuple[t.Any, ...]] = [
     (
         ["example-sub", "foo"],
         {
@@ -184,7 +185,9 @@ MERGED = [
 
 
 @parametrize("args,cmd_expected,subcmd_expected", MERGED)
-def test_expected_parsing_subcommand(args, cmd_expected, subcmd_expected):
+def test_expected_parsing_subcommand(
+    args: list[str], cmd_expected: dict[str, t.Any], subcmd_expected: dict[str, t.Any]
+):
     ec = Example.parse(args)
     for k, v in cmd_expected.items():
         assert getattr(ec, k) == v
@@ -223,7 +226,7 @@ def test_expected_parsing_subcommand(args, cmd_expected, subcmd_expected):
         ),
     ],
 )
-def test_parse_lists(args, expected, fails):
+def test_parse_lists(args: list[str], expected: dict[str, t.Any], fails: bool):
     class ListCommand(Command):
         pos: Positional[list[str]]
         opt: list[str]
@@ -263,7 +266,7 @@ def test_parse_lists(args, expected, fails):
         (["foo", "--opt", *(["bar"] * 2), "--opt2", *(["qux"] * 10)], {}, False),
     ],
 )
-def test_parse_tuples(args, expected, fails):
+def test_parse_tuples(args: list[str], expected: dict[str, t.Any], fails: bool):
     class TupleCommand(Command):
         pos: Positional[tuple[str]]
         opt: tuple[str, str]
@@ -307,7 +310,7 @@ class Env(Enum):
         ),
     ],
 )
-def test_parse_enums(args, expected, fails):
+def test_parse_enums(args: list[str], expected: dict[str, t.Any], fails: bool):
     class EnumCommand(Command):
         env: Positional[Env]
         env2: Env

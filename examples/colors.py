@@ -16,14 +16,14 @@ def _all_colors() -> Generator[tuple[ColorType, ...], None, None]:
 
 # --- DEMO START ---
 def main() -> None:
-    fg_block = []
+    fg_block: list[str] = []
     for color, bright_color in _all_colors():
         fg_block.append(
             clypi.style("██ " + color.ljust(9), fg=color)
             + clypi.style("██ " + bright_color.ljust(16), fg=bright_color)
         )
 
-    bg_block = []
+    bg_block: list[str] = []
     for color, bright_color in _all_colors():
         bg_block.append(
             clypi.style(color.ljust(9), bg=color)
@@ -31,7 +31,7 @@ def main() -> None:
             + clypi.style(bright_color.ljust(16), bg=bright_color)
         )
 
-    style_block = []
+    style_block: list[str] = []
     style_block.append(clypi.style("I am bold", bold=True))
     style_block.append(clypi.style("I am dim", dim=True))
     style_block.append(clypi.style("I am underline", underline=True))

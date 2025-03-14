@@ -33,8 +33,8 @@ class Formatter(t.Protocol):
         prog: list[str],
         description: str | None,
         epilog: str | None,
-        options: list[Config],
-        positionals: list[Config],
+        options: list[Config[t.Any]],
+        positionals: list[Config[t.Any]],
         subcommands: list[type[Command]],
         exception: Exception | None,
     ) -> str: ...
@@ -82,13 +82,13 @@ class ClypiFormatter:
         stacked = stack(first_col, *rest, lines=True)
         return list(boxed(stacked, width="max", title=title, color=color))
 
-    def _format_option_value(self, option: Config):
+    def _format_option_value(self, option: Config[t.Any]):
         if option.nargs == 0:
             return ""
         placeholder = dash_to_snake(option.name).upper()
         return self.theme.placeholder(f"<{placeholder}>")
 
-    def _format_option(self, option: Config) -> tuple[str, ...]:
+    def _format_option(self, option: Config[t.Any]) -> tuple[str, ...]:
         help = self._maybe_norm_help(option.help or "")
 
         # E.g.: -r, --requirements <REQUIREMENTS>
@@ -112,7 +112,7 @@ class ClypiFormatter:
 
         return usage, type_str, help
 
-    def _format_options(self, options: list[Config]) -> list[str] | None:
+    def _format_options(self, options: list[Config[t.Any]]) -> list[str] | None:
         if not options:
             return None
 
@@ -131,13 +131,13 @@ class ClypiFormatter:
 
         return self._maybe_boxed(usage, type_str, help, title="Options")
 
-    def _format_positional_with_mod(self, positional: Config) -> str:
+    def _format_positional_with_mod(self, positional: Config[t.Any]) -> str:
         # E.g.: [FILES]...
         pos_name = positional.name.upper()
         name = f"[{pos_name}]{positional.modifier}"
         return name
 
-    def _format_positional(self, positional: Config) -> tuple[str, ...]:
+    def _format_positional(self, positional: Config[t.Any]) -> tuple[str, ...]:
         # E.g.: [FILES]... or FILES
         name = (
             self.theme.positional(self._format_positional_with_mod(positional))
@@ -153,7 +153,9 @@ class ClypiFormatter:
         )
         return name, type_str, self._maybe_norm_help(help)
 
-    def _format_positionals(self, positionals: list[Config]) -> list[str] | str | None:
+    def _format_positionals(
+        self, positionals: list[Config[t.Any]]
+    ) -> list[str] | str | None:
         if not positionals:
             return None
 
@@ -191,8 +193,8 @@ class ClypiFormatter:
     def _format_header(
         self,
         prog: list[str],
-        options: list[Config],
-        positionals: list[Config],
+        options: list[Config[t.Any]],
+        positionals: list[Config[t.Any]],
         subcommands: list[type[Command]],
     ) -> list[str] | str | None:
         prefix = self.theme.usage("Usage:")
@@ -201,7 +203,7 @@ class ClypiFormatter:
         option = self.theme.prog_args(" [OPTIONS]") if options else ""
         command = self.theme.prog_args(" COMMAND") if subcommands else ""
 
-        positionals_str = []
+        positionals_str: list[str] = []
         for pos in positionals:
             name = self._format_positional_with_mod(pos)
             positionals_str.append(self.theme.prog_args(name))
@@ -238,8 +240,8 @@ class ClypiFormatter:
         prog: list[str],
         description: str | None,
         epilog: str | None,
-        options: list[Config],
-        positionals: list[Config],
+        options: list[Config[t.Any]],
+        positionals: list[Config[t.Any]],
         subcommands: list[type[Command]],
         exception: Exception | None,
     ) -> str:

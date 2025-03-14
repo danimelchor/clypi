@@ -25,7 +25,7 @@ class Parser(t.Protocol[T]):
 
 
 class CannotParseAs(Exception):
-    def __init__(self, value: t.Any, parser: Parser) -> None:
+    def __init__(self, value: t.Any, parser: Parser[t.Any]) -> None:
         message = f"Cannot parse {value!r} as {parser}"
         super().__init__(message)
 

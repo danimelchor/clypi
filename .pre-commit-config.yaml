@@ -19,14 +19,6 @@ repos:
       exclude: ^tests/.*
       pass_filenames: false
       always_run: true
-    - id: mypy
-      name: mypy
-      entry: uv run --all-extras mypy clypi/ type_tests/ examples/
-      language: python
-      types: [python]
-      exclude: ^tests/.*
-      pass_filenames: false
-      always_run: true
 
     # Run tests
     - id: pytest

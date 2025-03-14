@@ -10,7 +10,7 @@ import pytest
 from pytest import mark
 
 import clypi
-from clypi import AbortException, MaxAttemptsException, Parser
+from clypi import AbortException, MaxAttemptsException
 from clypi.configuration import get_config
 
 
@@ -136,7 +136,7 @@ class TestCase:
             "Invalid DateTime",
         ],
     )
-    def test_prompt_with_parser_fails(self, answer: str, parser: Parser):
+    def test_prompt_with_parser_fails(self, answer: str, parser: type):
         with replace_stdin(answer) as _, pytest.raises(MaxAttemptsException):
             clypi.prompt("Some prompt", parser=parser, max_attempts=1)
 
