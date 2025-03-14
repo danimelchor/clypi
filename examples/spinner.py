@@ -1,12 +1,11 @@
 import asyncio
 import sys
 
-import clypi
-from clypi import Spin, Spinner, spinner
+from clypi import Spin, Spinner, cprint, spinner
 
 
 async def all_spinners():
-    clypi.print(
+    cprint(
         "Displaying all spinner animations." + "\n ↳ Press ctrl+c to skip all examples",
         fg="blue",
         bold=True,
@@ -48,9 +47,9 @@ async def captured_with_decorator():
     # Example with subprocess
     for i in range(10):
         if i % 2 == 0:
-            clypi.print("Stdout output", fg="blue")
+            cprint("Stdout output", fg="blue")
         else:
-            clypi.print("Stderr output", fg="red", file=sys.stderr)
+            cprint("Stderr output", fg="red", file=sys.stderr)
         await asyncio.sleep(0.3)
 
 

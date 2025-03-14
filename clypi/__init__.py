@@ -2,7 +2,7 @@ from clypi import parsers
 from clypi._align import AlignType, align
 from clypi._boxed import Boxes, boxed
 from clypi._cli import ClypiFormatter, Command, Formatter, Positional, arg
-from clypi._colors import ALL_COLORS, Styler, print, style
+from clypi._colors import ALL_COLORS, ColorType, Styler, cprint, style
 from clypi._configuration import ClypiConfig, Theme, configure, get_config
 from clypi._exceptions import (
     AbortException,
@@ -29,12 +29,12 @@ __all__ = (
     "ClypiConfig",
     "ClypiException",
     "ClypiFormatter",
+    "ColorType",
     "Command",
     "Formatter",
     "MaxAttemptsException",
     "OverflowStyle",
     "Parser",
-    "parsers",
     "Positional",
     "Spin",
     "Spinner",
@@ -48,7 +48,8 @@ __all__ = (
     "format_traceback",
     "get_config",
     "indented",
-    "print",
+    "parsers",
+    "cprint",
     "print_traceback",
     "prompt",
     "spinner",

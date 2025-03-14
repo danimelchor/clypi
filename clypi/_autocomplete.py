@@ -11,7 +11,7 @@ from textwrap import dedent
 from clypi import _arg_parser, _colors
 
 if t.TYPE_CHECKING:
-    from clypi import Command
+    from clypi._cli import Command
 
 _CLYPI_CURRENT_ARGS = "_CLYPI_CURRENT_ARGS"
 
@@ -60,10 +60,10 @@ class AutocompleteInstaller(ABC):
         with open(p, "w") as f:
             f.write(self.script())
         self.post_install(p)
-        _colors.print(
+        _colors.cprint(
             "Successfully installed autocomplete for fish", fg="green", bold=True
         )
-        _colors.print(f"  󰘍 {self.path()}")
+        _colors.cprint(f"  󰘍 {self.path()}")
         sys.exit(0)
 
     def post_install(self, path: Path):

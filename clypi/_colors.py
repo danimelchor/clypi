@@ -177,7 +177,7 @@ class SupportsWrite(t.Protocol):
     def write(self, s: t.Any, /) -> object: ...
 
 
-def print(
+def cprint(
     *messages: t.Any,
     fg: ColorType | None = None,
     bg: ColorType | None = None,

@@ -38,7 +38,7 @@ def main() -> None:
 
     # -----------
     print()
-    clypi.print("🚀 Summary", bold=True, fg="green")
+    clypi.cprint("🚀 Summary", bold=True, fg="green")
     answer = clypi.Styler(fg="magenta", bold=True)
     print(" ↳  Name:", answer(name))
     print(" ↳  Clypi is cool:", answer(is_cool))

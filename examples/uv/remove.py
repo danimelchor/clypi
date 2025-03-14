@@ -13,10 +13,10 @@ class Remove(Command):
     )
 
     async def run(self) -> None:
-        clypi.print("Running `uv remove` command...", fg="blue")
+        clypi.cprint("Running `uv remove` command...", fg="blue")
 
         # Remove the packages passed as args
-        clypi.print("\nRemoved packages", fg="blue", bold=True)
+        clypi.cprint("\nRemoved packages", fg="blue", bold=True)
         for p in self.packages:
             icon = clypi.style("-", fg="red", bold=True)
             print(f"[{icon}] {p} 0.1.0")

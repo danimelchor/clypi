@@ -18,4 +18,4 @@ class Init(Command):
     )
 
     async def run(self) -> None:
-        clypi.print("Running `uv init` command...", fg="blue")
+        clypi.cprint("Running `uv init` command...", fg="blue")
