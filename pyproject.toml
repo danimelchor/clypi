@@ -54,5 +54,10 @@ reportUnknownParameterType = "warning"
 reportUnknownMemberType = "warning"
 reportUnknownVariableType = "warning"
 
-[tool.bandit]
-skips = ["B101"]
+[tool.mdtest]
+include = [
+    "docs/*.md",
+    "examples/*.md",
+    "README.md",
+]
+parallel = 15
