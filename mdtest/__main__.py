@@ -144,7 +144,6 @@ class Runner:
             # If there was an error, pretty print it
             errors.append(error_msg(test, stdout.decode(), stderr.decode()))
 
-        self.sm.release()
         if not errors:
             return test.name, []
         return test.name, errors
@@ -161,6 +160,8 @@ class Runner:
                 stderr=f"Test timed out after {time.perf_counter() - start:.3f}s",
             )
             return test.name, [error]
+        finally:
+            self.sm.release()
 
     async def run_mdtests(self, tests: list[Test]) -> int:
         errors: list[str] = []

@@ -22,7 +22,7 @@ def main() -> None:
     # Custom types with parsing
     age = clypi.prompt(
         "How old are you?",
-        parser=int,
+        parser=cp.Int(gte=18),
         hide_input=True,
     )
     hours = clypi.prompt(
