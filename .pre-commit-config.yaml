@@ -1,6 +1,3 @@
-ci:
-  skip: [pytest]
-
 repos:
   - repo: https://github.com/astral-sh/uv-pre-commit
     # uv version.
@@ -19,6 +16,7 @@ repos:
       exclude: ^tests/.*
       pass_filenames: false
       always_run: true
+      stages: [pre-push]
 
     # Run tests
     - id: pytest
@@ -62,6 +60,7 @@ repos:
       language: python
       pass_filenames: false
       always_run: true
+      stages: [pre-push]
 
     # Markdown tests
     - id: mdtest
