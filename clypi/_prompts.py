@@ -130,7 +130,7 @@ def prompt(
             # Otherwise try parsing the string
             else:
                 parsed_inp = parser(inp)
-        except (ValueError, TypeError) as e:
+        except (ValueError, TypeError, IndexError) as e:
             _error(f"Unable to parse {inp!r}, please provide a valid value.\n  ↳  {e}")
             continue
 

@@ -4,10 +4,9 @@ import enum
 import re
 import typing as t
 from abc import ABC, abstractmethod
-from datetime import datetime, timedelta
+from dataclasses import dataclass
+from datetime import datetime, timedelta, timezone
 from pathlib import Path as _Path
-
-from typing_extensions import override
 
 from clypi import _type_util as tu
 
@@ -36,16 +35,6 @@ class ClypiParser(ABC, t.Generic[X]):
     @abstractmethod
     def __call__(self, raw: str | list[str], /) -> X: ...
 
-    def _repr_args(self) -> str | None:
-        return None
-
-    def __repr__(self):
-        name = self.name or self.__class__.__name__.lower()
-        args_str = self._repr_args()
-        if args_str is None:
-            return name
-        return f"{name}({args_str})"
-
     def __or__(self, other: ClypiParser[Y]) -> Union[X, Y]:
         return Union(self, other)
 
@@ -58,22 +47,94 @@ class ClypiParser(ABC, t.Generic[X]):
         return str(self) == str(other)
 
 
+@dataclass
 class Int(ClypiParser[int]):
-    name = "integer"
+    gt: int | None = None
+    gte: int | None = None
+    lt: int | None = None
+    lte: int | None = None
+    max: int | None = None
+    min: int | None = None
+    positive: bool = False
+    nonpositive: bool = False
+    negative: bool = False
+    nonnegative: bool = False
 
     def __call__(self, raw: str | list[str], /) -> int:
         if isinstance(raw, list):
             raise CannotParseAs(raw, self)
         if int(raw) != float(raw):
             raise ValueError(f"The value {raw!r} is not a valid integer.")
-        return int(raw)
+
+        parsed = int(raw)
+        if self.gt is not None:
+            assert parsed > self.gt
+        if self.gte is not None:
+            assert parsed >= self.gte
+        if self.lt is not None:
+            assert parsed < self.lt
+        if self.lte is not None:
+            assert parsed <= self.lte
+        if self.max is not None:
+            assert parsed <= self.max
+        if self.min is not None:
+            assert parsed >= self.min
+        if self.positive:
+            assert parsed > 0
+        if self.nonpositive:
+            assert parsed <= 0
+        if self.negative:
+            assert parsed < 0
+        if self.nonnegative:
+            assert parsed >= 0
+
+        return parsed
+
+    def __repr__(self) -> str:
+        return "integer"
 
 
 class Float(ClypiParser[float]):
+    gt: float | None = None
+    gte: float | None = None
+    lt: float | None = None
+    lte: float | None = None
+    max: float | None = None
+    min: float | None = None
+    positive: bool = False
+    nonpositive: bool = False
+    negative: bool = False
+    nonnegative: bool = False
+
     def __call__(self, raw: str | list[str], /) -> float:
         if isinstance(raw, list):
             raise CannotParseAs(raw, self)
-        return float(raw)
+
+        parsed = float(raw)
+        if self.gt is not None:
+            assert parsed > self.gt
+        if self.gte is not None:
+            assert parsed >= self.gte
+        if self.lt is not None:
+            assert parsed < self.lt
+        if self.lte is not None:
+            assert parsed <= self.lte
+        if self.max is not None:
+            assert parsed <= self.max
+        if self.min is not None:
+            assert parsed >= self.min
+        if self.positive:
+            assert parsed > 0
+        if self.nonpositive:
+            assert parsed <= 0
+        if self.negative:
+            assert parsed < 0
+        if self.nonnegative:
+            assert parsed >= 0
+        return parsed
+
+    def __repr__(self) -> str:
+        return "float"
 
 
 class Bool(ClypiParser[bool]):
@@ -102,25 +163,67 @@ class Bool(ClypiParser[bool]):
         return ["yes", "no"]
 
 
+@dataclass
 class Str(ClypiParser[str]):
-    name = "text"
+    length: int | None = None
+    max: int | None = None
+    min: int | None = None
+    startswith: str | None = None
+    endswith: str | None = None
+    regex: str | None = None
+    regex_group: int | None = None
 
     def __call__(self, raw: str | list[str], /) -> str:
         if isinstance(raw, list):
             raise CannotParseAs(raw, self)
+
+        if self.length is not None:
+            assert len(raw) == self.length
+        if self.max is not None:
+            assert len(raw) <= self.max
+        if self.min is not None:
+            assert len(raw) >= self.min
+        if self.startswith is not None:
+            assert raw.startswith(self.startswith)
+        if self.endswith is not None:
+            assert raw.endswith(self.endswith)
+        if self.regex is not None:
+            m = re.search(self.regex, raw)
+            assert m
+            if self.regex_group is not None:
+                val = m.group(self.regex_group)
+                assert isinstance(val, str)
+                raw = val
+
         return raw
+
+    def __repr__(self) -> str:
+        return "text"
 
 
 class DateTime(ClypiParser[datetime]):
+    tz: timezone | None = None
+
     def __call__(self, raw: str | list[str], /) -> datetime:
         from dateutil.parser import parse
 
         if isinstance(raw, list):
             raise CannotParseAs(raw, self)
-        return parse(raw)
+
+        parsed = parse(raw)
+        if self.tz is not None:
+            parsed = parsed.astimezone(self.tz)
+
+        return parsed
+
+    def __repr__(self) -> str:
+        return "datetime"
 
 
 class TimeDelta(ClypiParser[timedelta]):
+    max: timedelta | None = None
+    min: timedelta | None = None
+
     TIMEDELTA_UNITS = {
         ("weeks", "week", "w"): "weeks",
         ("days", "day", "d"): "days",
@@ -146,16 +249,29 @@ class TimeDelta(ClypiParser[timedelta]):
             raise ValueError(f"Invalid timedelta {raw!r}.")
 
         value, unit = match.groups()
+        parsed = None
         for units in self.TIMEDELTA_UNITS:
             if unit in units:
-                return timedelta(**{self.TIMEDELTA_UNITS[units]: int(value)})
+                parsed = timedelta(**{self.TIMEDELTA_UNITS[units]: int(value)})
+                break
 
-        raise ValueError(f"Invalid timedelta {raw!r}.")
+        if parsed is None:
+            raise ValueError(f"Invalid timedelta {raw!r}.")
+
+        if self.max is not None:
+            assert parsed <= self.max
+        if self.min is not None:
+            assert parsed >= self.min
+
+        return parsed
+
+    def __repr__(self) -> str:
+        return "timedelta"
 
 
+@dataclass
 class Path(ClypiParser[_Path]):
-    def __init__(self, *, exists: bool = False) -> None:
-        self.exists = exists
+    exists: bool = False
 
     def __call__(self, raw: str | list[str], /) -> _Path:
         if isinstance(raw, list):
@@ -168,6 +284,9 @@ class Path(ClypiParser[_Path]):
 
         return p
 
+    def __repr__(self) -> str:
+        return "path"
+
 
 class List(ClypiParser[list[X]]):
     def __init__(self, inner: Parser[X]) -> None:
@@ -178,9 +297,8 @@ class List(ClypiParser[list[X]]):
             raw = raw.split(",")
         return [self._inner(item) for item in raw]
 
-    @override
-    def _repr_args(self):
-        return str(self._inner)
+    def __repr__(self) -> str:
+        return f"list({self._inner})"
 
 
 class Tuple(ClypiParser[tuple[t.Any]]):
@@ -207,9 +325,9 @@ class Tuple(ClypiParser[tuple[t.Any]]):
         # Parse each item with it's corresponding parser
         return tuple(parser(raw_item) for parser, raw_item in zip(inner_parsers, raw))
 
-    @override
-    def _repr_args(self) -> str | None:
-        return ", ".join(str(it) for it in self._inner)
+    def __repr__(self) -> str:
+        args = ", ".join(str(it) for it in self._inner)
+        return f"tuple({args})"
 
 
 class Union(ClypiParser[t.Union[X, Y]]):
@@ -265,7 +383,7 @@ class NoneParser(ClypiParser[None]):
         raise UnparseableException()
 
     def __repr__(self):
-        return "NONE"
+        return "none"
 
 
 class Enum(ClypiParser[type[enum.Enum]]):
