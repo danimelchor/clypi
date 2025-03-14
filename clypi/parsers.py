@@ -31,6 +31,8 @@ class CannotParseAs(Exception):
 
 
 class ClypiParser(ABC, t.Generic[X]):
+    name: str | None = None
+
     @abstractmethod
     def __call__(self, raw: str | list[str], /) -> X: ...
 
@@ -38,7 +40,7 @@ class ClypiParser(ABC, t.Generic[X]):
         return None
 
     def __repr__(self):
-        name = self.__class__.__name__.lower()
+        name = self.name or self.__class__.__name__.lower()
         args_str = self._repr_args()
         if args_str is None:
             return name
@@ -57,6 +59,8 @@ class ClypiParser(ABC, t.Generic[X]):
 
 
 class Int(ClypiParser[int]):
+    name = "integer"
+
     def __call__(self, raw: str | list[str], /) -> int:
         if isinstance(raw, list):
             raise CannotParseAs(raw, self)
@@ -88,8 +92,13 @@ class Bool(ClypiParser[bool]):
             )
         return raw_lower in self.TRUE_BOOL_STR_LITERALS
 
+    def __repr__(self):
+        return "{yes|no}"
+
 
 class Str(ClypiParser[str]):
+    name = "text"
+
     def __call__(self, raw: str | list[str], /) -> str:
         if isinstance(raw, list):
             raise CannotParseAs(raw, self)
