@@ -1,6 +1,6 @@
 import pytest
 
-from clypi._distance import closest, distance
+from clypi import closest, distance
 
 
 @pytest.mark.parametrize(
