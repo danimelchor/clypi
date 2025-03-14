@@ -1,7 +1,8 @@
 from clypi import parsers
 from clypi._align import AlignType, align
+from clypi._arg_config import Positional, arg
 from clypi._boxed import Boxes, boxed
-from clypi._cli import ClypiFormatter, Command, Formatter, Positional, arg
+from clypi._cli import ClypiFormatter, Command, Formatter
 from clypi._colors import ALL_COLORS, ColorType, Styler, cprint, style
 from clypi._configuration import ClypiConfig, Theme, configure, get_config
 from clypi._exceptions import (
