@@ -5,6 +5,7 @@ from clypi._boxed import Boxes, boxed
 from clypi._cli import ClypiFormatter, Command, Formatter
 from clypi._colors import ALL_COLORS, ColorType, Styler, cprint, style
 from clypi._configuration import ClypiConfig, Theme, configure, get_config
+from clypi._distance import closest, distance
 from clypi._exceptions import (
     AbortException,
     ClypiException,
@@ -44,13 +45,15 @@ __all__ = (
     "align",
     "arg",
     "boxed",
+    "closest",
     "configure",
     "confirm",
+    "cprint",
+    "distance",
     "format_traceback",
     "get_config",
     "indented",
     "parsers",
-    "cprint",
     "print_traceback",
     "prompt",
     "spinner",
