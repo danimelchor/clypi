@@ -7,7 +7,7 @@ from textwrap import dedent
 
 import anyio
 
-from clypi import Command, Positional, Spinner, arg, boxed, print
+from clypi import Command, Positional, Spinner, arg, boxed, cprint
 from clypi._colors import style
 
 MDTEST_DIR = Path.cwd() / ".mdtest"
@@ -96,7 +96,7 @@ async def run_test(test: Test) -> tuple[str, str]:
     commands.append(f"uv run --all-extras pyright {file_rel}")
 
     # Run the test
-    errors = []
+    errors: list[list[str]] = []
     for command in commands:
         # Await the subprocess to run it
         proc = await asyncio.create_subprocess_shell(
@@ -112,7 +112,7 @@ async def run_test(test: Test) -> tuple[str, str]:
             continue
 
         # If there was an error, pretty print it
-        error = []
+        error: list[str] = []
         error.append(
             style(f"\n\nError running test {test.name!r}\n", fg="red", bold=True)
         )
@@ -149,7 +149,7 @@ async def run_mdtests(tests: list[Test]) -> int:
             await s.fail()
 
     for err in errors:
-        print(err)
+        cprint(err)
 
     return 1 if errors else 0
 
