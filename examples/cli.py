@@ -76,7 +76,7 @@ class Run(Command):
         False,
         short="q",
         help="If the runner should omit all stdout messages",
-        option_group="Global",
+        group="Global",
     )
     env: Env = arg(Env.PROD, help="The environment to run in")
     format: t.Literal["json", "pretty"] = arg(

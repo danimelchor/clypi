@@ -14,8 +14,8 @@ class Run(Command):
     """
 
     files: Positional[list[str]] = arg(help="The files to run")
-    verbose: bool = arg(..., option_group="global")
-    env: str = arg(..., option_group="global")
+    verbose: bool = arg(..., group="global")
+    env: str = arg(..., group="global")
 
     async def run(self):
         cprint("Running with:", fg="blue", bold=True)

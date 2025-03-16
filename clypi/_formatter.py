@@ -139,7 +139,7 @@ class ClypiFormatter:
         for o in options:
             if o.forwarded and not self.show_forwarded_options:
                 continue
-            groups[o.option_group].append(o)
+            groups[o.group].append(o)
 
         # Render all groups
         rendered: list[str | None] = []

@@ -187,7 +187,7 @@ class _CommandMeta(type):
                 opt_config,
                 # Keep forwarding and group config
                 forwarded=True,
-                option_group=options[opt].option_group or opt_config.option_group,
+                group=options[opt].group or opt_config.group,
             )
             inherited.append(opt)
 

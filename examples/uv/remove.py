@@ -12,6 +12,11 @@ class Remove(Command):
         False, help="Remove the packages from the development dependency group"
     )
 
+    # Forwarded opts
+    quiet: bool = arg(...)
+    version: bool = arg(...)
+    no_cache: bool = arg(...)
+
     async def run(self) -> None:
         clypi.cprint("Running `uv remove` command...", fg="blue")
 

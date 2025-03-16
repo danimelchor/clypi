@@ -71,7 +71,11 @@ class Add(Command):
     dev: bool = arg(
         False, help="Add the requirements to the development dependency group"
     )
-    verbose: bool = arg(False, help="Use verbose output", option_group="config")
+
+    # Forwarded opts
+    quiet: bool = arg(...)
+    version: bool = arg(...)
+    no_cache: bool = arg(...)
 
     async def run(self) -> None:
         clypi.cprint("Running `uv add` command...\n", fg="blue", bold=True)

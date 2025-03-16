@@ -65,7 +65,7 @@ def arg(
     prompt: str | None = None,
     hide_input: bool = False,
     max_attempts: int = MAX_ATTEMPTS,
-    option_group: str | None = None,
+    group: str | None = None,
 ) -> T
 ```
 
@@ -81,7 +81,7 @@ Parameters:
 - `prompt`: if defined, it will ask the user to provide input if not already defined in the command line args
 - `hide_input`: whether the input shouldn't be displayed as the user types (for passwords, API keys, etc.)
 - `max_attempts`: how many times to ask the user before giving up and raising
-- `option_group`: optionally define the name of a group to display the option in. Adding an option will automatically display the options in a different section of the help page (for an example, see the pictures in [formatter](#formatter)).
+- `group`: optionally define the name of a group to display the option in. Adding an option will automatically display the options in a different section of the help page (for an example, see the pictures in [formatter](#formatter)).
 
 ### `Command`
 
