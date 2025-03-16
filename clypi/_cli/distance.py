@@ -43,5 +43,7 @@ def closest(word: str, options: Iterable[str]) -> tuple[str, float]:
     option to that word and it's distance
     """
     dists = [distance(word, o) for o in options]
+    if not dists:
+        return "", float("inf")
     min_opt = min(zip(options, dists), key=lambda x: x[1])
     return min_opt

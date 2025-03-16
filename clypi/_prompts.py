@@ -32,7 +32,7 @@ def _display_default(default: t.Any) -> str:
     return f"{default}"
 
 
-def _build_prompt(text: str, default: t.Any) -> str:
+def _build_prompt(text: str, default: t.Any | Unset) -> str:
     prompt = text
     if default is not UNSET:
         prompt += f" [{_display_default(default)}]"
@@ -44,6 +44,7 @@ def confirm(
     text: str,
     *,
     default: bool | Unset = UNSET,
+    default_factory: t.Callable[[], bool] | Unset = UNSET,
     max_attempts: int = MAX_ATTEMPTS,
     abort: bool = False,
 ) -> bool:
@@ -58,6 +59,7 @@ def confirm(
     parsed_inp = prompt(
         text=text,
         default=default,
+        default_factory=default_factory,
         max_attempts=max_attempts,
         parser=parsers.from_type(bool),
     )
@@ -74,6 +76,7 @@ def prompt(
     text: str,
     *,
     default: str | Unset = UNSET,
+    default_factory: t.Callable[[], str] | Unset = UNSET,
     hide_input: bool = False,
     max_attempts: int = MAX_ATTEMPTS,
 ) -> str: ...
@@ -85,6 +88,7 @@ def prompt(
     *,
     parser: parsers.Parser[T] | type[T],
     default: T | Unset = UNSET,
+    default_factory: t.Callable[[], T] | Unset = UNSET,
     hide_input: bool = False,
     max_attempts: int = MAX_ATTEMPTS,
 ) -> T: ...
@@ -95,6 +99,7 @@ def prompt(
     *,
     parser: parsers.Parser[T] | type[T] | type[str] = str,
     default: T | Unset = UNSET,
+    default_factory: t.Callable[[], T] | Unset = UNSET,
     hide_input: bool = False,
     max_attempts: int = MAX_ATTEMPTS,
 ) -> T:
@@ -107,6 +112,8 @@ def prompt(
     :param max_attempts: The maximum number of attempts to get a valid value.
     :return: The parsed value.
     """
+    if default_factory is not UNSET:
+        default = default_factory()
 
     # Build the prompt
     prompt = _build_prompt(text, default)
