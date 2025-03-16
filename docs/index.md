@@ -266,6 +266,10 @@ class MySubCmd(Command):
 
 class MyCli(Command):
     subcommand: MySubCmd | None
+    verbose: bool = arg(False, help="Use verbose output")
+
+cmd = MyCli.parse(["my-sub-cmd", "--verbose"])
+assert cmd.subcommand.verbose is True
 ```
 
 #### Autocomplete
