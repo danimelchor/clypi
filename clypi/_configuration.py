@@ -1,11 +1,11 @@
 from dataclasses import dataclass, field
 
+from clypi._cli.formatter import ClypiFormatter, Formatter
 from clypi._colors import Styler
+from clypi._components.wraps import OverflowStyle
 from clypi._exceptions import (
     ClypiException,
 )
-from clypi._formatter import ClypiFormatter, Formatter
-from clypi._wraps import OverflowStyle
 
 
 @dataclass

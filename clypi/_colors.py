@@ -4,8 +4,7 @@ import typing as t
 from dataclasses import dataclass
 from enum import Enum
 
-from clypi._const import ESC
-
+ESC = "\033["
 ANSI_ESCAPE = re.compile(r"\x1B(?:[@-Z\\-_]|\[[0-?]*[ -/]*[@-~])")
 END = "m"
 

@@ -4,7 +4,7 @@ import pytest
 from typing_extensions import override
 
 from clypi import Command, Positional, arg
-from clypi._arg_parser import Arg
+from clypi._cli.arg_parser import Arg
 
 
 class ExampleSubCommand(Command):

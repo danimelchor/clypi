@@ -9,13 +9,14 @@ import sys
 import typing as t
 from types import NoneType, UnionType
 
-from clypi import _arg_config, _arg_parser, _autocomplete, _type_util, parsers
-from clypi._arg_config import Config, Positional, arg
+from clypi import _type_util, parsers
+from clypi._cli import arg_config, arg_parser, autocomplete
+from clypi._cli.arg_config import Config, Positional, arg
+from clypi._cli.context import CurrentCtx
+from clypi._cli.distance import closest
+from clypi._cli.formatter import ClypiFormatter, Formatter
 from clypi._configuration import get_config
-from clypi._context import CurrentCtx
-from clypi._distance import closest
 from clypi._exceptions import print_traceback
-from clypi._formatter import ClypiFormatter, Formatter
 from clypi._prompts import prompt
 from clypi._util import UNSET
 
@@ -81,8 +82,8 @@ class _CommandMeta(type):
         annotations: dict[str, t.Any] = inspect.get_annotations(self, eval_str=True)
 
         # Mappings for each arg type
-        options: dict[str, _arg_config.Config[t.Any]] = {}
-        positionals: dict[str, _arg_config.Config[t.Any]] = {}
+        options: dict[str, arg_config.Config[t.Any]] = {}
+        positionals: dict[str, arg_config.Config[t.Any]] = {}
         field_names: list[str] = []
 
         # Get the config for each field
@@ -95,8 +96,8 @@ class _CommandMeta(type):
             default = getattr(self, field, UNSET)
 
             # Check if it comes from `arg()` or if it's a real value
-            if isinstance(default, _arg_config.PartialConfig):
-                field_conf = _arg_config.Config.from_partial(
+            if isinstance(default, arg_config.PartialConfig):
+                field_conf = arg_config.Config.from_partial(
                     partial=default,
                     name=field,
                     parser=default.parser or parsers.from_type(_type),
@@ -104,7 +105,7 @@ class _CommandMeta(type):
                 )
             else:
                 # If it's a real value then the default is the value itself
-                field_conf = _arg_config.Config(
+                field_conf = arg_config.Config(
                     name=field,
                     default=default,
                     parser=parsers.from_type(_type),
@@ -398,7 +399,7 @@ class Command(metaclass=_CommandMeta):
 
     @t.final
     @classmethod
-    def get_similar_arg_error(cls, arg: _arg_parser.Arg) -> ValueError:
+    def get_similar_arg_error(cls, arg: arg_parser.Arg) -> ValueError:
         """
         Utility function to find arguments similar to the one the
         user passed in to correct typos.
@@ -451,8 +452,8 @@ class Command(metaclass=_CommandMeta):
             # The user might have started typing a subcommand but not
             # finished it so we cannot fully parse it, but we can recommend
             # the current command's args to autocomplete it
-            if _autocomplete.get_autocomplete_args() is not None:
-                _autocomplete.list_arguments(cls)
+            if autocomplete.get_autocomplete_args() is not None:
+                autocomplete.list_arguments(cls)
 
             # Otherwise, help page
             cls.print_help(exception=e)
@@ -495,7 +496,7 @@ class Command(metaclass=_CommandMeta):
 
         # Parse the cmd line arguments
         for a in args:
-            parsed = _arg_parser.parse_as_attr(a)
+            parsed = arg_parser.parse_as_attr(a)
 
             # If we've reached -h or --help
             if parsed.orig.lower() in HELP_ARGS:
@@ -598,19 +599,19 @@ class Command(metaclass=_CommandMeta):
         completions for shells to provide autocomplete
         """
         args = args or sys.argv[1:]
-        if _autocomplete.requested_autocomplete_install(args):
-            _autocomplete.install_autocomplete(cls)
+        if autocomplete.requested_autocomplete_install(args):
+            autocomplete.install_autocomplete(cls)
 
         # If this is an autocomplete call, we need the args from the env var passed in
         # by the shell's complete function
-        if auto_args := _autocomplete.get_autocomplete_args():
+        if auto_args := autocomplete.get_autocomplete_args():
             args = auto_args
 
-        norm_args = _arg_parser.normalize_args(args)
+        norm_args = arg_parser.normalize_args(args)
         args_iter = iter(norm_args)
         instance = cls._safe_parse(args_iter)
-        if _autocomplete.get_autocomplete_args() is not None:
-            _autocomplete.list_arguments(cls)
+        if autocomplete.get_autocomplete_args() is not None:
+            autocomplete.list_arguments(cls)
         if list(args_iter):
             raise ValueError(f"Unknown arguments {list(args_iter)}")
 
