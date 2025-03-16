@@ -60,6 +60,11 @@ class Main(Command):
             },
             False,
         ),
+        (
+            ["run", "-v"],
+            {},
+            True,
+        ),
     ],
 )
 def test_parse_forwarded(args: list[str], expected: dict[str, t.Any], fails: bool):
