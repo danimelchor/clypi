@@ -282,4 +282,5 @@ class ClypiFormatter:
         # Exceptions
         lines.append(self._format_exception(exception))
 
-        return "\n\n".join(line for line in lines if line)
+        joined = "\n\n".join(line for line in lines if line)
+        return joined + "\n"
