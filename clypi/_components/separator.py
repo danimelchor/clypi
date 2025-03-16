@@ -9,7 +9,7 @@ def separator(
     width: t.Literal["max"] | int = "max",
     title: str | None = None,
     color: ColorType | None = None,
-):
+) -> str:
     if width == "max":
         width = get_term_width()
 

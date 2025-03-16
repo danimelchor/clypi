@@ -66,7 +66,7 @@ async def parse_file(sm: asyncio.Semaphore, file: Path) -> list[Test]:
 
             # We're in a test, accumulate all lines
             elif in_test:
-                current_test.append(line.removeprefix("> ").rstrip())
+                current_test.append(line.removeprefix("> ").removeprefix(">").rstrip())
 
             # Mdtest arg definition
             elif g := re.search("<!--- mdtest-args (.*) -->", line):

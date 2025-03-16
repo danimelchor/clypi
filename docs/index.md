@@ -550,9 +550,11 @@ Examples:
 > clypi.cprint("Some colorful text", fg="green", reverse=True, bold=True, italic=True)
 > ```
 
-## Spinners
+## UI
 
-### `Spin`
+### Spinners
+
+#### `Spin`
 
 ```python
 class Spin(Enum): ...
@@ -562,7 +564,7 @@ The spinning animation you'd like to use. The spinners are sourced from the NPM 
 
 You can see all the spinners in action by running `uv run -m examples.spinner`. The full list can be found in the code [here](https://github.com/danimelchor/clypi/blob/master/clypi/_data/spinners.py).
 
-### `Spinner`
+#### `Spinner`
 
 A spinner indicating that something is happening behind the scenes. It can be used as a context manager or [like a decorator](#spinner-decorator). The context manager usage is like so:
 
@@ -581,7 +583,7 @@ async def main():
 asyncio.run(main())
 ```
 
-#### `Spinner.__init__()`
+##### `Spinner.__init__()`
 
 ```python
 def __init__(
@@ -602,28 +604,28 @@ Parameters:
 - `speed`: a multiplier to speed or slow down the frame rate of the animation
 - `capture`: if enabled, the Spinner will capture all stdout and stderr and display it nicely
 
-#### `done`
+##### `done`
 
 ```python
 async def done(self, msg: str | None = None)
 ```
 Mark the spinner as done early and optionally display a message.
 
-#### `fail`
+##### `fail`
 
 ```python
 async def fail(self, msg: str | None = None)
 ```
 Mark the spinner as failed early and optionally display an error message.
 
-#### `log`
+##### `log`
 
 ```python
 async def log(self, msg: str | None = None)
 ```
 Display extra log messages to the user as the spinner spins and your work progresses.
 
-#### `pipe`
+##### `pipe`
 
 ```python
 async def pipe(
@@ -652,7 +654,7 @@ Examples:
 >         )
 > ```
 
-### `spinner` (decorator)
+#### `spinner` (decorator)
 
 This is just a utility decorator that let's you wrap functions so that a spinner
 displays while they run. `spinner` accepts the same arguments as the context manager [`Spinner`](#spinner).
@@ -669,9 +671,9 @@ async def do_some_work():
 asyncio.run(do_some_work())
 ```
 
-## Boxed
+### Boxed
 
-### `Boxes`
+#### `Boxes`
 
 ```python
 class Boxes(Enum): ...
@@ -682,7 +684,7 @@ The border style you'd like to use. To see all the box styles in action run `uv 
 The full list can be found in the code [here](https://github.com/danimelchor/clypi/blob/master/clypi/_data/boxes.py).
 
 
-### `boxed`
+#### `boxed`
 
 ```python
 def boxed(
@@ -711,8 +713,10 @@ Examples:
 > print(clypi.boxed("Some boxed text", color="red", width=30, align="center"))
 > ```
 
+<img width="697" alt="image" src="https://github.com/user-attachments/assets/87e325a3-397c-4022-a3eb-a13984bfa855" />
 
-## Stack
+
+### Stack
 
 ```python
 def stack(*blocks: list[str], padding: int = 1) -> str:
@@ -732,15 +736,50 @@ Parameters:
 
 Examples:
 <!--- mdtest -->
+> ```python
+> names = clypi.boxed(["Daniel", "Pedro", "Paul"], title="Names", width=15)
+> colors = clypi.boxed(["Blue", "Red", "Green"], title="Colors", width=15)
+> print(clypi.stack(names, colors))
+> ```
+
+### Separator
+
+#### `separator`
 ```python
-names = clypi.boxed(["Daniel", "Pedro", "Paul"], title="Names", width=15)
-colors = clypi.boxed(["Blue", "Red", "Green"], title="Colors", width=15)
-print(clypi.stack(names, colors))
+def separator(
+    separator: str = "━",
+    width: t.Literal["max"] | int = "max",
+    title: str | None = None,
+    color: ColorType | None = None,
+) -> str:
 ```
+Prints a line made of the given separator character.
 
-## Align
+Parameters:
+- `separator`: the character used to build the separator line
+- `width`: if `max` it will use the max size of the terminal. Otherwise you can provide a fixed width.
+- `title`: optionally provide a title to display in the middle of the separator
+- `color`: the color for the characters
 
-### `align`
+<!--- mdtest -->
+> ```python
+> print(clypi.separator(title="Some title", color="red", width=30))
+> ```
+
+<img width="716" alt="image" src="https://github.com/user-attachments/assets/42be7ee3-7357-44fb-8a22-11b065a23558" />
+
+
+### Indented
+
+#### `indented`
+```python
+def indented(lines: list[str], prefix: str = "  ") -> list[str]
+```
+Indents a set of lines with the given prefix
+
+### Align
+
+#### `align`
 
 ```python
 def align(s: str, alignment: AlignType, width: int) -> str
@@ -800,12 +839,12 @@ Parameters:
 - `negative`: The integer must be less than 0
 - `nonnegative`: The integer must be greater than or equal to 0
 
-E.g.:
+Examples:
 <!--- mdtest -->
-```python
-# 3 (OK), 10 (OK), 2 (not OK), 11 (not OK)
-cp.Int(lte=10, gt=2)
-```
+> ```python
+> # 3 (OK), 10 (OK), 2 (not OK), 11 (not OK)
+> cp.Int(lte=10, gt=2)
+> ```
 
 ### `Float`
 
@@ -837,12 +876,12 @@ Parameters:
 - `negative`: The float must be less than 0
 - `nonnegative`: The float must be greater than or equal to 0
 
-E.g.:
+Examples:
 <!--- mdtest -->
-```python
-# 3 (OK), 10 (OK), 2 (not OK), 11 (not OK)
-cp.Float(lte=10, gt=2)
-```
+> ```python
+> # 3 (OK), 10 (OK), 2 (not OK), 11 (not OK)
+> cp.Float(lte=10, gt=2)
+> ```
 
 ### `Bool`
 
@@ -880,12 +919,12 @@ Parameters:
 - `regex`: The string must match this regular expression
 - `regex_group`: (required `regex`) extracts the group from the regular expression
 
-E.g.:
+Examples:
 
 <!--- mdtest -->
-```python
-cp.Str(regex=r"[a-z]([0-9])", regex_group=1) # f1 -> 1
-```
+> ```python
+> cp.Str(regex=r"[a-z]([0-9])", regex_group=1) # f1 -> 1
+> ```
 
 ### `DateTime`
 
@@ -920,12 +959,12 @@ TimeDelta(
 - `max`: The maximum value the timedelta can be (same as lte)
 - `min`: The maximum value the timedelta can be (same as gte)
 
-E.g.:
+Examples:
 <!--- mdtest -->
-```python
-# 1 day (OK), 2 weeks (OK), 1 second (not OK)
-cp.TimeDelta(gte=timedelta(days=1))
-```
+> ```python
+> # 1 day (OK), 2 weeks (OK), 1 second (not OK)
+> cp.TimeDelta(gte=timedelta(days=1))
+> ```
 
 Supported time units:
 - `weeks (w)`, `days (d)`, `hours (h)`, `minutes (m)`, `seconds (s)`, `milliseconds (ms)`, `microseconds (us)`
@@ -940,11 +979,11 @@ Path(exists: bool = False)
 Parameters:
 - `exists`: If `True`, it checks whether the provided path exists.
 
-E.g.:
+Examples:
 <!--- mdtest -->
-```python
-cp.Path(exists=True)
-```
+> ```python
+> cp.Path(exists=True)
+> ```
 
 ### `List`
 
@@ -954,11 +993,11 @@ The `List` parser parses comma-separated values into a list of parsed elements.
 List(inner: Parser[T])
 ```
 
-E.g.:
+Examples:
 <!--- mdtest -->
-```python
-cp.List(cp.Int())
-```
+> ```python
+> cp.List(cp.Int())
+> ```
 
 Parameters:
 - `inner`: The parser used to convert each list element.
@@ -971,15 +1010,15 @@ The `Tuple` parser parses a string input into a tuple of values.
 Tuple(*inner: Parser, num: int | None = None)
 ```
 
-E.g.:
+Examples:
 <!--- mdtest -->
-```python
-# tuple[str, ...]
-cp.Tuple(cp.Str())
-
-# tuple[str, int]
-cp.Tuple(cp.Str(), cp.Int(), num=2)
-```
+> ```python
+> # tuple[str, ...]
+> cp.Tuple(cp.Str())
+>
+> # tuple[str, int]
+> cp.Tuple(cp.Str(), cp.Int(), num=2)
+> ```
 
 Parameters:
 - `inner`: List of parsers for each tuple element.
@@ -995,9 +1034,10 @@ Union(left: Parser[X], right: Parser[Y])
 
 You can also use the short hand `|` syntax for two parsers, e.g.:
 <!--- mdtest -->
-```python
-cp.Path(exists=True) | cp.Str()
-```
+> ```python
+> cp.Union(cp.Path(exists=True), cp.Str())
+> cp.Path(exists=True) | cp.Str()
+> ```
 
 ### `Literal`
 
@@ -1007,11 +1047,11 @@ The `Literal` parser ensures that input matches one of the predefined values.
 Literal(*values: t.Any)
 ```
 
-E.g.:
+Examples:
 <!--- mdtest -->
-```python
-cp.Literal(1, "foo")
-```
+> ```python
+> cp.Literal(1, "foo")
+> ```
 
 ### `Enum`
 
@@ -1021,15 +1061,15 @@ The `Enum` parser maps string input to a valid enum value.
 Enum(enum: type[enum.Enum])
 ```
 
-E.g.:
+Examples:
 <!--- mdtest -->
-```python
-class Color(Enum):
-    RED = 1
-    BLUE = 2
-
-cp.Enum(Color)
-```
+> ```python
+> class Color(Enum):
+>     RED = 1
+>     BLUE = 2
+>
+> cp.Enum(Color)
+> ```
 
 ### `from_type`
 
@@ -1040,8 +1080,8 @@ The `from_type` function returns the appropriate parser for a given type.
 def from_type(_type: type) -> Parser: ...
 ```
 
-E.g.:
+Examples:
 <!--- mdtest -->
-```python
-assert cp.from_type(bool) == cp.Bool()
-```
+> ```python
+> assert cp.from_type(bool) == cp.Bool()
+> ```
