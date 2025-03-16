@@ -111,8 +111,7 @@ configure(
 
 `uv run -m examples.uv ad`
 
-<img width="1695" alt="image" src="https://github.com/user-attachments/assets/9b11a0b6-6f6f-4f8f-bada-e86eea41dff1" />
-
+<img width="1699" alt="image" src="https://github.com/user-attachments/assets/dbf73404-1913-4315-81b6-1b690746680e" />
 
 
 ## 🌈 Colors
