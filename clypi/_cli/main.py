@@ -612,7 +612,7 @@ class Command(metaclass=_CommandMeta):
         will either run the user-defined program or instead output the necessary
         completions for shells to provide autocomplete
         """
-        args = args or sys.argv[1:]
+        args = args if args is not None else sys.argv[1:]
         if autocomplete.requested_autocomplete_install(args):
             autocomplete.install_autocomplete(cls)
 
