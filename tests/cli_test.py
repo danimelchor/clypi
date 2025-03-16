@@ -23,7 +23,9 @@ class ExampleCommand(Command):
 
     flag: bool = False
     subcommand: ExampleSubCommand | None = None
-    option: list[str] = arg(help="A list of strings please", default_factory=list)
+    option: list[str] = arg(
+        short="o", help="A list of strings please", default_factory=list
+    )
 
     @override
     @classmethod
@@ -137,7 +139,20 @@ def test_get_similar_opt_error():
             )
         )
 
-    assert exc_info.value.args[0] == "Unknown option '--falg'. Did you mean 'flag'?"
+    assert exc_info.value.args[0] == "Unknown option '--falg'. Did you mean '--flag'?"
+
+
+def test_get_similar_opt_short_error():
+    with pytest.raises(ValueError) as exc_info:
+        raise ExampleCommand.get_similar_arg_error(
+            Arg(
+                "c",  # codespell:ignore
+                "-c",
+                "short-opt",
+            )
+        )
+
+    assert exc_info.value.args[0] == "Unknown option '-c'. Did you mean '-o'?"
 
 
 def test_get_similar_subcmd_error():

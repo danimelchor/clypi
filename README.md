@@ -109,7 +109,7 @@ configure(
 )
 ```
 
-`uv run -m examples.uv ad`
+`uv run -m examples.uv add -c`
 
 <img width="1699" alt="image" src="https://github.com/user-attachments/assets/dbf73404-1913-4315-81b6-1b690746680e" />
 
