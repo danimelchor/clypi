@@ -66,9 +66,7 @@ if __name__ == "__main__":
         )
         show_forwarded = False
 
-    get_config().help_formatter = ClypiFormatter(
-        boxed=False, show_forwarded_options=show_forwarded
-    )
+    get_config().help_formatter = ClypiFormatter(show_forwarded_options=show_forwarded)
 
     main: Main = Main.parse()
     main.start()
