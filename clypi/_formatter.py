@@ -35,7 +35,7 @@ class Formatter(t.Protocol):
 class ClypiFormatter:
     boxed: bool = True
     show_option_types: bool = False
-    show_forwarded_options: bool = False
+    show_forwarded_options: bool = True
     normalize_dots: t.Literal[".", ""] | None = ""
 
     @cached_property
@@ -49,6 +49,7 @@ class ClypiFormatter:
         Utility function to add or remove dots from the end of all option/arg
         descriptions to have a more consistent formatting experience.
         """
+        message = message.rstrip()
         if message and self.normalize_dots == "." and message[-1].isalnum():
             return message + "."
         if message and self.normalize_dots == "" and message[-1] == ".":

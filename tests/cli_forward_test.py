@@ -17,8 +17,8 @@ class Run(Command):
 
 class Main(Command):
     subcommand: Run | None = None
-    verbose: bool = arg(False, short="v", help="Weather to show more output")
-    env: t.Literal["qa", "prod"] = arg(help="Weather to show more output")
+    verbose: bool = arg(False, short="v", help="Whether to show more output")
+    env: t.Literal["qa", "prod"] = arg(help="Whether to show more output")
 
 
 @parametrize(

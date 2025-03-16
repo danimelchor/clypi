@@ -117,7 +117,7 @@ class Main(Command):
     """
 
     subcommand: Run | Lint | None = None
-    verbose: bool = arg(False, short="v", help="Weather to show more output")
+    verbose: bool = arg(False, short="v", help="Whether to show more output")
 
     @override
     @classmethod
