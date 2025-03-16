@@ -265,7 +265,7 @@ class MySubCmd(Command):
     verbose: bool = arg(...)  # or `arg(forwarded=True)`
 
 class MyCli(Command):
-    subcommand: MySubCmd | None
+    subcommand: MySubCmd
     verbose: bool = arg(False, help="Use verbose output")
 
 cmd = MyCli.parse(["my-sub-cmd", "--verbose"])
