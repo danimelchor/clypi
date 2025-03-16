@@ -70,7 +70,7 @@ if __name__ == "__main__":
 
 `uv run -m examples.cli run run-seria`
 
-<img width="1699" alt="image" src="https://github.com/user-attachments/assets/6a8a9397-bfe3-4ae3-a3aa-65eac77df792" />
+<img width="1696" alt="image" src="https://github.com/user-attachments/assets/3170874d-d120-4b1a-968a-f121e9b8ee53" />
 
 
 
