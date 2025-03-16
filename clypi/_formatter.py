@@ -18,14 +18,6 @@ if t.TYPE_CHECKING:
     from clypi._arg_config import Config
 
 
-def _ext(ls: list[str], s: str | list[str] | None) -> None:
-    if isinstance(s, str):
-        ls.append(s)
-    elif isinstance(s, list):
-        ls.extend(s)
-    return None
-
-
 class Formatter(t.Protocol):
     def format_help(
         self,
