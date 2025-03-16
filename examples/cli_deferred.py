@@ -25,13 +25,14 @@ class Main(Command):
 
     async def run(self):
         print("Command execution started...")
-        print(self.often > 5)
 
         if not self.runner:
             cprint("You are not a runner!", fg="green", bold=True)
             cprint("Try answering yes on the next try :)", bold=True)
         else:
             cprint(
+                # This line will trigger the evaluation of `often` and prompt
+                # the user if it was not provided as a CLI arg
                 f"You are a runner and run every {self.often} days!",
                 fg="green",
                 bold=True,

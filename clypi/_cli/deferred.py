@@ -1,6 +1,7 @@
 import typing as t
 from dataclasses import dataclass, field
 
+from clypi._data.dunders import ALL_DUNDERS
 from clypi._prompts import MAX_ATTEMPTS, prompt
 from clypi._util import UNSET, Unset
 from clypi.parsers import Parser
@@ -15,23 +16,6 @@ def gen_impl(__f: str) -> t.Callable[..., t.Any]:
     return _impl
 
 
-ALL_DUNDERS = (
-    "__add__",
-    "__eq__",
-    "__gt__",
-    "__gte__",
-    "__len__",
-    "__lt__",
-    "__lte__",
-    "__ne__",
-    "__or__",
-    "__repr__",
-    "__set__",
-    "__str__",
-    "__sub__",
-)
-
-
 @dataclass
 class DeferredValue(t.Generic[T]):
     parser: Parser[T]
@@ -43,7 +27,10 @@ class DeferredValue(t.Generic[T]):
 
     _value: T | Unset = field(init=False, default=UNSET)
 
-    def __get__(self, instance: t.Any, owner: t.Any = None) -> T:
+    def __set_name__(self, owner: t.Any, name: str):
+        self.__name__ = name
+
+    def __get__(self, obj: t.Any, objtype: t.Any = None) -> T:
         if self._value is UNSET:
             self._value = prompt(
                 self.prompt,
@@ -56,5 +43,7 @@ class DeferredValue(t.Generic[T]):
         return self._value
 
     # Autogen all dunder methods to trigger __get__
+    # NOTE: I hate having to do this but I did not find how to trigger
+    # the evaluation of a descriptor when a dunder method is called on it
     for dunder in ALL_DUNDERS:
         locals()[dunder] = gen_impl(dunder)
