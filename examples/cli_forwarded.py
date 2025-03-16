@@ -1,6 +1,7 @@
 import os
 import shlex
 import sys
+import typing as t
 
 from typing_extensions import override
 
@@ -13,10 +14,14 @@ class Run(Command):
     """
 
     files: Positional[list[str]] = arg(help="The files to run")
-    verbose: bool = arg(...)
+    verbose: bool = arg(..., option_group="global")
+    env: str = arg(..., option_group="global")
 
     async def run(self):
-        cprint(f"Running with {self.files=} {self.verbose=}...", fg="blue", bold=True)
+        cprint("Running with:", fg="blue", bold=True)
+        cprint(f" - Files: {self.files}", fg="blue")
+        cprint(f" - Verbose: {self.verbose}", fg="blue")
+        cprint(f" - Env: {self.env}", fg="blue")
         cprint("Done!", fg="green", bold=True)
 
 
@@ -27,6 +32,7 @@ class Main(Command):
 
     subcommand: Run | None = None
     verbose: bool = arg(False, short="v", help="Weather to show more output")
+    env: t.Literal["qa", "prod"] = arg(help="Weather to show more output")
 
     @override
     @classmethod

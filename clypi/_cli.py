@@ -167,16 +167,19 @@ class _CommandMeta(type):
         setattr(self, CLYPI_SUBCOMMANDS, subcmds)
 
     @t.final
-    def inherit(self, parent: type[Command]):
+    def inherit(self, parent: type[Command]) -> list[str]:
         """
         This function is called by the parent command during parsing to configure
         inherited fields through forwarding and the parenthood relationship so that the
-        full command is displayed properly
+        full command is displayed properly.
+
+        Returns the list of inherited fields
         """
         setattr(self, CLYPI_PARENTS, parent.full_command())
 
         # For forwarded args, configure them with the parent's configs
         options = self.options()
+        inherited: list[str] = []
         for opt, opt_config in parent.options().items():
             if opt not in options or not options[opt].forwarded:
                 continue
@@ -184,6 +187,9 @@ class _CommandMeta(type):
                 opt_config,
                 forwarded=True,
             )
+            inherited.append(opt)
+
+        return inherited
 
     @t.final
     def subcommands(self) -> dict[str | None, type[Command] | None]:
@@ -270,7 +276,7 @@ class Command(metaclass=_CommandMeta):
         # From *kwargs
         for field, value in fields.items():
             if field not in field_names:
-                raise TypeError(f"Invalid argument {field} for {name}")
+                raise TypeError(f"Invalid argument {field} for {name!r}")
 
             field_map[field] = value
             field_names.remove(field)
@@ -282,7 +288,7 @@ class Command(metaclass=_CommandMeta):
                 field_names.remove("subcommand")
                 field_map["subcommand"] = None
             else:
-                raise TypeError(f"Missing required subcommand for {name}")
+                raise TypeError(f"Missing required subcommand for {name!r}")
 
         # Set defaults for any other missing fields
         missing_field_names: list[str] = []
@@ -296,7 +302,7 @@ class Command(metaclass=_CommandMeta):
         # The user did not provide all of the necessary fields
         if missing_field_names:
             raise TypeError(
-                f"Missing required arguments {', '.join(missing_field_names)} for {name}"
+                f"Missing required arguments {', '.join(missing_field_names)} for {name!r}"
             )
 
         return field_map
@@ -566,10 +572,17 @@ class Command(metaclass=_CommandMeta):
         # Parse the subcommand passing in the parsed types
         if subcommand:
             # Configure parenthood and forwarded args
-            subcommand.inherit(cls)
-            parsed_kwargs["subcommand"] = subcommand._safe_parse(
-                args, parent_attrs=parsed_kwargs
-            )
+            inherited_fields = subcommand.inherit(cls)
+
+            # Parse the subcommand
+            subcmd_instance = subcommand._safe_parse(args, parent_attrs=parsed_kwargs)
+            parsed_kwargs["subcommand"] = subcmd_instance
+
+            # If any fields were inherited by the subcommand and populated there,
+            # get the same value for this instance
+            for inh_field in inherited_fields:
+                if inh_field not in parsed_kwargs:
+                    parsed_kwargs[inh_field] = getattr(subcmd_instance, inh_field)
 
         # Initialize the instance
         validated = cls._validate_fields(parsed_kwargs, name=cls.prog())
