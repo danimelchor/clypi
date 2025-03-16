@@ -8,6 +8,30 @@ from clypi.parsers import Parser
 T = t.TypeVar("T")
 
 
+def gen_impl(__f: str) -> t.Callable[..., t.Any]:
+    def _impl(self: "DeferredValue[t.Any]", *args: t.Any, **kwargs: t.Any) -> t.Any:
+        return getattr(self.__get__(None), __f)(*args, **kwargs)
+
+    return _impl
+
+
+ALL_DUNDERS = (
+    "__add__",
+    "__eq__",
+    "__gt__",
+    "__gte__",
+    "__len__",
+    "__lt__",
+    "__lte__",
+    "__ne__",
+    "__or__",
+    "__repr__",
+    "__set__",
+    "__str__",
+    "__sub__",
+)
+
+
 @dataclass
 class DeferredValue(t.Generic[T]):
     parser: Parser[T]
@@ -19,26 +43,18 @@ class DeferredValue(t.Generic[T]):
 
     _value: T | Unset = field(init=False, default=UNSET)
 
-    def get_default_or_missing(self) -> T | Unset:
-        if not isinstance(self.default, Unset):
-            return self.default
-        if not isinstance(self.default_factory, Unset):
-            return self.default_factory()
-        return UNSET
-
     def __get__(self, instance: t.Any, owner: t.Any = None) -> T:
         if self._value is UNSET:
             self._value = prompt(
                 self.prompt,
-                default=self.get_default_or_missing(),
+                default=self.default,
+                default_factory=self.default_factory,
                 hide_input=self.hide_input,
                 max_attempts=self.max_attempts,
                 parser=self.parser,
             )
         return self._value
 
-    def __set__(self, instance: t.Any, value: T):
-        self._value = value
-
-    def __repr__(self) -> str:
-        return self.__get__(self).__repr__()
+    # Autogen all dunder methods to trigger __get__
+    for dunder in ALL_DUNDERS:
+        locals()[dunder] = gen_impl(dunder)

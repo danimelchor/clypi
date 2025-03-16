@@ -575,7 +575,8 @@ class Command(metaclass=_CommandMeta):
                 elif field_conf.prompt is not None:
                     parsed_kwargs[field] = prompt(
                         field_conf.prompt,
-                        default=field_conf.get_default_or_missing(),
+                        default=field_conf.default,
+                        default_factory=field_conf.default_factory,
                         hide_input=field_conf.hide_input,
                         max_attempts=field_conf.max_attempts,
                         parser=field_conf.parser,

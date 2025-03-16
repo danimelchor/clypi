@@ -25,6 +25,7 @@ class Main(Command):
 
     async def run(self):
         print("Command execution started...")
+        print(self.often > 5)
 
         if not self.runner:
             cprint("You are not a runner!", fg="green", bold=True)
