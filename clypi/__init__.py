@@ -18,6 +18,7 @@ from clypi._prompts import (
     confirm,
     prompt,
 )
+from clypi._separator import separator
 from clypi._spinners import Spin, Spinner, spinner
 from clypi._stack import stack
 from clypi._wraps import OverflowStyle, wrap
@@ -56,6 +57,7 @@ __all__ = (
     "parsers",
     "print_traceback",
     "prompt",
+    "separator",
     "spinner",
     "stack",
     "style",
