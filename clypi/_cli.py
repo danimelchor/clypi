@@ -168,8 +168,14 @@ class _CommandMeta(type):
 
     @t.final
     def inherit(self, parent: type[Command]):
+        """
+        This function is called by the parent command during parsing to configure
+        inherited fields through forwarding and the parenthood relationship so that the
+        full command is displayed properly
+        """
         setattr(self, CLYPI_PARENTS, parent.full_command())
 
+        # For forwarded args, configure them with the parent's configs
         options = self.options()
         for opt, opt_config in parent.options().items():
             if opt not in options or not options[opt].forwarded:
