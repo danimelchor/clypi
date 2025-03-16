@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import asyncio
+import dataclasses
 import inspect
 import logging
 import re
@@ -33,7 +34,6 @@ HELP_ARGS: tuple[str, ...] = ("help", "-h", "--help")
 
 CLYPI_OPTIONS = "__clypi_options__"
 CLYPI_POSITIONALS = "__clypi_positionals__"
-CLYPI_FORWARDED = "__clypi_forwarded__"
 CLYPI_IN_ORDER_FIELD_NAMES = "__clypi_in_order_field_names__"
 CLYPI_SUBCOMMANDS = "__clypi_subcommands__"
 CLYPI_PARENTS = "__clypi_parents__"
@@ -83,7 +83,6 @@ class _CommandMeta(type):
         # Mappings for each arg type
         options: dict[str, _arg_config.Config[t.Any]] = {}
         positionals: dict[str, _arg_config.Config[t.Any]] = {}
-        forwarded: dict[str, _arg_config.Config[t.Any]] = {}
         field_names: list[str] = []
 
         # Get the config for each field
@@ -113,9 +112,7 @@ class _CommandMeta(type):
                 )
 
             # Store in the right dict
-            if field_conf.forwarded:
-                forwarded[field] = field_conf
-            elif field_conf.is_positional:
+            if field_conf.is_positional:
                 positionals[field] = field_conf
             else:
                 options[field] = field_conf
@@ -130,7 +127,6 @@ class _CommandMeta(type):
         # Store all fields
         setattr(self, CLYPI_OPTIONS, options)
         setattr(self, CLYPI_POSITIONALS, positionals)
-        setattr(self, CLYPI_FORWARDED, forwarded)
         setattr(self, CLYPI_IN_ORDER_FIELD_NAMES, field_names)
 
     @t.final
@@ -171,6 +167,33 @@ class _CommandMeta(type):
         setattr(self, CLYPI_SUBCOMMANDS, subcmds)
 
     @t.final
+    def inherit(self, parent: type[Command]) -> list[str]:
+        """
+        This function is called by the parent command during parsing to configure
+        inherited fields through forwarding and the parenthood relationship so that the
+        full command is displayed properly.
+
+        Returns the list of inherited fields
+        """
+        setattr(self, CLYPI_PARENTS, parent.full_command())
+
+        # For forwarded args, configure them with the parent's configs
+        options = self.options()
+        inherited: list[str] = []
+        for opt, opt_config in parent.options().items():
+            if opt not in options or not options[opt].forwarded:
+                continue
+            options[opt] = dataclasses.replace(
+                opt_config,
+                # Keep forwarding and group config
+                forwarded=True,
+                option_group=options[opt].option_group or opt_config.option_group,
+            )
+            inherited.append(opt)
+
+        return inherited
+
+    @t.final
     def subcommands(self) -> dict[str | None, type[Command] | None]:
         return getattr(self, CLYPI_SUBCOMMANDS, None) or {None: None}
 
@@ -181,10 +204,6 @@ class _CommandMeta(type):
     @t.final
     def positionals(self) -> dict[str, Config[t.Any]]:
         return getattr(self, CLYPI_POSITIONALS, {})
-
-    @t.final
-    def forwarded(self) -> dict[str, Config[t.Any]]:
-        return getattr(self, CLYPI_FORWARDED, {})
 
     @t.final
     def field_names(self) -> list[str]:
@@ -200,8 +219,6 @@ class _CommandMeta(type):
         if conf := self.positionals().get(name):
             return conf
         if conf := self.options().get(name):
-            return conf
-        if conf := self.forwarded().get(name):
             return conf
         raise ValueError(f"Unknown field {name}")
 
@@ -261,7 +278,7 @@ class Command(metaclass=_CommandMeta):
         # From *kwargs
         for field, value in fields.items():
             if field not in field_names:
-                raise TypeError(f"Invalid argument {field} for {name}")
+                raise TypeError(f"Invalid argument {field} for {name!r}")
 
             field_map[field] = value
             field_names.remove(field)
@@ -273,7 +290,7 @@ class Command(metaclass=_CommandMeta):
                 field_names.remove("subcommand")
                 field_map["subcommand"] = None
             else:
-                raise TypeError(f"Missing required subcommand for {name}")
+                raise TypeError(f"Missing required subcommand for {name!r}")
 
         # Set defaults for any other missing fields
         missing_field_names: list[str] = []
@@ -287,7 +304,7 @@ class Command(metaclass=_CommandMeta):
         # The user did not provide all of the necessary fields
         if missing_field_names:
             raise TypeError(
-                f"Missing required arguments {', '.join(missing_field_names)} for {name}"
+                f"Missing required arguments {', '.join(missing_field_names)} for {name!r}"
             )
 
         return field_map
@@ -526,24 +543,19 @@ class Command(metaclass=_CommandMeta):
         # If the user requested help, skip prompting/parsing
         parsed_kwargs: dict[str, t.Any] = {}
         if not requested_help:
-            missing_field_names: list[str] = []
-
             # --- Parse as the correct values ---
             for field in cls.field_names():
                 if field == "subcommand":
                     continue
                 field_conf = cls.get_field_conf(field)
 
-                # If the field comes from a parent command, use that
-                if field_conf.forwarded:
-                    if field in parent_attrs:
-                        parsed_kwargs[field] = parent_attrs[field]
-                    else:
-                        raise ValueError(f"Missing required argument {field!r}")
-
                 # If the field was provided through args
                 if field in unparsed:
                     parsed_kwargs[field] = field_conf.parser(unparsed[field])
+
+                # If the field comes from a parent command, use that
+                elif field_conf.forwarded and field in parent_attrs:
+                    parsed_kwargs[field] = parent_attrs[field]
 
                 # If the field was not provided but we can prompt, do so
                 elif field_conf.prompt is not None:
@@ -559,23 +571,19 @@ class Command(metaclass=_CommandMeta):
                 elif field_conf.has_default():
                     parsed_kwargs[field] = field_conf.get_default()
 
-                # Woops! Store it so that we can display all missing fields at once right after
-                else:
-                    missing_field_names.append(field)
-
-            if missing_field_names:
-                raise TypeError(
-                    f"Missing required arguments {', '.join(missing_field_names)} for {cls.prog()}"
-                )
-
         # Parse the subcommand passing in the parsed types
         if subcommand:
-            # Pass parent configs to child to get parenthood + config
-            setattr(subcommand, CLYPI_PARENTS, cls.full_command())
+            # Configure parenthood and forwarded args
+            inherited_fields = subcommand.inherit(cls)
 
-            parsed_kwargs["subcommand"] = subcommand._safe_parse(
-                args, parent_attrs=parsed_kwargs
-            )
+            # Parse the subcommand
+            subcmd_instance = subcommand._safe_parse(args, parent_attrs=parsed_kwargs)
+            parsed_kwargs["subcommand"] = subcmd_instance
+
+            # If any fields were inherited by the subcommand and populated there,
+            # get the same value for this instance
+            for inh_field in inherited_fields:
+                parsed_kwargs[inh_field] = getattr(subcmd_instance, inh_field)
 
         # Initialize the instance
         validated = cls._validate_fields(parsed_kwargs, name=cls.prog())

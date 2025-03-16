@@ -35,6 +35,7 @@ class Formatter(t.Protocol):
 class ClypiFormatter:
     boxed: bool = True
     show_option_types: bool = False
+    show_forwarded_options: bool = True
     normalize_dots: t.Literal[".", ""] | None = ""
 
     @cached_property
@@ -48,6 +49,7 @@ class ClypiFormatter:
         Utility function to add or remove dots from the end of all option/arg
         descriptions to have a more consistent formatting experience.
         """
+        message = message.rstrip()
         if message and self.normalize_dots == "." and message[-1].isalnum():
             return message + "."
         if message and self.normalize_dots == "" and message[-1] == ".":
@@ -135,6 +137,8 @@ class ClypiFormatter:
 
         # Group by option group
         for o in options:
+            if o.forwarded and not self.show_forwarded_options:
+                continue
             groups[o.option_group].append(o)
 
         # Render all groups
@@ -244,7 +248,7 @@ class ClypiFormatter:
 
         # Special section title since it's an error
         section_title = style("Error:", fg="red", bold=True)
-        stacked = indented(format_traceback(exception, color=None))
+        stacked = "\n".join(indented(format_traceback(exception, color=None)))
         return f"{section_title}\n{stacked}"
 
     def format_help(

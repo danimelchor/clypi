@@ -45,7 +45,7 @@ ClypiConfig(
 
 Parameters:
 - `help_formatter`: the formatter class to use to display the help pages (see [Formatter](#formatter))
-- `help_on_fail`: weather the help page should be displayed if a user doesn't pass the right params
+- `help_on_fail`: whether the help page should be displayed if a user doesn't pass the right params
 - `nice_errors`: a list of errors clypi will catch and display neatly
 - `theme`: a `Theme` object used to format different styles and colors for help pages, prompts, tracebacks, etc.
 - `overflow_style`: either `wrap` or `ellipsis`. If wrap, text that is too long will get wrapped into the next line. If ellipsis, the text will be truncated with an `…` at the end.
@@ -351,13 +351,15 @@ class Formatter(t.Protocol):
 ```python
 class ClypiFormatter(
     boxed=True,
-    show_option_types=True,
+    show_option_types=False,
+    show_forwarded_options=True,
     normalize_dots="",
 )
 ```
 Parameters:
-- `boxed`: weather to wrap each section in a box made with ASCII characters
-- `show_option_types`: weather to display the expected type for each argument or just a placeholder. E.g.: `--foo TEXT` vs `--foo <FOO>`
+- `boxed`: whether to wrap each section in a box made with ASCII characters
+- `show_option_types`: whether to display the expected type for each argument or just a placeholder. E.g.: `--foo TEXT` vs `--foo <FOO>`
+- `show_forwarded_options`: whether to show forwarded arguments in child commands or only in parent commands
 - `normalize_dots`: either `"."`, `""`, or `None`. If a dot, or empty, it will add or remove trailing dots from all help messages to keep a more consistent formatting across the application.
 
 
