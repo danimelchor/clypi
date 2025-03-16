@@ -4,6 +4,7 @@ repos:
     rev: 0.6.2
     hooks:
       - id: uv-lock
+        stages: [pre-push]
 
   - repo: local
     hooks:
