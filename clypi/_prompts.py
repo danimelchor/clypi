@@ -76,7 +76,7 @@ def prompt(
     text: str,
     *,
     default: str | Unset = UNSET,
-    default_factory: t.Callable[[], T] | Unset = UNSET,
+    default_factory: t.Callable[[], str] | Unset = UNSET,
     hide_input: bool = False,
     max_attempts: int = MAX_ATTEMPTS,
 ) -> str: ...
