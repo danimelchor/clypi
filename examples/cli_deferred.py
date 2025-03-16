@@ -1,4 +1,11 @@
+import clypi.parsers as cp
 from clypi import Command, arg, cprint
+
+
+class VerboseIntParser(cp.Int):
+    def __call__(self, raw: str | list[str], /) -> int:
+        cprint(f"⚠️ The call to to parse {raw} as an int was executed!", fg="yellow")
+        return super().__call__(raw)
 
 
 class Main(Command):
@@ -15,6 +22,7 @@ class Main(Command):
         help="The frequency you run with in days",
         prompt="How many days a week do you run?",
         defer=True,
+        parser=VerboseIntParser(),
     )
 
     async def run(self):
