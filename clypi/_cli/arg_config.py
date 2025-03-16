@@ -4,6 +4,7 @@ from types import EllipsisType
 
 from clypi import _type_util
 from clypi._cli import arg_parser
+from clypi._exceptions import ClypiException
 from clypi._prompts import MAX_ATTEMPTS
 from clypi._util import UNSET, Unset
 from clypi.parsers import Parser
@@ -26,6 +27,7 @@ class PartialConfig(t.Generic[T]):
     forwarded: bool = False
     hidden: bool = False
     group: str | None = None
+    defer: bool = False
 
 
 @dataclass
@@ -43,6 +45,13 @@ class Config(t.Generic[T]):
     forwarded: bool = False
     hidden: bool = False
     group: str | None = None
+    defer: bool = False
+
+    def __post_init__(self):
+        if self.is_positional and self.short:
+            raise ClypiException("Positional arguments cannot have short names")
+        if self.is_positional and self.group:
+            raise ClypiException("Positional arguments cannot belong to groups")
 
     def has_default(self) -> bool:
         return not isinstance(self.default, Unset) or not isinstance(
@@ -139,6 +148,7 @@ def arg(
     forwarded: bool = False,
     hidden: bool = False,
     group: str | None = None,
+    defer: bool = False,
 ) -> T:
     forwarded = forwarded or default is Ellipsis
     default = UNSET if default is Ellipsis else default
@@ -154,6 +164,7 @@ def arg(
         forwarded=forwarded,
         hidden=hidden,
         group=group,
+        defer=defer,
     )  # type: ignore
 
 

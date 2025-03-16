@@ -13,6 +13,7 @@ from clypi import _type_util, parsers
 from clypi._cli import arg_config, arg_parser, autocomplete
 from clypi._cli.arg_config import Config, Positional, arg
 from clypi._cli.context import CurrentCtx
+from clypi._cli.deferred import DeferredValue
 from clypi._cli.distance import closest
 from clypi._cli.formatter import ClypiFormatter, Formatter
 from clypi._configuration import get_config
@@ -557,6 +558,18 @@ class Command(metaclass=_CommandMeta):
                 # If the field comes from a parent command, use that
                 elif field_conf.forwarded and field in parent_attrs:
                     parsed_kwargs[field] = parent_attrs[field]
+
+                # If the field was not provided but we can defer prompting for the
+                # value, we instead set it to a DeferrableValue
+                elif field_conf.prompt is not None and field_conf.defer:
+                    parsed_kwargs[field] = DeferredValue(
+                        prompt=field_conf.prompt,
+                        parser=field_conf.parser,
+                        default=field_conf.default,
+                        default_factory=field_conf.default_factory,
+                        hide_input=field_conf.hide_input,
+                        max_attempts=field_conf.max_attempts,
+                    )
 
                 # If the field was not provided but we can prompt, do so
                 elif field_conf.prompt is not None:
