@@ -233,9 +233,9 @@ class Command(metaclass=_CommandMeta):
         # From *kwargs
         for k, v in kwargs.items():
             if k in field_map:
-                raise TypeError(f"Found duplicate field {k} for {cls.__name__}")
+                raise TypeError(f"Found duplicate field {k} for {cls.prog()}")
             if k not in field_names:
-                raise TypeError(f"Invalid argument {k} for {cls.__name__}")
+                raise TypeError(f"Invalid argument {k} for {cls.prog()}")
 
             field_map[k] = v
             field_names.remove(k)
@@ -247,7 +247,7 @@ class Command(metaclass=_CommandMeta):
                 setattr(self, "subcommand", None)
                 field_names.remove("subcommand")
             else:
-                raise TypeError(f"Missing required subcommand for {cls.__name__}")
+                raise TypeError(f"Missing required subcommand for {cls.prog()}")
 
         # Set defaults
         missing_field_names: list[str] = []
@@ -261,7 +261,7 @@ class Command(metaclass=_CommandMeta):
         # The user did not provide all of the necessary fields
         if missing_field_names:
             raise TypeError(
-                f"Missing required arguments {', '.join(missing_field_names)} for {cls.__name__}"
+                f"Missing required arguments {', '.join(missing_field_names)} for {cls.prog()}"
             )
 
         # Save all fields to current instance
@@ -509,8 +509,11 @@ class Command(metaclass=_CommandMeta):
                 field_conf = cls.get_field_conf(field)
 
                 # If the field comes from a parent command, use that
-                if field_conf.forwarded and field in parent_attrs:
-                    parsed_kwargs[field] = parent_attrs[field]
+                if field_conf.forwarded:
+                    if field in parent_attrs:
+                        parsed_kwargs[field] = parent_attrs[field]
+                    else:
+                        raise ValueError(f"Missing required argument {field!r}")
 
                 # If the field was provided through args
                 if field in unparsed:
@@ -525,6 +528,13 @@ class Command(metaclass=_CommandMeta):
                         max_attempts=field_conf.max_attempts,
                         parser=field_conf.parser,
                     )
+
+                # Otherwise, if the field has a default, use that
+                # NOTE: we need to do this here as well as in the __init__ func
+                # since these fields are passed into child subcommands so they need
+                # to be populated already
+                elif field_conf.has_default():
+                    parsed_kwargs[field] = field_conf.get_default()
 
         # Parse the subcommand passing in the parsed types
         if subcommand:
