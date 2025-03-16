@@ -1,10 +1,10 @@
 from clypi import parsers
-from clypi._align import AlignType, align
 from clypi._cli.arg_config import Positional, arg
 from clypi._cli.distance import closest, distance
 from clypi._cli.formatter import ClypiFormatter, Formatter
 from clypi._cli.main import Command
 from clypi._colors import ALL_COLORS, ColorType, Styler, cprint, style
+from clypi._components.align import AlignType, align
 from clypi._components.boxed import Boxes, boxed
 from clypi._components.indented import indented
 from clypi._components.separator import separator
