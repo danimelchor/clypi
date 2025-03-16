@@ -273,6 +273,34 @@ cmd = MyCli.parse(["my-sub-cmd", "--verbose"])
 assert cmd.subcommand.verbose is True
 ```
 
+#### Deferring arguments
+
+CLIs can get very complex. Sometimes we want to build a complex graph of dependencies between the arguments and it is hard to do that. For example, we can have an application that does not use `--num-threads` if `--single-threaded` was provided already. For that, clypi offers `arg(defer=True)`. The internals are complex but the user experience is quite simple: clypi will not prompt or require this value being passed up until when it's executed.
+
+Examples:
+
+<!--- mdtest-stdin 5 -->
+> ```python
+> from clypi import Command, arg
+>
+> class Main(Command):
+>     single_threaded: bool = arg(False)
+>     num_threads: int = arg(defer=True, prompt="How many threads do you want to use")
+>
+>     async def run(self):
+>         cmd = Main.parse()  # << will not prompt yet...
+>         print(cmd.single_threaded)  # << will not prompt yet...
+>         if cmd.single_threaded:
+>             # if we never access num_threads in this if condition, we will
+>             # never prompt!
+>             print("Running single threaded...")
+>         else:
+>             print("Running with threads: ", cmd.num_threads)  # << we prompt here!
+> ```
+
+Notice how `num_threads` is actually a required option (it does not have a default value), but
+by deferring the evaluation of that value we can express complex dependencies between our arguments or offer a better step-by-step experience.
+
 #### Autocomplete
 
 All CLIs built with clypi come with a builtin `--install-autocomplete` option that will automatically
