@@ -2,32 +2,21 @@ import asyncio
 import typing as t
 from enum import Enum
 from pathlib import Path
-from types import CoroutineType
 
 from typing_extensions import override
 
 import clypi.parsers as cp
 from clypi import Command, Positional, Spinner, arg, boxed, cprint, style
 
+
 # ---- START DEMO UTILS ----
-P = t.ParamSpec("P")
-R = t.TypeVar("R")
-CommandT = t.TypeVar("CommandT", bound=Command)
-AsyncFunc = t.Callable[t.Concatenate[CommandT, P], CoroutineType[t.Any, t.Any, None]]
-
-
-def debug(fun: AsyncFunc[CommandT, P]) -> AsyncFunc[CommandT, P]:
+def debug(command: Command) -> None:
     """
-    Just a utility decorator to display the commands being passed in a somewhat
+    Just a utility function to display the commands being passed in a somewhat
     nice way
     """
-
-    def inner(self: CommandT, *args: P.args, **kwargs: P.kwargs):
-        box = boxed(style(self, bold=True), title="Debug", color="magenta")
-        print(box, end="\n\n")
-        return fun(self, *args, **kwargs)
-
-    return inner
+    box = boxed(style(command, bold=True), title="Debug", color="magenta")
+    print(box, end="\n\n")
 
 
 # ---- END DEMO UTILS ----
@@ -47,8 +36,8 @@ class RunParallel(Command):
     exceptions_with_reasons: Path | None = arg(None, parser=cp.Path(exists=True))
     env: Env = arg(...)
 
-    @debug
     async def run(self):
+        debug(self)
         cprint(f"{self.env.name} - Running all files", fg="blue", bold=True)
 
         async with Spinner(f"Running {', '.join(self.files)} in parallel"):
@@ -68,8 +57,8 @@ class RunSerial(Command):
     files: Positional[list[Path]] = arg(parser=cp.List(cp.Path(exists=True)))
     env: Env = arg(...)
 
-    @debug
     async def run(self):
+        debug(self)
         cprint(f"{self.env.name} - Running all files", fg="blue", bold=True)
         for f in self.files:
             async with Spinner(f"Running {f.as_posix()} in parallel"):
@@ -87,6 +76,7 @@ class Run(Command):
         False,
         short="q",
         help="If the runner should omit all stdout messages",
+        option_group="Global",
     )
     env: Env = arg(Env.PROD, help="The environment to run in")
     format: t.Literal["json", "pretty"] = arg(
@@ -113,8 +103,8 @@ class Lint(Command):
         prompt="What index do you want to download termuff from?",
     )
 
-    @debug
     async def run(self) -> None:
+        debug(self)
         async with Spinner(f"Linting {', '.join(self.files)}"):
             await asyncio.sleep(self.timeout)
         cprint("\nDone!", fg="green", bold=True)

@@ -24,18 +24,7 @@ class PartialConfig(t.Generic[T]):
     max_attempts: int = MAX_ATTEMPTS
     forwarded: bool = False
     hidden: bool = False
-
-    def has_default(self) -> bool:
-        return self.default is not UNSET or self.default_factory is not UNSET
-
-    def get_default(self) -> T:
-        if not isinstance(self.default, Unset):
-            return self.default
-
-        if t.TYPE_CHECKING:
-            assert not isinstance(self.default_factory, Unset)
-
-        return self.default_factory()
+    option_group: str | None = None
 
 
 @dataclass
@@ -52,6 +41,7 @@ class Config(t.Generic[T]):
     max_attempts: int = MAX_ATTEMPTS
     forwarded: bool = False
     hidden: bool = False
+    option_group: str | None = None
 
     def has_default(self) -> bool:
         return not isinstance(self.default, Unset) or not isinstance(
@@ -147,8 +137,10 @@ def arg(
     max_attempts: int = MAX_ATTEMPTS,
     forwarded: bool = False,
     hidden: bool = False,
+    option_group: str | None = None,
 ) -> T:
     forwarded = forwarded or default is Ellipsis
+    default = UNSET if default is Ellipsis else default
     return PartialConfig(
         parser=parser,
         default=default,
@@ -160,6 +152,7 @@ def arg(
         max_attempts=max_attempts,
         forwarded=forwarded,
         hidden=hidden,
+        option_group=option_group,
     )  # type: ignore
 
 
