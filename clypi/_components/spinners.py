@@ -8,9 +8,8 @@ from types import TracebackType
 from typing_extensions import override
 
 import clypi
+from clypi._colors import ESC, ColorType
 from clypi._data.spinners import Spin as _Spin
-from clypi._colors import ColorType
-from clypi._const import ESC
 
 MOVE_START = f"{ESC}1G"
 DEL_LINE = f"{ESC}0K"

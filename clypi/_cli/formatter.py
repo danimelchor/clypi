@@ -6,16 +6,16 @@ from dataclasses import dataclass
 from functools import cached_property
 
 from clypi import _type_util
-from clypi._arg_parser import dash_to_snake
-from clypi._boxed import boxed
+from clypi._cli.arg_parser import dash_to_snake
 from clypi._colors import ColorType, style
+from clypi._components.boxed import boxed
+from clypi._components.indented import indented
+from clypi._components.stack import stack
 from clypi._exceptions import format_traceback
-from clypi._indented import indented
-from clypi._stack import stack
 
 if t.TYPE_CHECKING:
     from clypi import Command
-    from clypi._arg_config import Config
+    from clypi._cli.arg_config import Config
 
 
 class Formatter(t.Protocol):
