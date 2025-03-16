@@ -713,6 +713,9 @@ Examples:
 > print(clypi.boxed("Some boxed text", color="red", width=30, align="center"))
 > ```
 
+<img width="697" alt="image" src="https://github.com/user-attachments/assets/87e325a3-397c-4022-a3eb-a13984bfa855" />
+
+
 ### Stack
 
 ```python
@@ -739,14 +742,6 @@ colors = clypi.boxed(["Blue", "Red", "Green"], title="Colors", width=15)
 print(clypi.stack(names, colors))
 ```
 
-### Indented
-
-#### `indented`
-```python
-def indented(lines: list[str], prefix: str = "  ") -> list[str]
-```
-Indents a set of lines with the given prefix
-
 ### Separator
 
 #### `separator`
@@ -765,6 +760,22 @@ Parameters:
 - `width`: if `max` it will use the max size of the terminal. Otherwise you can provide a fixed width.
 - `title`: optionally provide a title to display in the middle of the separator
 - `color`: the color for the characters
+
+<!--- mdtest -->
+> ```python
+> print(clypi.separator(title="Some title", color="red", width=30))
+> ```
+
+<img width="716" alt="image" src="https://github.com/user-attachments/assets/42be7ee3-7357-44fb-8a22-11b065a23558" />
+
+
+### Indented
+
+#### `indented`
+```python
+def indented(lines: list[str], prefix: str = "  ") -> list[str]
+```
+Indents a set of lines with the given prefix
 
 ### Align
 
