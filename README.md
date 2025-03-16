@@ -111,7 +111,7 @@ configure(
 
 `uv run -m examples.uv ad`
 
-<img width="1700" alt="image" src="https://github.com/user-attachments/assets/56c2d467-5a9e-4759-b4ba-89dd76b89913" />
+<img width="1695" alt="image" src="https://github.com/user-attachments/assets/9b11a0b6-6f6f-4f8f-bada-e86eea41dff1" />
 
 
 
