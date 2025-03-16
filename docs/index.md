@@ -736,11 +736,11 @@ Parameters:
 
 Examples:
 <!--- mdtest -->
-```python
-names = clypi.boxed(["Daniel", "Pedro", "Paul"], title="Names", width=15)
-colors = clypi.boxed(["Blue", "Red", "Green"], title="Colors", width=15)
-print(clypi.stack(names, colors))
-```
+> ```python
+> names = clypi.boxed(["Daniel", "Pedro", "Paul"], title="Names", width=15)
+> colors = clypi.boxed(["Blue", "Red", "Green"], title="Colors", width=15)
+> print(clypi.stack(names, colors))
+> ```
 
 ### Separator
 
@@ -839,12 +839,12 @@ Parameters:
 - `negative`: The integer must be less than 0
 - `nonnegative`: The integer must be greater than or equal to 0
 
-E.g.:
+Examples:
 <!--- mdtest -->
-```python
-# 3 (OK), 10 (OK), 2 (not OK), 11 (not OK)
-cp.Int(lte=10, gt=2)
-```
+> ```python
+> # 3 (OK), 10 (OK), 2 (not OK), 11 (not OK)
+> cp.Int(lte=10, gt=2)
+> ```
 
 ### `Float`
 
@@ -876,12 +876,12 @@ Parameters:
 - `negative`: The float must be less than 0
 - `nonnegative`: The float must be greater than or equal to 0
 
-E.g.:
+Examples:
 <!--- mdtest -->
-```python
-# 3 (OK), 10 (OK), 2 (not OK), 11 (not OK)
-cp.Float(lte=10, gt=2)
-```
+> ```python
+> # 3 (OK), 10 (OK), 2 (not OK), 11 (not OK)
+> cp.Float(lte=10, gt=2)
+> ```
 
 ### `Bool`
 
@@ -919,12 +919,12 @@ Parameters:
 - `regex`: The string must match this regular expression
 - `regex_group`: (required `regex`) extracts the group from the regular expression
 
-E.g.:
+Examples:
 
 <!--- mdtest -->
-```python
-cp.Str(regex=r"[a-z]([0-9])", regex_group=1) # f1 -> 1
-```
+> ```python
+> cp.Str(regex=r"[a-z]([0-9])", regex_group=1) # f1 -> 1
+> ```
 
 ### `DateTime`
 
@@ -959,12 +959,12 @@ TimeDelta(
 - `max`: The maximum value the timedelta can be (same as lte)
 - `min`: The maximum value the timedelta can be (same as gte)
 
-E.g.:
+Examples:
 <!--- mdtest -->
-```python
-# 1 day (OK), 2 weeks (OK), 1 second (not OK)
-cp.TimeDelta(gte=timedelta(days=1))
-```
+> ```python
+> # 1 day (OK), 2 weeks (OK), 1 second (not OK)
+> cp.TimeDelta(gte=timedelta(days=1))
+> ```
 
 Supported time units:
 - `weeks (w)`, `days (d)`, `hours (h)`, `minutes (m)`, `seconds (s)`, `milliseconds (ms)`, `microseconds (us)`
@@ -979,11 +979,11 @@ Path(exists: bool = False)
 Parameters:
 - `exists`: If `True`, it checks whether the provided path exists.
 
-E.g.:
+Examples:
 <!--- mdtest -->
-```python
-cp.Path(exists=True)
-```
+> ```python
+> cp.Path(exists=True)
+> ```
 
 ### `List`
 
@@ -993,11 +993,11 @@ The `List` parser parses comma-separated values into a list of parsed elements.
 List(inner: Parser[T])
 ```
 
-E.g.:
+Examples:
 <!--- mdtest -->
-```python
-cp.List(cp.Int())
-```
+> ```python
+> cp.List(cp.Int())
+> ```
 
 Parameters:
 - `inner`: The parser used to convert each list element.
@@ -1010,15 +1010,15 @@ The `Tuple` parser parses a string input into a tuple of values.
 Tuple(*inner: Parser, num: int | None = None)
 ```
 
-E.g.:
+Examples:
 <!--- mdtest -->
-```python
-# tuple[str, ...]
-cp.Tuple(cp.Str())
-
-# tuple[str, int]
-cp.Tuple(cp.Str(), cp.Int(), num=2)
-```
+> ```python
+> # tuple[str, ...]
+> cp.Tuple(cp.Str())
+>
+> # tuple[str, int]
+> cp.Tuple(cp.Str(), cp.Int(), num=2)
+> ```
 
 Parameters:
 - `inner`: List of parsers for each tuple element.
@@ -1034,9 +1034,10 @@ Union(left: Parser[X], right: Parser[Y])
 
 You can also use the short hand `|` syntax for two parsers, e.g.:
 <!--- mdtest -->
-```python
-cp.Path(exists=True) | cp.Str()
-```
+> ```python
+> cp.Union(cp.Path(exists=True), cp.Str())
+> cp.Path(exists=True) | cp.Str()
+> ```
 
 ### `Literal`
 
@@ -1046,11 +1047,11 @@ The `Literal` parser ensures that input matches one of the predefined values.
 Literal(*values: t.Any)
 ```
 
-E.g.:
+Examples:
 <!--- mdtest -->
-```python
-cp.Literal(1, "foo")
-```
+> ```python
+> cp.Literal(1, "foo")
+> ```
 
 ### `Enum`
 
@@ -1060,15 +1061,15 @@ The `Enum` parser maps string input to a valid enum value.
 Enum(enum: type[enum.Enum])
 ```
 
-E.g.:
+Examples:
 <!--- mdtest -->
-```python
-class Color(Enum):
-    RED = 1
-    BLUE = 2
-
-cp.Enum(Color)
-```
+> ```python
+> class Color(Enum):
+>     RED = 1
+>     BLUE = 2
+>
+> cp.Enum(Color)
+> ```
 
 ### `from_type`
 
@@ -1079,8 +1080,8 @@ The `from_type` function returns the appropriate parser for a given type.
 def from_type(_type: type) -> Parser: ...
 ```
 
-E.g.:
+Examples:
 <!--- mdtest -->
-```python
-assert cp.from_type(bool) == cp.Bool()
-```
+> ```python
+> assert cp.from_type(bool) == cp.Bool()
+> ```
