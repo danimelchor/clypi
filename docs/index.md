@@ -82,6 +82,7 @@ Parameters:
 - `hide_input`: whether the input shouldn't be displayed as the user types (for passwords, API keys, etc.)
 - `max_attempts`: how many times to ask the user before giving up and raising
 - `group`: optionally define the name of a group to display the option in. Adding an option will automatically display the options in a different section of the help page (for an example, see the pictures in [formatter](#formatter)).
+- `defer` (advanced): defers the fetching of a value until the value is used. This can be helpful to express complex dependencies between arguments. For example, you may not want to prompt if a different option was passed in (see `examples/cli_deferred.py`).
 
 ### `Command`
 

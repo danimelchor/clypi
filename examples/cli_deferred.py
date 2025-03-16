@@ -3,16 +3,14 @@ from clypi import Command, arg, cprint
 
 
 class VerboseIntParser(cp.Int):
+    """Helper parser to show the user when the parsing is being done"""
+
     def __call__(self, raw: str | list[str], /) -> int:
         cprint(f"⚠️ The call to to parse {raw} as an int was executed!", fg="yellow")
         return super().__call__(raw)
 
 
 class Main(Command):
-    """
-    4ward is an example of how we can reuse args across commands using Clypi.
-    """
-
     runner: bool = arg(
         False,
         help="Whether you run",
@@ -26,6 +24,8 @@ class Main(Command):
     )
 
     async def run(self):
+        print("Command execution started...")
+
         if not self.runner:
             cprint("You are not a runner!", fg="green", bold=True)
             cprint("Try answering yes on the next try :)", bold=True)
