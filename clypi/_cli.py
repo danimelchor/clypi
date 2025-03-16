@@ -546,7 +546,7 @@ class Command(metaclass=_CommandMeta):
                     parsed_kwargs[field] = field_conf.parser(unparsed[field])
 
                 # If the field comes from a parent command, use that
-                if field_conf.forwarded and field in parent_attrs:
+                elif field_conf.forwarded and field in parent_attrs:
                     parsed_kwargs[field] = parent_attrs[field]
 
                 # If the field was not provided but we can prompt, do so
