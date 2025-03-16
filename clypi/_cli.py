@@ -581,8 +581,7 @@ class Command(metaclass=_CommandMeta):
             # If any fields were inherited by the subcommand and populated there,
             # get the same value for this instance
             for inh_field in inherited_fields:
-                if inh_field not in parsed_kwargs:
-                    parsed_kwargs[inh_field] = getattr(subcmd_instance, inh_field)
+                parsed_kwargs[inh_field] = getattr(subcmd_instance, inh_field)
 
         # Initialize the instance
         validated = cls._validate_fields(parsed_kwargs, name=cls.prog())

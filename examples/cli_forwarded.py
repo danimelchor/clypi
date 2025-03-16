@@ -44,6 +44,12 @@ class Main(Command):
     def epilog(cls):
         return "Learn more at http://4ward.org"
 
+    async def run(self):
+        cprint("Running with:", fg="blue", bold=True)
+        cprint(f" - Verbose: {self.verbose}", fg="blue")
+        cprint(f" - Env: {self.env}", fg="blue")
+        cprint("Done!", fg="green", bold=True)
+
 
 if __name__ == "__main__":
     show_forwarded = True
