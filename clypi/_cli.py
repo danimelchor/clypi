@@ -187,7 +187,7 @@ class _CommandMeta(type):
                 opt_config,
                 # Keep forwarding and group config
                 forwarded=True,
-                option_group=options[opt].option_group or opt_config.option_group,
+                group=options[opt].group or opt_config.group,
             )
             inherited.append(opt)
 
@@ -422,7 +422,7 @@ class Command(metaclass=_CommandMeta):
             pos, dist = closest(arg.value, all_pos)
             # 2 is ~good for typos (e.g.: this -> that)
             if dist <= 2:
-                similar = pos
+                similar = f"--{pos}" if len(pos) > 1 else f"-{pos}"
 
         what = "argument" if arg.is_pos() else "option"
         error = f"Unknown {what} {arg.orig!r}"

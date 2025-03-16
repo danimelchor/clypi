@@ -65,7 +65,7 @@ def arg(
     prompt: str | None = None,
     hide_input: bool = False,
     max_attempts: int = MAX_ATTEMPTS,
-    option_group: str | None = None,
+    group: str | None = None,
 ) -> T
 ```
 
@@ -81,7 +81,7 @@ Parameters:
 - `prompt`: if defined, it will ask the user to provide input if not already defined in the command line args
 - `hide_input`: whether the input shouldn't be displayed as the user types (for passwords, API keys, etc.)
 - `max_attempts`: how many times to ask the user before giving up and raising
-- `option_group`: optionally define the name of a group to display the option in. Adding an option will automatically display the options in a different section of the help page (for an example, see the pictures in [formatter](#formatter)).
+- `group`: optionally define the name of a group to display the option in. Adding an option will automatically display the options in a different section of the help page (for an example, see the pictures in [formatter](#formatter)).
 
 ### `Command`
 
@@ -382,7 +382,8 @@ With everything disabled:
 ClypiFormatter(boxed=False, show_option_types=False)
 ```
 
-<img width="1700" alt="image" src="https://github.com/user-attachments/assets/9cde40fc-4537-40ae-a5c6-983120580c98" />
+<img width="1691" alt="image" src="https://github.com/user-attachments/assets/8838227b-d77d-4e1a-9670-32c7f430db40" />
+
 
 
 

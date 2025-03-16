@@ -109,10 +109,9 @@ configure(
 )
 ```
 
-`uv run -m examples.uv ad`
+`uv run -m examples.uv add -c`
 
-<img width="1700" alt="image" src="https://github.com/user-attachments/assets/56c2d467-5a9e-4759-b4ba-89dd76b89913" />
-
+<img width="1699" alt="image" src="https://github.com/user-attachments/assets/dbf73404-1913-4315-81b6-1b690746680e" />
 
 
 ## 🌈 Colors

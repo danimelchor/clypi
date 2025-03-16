@@ -14,12 +14,13 @@ class Uv(Command):
     """
 
     subcommand: Add | Init | Pip | Remove | None
-    quiet: bool = arg(False, short="q", help="Do not print any output")
-    version: bool = arg(False, short="V", help="Display the uv version")
+    quiet: bool = arg(False, short="q", help="Do not print any output", group="global")
+    version: bool = arg(False, short="V", help="Display the uv version", group="global")
     no_cache: bool = arg(
         False,
         help="Avoid reading from or writing to the cache, instead using a temporary directory for the duration of the operation",
         hidden=True,
+        group="global",
     )
 
     async def run(self) -> None:
