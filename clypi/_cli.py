@@ -216,40 +216,66 @@ class Command(metaclass=_CommandMeta):
         for the actual provided values due to complication of checking types
         from type hints to real variables.
         """
-        cls = self.__class__
-
-        field_map: dict[str, t.Any] = {}
+        fields: dict[str, t.Any] = {}
 
         # Reversed so that we can `.pop()` in order
-        field_names = list(reversed(cls.field_names()))
+        field_names = list(reversed(self.__class__.field_names()))
         arg_ls = list(reversed(args))
 
         # From *args
         while arg_ls:
-            field = field_names.pop()
-            arg = arg_ls.pop()
-            field_map[field] = arg
+            fields[field_names.pop()] = arg_ls.pop()
 
         # From *kwargs
         for k, v in kwargs.items():
-            if k in field_map:
-                raise TypeError(f"Found duplicate field {k} for {cls.prog()}")
+            if k in fields:
+                raise TypeError(
+                    f"Found duplicate field {k} for {self.__class__.__name__}"
+                )
             if k not in field_names:
-                raise TypeError(f"Invalid argument {k} for {cls.prog()}")
+                raise TypeError(f"Invalid argument {k} for {self.__class__.__name__}")
 
-            field_map[k] = v
+            fields[k] = v
             field_names.remove(k)
+
+        # Validate all fields and populate defaults
+        validated = self._validate_fields(fields, name=self.__class__.__name__)
+
+        # Save all fields to current instance
+        for k, v in validated.items():
+            setattr(self, k, v)
+
+    @classmethod
+    def _validate_fields(cls, fields: dict[str, t.Any], name: str) -> dict[str, t.Any]:
+        """
+        Takes in a dictionary of field names and values, checks if the fields are all
+        part of the current Command class, and populates default fields. Raises if any
+        field is missing or not a valid one.
+        """
+
+        field_map: dict[str, t.Any] = {}
+
+        # Reversed so that we can `.pop()` in order
+        field_names = set(cls.field_names())
+
+        # From *kwargs
+        for field, value in fields.items():
+            if field not in field_names:
+                raise TypeError(f"Invalid argument {field} for {name}")
+
+            field_map[field] = value
+            field_names.remove(field)
 
         # Check if subcommand is missing
         if "subcommand" in field_names:
             # If command is optional, set it to None
             if None in cls.subcommands():
-                setattr(self, "subcommand", None)
                 field_names.remove("subcommand")
+                field_map["subcommand"] = None
             else:
-                raise TypeError(f"Missing required subcommand for {cls.prog()}")
+                raise TypeError(f"Missing required subcommand for {name}")
 
-        # Set defaults
+        # Set defaults for any other missing fields
         missing_field_names: list[str] = []
         for field in field_names:
             conf = cls.get_field_conf(field)
@@ -261,12 +287,10 @@ class Command(metaclass=_CommandMeta):
         # The user did not provide all of the necessary fields
         if missing_field_names:
             raise TypeError(
-                f"Missing required arguments {', '.join(missing_field_names)} for {cls.prog()}"
+                f"Missing required arguments {', '.join(missing_field_names)} for {name}"
             )
 
-        # Save all fields to current instance
-        for k, v in field_map.items():
-            setattr(self, k, v)
+        return field_map
 
     @classmethod
     def prog(cls) -> str:
@@ -502,6 +526,8 @@ class Command(metaclass=_CommandMeta):
         # If the user requested help, skip prompting/parsing
         parsed_kwargs: dict[str, t.Any] = {}
         if not requested_help:
+            missing_field_names: list[str] = []
+
             # --- Parse as the correct values ---
             for field in cls.field_names():
                 if field == "subcommand":
@@ -530,11 +556,17 @@ class Command(metaclass=_CommandMeta):
                     )
 
                 # Otherwise, if the field has a default, use that
-                # NOTE: we need to do this here as well as in the __init__ func
-                # since these fields are passed into child subcommands so they need
-                # to be populated already
                 elif field_conf.has_default():
                     parsed_kwargs[field] = field_conf.get_default()
+
+                # Woops! Store it so that we can display all missing fields at once right after
+                else:
+                    missing_field_names.append(field)
+
+            if missing_field_names:
+                raise TypeError(
+                    f"Missing required arguments {', '.join(missing_field_names)} for {cls.prog()}"
+                )
 
         # Parse the subcommand passing in the parsed types
         if subcommand:
@@ -546,7 +578,8 @@ class Command(metaclass=_CommandMeta):
             )
 
         # Initialize the instance
-        return cls(**parsed_kwargs)
+        validated = cls._validate_fields(parsed_kwargs, name=cls.prog())
+        return cls(**validated)
 
     @t.final
     @classmethod
