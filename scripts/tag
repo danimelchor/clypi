@@ -8,6 +8,7 @@ if [[ $branch != "master" ]]; then
     exit 1
 fi
 
+git pull
 version=$(cat pyproject.toml | sed -En 's/^version = "([0-9\.]+)"$/\1/p')
 echo "Creating tag for version $version"
 
