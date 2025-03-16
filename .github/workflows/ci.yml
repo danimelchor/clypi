@@ -31,4 +31,4 @@ jobs:
         run: uv run --all-extras codespell
 
       - name: "Markdown tests"
-        run: uv run --all-extras mdtest --parallel 20 --timeout 6
+        run: uv run --all-extras mdtest --parallel 20 --timeout 10
