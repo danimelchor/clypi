@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import asyncio
+import dataclasses
 import inspect
 import logging
 import re
@@ -33,7 +34,6 @@ HELP_ARGS: tuple[str, ...] = ("help", "-h", "--help")
 
 CLYPI_OPTIONS = "__clypi_options__"
 CLYPI_POSITIONALS = "__clypi_positionals__"
-CLYPI_FORWARDED = "__clypi_forwarded__"
 CLYPI_IN_ORDER_FIELD_NAMES = "__clypi_in_order_field_names__"
 CLYPI_SUBCOMMANDS = "__clypi_subcommands__"
 CLYPI_PARENTS = "__clypi_parents__"
@@ -83,7 +83,6 @@ class _CommandMeta(type):
         # Mappings for each arg type
         options: dict[str, _arg_config.Config[t.Any]] = {}
         positionals: dict[str, _arg_config.Config[t.Any]] = {}
-        forwarded: dict[str, _arg_config.Config[t.Any]] = {}
         field_names: list[str] = []
 
         # Get the config for each field
@@ -113,9 +112,7 @@ class _CommandMeta(type):
                 )
 
             # Store in the right dict
-            if field_conf.forwarded:
-                forwarded[field] = field_conf
-            elif field_conf.is_positional:
+            if field_conf.is_positional:
                 positionals[field] = field_conf
             else:
                 options[field] = field_conf
@@ -130,7 +127,6 @@ class _CommandMeta(type):
         # Store all fields
         setattr(self, CLYPI_OPTIONS, options)
         setattr(self, CLYPI_POSITIONALS, positionals)
-        setattr(self, CLYPI_FORWARDED, forwarded)
         setattr(self, CLYPI_IN_ORDER_FIELD_NAMES, field_names)
 
     @t.final
@@ -171,6 +167,19 @@ class _CommandMeta(type):
         setattr(self, CLYPI_SUBCOMMANDS, subcmds)
 
     @t.final
+    def inherit(self, parent: type[Command]):
+        setattr(self, CLYPI_PARENTS, parent.full_command())
+
+        options = self.options()
+        for opt, opt_config in parent.options().items():
+            if opt not in options or not options[opt].forwarded:
+                continue
+            options[opt] = dataclasses.replace(
+                opt_config,
+                forwarded=True,
+            )
+
+    @t.final
     def subcommands(self) -> dict[str | None, type[Command] | None]:
         return getattr(self, CLYPI_SUBCOMMANDS, None) or {None: None}
 
@@ -181,10 +190,6 @@ class _CommandMeta(type):
     @t.final
     def positionals(self) -> dict[str, Config[t.Any]]:
         return getattr(self, CLYPI_POSITIONALS, {})
-
-    @t.final
-    def forwarded(self) -> dict[str, Config[t.Any]]:
-        return getattr(self, CLYPI_FORWARDED, {})
 
     @t.final
     def field_names(self) -> list[str]:
@@ -200,8 +205,6 @@ class _CommandMeta(type):
         if conf := self.positionals().get(name):
             return conf
         if conf := self.options().get(name):
-            return conf
-        if conf := self.forwarded().get(name):
             return conf
         raise ValueError(f"Unknown field {name}")
 
@@ -570,9 +573,8 @@ class Command(metaclass=_CommandMeta):
 
         # Parse the subcommand passing in the parsed types
         if subcommand:
-            # Pass parent configs to child to get parenthood + config
-            setattr(subcommand, CLYPI_PARENTS, cls.full_command())
-
+            # Configure parenthood and forwarded args
+            subcommand.inherit(cls)
             parsed_kwargs["subcommand"] = subcommand._safe_parse(
                 args, parent_attrs=parsed_kwargs
             )

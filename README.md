@@ -33,7 +33,7 @@ Read the [docs](https://github.com/danimelchor/clypi/blob/master/docs/index.md#c
 
 <!--- mdtest-args -v --threads 2 -->
 ```python
-# examples/basic_cli.py
+# examples/cli_basic.py
 from clypi import Command, Positional, arg
 
 class Lint(Command):
