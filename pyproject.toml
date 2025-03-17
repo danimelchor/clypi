@@ -34,6 +34,7 @@ dev = [
   "codespell>=2.4.1",
   "anyio>=4.8.0",
   "types-python-dateutil>=2.9.0.20241206",
+  "mkdocs-material>=9.6.8",
 ]
 
 [tool.pytest.ini_options]
