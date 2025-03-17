@@ -1,5 +1,3 @@
-## Parsers
-
 For this section, parsers will be imported as such:
 ```python
 import clypi.parsers as cp

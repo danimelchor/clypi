@@ -1,5 +1,3 @@
-## Configuration
-
 ### Accessing and changing the configuration
 
 ```python
