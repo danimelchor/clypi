@@ -1,7 +1,7 @@
 site_name: Clypi
 site_url: https://danimelchor.github.io/clypi/
-repo_name: dmelchor/clypi
-repo_url: https://github.com/dmelchor/clypi
+repo_name: danimelchor/clypi
+repo_url: https://github.com/danimelchor/clypi
 
 theme:
   name: material
