@@ -1,6 +1,5 @@
 import typing as t
 from dataclasses import asdict, dataclass
-from types import EllipsisType
 
 from clypi import _type_util
 from clypi._cli import arg_parser
@@ -137,7 +136,7 @@ class Config(t.Generic[T]):
 
 
 def arg(
-    default: T | Unset | EllipsisType = UNSET,
+    default: T | Unset = UNSET,
     parser: Parser[T] | None = None,
     default_factory: t.Callable[[], T] | Unset = UNSET,
     help: str | None = None,
@@ -150,11 +149,9 @@ def arg(
     group: str | None = None,
     defer: bool = False,
 ) -> T:
-    inherited = inherited or default is Ellipsis
-    default = UNSET if default is Ellipsis else default
     return PartialConfig(
-        parser=parser,
         default=default,
+        parser=parser,
         default_factory=default_factory,
         help=help,
         short=short,
