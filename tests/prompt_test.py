@@ -126,6 +126,7 @@ class TestCase:
             ("42", timedelta),
             ("202-01-01", date),
             ("2021-01-01T00:00", datetime),
+            ("1 q", timedelta | None),
         ],
         ids=[
             "Str as Int",
@@ -134,6 +135,7 @@ class TestCase:
             "Int as TimeDelta",
             "Invalid Date",
             "Invalid DateTime",
+            "Invalid TimeDelta or None",
         ],
     )
     def test_prompt_with_parser_fails(self, answer: str, parser: type):

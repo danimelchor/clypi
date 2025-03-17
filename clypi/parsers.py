@@ -4,18 +4,20 @@ import enum
 import re
 import typing as t
 from abc import ABC, abstractmethod
+from contextlib import suppress
 from dataclasses import dataclass
 from datetime import datetime, timedelta, timezone
 from pathlib import Path as _Path
 
 from clypi import _type_util as tu
+from clypi._exceptions import ClypiException
 
 T = t.TypeVar("T", covariant=True)
 X = t.TypeVar("X")
 Y = t.TypeVar("Y")
 
 
-class UnparseableException(Exception):
+class UnparseableException(ClypiException):
     pass
 
 
@@ -27,10 +29,11 @@ CATCH_ERRORS: tuple[type[Exception], ...] = (
     ValueError,
     TypeError,
     IndexError,
+    ClypiException,
 )
 
 
-class CannotParseAs(Exception):
+class CannotParseAs(ClypiException):
     def __init__(self, value: t.Any, parser: Parser[t.Any]) -> None:
         message = f"Cannot parse {value!r} as {parser}"
         super().__init__(message)
@@ -376,10 +379,11 @@ class Union(ClypiParser[t.Union[X, Y]]):
         if isinstance(first, Str):
             first, second = self._right, self._left
 
-        try:
+        with suppress(*CATCH_ERRORS):
             return first(raw)
-        except Exception:
+        with suppress(*CATCH_ERRORS):
             return second(raw)
+        raise CannotParseAs(raw, self)
 
     def _parts(self):
         """
@@ -424,7 +428,7 @@ class NoneParser(ClypiParser[None]):
             return None
         if isinstance(raw, str) and raw.lower() == "none":
             return None
-        raise UnparseableException()
+        raise CannotParseAs(raw, self)
 
     def __repr__(self):
         return "none"
