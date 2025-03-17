@@ -11,8 +11,8 @@ class Run(Command):
     Runs all files
     """
 
-    verbose: bool = arg(...)
-    env: str = arg(...)
+    verbose: bool = arg(inherited=True)
+    env: str = arg(inherited=True)
 
 
 class Main(Command):
@@ -63,7 +63,7 @@ class Main(Command):
         (["run", "-v"], {}, True),
     ],
 )
-def test_parse_forwarded(args: list[str], expected: dict[str, t.Any], fails: bool):
+def test_parse_inherited(args: list[str], expected: dict[str, t.Any], fails: bool):
     if fails:
         with pytest.raises(Exception):
             _ = Main.parse(args)

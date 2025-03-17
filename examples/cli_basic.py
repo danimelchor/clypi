@@ -6,7 +6,7 @@ from clypi import Command, Positional, arg
 
 class Lint(Command):
     files: Positional[tuple[Path, ...]]
-    verbose: bool = arg(...)  # Comes from MyCli but I want to use it too
+    verbose: bool = arg(inherited=True)  # Comes from MyCli but I want to use it too
 
     async def run(self):
         print(f"Linting {self.files=} and {self.verbose=}")

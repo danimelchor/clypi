@@ -172,23 +172,23 @@ class _CommandMeta(type):
     def inherit(self, parent: type[Command]) -> list[str]:
         """
         This function is called by the parent command during parsing to configure
-        inherited fields through forwarding and the parenthood relationship so that the
-        full command is displayed properly.
+        inherited fields and the parenthood relationship so that the full command
+        is displayed properly.
 
         Returns the list of inherited fields
         """
         setattr(self, CLYPI_PARENTS, parent.full_command())
 
-        # For forwarded args, configure them with the parent's configs
+        # For inherited args, configure them with the parent's configs
         options = self.options()
         inherited: list[str] = []
         for opt, opt_config in parent.options().items():
-            if opt not in options or not options[opt].forwarded:
+            if opt not in options or not options[opt].inherited:
                 continue
             options[opt] = dataclasses.replace(
                 opt_config,
-                # Keep forwarding and group config
-                forwarded=True,
+                # Keep inherited and group config
+                inherited=True,
                 group=options[opt].group or opt_config.group,
             )
             inherited.append(opt)
@@ -471,7 +471,7 @@ class Command(metaclass=_CommandMeta):
         and subcommands until the iterator is complete.
 
         When we encounter a subcommand, we parse all the types, then try to keep parsing the
-        subcommand whilst we assign all forwarded types.
+        subcommand whilst we assign all inherited types.
         """
         parent_attrs = parent_attrs or {}
 
@@ -556,7 +556,7 @@ class Command(metaclass=_CommandMeta):
                     parsed_kwargs[field] = field_conf.parser(unparsed[field])
 
                 # If the field comes from a parent command, use that
-                elif field_conf.forwarded and field in parent_attrs:
+                elif field_conf.inherited and field in parent_attrs:
                     parsed_kwargs[field] = parent_attrs[field]
 
                 # If the field was not provided but we can defer prompting for the
@@ -588,7 +588,7 @@ class Command(metaclass=_CommandMeta):
 
         # Parse the subcommand passing in the parsed types
         if subcommand:
-            # Configure parenthood and forwarded args
+            # Configure parenthood and inherited args
             inherited_fields = subcommand.inherit(cls)
 
             # Parse the subcommand

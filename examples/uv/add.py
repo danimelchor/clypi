@@ -72,10 +72,10 @@ class Add(Command):
         False, help="Add the requirements to the development dependency group"
     )
 
-    # Forwarded opts
-    quiet: bool = arg(...)
-    version: bool = arg(...)
-    no_cache: bool = arg(...)
+    # Inherited opts
+    quiet: bool = arg(inherited=True)
+    version: bool = arg(inherited=True)
+    no_cache: bool = arg(inherited=True)
 
     async def run(self) -> None:
         clypi.cprint("Running `uv add` command...\n", fg="blue", bold=True)

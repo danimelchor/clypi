@@ -34,7 +34,7 @@ class RunParallel(Command):
 
     files: Positional[list[str]]
     exceptions_with_reasons: Path | None = arg(None, parser=cp.Path(exists=True))
-    env: Env = arg(...)
+    env: Env = arg(inherited=True)
 
     async def run(self):
         debug(self)
@@ -55,7 +55,7 @@ class RunSerial(Command):
     """
 
     files: Positional[list[Path]] = arg(parser=cp.List(cp.Path(exists=True)))
-    env: Env = arg(...)
+    env: Env = arg(inherited=True)
 
     async def run(self):
         debug(self)

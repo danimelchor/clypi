@@ -35,7 +35,7 @@ class Formatter(t.Protocol):
 class ClypiFormatter:
     boxed: bool = True
     show_option_types: bool = False
-    show_forwarded_options: bool = True
+    show_inherited_options: bool = True
     normalize_dots: t.Literal[".", ""] | None = ""
 
     @cached_property
@@ -137,7 +137,7 @@ class ClypiFormatter:
 
         # Group by option group
         for o in options:
-            if o.forwarded and not self.show_forwarded_options:
+            if o.inherited and not self.show_inherited_options:
                 continue
             groups[o.group].append(o)
 

@@ -198,18 +198,17 @@ class MyCommand(Command):
     slack: str = arg(parser=parse_slack)
 ```
 
-#### Forwarding arguments
+#### Inheriting arguments
 
 If a command defines an argument you want to use in any of it's children, you can re-define the
-argument and pass in a literal ellipsis (`...`) to config to indicate the argument comes from the
-parent command. You can also use `forwarded=True` if you prefer:
+argument and use `inherited=True`.
 
 <!--- mdtest -->
 ```python
 from clypi import Command, arg
 
 class MySubCmd(Command):
-    verbose: bool = arg(...)  # or `arg(forwarded=True)`
+    verbose: bool = arg(inherited=True)
 
 class MyCli(Command):
     subcommand: MySubCmd
@@ -234,13 +233,13 @@ Examples:
 >     num_threads: int = arg(defer=True, prompt="How many threads do you want to use")
 >
 >     async def run(self):
->         print(cmd.single_threaded)  # << will not prompt yet...
->         if cmd.single_threaded:
+>         print(self.single_threaded)  # << will not prompt yet...
+>         if self.single_threaded:
 >             # if we never access num_threads in this if condition, we will
 >             # never prompt!
 >             print("Running single threaded...")
 >         else:
->             print("Running with threads: ", cmd.num_threads)  # << we prompt here!
+>             print("Running with threads: ", self.num_threads)  # << we prompt here!
 >
 > main = Main.parse()  # << will not prompt yet...
 > main.start()  # << will not prompt yet...
@@ -334,7 +333,7 @@ class Formatter(t.Protocol):
 class ClypiFormatter(
     boxed=True,
     show_option_types=False,
-    show_forwarded_options=True,
+    show_inherited_options=True,
     normalize_dots="",
 )
 ```
@@ -342,7 +341,7 @@ Parameters:
 
 - `boxed`: whether to wrap each section in a box made with ASCII characters
 - `show_option_types`: whether to display the expected type for each argument or just a placeholder. E.g.: `--foo TEXT` vs `--foo <FOO>`
-- `show_forwarded_options`: whether to show forwarded arguments in child commands or only in parent commands
+- `show_inherited_options`: whether to show inherited arguments in child commands or only in parent commands
 - `normalize_dots`: either `"."`, `""`, or `None`. If a dot, or empty, it will add or remove trailing dots from all help messages to keep a more consistent formatting across the application.
 
 
