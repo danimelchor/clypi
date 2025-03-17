@@ -27,12 +27,12 @@ nav:
  - Clypi: index.md
  - Tutorial: tutorial.md
  - API:
-   - api/config.md
-   - api/cli.md
-   - api/components.md
-   - api/colors.md
-   - api/prompts.md
-   - api/parsers.md
+   - Configuration: api/config.md
+   - CLI: api/cli.md
+   - UI Components: api/components.md
+   - Colors: api/colors.md
+   - Prompts: api/prompts.md
+   - Parsers: api/parsers.md
  - Planned work: planned_work.md
 
 plugins:
