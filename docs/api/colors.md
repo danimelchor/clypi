@@ -1,5 +1,3 @@
-## Colors
-
 ### `ColorType`
 
 ```python

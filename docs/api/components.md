@@ -1,5 +1,3 @@
-## Components
-
 ### Spinners
 
 #### `Spin`
