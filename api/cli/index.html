@@ -981,8 +981,8 @@
 
   <h1>Cli</h1>
 
-<h2 id="cli">CLI</h2>
-<h3 id="arg"><code>arg</code></h3>
+<h2 id="cli">CLI<a class="headerlink" href="#cli" title="Permanent link">&para;</a></h2>
+<h3 id="arg"><code>arg</code><a class="headerlink" href="#arg" title="Permanent link">&para;</a></h3>
 <div class="language-python highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="k">def</span><span class="w"> </span><span class="nf">arg</span><span class="p">(</span>
 </span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>    <span class="n">default</span><span class="p">:</span> <span class="n">T</span> <span class="o">|</span> <span class="n">Unset</span> <span class="o">|</span> <span class="n">EllipsisType</span> <span class="o">=</span> <span class="n">UNSET</span><span class="p">,</span>
 </span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>    <span class="n">parser</span><span class="p">:</span> <span class="n">Parser</span><span class="p">[</span><span class="n">T</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -997,22 +997,24 @@
 </span></code></pre></div>
 <p>Utility function to configure how a specific argument should behave when displayed
 and parsed.</p>
-<p>Parameters:
-- <code>default</code>: the default value to return if the user doesn't pass in the argument (or hits enter during the prompt, if any)
-- <code>parser</code>: a function that takes in a string and returns the parsed type (see <a href="#parsert"><code>Parser</code></a>)
-- <code>default_factory</code>: a function that returns a default value. Useful to defer computation or to avoid default mutable values
-- <code>help</code>: a brief description to show the user when they pass in <code>-h</code> or <code>--help</code>
-- <code>short</code>: for options it defines a short way to pass in a value (e.g.: <code>short="v"</code> allows users to pass in <code>-v &lt;value&gt;</code>)
-- <code>prompt</code>: if defined, it will ask the user to provide input if not already defined in the command line args
-- <code>hide_input</code>: whether the input shouldn't be displayed as the user types (for passwords, API keys, etc.)
-- <code>max_attempts</code>: how many times to ask the user before giving up and raising
-- <code>group</code>: optionally define the name of a group to display the option in. Adding an option will automatically display the options in a different section of the help page (for an example, see the pictures in <a href="#formatter">formatter</a>).
-- <code>defer</code> (advanced): defers the fetching of a value until the value is used. This can be helpful to express complex dependencies between arguments. For example, you may not want to prompt if a different option was passed in (see <code>examples/cli_deferred.py</code>).</p>
-<h3 id="command"><code>Command</code></h3>
+<p>Parameters:</p>
+<ul>
+<li><code>default</code>: the default value to return if the user doesn't pass in the argument (or hits enter during the prompt, if any)</li>
+<li><code>parser</code>: a function that takes in a string and returns the parsed type (see <a href="#parsert"><code>Parser</code></a>)</li>
+<li><code>default_factory</code>: a function that returns a default value. Useful to defer computation or to avoid default mutable values</li>
+<li><code>help</code>: a brief description to show the user when they pass in <code>-h</code> or <code>--help</code></li>
+<li><code>short</code>: for options it defines a short way to pass in a value (e.g.: <code>short="v"</code> allows users to pass in <code>-v &lt;value&gt;</code>)</li>
+<li><code>prompt</code>: if defined, it will ask the user to provide input if not already defined in the command line args</li>
+<li><code>hide_input</code>: whether the input shouldn't be displayed as the user types (for passwords, API keys, etc.)</li>
+<li><code>max_attempts</code>: how many times to ask the user before giving up and raising</li>
+<li><code>group</code>: optionally define the name of a group to display the option in. Adding an option will automatically display the options in a different section of the help page (for an example, see the pictures in <a href="#formatter">formatter</a>).</li>
+<li><code>defer</code> (advanced): defers the fetching of a value until the value is used. This can be helpful to express complex dependencies between arguments. For example, you may not want to prompt if a different option was passed in (see <code>examples/cli_deferred.py</code>).</li>
+</ul>
+<h3 id="command"><code>Command</code><a class="headerlink" href="#command" title="Permanent link">&para;</a></h3>
 <p>This is the main class you must extend when defining a command. There are no methods you must override
 other than the <a href="#run"><code>run</code></a> method. The type hints you annotate the class will define the arguments that
 command will take based on a set of rules:</p>
-<h4 id="subcommands">Subcommands</h4>
+<h4 id="subcommands">Subcommands<a class="headerlink" href="#subcommands" title="Permanent link">&para;</a></h4>
 <p>To define a subcommand, you must define a field in a class extending <code>Command</code> called <code>subcommand</code>. It's type hint must
 point to other classes extending <code>Command</code> or <code>None</code> by using either a single class, or a union of classes.</p>
 <p>These are all valid examples:
@@ -1037,7 +1039,7 @@ point to other classes extending <code>Command</code> or <code>None</code> by us
 </span><span id="__span-1-19"><a id="__codelineno-1-19" name="__codelineno-1-19" href="#__codelineno-1-19"></a>    <span class="c1"># An optional subcommand `my-subcommand` or `my-other-subcommand`</span>
 </span><span id="__span-1-20"><a id="__codelineno-1-20" name="__codelineno-1-20" href="#__codelineno-1-20"></a>    <span class="n">subcommand</span><span class="p">:</span> <span class="n">MySubcommand</span> <span class="o">|</span> <span class="n">MyOtherSubcommand</span> <span class="o">|</span> <span class="kc">None</span>
 </span></code></pre></div></p>
-<h4 id="arguments-positional">Arguments (positional)</h4>
+<h4 id="arguments-positional">Arguments (positional)<a class="headerlink" href="#arguments-positional" title="Permanent link">&para;</a></h4>
 <p>Arguments are mandatory positional words the user must pass in. They're defined as class attributes with no default and type hinted with the <code>Positional[T]</code> type.</p>
 <!--- mdtest -->
 <div class="language-python highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">clypi</span><span class="w"> </span><span class="kn">import</span> <span class="n">Command</span><span class="p">,</span> <span class="n">Positional</span>
@@ -1048,7 +1050,7 @@ point to other classes extending <code>Command</code> or <code>None</code> by us
 </span><span id="__span-2-6"><a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a>    <span class="n">arg1</span><span class="p">:</span> <span class="n">Positional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span>
 </span><span id="__span-2-7"><a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a>    <span class="n">arg2</span><span class="p">:</span> <span class="n">Positional</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span>
 </span></code></pre></div>
-<h4 id="flags">Flags</h4>
+<h4 id="flags">Flags<a class="headerlink" href="#flags" title="Permanent link">&para;</a></h4>
 <p>Flags are boolean options that can be either present or not. To define a flag, simply define
 a boolean class attribute in your command with a default value. The user will then be able
 to pass in <code>--my-flag</code> when running the command which will set it to True.</p>
@@ -1060,7 +1062,7 @@ to pass in <code>--my-flag</code> when running the command which will set it to 
 </span><span id="__span-3-5"><a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a><span class="k">class</span><span class="w"> </span><span class="nc">MyCommand</span><span class="p">(</span><span class="n">Command</span><span class="p">):</span>
 </span><span id="__span-3-6"><a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a>    <span class="n">my_flag</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
 </span></code></pre></div>
-<h4 id="options">Options</h4>
+<h4 id="options">Options<a class="headerlink" href="#options" title="Permanent link">&para;</a></h4>
 <p>Options are like flags but, instead of booleans, the user passes in specific values. You can think of options as key/pair items. Options can be set as required by not specifying a default value.</p>
 <!--- mdtest -->
 <div class="language-python highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">clypi</span><span class="w"> </span><span class="kn">import</span> <span class="n">Command</span>
@@ -1070,7 +1072,7 @@ to pass in <code>--my-flag</code> when running the command which will set it to 
 </span><span id="__span-4-5"><a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a><span class="k">class</span><span class="w"> </span><span class="nc">MyCommand</span><span class="p">(</span><span class="n">Command</span><span class="p">):</span>
 </span><span id="__span-4-6"><a id="__codelineno-4-6" name="__codelineno-4-6" href="#__codelineno-4-6"></a>    <span class="n">my_attr</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="nb">int</span> <span class="o">=</span> <span class="s2">&quot;some-default-here&quot;</span>
 </span></code></pre></div>
-<h4 id="running-the-command">Running the command</h4>
+<h4 id="running-the-command">Running the command<a class="headerlink" href="#running-the-command" title="Permanent link">&para;</a></h4>
 <p>You must implement the <a href="#run"><code>run</code></a> method so that your command can be ran. The function
 must be <code>async</code> so that we can properly render items in your screen.</p>
 <!--- mdtest -->
@@ -1082,7 +1084,7 @@ must be <code>async</code> so that we can properly render items in your screen.<
 </span><span id="__span-5-6"><a id="__codelineno-5-6" name="__codelineno-5-6" href="#__codelineno-5-6"></a>    <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 </span><span id="__span-5-7"><a id="__codelineno-5-7" name="__codelineno-5-7" href="#__codelineno-5-7"></a>        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Running with verbose: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">verbose</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 </span></code></pre></div>
-<h4 id="help-page">Help page</h4>
+<h4 id="help-page">Help page<a class="headerlink" href="#help-page" title="Permanent link">&para;</a></h4>
 <p>You can define custom help messages for each argument using our handy <code>config</code> helper:</p>
 <!--- mdtest -->
 <div class="language-python highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">clypi</span><span class="w"> </span><span class="kn">import</span> <span class="n">Command</span><span class="p">,</span> <span class="n">arg</span>
@@ -1100,7 +1102,7 @@ must be <code>async</code> so that we can properly render items in your screen.<
 </span><span id="__span-7-6"><a id="__codelineno-7-6" name="__codelineno-7-6" href="#__codelineno-7-6"></a><span class="sd">    and can contain any info you&#39;d like</span>
 </span><span id="__span-7-7"><a id="__codelineno-7-7" name="__codelineno-7-7" href="#__codelineno-7-7"></a><span class="sd">    &quot;&quot;&quot;</span>
 </span></code></pre></div>
-<h4 id="prompting">Prompting</h4>
+<h4 id="prompting">Prompting<a class="headerlink" href="#prompting" title="Permanent link">&para;</a></h4>
 <p>If you want to ask the user to provide input if it's not specified, you can pass in a prompt to <code>config</code> for each field like so:</p>
 <!--- mdtest -->
 <div class="language-python highlight"><pre><span></span><code><span id="__span-8-1"><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">clypi</span><span class="w"> </span><span class="kn">import</span> <span class="n">Command</span><span class="p">,</span> <span class="n">arg</span>
@@ -1109,7 +1111,7 @@ must be <code>async</code> so that we can properly render items in your screen.<
 </span><span id="__span-8-4"><a id="__codelineno-8-4" name="__codelineno-8-4" href="#__codelineno-8-4"></a>    <span class="n">name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">arg</span><span class="p">(</span><span class="n">prompt</span><span class="o">=</span><span class="s2">&quot;What&#39;s your name?&quot;</span><span class="p">)</span>
 </span></code></pre></div>
 <p>On runtime, if the user didn't provide a value for <code>--name</code>, the program will ask the user to provide one until they do. You can also pass in a <code>default</code> value to <code>config</code> to allow the user to just hit enter to accept the default.</p>
-<h4 id="built-in-parsers">Built-in parsers</h4>
+<h4 id="built-in-parsers">Built-in parsers<a class="headerlink" href="#built-in-parsers" title="Permanent link">&para;</a></h4>
 <p>CLypi comes with built-in parsers for all common Python types. See the <a href="#parsers"><code>Parsers</code></a> section below to find all supported types and validations. Most often, using a normal Python type will automatically load the right parser, but if you want more control or extra features you can use these directly:</p>
 <!--- mdtest -->
 <div class="language-python highlight"><pre><span></span><code><span id="__span-9-1"><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a><span class="kn">import</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">t</span>
@@ -1119,7 +1121,7 @@ must be <code>async</code> so that we can properly render items in your screen.<
 </span><span id="__span-9-5"><a id="__codelineno-9-5" name="__codelineno-9-5" href="#__codelineno-9-5"></a><span class="k">class</span><span class="w"> </span><span class="nc">MyCommand</span><span class="p">(</span><span class="n">Command</span><span class="p">):</span>
 </span><span id="__span-9-6"><a id="__codelineno-9-6" name="__codelineno-9-6" href="#__codelineno-9-6"></a>    <span class="n">file</span><span class="p">:</span> <span class="n">Path</span> <span class="o">=</span> <span class="n">arg</span><span class="p">(</span><span class="n">parser</span><span class="o">=</span><span class="n">cp</span><span class="o">.</span><span class="n">Path</span><span class="p">(</span><span class="n">exists</span><span class="o">=</span><span class="kc">True</span><span class="p">))</span>
 </span></code></pre></div>
-<h4 id="custom-parsers">Custom parsers</h4>
+<h4 id="custom-parsers">Custom parsers<a class="headerlink" href="#custom-parsers" title="Permanent link">&para;</a></h4>
 <p>If the type you want to parse from the user is too complex, you can define your own parser
 using <code>config</code> as well:</p>
 <!--- mdtest -->
@@ -1134,7 +1136,7 @@ using <code>config</code> as well:</p>
 </span><span id="__span-10-9"><a id="__codelineno-10-9" name="__codelineno-10-9" href="#__codelineno-10-9"></a><span class="k">class</span><span class="w"> </span><span class="nc">MyCommand</span><span class="p">(</span><span class="n">Command</span><span class="p">):</span>
 </span><span id="__span-10-10"><a id="__codelineno-10-10" name="__codelineno-10-10" href="#__codelineno-10-10"></a>    <span class="n">slack</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">arg</span><span class="p">(</span><span class="n">parser</span><span class="o">=</span><span class="n">parse_slack</span><span class="p">)</span>
 </span></code></pre></div>
-<h4 id="forwarding-arguments">Forwarding arguments</h4>
+<h4 id="forwarding-arguments">Forwarding arguments<a class="headerlink" href="#forwarding-arguments" title="Permanent link">&para;</a></h4>
 <p>If a command defines an argument you want to use in any of it's children, you can re-define the
 argument and pass in a literal ellipsis (<code>...</code>) to config to indicate the argument comes from the
 parent command. You can also use <code>forwarded=True</code> if you prefer:</p>
@@ -1151,7 +1153,7 @@ parent command. You can also use <code>forwarded=True</code> if you prefer:</p>
 </span><span id="__span-11-10"><a id="__codelineno-11-10" name="__codelineno-11-10" href="#__codelineno-11-10"></a><span class="n">cmd</span> <span class="o">=</span> <span class="n">MyCli</span><span class="o">.</span><span class="n">parse</span><span class="p">([</span><span class="s2">&quot;my-sub-cmd&quot;</span><span class="p">,</span> <span class="s2">&quot;--verbose&quot;</span><span class="p">])</span>
 </span><span id="__span-11-11"><a id="__codelineno-11-11" name="__codelineno-11-11" href="#__codelineno-11-11"></a><span class="k">assert</span> <span class="n">cmd</span><span class="o">.</span><span class="n">subcommand</span><span class="o">.</span><span class="n">verbose</span> <span class="ow">is</span> <span class="kc">True</span>
 </span></code></pre></div>
-<h4 id="deferring-arguments">Deferring arguments</h4>
+<h4 id="deferring-arguments">Deferring arguments<a class="headerlink" href="#deferring-arguments" title="Permanent link">&para;</a></h4>
 <p>CLIs can get very complex. Sometimes we want to build a complex graph of dependencies between the arguments and it is hard to do that. For example, we can have an application that does not use <code>--num-threads</code> if <code>--single-threaded</code> was provided already. For that, clypi offers <code>arg(defer=True)</code>. The internals are complex but the user experience is quite simple: clypi will not prompt or require this value being passed up until when it's executed.</p>
 <p>Examples:</p>
 <!--- mdtest-stdin 5 -->
@@ -1175,7 +1177,7 @@ parent command. You can also use <code>forwarded=True</code> if you prefer:</p>
 </blockquote>
 <p>Notice how <code>num_threads</code> is actually a required option (it does not have a default value), but
 by deferring the evaluation of that value we can express complex dependencies between our arguments or offer a better step-by-step experience.</p>
-<h4 id="autocomplete">Autocomplete</h4>
+<h4 id="autocomplete">Autocomplete<a class="headerlink" href="#autocomplete" title="Permanent link">&para;</a></h4>
 <p>All CLIs built with clypi come with a builtin <code>--install-autocomplete</code> option that will automatically
 set up shell completions for your built CLI.</p>
 <div class="admonition warning">
@@ -1183,42 +1185,44 @@ set up shell completions for your built CLI.</p>
 <p>This feature is brand new and might contain some bugs. Please file a ticket
 if you run into any!</p>
 </div>
-<h4 id="name"><code>name</code></h4>
+<h4 id="name"><code>name</code><a class="headerlink" href="#name" title="Permanent link">&para;</a></h4>
 <p><div class="language-python highlight"><pre><span></span><code><span id="__span-13-1"><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a><span class="nd">@t</span><span class="o">.</span><span class="n">final</span>
 </span><span id="__span-13-2"><a id="__codelineno-13-2" name="__codelineno-13-2" href="#__codelineno-13-2"></a><span class="nd">@classmethod</span>
 </span><span id="__span-13-3"><a id="__codelineno-13-3" name="__codelineno-13-3" href="#__codelineno-13-3"></a><span class="k">def</span><span class="w"> </span><span class="nf">prog</span><span class="p">(</span><span class="bp">cls</span><span class="p">)</span>
 </span></code></pre></div>
 The name of the command. Can be overridden to provide a custom name
 or will default to the class name extending <code>Command</code>.</p>
-<h4 id="help"><code>help</code></h4>
+<h4 id="help"><code>help</code><a class="headerlink" href="#help" title="Permanent link">&para;</a></h4>
 <p><div class="language-python highlight"><pre><span></span><code><span id="__span-14-1"><a id="__codelineno-14-1" name="__codelineno-14-1" href="#__codelineno-14-1"></a><span class="nd">@t</span><span class="o">.</span><span class="n">final</span>
 </span><span id="__span-14-2"><a id="__codelineno-14-2" name="__codelineno-14-2" href="#__codelineno-14-2"></a><span class="nd">@classmethod</span>
 </span><span id="__span-14-3"><a id="__codelineno-14-3" name="__codelineno-14-3" href="#__codelineno-14-3"></a><span class="k">def</span><span class="w"> </span><span class="nf">help</span><span class="p">(</span><span class="bp">cls</span><span class="p">)</span>
 </span></code></pre></div>
 The help displayed for the command when the user passes in <code>-h</code> or <code>--help</code>. Defaults to the
 docstring for the class extending <code>Command</code>.</p>
-<h4 id="run"><code>run</code></h4>
+<h4 id="run"><code>run</code><a class="headerlink" href="#run" title="Permanent link">&para;</a></h4>
 <p><div class="language-python highlight"><pre><span></span><code><span id="__span-15-1"><a id="__codelineno-15-1" name="__codelineno-15-1" href="#__codelineno-15-1"></a><span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">:</span> <span class="n">Command</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 </span></code></pre></div>
 The main function you <strong>must</strong> override. This function is where the business logic of your command
 should live.</p>
 <p><code>self</code> contains the arguments for this command you can access
 as you would do with any other instance property.</p>
-<h4 id="astart-and-start"><code>astart</code> and <code>start</code></h4>
+<h4 id="astart-and-start"><code>astart</code> and <code>start</code><a class="headerlink" href="#astart-and-start" title="Permanent link">&para;</a></h4>
 <p><div class="language-python highlight"><pre><span></span><code><span id="__span-16-1"><a id="__codelineno-16-1" name="__codelineno-16-1" href="#__codelineno-16-1"></a><span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">astart</span><span class="p">(</span><span class="bp">self</span><span class="p">:</span> <span class="n">Command</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 </span></code></pre></div>
 <div class="language-python highlight"><pre><span></span><code><span id="__span-17-1"><a id="__codelineno-17-1" name="__codelineno-17-1" href="#__codelineno-17-1"></a><span class="k">def</span><span class="w"> </span><span class="nf">start</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 </span></code></pre></div>
 These commands are the entry point for your program. You can either call <code>YourCommand.start()</code> on your class
 or, if already in an async loop, <code>await YourCommand.astart()</code>.</p>
-<h4 id="print_help"><code>print_help</code></h4>
+<h4 id="print_help"><code>print_help</code><a class="headerlink" href="#print_help" title="Permanent link">&para;</a></h4>
 <p><div class="language-python highlight"><pre><span></span><code><span id="__span-18-1"><a id="__codelineno-18-1" name="__codelineno-18-1" href="#__codelineno-18-1"></a><span class="nd">@classmethod</span>
 </span><span id="__span-18-2"><a id="__codelineno-18-2" name="__codelineno-18-2" href="#__codelineno-18-2"></a><span class="k">def</span><span class="w"> </span><span class="nf">print_help</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">exception</span><span class="p">:</span> <span class="ne">Exception</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span>
 </span></code></pre></div>
 Prints the help page for a particular command.</p>
-<p>Parameters:
-- <code>exception</code>: an exception neatly showed to the user as a traceback. Automatically passed in during runtime.</p>
-<h3 id="formatter"><code>Formatter</code></h3>
+<p>Parameters:</p>
+<ul>
+<li><code>exception</code>: an exception neatly showed to the user as a traceback. Automatically passed in during runtime.</li>
+</ul>
+<h3 id="formatter"><code>Formatter</code><a class="headerlink" href="#formatter" title="Permanent link">&para;</a></h3>
 <p>A formatter is any class conforming to the following protocol. It is called on several occasions to render
 the help page. The <code>Formatter</code> implementation should try to use the provided configuration theme when possible.</p>
 <div class="language-python highlight"><pre><span></span><code><span id="__span-19-1"><a id="__codelineno-19-1" name="__codelineno-19-1" href="#__codelineno-19-1"></a><span class="k">class</span><span class="w"> </span><span class="nc">Formatter</span><span class="p">(</span><span class="n">t</span><span class="o">.</span><span class="n">Protocol</span><span class="p">):</span>
@@ -1233,7 +1237,7 @@ the help page. The <code>Formatter</code> implementation should try to use the p
 </span><span id="__span-19-10"><a id="__codelineno-19-10" name="__codelineno-19-10" href="#__codelineno-19-10"></a>        <span class="n">exception</span><span class="p">:</span> <span class="ne">Exception</span> <span class="o">|</span> <span class="kc">None</span><span class="p">,</span>
 </span><span id="__span-19-11"><a id="__codelineno-19-11" name="__codelineno-19-11" href="#__codelineno-19-11"></a>    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span> <span class="o">...</span>
 </span></code></pre></div>
-<h3 id="clypiformatter"><code>ClypiFormatter</code></h3>
+<h3 id="clypiformatter"><code>ClypiFormatter</code><a class="headerlink" href="#clypiformatter" title="Permanent link">&para;</a></h3>
 <p><div class="language-python highlight"><pre><span></span><code><span id="__span-20-1"><a id="__codelineno-20-1" name="__codelineno-20-1" href="#__codelineno-20-1"></a><span class="k">class</span><span class="w"> </span><span class="nc">ClypiFormatter</span><span class="p">(</span>
 </span><span id="__span-20-2"><a id="__codelineno-20-2" name="__codelineno-20-2" href="#__codelineno-20-2"></a>    <span class="n">boxed</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
 </span><span id="__span-20-3"><a id="__codelineno-20-3" name="__codelineno-20-3" href="#__codelineno-20-3"></a>    <span class="n">show_option_types</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
@@ -1241,11 +1245,13 @@ the help page. The <code>Formatter</code> implementation should try to use the p
 </span><span id="__span-20-5"><a id="__codelineno-20-5" name="__codelineno-20-5" href="#__codelineno-20-5"></a>    <span class="n">normalize_dots</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span>
 </span><span id="__span-20-6"><a id="__codelineno-20-6" name="__codelineno-20-6" href="#__codelineno-20-6"></a><span class="p">)</span>
 </span></code></pre></div>
-Parameters:
-- <code>boxed</code>: whether to wrap each section in a box made with ASCII characters
-- <code>show_option_types</code>: whether to display the expected type for each argument or just a placeholder. E.g.: <code>--foo TEXT</code> vs <code>--foo &lt;FOO&gt;</code>
-- <code>show_forwarded_options</code>: whether to show forwarded arguments in child commands or only in parent commands
-- <code>normalize_dots</code>: either <code>"."</code>, <code>""</code>, or <code>None</code>. If a dot, or empty, it will add or remove trailing dots from all help messages to keep a more consistent formatting across the application.</p>
+Parameters:</p>
+<ul>
+<li><code>boxed</code>: whether to wrap each section in a box made with ASCII characters</li>
+<li><code>show_option_types</code>: whether to display the expected type for each argument or just a placeholder. E.g.: <code>--foo TEXT</code> vs <code>--foo &lt;FOO&gt;</code></li>
+<li><code>show_forwarded_options</code>: whether to show forwarded arguments in child commands or only in parent commands</li>
+<li><code>normalize_dots</code>: either <code>"."</code>, <code>""</code>, or <code>None</code>. If a dot, or empty, it will add or remove trailing dots from all help messages to keep a more consistent formatting across the application.</li>
+</ul>
 <p>Clypi ships with a pre-made formatter that can display help pages with either boxes or with indented sections, and hideor show the option types. You can disable both the boxes and type of each option and display just a placeholder.</p>
 <p>With everything enabled:</p>
 <!--- mdtest -->

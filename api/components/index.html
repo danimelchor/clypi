@@ -1005,14 +1005,14 @@
 
   <h1>Components</h1>
 
-<h2 id="components">Components</h2>
-<h3 id="spinners">Spinners</h3>
-<h4 id="spin"><code>Spin</code></h4>
+<h2 id="components">Components<a class="headerlink" href="#components" title="Permanent link">&para;</a></h2>
+<h3 id="spinners">Spinners<a class="headerlink" href="#spinners" title="Permanent link">&para;</a></h3>
+<h4 id="spin"><code>Spin</code><a class="headerlink" href="#spin" title="Permanent link">&para;</a></h4>
 <div class="language-python highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="k">class</span><span class="w"> </span><span class="nc">Spin</span><span class="p">(</span><span class="n">Enum</span><span class="p">):</span> <span class="o">...</span>
 </span></code></pre></div>
 <p>The spinning animation you'd like to use. The spinners are sourced from the NPM <a href="https://www.npmjs.com/package/cli-spinners">cli-spinners</a> package.</p>
 <p>You can see all the spinners in action by running <code>uv run -m examples.spinner</code>. The full list can be found in the code <a href="https://github.com/danimelchor/clypi/blob/master/clypi/_data/spinners.py">here</a>.</p>
-<h4 id="spinner"><code>Spinner</code></h4>
+<h4 id="spinner"><code>Spinner</code><a class="headerlink" href="#spinner" title="Permanent link">&para;</a></h4>
 <p>A spinner indicating that something is happening behind the scenes. It can be used as a context manager or <a href="#spinner-decorator">like a decorator</a>. The context manager usage is like so:</p>
 <!--- mdtest -->
 <div class="language-python highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="kn">import</span><span class="w"> </span><span class="nn">asyncio</span>
@@ -1027,7 +1027,7 @@
 </span><span id="__span-1-10"><a id="__codelineno-1-10" name="__codelineno-1-10" href="#__codelineno-1-10"></a>
 </span><span id="__span-1-11"><a id="__codelineno-1-11" name="__codelineno-1-11" href="#__codelineno-1-11"></a><span class="n">asyncio</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">main</span><span class="p">())</span>
 </span></code></pre></div>
-<h5 id="spinner__init__"><code>Spinner.__init__()</code></h5>
+<h5 id="spinner__init__"><code>Spinner.__init__()</code><a class="headerlink" href="#spinner__init__" title="Permanent link">&para;</a></h5>
 <p><div class="language-python highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
 </span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>    <span class="bp">self</span><span class="p">,</span>
 </span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a>    <span class="n">title</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
@@ -1038,26 +1038,28 @@
 </span><span id="__span-2-8"><a id="__codelineno-2-8" name="__codelineno-2-8" href="#__codelineno-2-8"></a>    <span class="n">capture</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
 </span><span id="__span-2-9"><a id="__codelineno-2-9" name="__codelineno-2-9" href="#__codelineno-2-9"></a><span class="p">)</span>
 </span></code></pre></div>
-Parameters:
-- <code>title</code>: the initial text to display as the spinner spins
-- <code>animation</code>: a provided <a href="#spin"><code>Spin</code></a> animation or a list of frames to display
-- <code>prefix</code>: text or padding displayed before the icon
-- <code>suffix</code>: text or padding displayed after the icon
-- <code>speed</code>: a multiplier to speed or slow down the frame rate of the animation
-- <code>capture</code>: if enabled, the Spinner will capture all stdout and stderr and display it nicely</p>
-<h5 id="done"><code>done</code></h5>
+Parameters:</p>
+<ul>
+<li><code>title</code>: the initial text to display as the spinner spins</li>
+<li><code>animation</code>: a provided <a href="#spin"><code>Spin</code></a> animation or a list of frames to display</li>
+<li><code>prefix</code>: text or padding displayed before the icon</li>
+<li><code>suffix</code>: text or padding displayed after the icon</li>
+<li><code>speed</code>: a multiplier to speed or slow down the frame rate of the animation</li>
+<li><code>capture</code>: if enabled, the Spinner will capture all stdout and stderr and display it nicely</li>
+</ul>
+<h5 id="done"><code>done</code><a class="headerlink" href="#done" title="Permanent link">&para;</a></h5>
 <p><div class="language-python highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">done</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">msg</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span>
 </span></code></pre></div>
 Mark the spinner as done early and optionally display a message.</p>
-<h5 id="fail"><code>fail</code></h5>
+<h5 id="fail"><code>fail</code><a class="headerlink" href="#fail" title="Permanent link">&para;</a></h5>
 <p><div class="language-python highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">fail</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">msg</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span>
 </span></code></pre></div>
 Mark the spinner as failed early and optionally display an error message.</p>
-<h5 id="log"><code>log</code></h5>
+<h5 id="log"><code>log</code><a class="headerlink" href="#log" title="Permanent link">&para;</a></h5>
 <p><div class="language-python highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">log</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">msg</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span>
 </span></code></pre></div>
 Display extra log messages to the user as the spinner spins and your work progresses.</p>
-<h5 id="pipe"><code>pipe</code></h5>
+<h5 id="pipe"><code>pipe</code><a class="headerlink" href="#pipe" title="Permanent link">&para;</a></h5>
 <p><div class="language-python highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">pipe</span><span class="p">(</span>
 </span><span id="__span-6-2"><a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a>    <span class="bp">self</span><span class="p">,</span>
 </span><span id="__span-6-3"><a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a>    <span class="n">pipe</span><span class="p">:</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">StreamReader</span> <span class="o">|</span> <span class="kc">None</span><span class="p">,</span>
@@ -1083,7 +1085,7 @@ with a particular color and prefix.</p>
 </span><span id="__span-7-11"><a id="__codelineno-7-11" name="__codelineno-7-11" href="#__codelineno-7-11"></a>        <span class="p">)</span>
 </span></code></pre></div>
 </blockquote>
-<h4 id="spinner-decorator"><code>spinner</code> (decorator)</h4>
+<h4 id="spinner-decorator"><code>spinner</code> (decorator)<a class="headerlink" href="#spinner-decorator" title="Permanent link">&para;</a></h4>
 <p>This is just a utility decorator that let's you wrap functions so that a spinner
 displays while they run. <code>spinner</code> accepts the same arguments as the context manager <a href="#spinner"><code>Spinner</code></a>.</p>
 <!--- mdtest -->
@@ -1096,13 +1098,13 @@ displays while they run. <code>spinner</code> accepts the same arguments as the 
 </span><span id="__span-8-7"><a id="__codelineno-8-7" name="__codelineno-8-7" href="#__codelineno-8-7"></a>
 </span><span id="__span-8-8"><a id="__codelineno-8-8" name="__codelineno-8-8" href="#__codelineno-8-8"></a><span class="n">asyncio</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">do_some_work</span><span class="p">())</span>
 </span></code></pre></div>
-<h3 id="boxed">Boxed</h3>
-<h4 id="boxes"><code>Boxes</code></h4>
+<h3 id="boxed">Boxed<a class="headerlink" href="#boxed" title="Permanent link">&para;</a></h3>
+<h4 id="boxes"><code>Boxes</code><a class="headerlink" href="#boxes" title="Permanent link">&para;</a></h4>
 <div class="language-python highlight"><pre><span></span><code><span id="__span-9-1"><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a><span class="k">class</span><span class="w"> </span><span class="nc">Boxes</span><span class="p">(</span><span class="n">Enum</span><span class="p">):</span> <span class="o">...</span>
 </span></code></pre></div>
 <p>The border style you'd like to use. To see all the box styles in action run <code>uv run -m examples.boxed</code>.</p>
 <p>The full list can be found in the code <a href="https://github.com/danimelchor/clypi/blob/master/clypi/_data/boxes.py">here</a>.</p>
-<h4 id="boxed_1"><code>boxed</code></h4>
+<h4 id="boxed_1"><code>boxed</code><a class="headerlink" href="#boxed_1" title="Permanent link">&para;</a></h4>
 <p><div class="language-python highlight"><pre><span></span><code><span id="__span-10-1"><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a><span class="k">def</span><span class="w"> </span><span class="nf">boxed</span><span class="p">(</span>
 </span><span id="__span-10-2"><a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a>    <span class="n">lines</span><span class="p">:</span> <span class="n">T</span><span class="p">,</span>
 </span><span id="__span-10-3"><a id="__codelineno-10-3" name="__codelineno-10-3" href="#__codelineno-10-3"></a>    <span class="n">width</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -1113,13 +1115,15 @@ displays while they run. <code>spinner</code> accepts the same arguments as the 
 </span><span id="__span-10-8"><a id="__codelineno-10-8" name="__codelineno-10-8" href="#__codelineno-10-8"></a><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">T</span><span class="p">:</span>
 </span></code></pre></div>
 Wraps text neatly in a box with the selected style, padding, and alignment.</p>
-<p>Parameters:
-- <code>lines</code>: the type of lines will determine it's output type. It can be one of <code>str</code>, <code>list[str]</code> or <code>Iterable[str]</code>
-- <code>width</code>: the desired width of the box
-- <code>style</code>: the desired style (see <a href="#boxes"><code>Boxes</code></a>)
-- <code>alignment</code>: the style of alignment (see <a href="#align"><code>align</code></a>)
-- <code>title</code>: optionally define a title for the box, it's length must be &lt; width
-- <code>color</code>: a color for the box border and title (see <a href="#colors"><code>colors</code></a>)</p>
+<p>Parameters:</p>
+<ul>
+<li><code>lines</code>: the type of lines will determine it's output type. It can be one of <code>str</code>, <code>list[str]</code> or <code>Iterable[str]</code></li>
+<li><code>width</code>: the desired width of the box</li>
+<li><code>style</code>: the desired style (see <a href="#boxes"><code>Boxes</code></a>)</li>
+<li><code>alignment</code>: the style of alignment (see <a href="#align"><code>align</code></a>)</li>
+<li><code>title</code>: optionally define a title for the box, it's length must be &lt; width</li>
+<li><code>color</code>: a color for the box border and title (see <a href="#colors"><code>colors</code></a>)</li>
+</ul>
 <p>Examples:</p>
 <!--- mdtest -->
 <blockquote>
@@ -1127,17 +1131,19 @@ Wraps text neatly in a box with the selected style, padding, and alignment.</p>
 </span></code></pre></div>
 </blockquote>
 <p><img width="697" alt="image" src="https://github.com/user-attachments/assets/87e325a3-397c-4022-a3eb-a13984bfa855" /></p>
-<h3 id="stack">Stack</h3>
+<h3 id="stack">Stack<a class="headerlink" href="#stack" title="Permanent link">&para;</a></h3>
 <div class="language-python highlight"><pre><span></span><code><span id="__span-12-1"><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a><span class="k">def</span><span class="w"> </span><span class="nf">stack</span><span class="p">(</span><span class="o">*</span><span class="n">blocks</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">padding</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
 </span><span id="__span-12-2"><a id="__codelineno-12-2" name="__codelineno-12-2" href="#__codelineno-12-2"></a><span class="k">def</span><span class="w"> </span><span class="nf">stack</span><span class="p">(</span><span class="o">*</span><span class="n">blocks</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">padding</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="n">lines</span><span class="p">:</span> <span class="nb">bool</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
 </span></code></pre></div>
 <p>Horizontally aligns blocks of text to display a nice layout where each block is displayed
 side by side.</p>
 <p><img width="974" alt="image" src="https://github.com/user-attachments/assets/9340d828-f7ce-491c-b0a8-6a666f7b7caf" /></p>
-<p>Parameters:
-- <code>blocks</code>: a series of blocks of lines of strings to display side by side
-- <code>padding</code>: the space between each block
-- <code>lines</code>: if the output should be returned as lines or as a string</p>
+<p>Parameters:</p>
+<ul>
+<li><code>blocks</code>: a series of blocks of lines of strings to display side by side</li>
+<li><code>padding</code>: the space between each block</li>
+<li><code>lines</code>: if the output should be returned as lines or as a string</li>
+</ul>
 <p>Examples:</p>
 <!--- mdtest -->
 <blockquote>
@@ -1146,8 +1152,8 @@ side by side.</p>
 </span><span id="__span-13-3"><a id="__codelineno-13-3" name="__codelineno-13-3" href="#__codelineno-13-3"></a><span class="nb">print</span><span class="p">(</span><span class="n">clypi</span><span class="o">.</span><span class="n">stack</span><span class="p">(</span><span class="n">names</span><span class="p">,</span> <span class="n">colors</span><span class="p">))</span>
 </span></code></pre></div>
 </blockquote>
-<h3 id="separator">Separator</h3>
-<h4 id="separator_1"><code>separator</code></h4>
+<h3 id="separator">Separator<a class="headerlink" href="#separator" title="Permanent link">&para;</a></h3>
+<h4 id="separator_1"><code>separator</code><a class="headerlink" href="#separator_1" title="Permanent link">&para;</a></h4>
 <p><div class="language-python highlight"><pre><span></span><code><span id="__span-14-1"><a id="__codelineno-14-1" name="__codelineno-14-1" href="#__codelineno-14-1"></a><span class="k">def</span><span class="w"> </span><span class="nf">separator</span><span class="p">(</span>
 </span><span id="__span-14-2"><a id="__codelineno-14-2" name="__codelineno-14-2" href="#__codelineno-14-2"></a>    <span class="n">separator</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;━&quot;</span><span class="p">,</span>
 </span><span id="__span-14-3"><a id="__codelineno-14-3" name="__codelineno-14-3" href="#__codelineno-14-3"></a>    <span class="n">width</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Literal</span><span class="p">[</span><span class="s2">&quot;max&quot;</span><span class="p">]</span> <span class="o">|</span> <span class="nb">int</span> <span class="o">=</span> <span class="s2">&quot;max&quot;</span><span class="p">,</span>
@@ -1156,33 +1162,37 @@ side by side.</p>
 </span><span id="__span-14-6"><a id="__codelineno-14-6" name="__codelineno-14-6" href="#__codelineno-14-6"></a><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
 </span></code></pre></div>
 Prints a line made of the given separator character.</p>
-<p>Parameters:
-- <code>separator</code>: the character used to build the separator line
-- <code>width</code>: if <code>max</code> it will use the max size of the terminal. Otherwise you can provide a fixed width.
-- <code>title</code>: optionally provide a title to display in the middle of the separator
-- <code>color</code>: the color for the characters</p>
+<p>Parameters:</p>
+<ul>
+<li><code>separator</code>: the character used to build the separator line</li>
+<li><code>width</code>: if <code>max</code> it will use the max size of the terminal. Otherwise you can provide a fixed width.</li>
+<li><code>title</code>: optionally provide a title to display in the middle of the separator</li>
+<li><code>color</code>: the color for the characters</li>
+</ul>
 <!--- mdtest -->
 <blockquote>
 <div class="language-python highlight"><pre><span></span><code><span id="__span-15-1"><a id="__codelineno-15-1" name="__codelineno-15-1" href="#__codelineno-15-1"></a><span class="nb">print</span><span class="p">(</span><span class="n">clypi</span><span class="o">.</span><span class="n">separator</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="s2">&quot;Some title&quot;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;red&quot;</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">30</span><span class="p">))</span>
 </span></code></pre></div>
 </blockquote>
 <p><img width="716" alt="image" src="https://github.com/user-attachments/assets/42be7ee3-7357-44fb-8a22-11b065a23558" /></p>
-<h3 id="indented">Indented</h3>
-<h4 id="indented_1"><code>indented</code></h4>
+<h3 id="indented">Indented<a class="headerlink" href="#indented" title="Permanent link">&para;</a></h3>
+<h4 id="indented_1"><code>indented</code><a class="headerlink" href="#indented_1" title="Permanent link">&para;</a></h4>
 <p><div class="language-python highlight"><pre><span></span><code><span id="__span-16-1"><a id="__codelineno-16-1" name="__codelineno-16-1" href="#__codelineno-16-1"></a><span class="k">def</span><span class="w"> </span><span class="nf">indented</span><span class="p">(</span><span class="n">lines</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">prefix</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;  &quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span>
 </span></code></pre></div>
 Indents a set of lines with the given prefix</p>
-<h3 id="align">Align</h3>
-<h4 id="align_1"><code>align</code></h4>
+<h3 id="align">Align<a class="headerlink" href="#align" title="Permanent link">&para;</a></h3>
+<h4 id="align_1"><code>align</code><a class="headerlink" href="#align_1" title="Permanent link">&para;</a></h4>
 <p><div class="language-python highlight"><pre><span></span><code><span id="__span-17-1"><a id="__codelineno-17-1" name="__codelineno-17-1" href="#__codelineno-17-1"></a><span class="k">def</span><span class="w"> </span><span class="nf">align</span><span class="p">(</span><span class="n">s</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">alignment</span><span class="p">:</span> <span class="n">AlignType</span><span class="p">,</span> <span class="n">width</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span>
 </span></code></pre></div>
 Aligns text according to <code>alignment</code> and <code>width</code>. In contrast with the built-in
 methods <code>rjust</code>, <code>ljust</code>, and <code>center</code>, <code>clypi.align(...)</code> aligns text according
 to it's true visible width (the built-in methods count color codes as width chars).</p>
-<p>Parameters:
-- <code>s</code>: the string being aligned
-- <code>alignment</code>: one of <code>left</code>, <code>right</code>, or <code>center</code>
-- <code>width</code>: the wished final visible width of the string</p>
+<p>Parameters:</p>
+<ul>
+<li><code>s</code>: the string being aligned</li>
+<li><code>alignment</code>: one of <code>left</code>, <code>right</code>, or <code>center</code></li>
+<li><code>width</code>: the wished final visible width of the string</li>
+</ul>
 <p>Examples:</p>
 <blockquote>
 <p><code>python

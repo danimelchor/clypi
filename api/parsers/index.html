@@ -825,11 +825,11 @@
 
   <h1>Parsers</h1>
 
-<h2 id="parsers">Parsers</h2>
+<h2 id="parsers">Parsers<a class="headerlink" href="#parsers" title="Permanent link">&para;</a></h2>
 <p>For this section, parsers will be imported as such:
 <div class="language-python highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="kn">import</span><span class="w"> </span><span class="nn">clypi.parsers</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">cp</span>
 </span></code></pre></div></p>
-<h3 id="int"><code>Int</code></h3>
+<h3 id="int"><code>Int</code><a class="headerlink" href="#int" title="Permanent link">&para;</a></h3>
 <p>The <code>Int</code> parser converts string input into an integer.</p>
 <div class="language-python highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="n">Int</span><span class="p">(</span>
 </span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>    <span class="n">gt</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -843,17 +843,19 @@
 </span><span id="__span-1-10"><a id="__codelineno-1-10" name="__codelineno-1-10" href="#__codelineno-1-10"></a>    <span class="n">negative</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
 </span><span id="__span-1-11"><a id="__codelineno-1-11" name="__codelineno-1-11" href="#__codelineno-1-11"></a>    <span class="n">nonnegative</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
 </span></code></pre></div>
-<p>Parameters:
-- <code>gt</code>: A value the integer must be greater than
-- <code>gte</code>: A value the integer must be greater than or equal to
-- <code>lt</code>: A value the integer must be less than
-- <code>lte</code>: A value the integer must be less than or equal to
-- <code>max</code>: The maximum value the integer can be (same as lte)
-- <code>min</code>: The maximum value the integer can be (same as gte)
-- <code>positive</code>: The integer must be greater than 0
-- <code>nonpostive</code>: The integer must be less than or equal to 0
-- <code>negative</code>: The integer must be less than 0
-- <code>nonnegative</code>: The integer must be greater than or equal to 0</p>
+<p>Parameters:</p>
+<ul>
+<li><code>gt</code>: A value the integer must be greater than</li>
+<li><code>gte</code>: A value the integer must be greater than or equal to</li>
+<li><code>lt</code>: A value the integer must be less than</li>
+<li><code>lte</code>: A value the integer must be less than or equal to</li>
+<li><code>max</code>: The maximum value the integer can be (same as lte)</li>
+<li><code>min</code>: The maximum value the integer can be (same as gte)</li>
+<li><code>positive</code>: The integer must be greater than 0</li>
+<li><code>nonpostive</code>: The integer must be less than or equal to 0</li>
+<li><code>negative</code>: The integer must be less than 0</li>
+<li><code>nonnegative</code>: The integer must be greater than or equal to 0</li>
+</ul>
 <p>Examples:</p>
 <!--- mdtest -->
 <blockquote>
@@ -861,7 +863,7 @@
 </span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="n">cp</span><span class="o">.</span><span class="n">Int</span><span class="p">(</span><span class="n">lte</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">gt</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
 </span></code></pre></div>
 </blockquote>
-<h3 id="float"><code>Float</code></h3>
+<h3 id="float"><code>Float</code><a class="headerlink" href="#float" title="Permanent link">&para;</a></h3>
 <p>The <code>Float</code> parser converts string input into a floating-point number.</p>
 <p><div class="language-python highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="n">Float</span><span class="p">(</span>
 </span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a>    <span class="n">gt</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -876,17 +878,19 @@
 </span><span id="__span-3-11"><a id="__codelineno-3-11" name="__codelineno-3-11" href="#__codelineno-3-11"></a>    <span class="n">nonnegative</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
 </span><span id="__span-3-12"><a id="__codelineno-3-12" name="__codelineno-3-12" href="#__codelineno-3-12"></a><span class="p">)</span>
 </span></code></pre></div>
-Parameters:
-- <code>gt</code>: A value the float must be greater than
-- <code>gte</code>: A value the float must be greater than or equal to
-- <code>lt</code>: A value the float must be less than
-- <code>lte</code>: A value the float must be less than or equal to
-- <code>max</code>: The maximum value the float can be (same as lte)
-- <code>min</code>: The maximum value the float can be (same as gte)
-- <code>positive</code>: The float must be greater than 0
-- <code>nonpostive</code>: The float must be less than or equal to 0
-- <code>negative</code>: The float must be less than 0
-- <code>nonnegative</code>: The float must be greater than or equal to 0</p>
+Parameters:</p>
+<ul>
+<li><code>gt</code>: A value the float must be greater than</li>
+<li><code>gte</code>: A value the float must be greater than or equal to</li>
+<li><code>lt</code>: A value the float must be less than</li>
+<li><code>lte</code>: A value the float must be less than or equal to</li>
+<li><code>max</code>: The maximum value the float can be (same as lte)</li>
+<li><code>min</code>: The maximum value the float can be (same as gte)</li>
+<li><code>positive</code>: The float must be greater than 0</li>
+<li><code>nonpostive</code>: The float must be less than or equal to 0</li>
+<li><code>negative</code>: The float must be less than 0</li>
+<li><code>nonnegative</code>: The float must be greater than or equal to 0</li>
+</ul>
 <p>Examples:</p>
 <!--- mdtest -->
 <blockquote>
@@ -894,14 +898,14 @@ Parameters:
 </span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a><span class="n">cp</span><span class="o">.</span><span class="n">Float</span><span class="p">(</span><span class="n">lte</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">gt</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
 </span></code></pre></div>
 </blockquote>
-<h3 id="bool"><code>Bool</code></h3>
+<h3 id="bool"><code>Bool</code><a class="headerlink" href="#bool" title="Permanent link">&para;</a></h3>
 <p>The <code>Bool</code> parser converts string input into a boolean.</p>
 <div class="language-python highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="n">Bool</span><span class="p">()</span>
 </span></code></pre></div>
 <p>Accepted values:
 - <code>true</code>, <code>yes</code>, <code>y</code> → <code>True</code>
 - <code>false</code>, <code>no</code>, <code>n</code> → <code>False</code></p>
-<h3 id="str"><code>Str</code></h3>
+<h3 id="str"><code>Str</code><a class="headerlink" href="#str" title="Permanent link">&para;</a></h3>
 <p>The <code>Str</code> parser returns the string input as-is.</p>
 <p><div class="language-python highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="n">Str</span><span class="p">(</span>
 </span><span id="__span-6-2"><a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a>    <span class="n">length</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -913,29 +917,33 @@ Parameters:
 </span><span id="__span-6-8"><a id="__codelineno-6-8" name="__codelineno-6-8" href="#__codelineno-6-8"></a>    <span class="n">regex_group</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
 </span><span id="__span-6-9"><a id="__codelineno-6-9" name="__codelineno-6-9" href="#__codelineno-6-9"></a><span class="p">)</span>
 </span></code></pre></div>
-Parameters:
-- <code>length</code>: The string must be of this length
-- <code>max</code>: The string's length must be at most than this number
-- <code>min</code>: The string's length must be at least than this number
-- <code>startswith</code>: The string must start with that substring
-- <code>endsswith</code>: The string must end with that substring
-- <code>regex</code>: The string must match this regular expression
-- <code>regex_group</code>: (required <code>regex</code>) extracts the group from the regular expression</p>
+Parameters:</p>
+<ul>
+<li><code>length</code>: The string must be of this length</li>
+<li><code>max</code>: The string's length must be at most than this number</li>
+<li><code>min</code>: The string's length must be at least than this number</li>
+<li><code>startswith</code>: The string must start with that substring</li>
+<li><code>endsswith</code>: The string must end with that substring</li>
+<li><code>regex</code>: The string must match this regular expression</li>
+<li><code>regex_group</code>: (required <code>regex</code>) extracts the group from the regular expression</li>
+</ul>
 <p>Examples:</p>
 <!--- mdtest -->
 <blockquote>
 <div class="language-python highlight"><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="n">cp</span><span class="o">.</span><span class="n">Str</span><span class="p">(</span><span class="n">regex</span><span class="o">=</span><span class="sa">r</span><span class="s2">&quot;[a-z]([0-9])&quot;</span><span class="p">,</span> <span class="n">regex_group</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span> <span class="c1"># f1 -&gt; 1</span>
 </span></code></pre></div>
 </blockquote>
-<h3 id="datetime"><code>DateTime</code></h3>
+<h3 id="datetime"><code>DateTime</code><a class="headerlink" href="#datetime" title="Permanent link">&para;</a></h3>
 <p>The <code>DateTime</code> parser converts string input into a <code>datetime</code> object.</p>
 <p><div class="language-python highlight"><pre><span></span><code><span id="__span-8-1"><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a><span class="n">DateTime</span><span class="p">(</span>
 </span><span id="__span-8-2"><a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a>    <span class="n">tz</span><span class="p">:</span> <span class="n">timezone</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
 </span><span id="__span-8-3"><a id="__codelineno-8-3" name="__codelineno-8-3" href="#__codelineno-8-3"></a><span class="p">)</span>
 </span></code></pre></div>
-Parameters:
-- <code>tz</code>: the timezone to convert the date to</p>
-<h3 id="timedelta"><code>TimeDelta</code></h3>
+Parameters:</p>
+<ul>
+<li><code>tz</code>: the timezone to convert the date to</li>
+</ul>
+<h3 id="timedelta"><code>TimeDelta</code><a class="headerlink" href="#timedelta" title="Permanent link">&para;</a></h3>
 <p>The <code>TimeDelta</code> parser converts string input into a <code>timedelta</code> object.</p>
 <p><div class="language-python highlight"><pre><span></span><code><span id="__span-9-1"><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a><span class="n">TimeDelta</span><span class="p">(</span>
 </span><span id="__span-9-2"><a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a>    <span class="n">gt</span><span class="p">:</span> <span class="n">timedelta</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -961,19 +969,21 @@ Parameters:
 </blockquote>
 <p>Supported time units:
 - <code>weeks (w)</code>, <code>days (d)</code>, <code>hours (h)</code>, <code>minutes (m)</code>, <code>seconds (s)</code>, <code>milliseconds (ms)</code>, <code>microseconds (us)</code></p>
-<h3 id="path"><code>Path</code></h3>
+<h3 id="path"><code>Path</code><a class="headerlink" href="#path" title="Permanent link">&para;</a></h3>
 <p>The <code>Path</code> parser is useful to parse file or directory-like arguments from the CLI.</p>
 <p><div class="language-python highlight"><pre><span></span><code><span id="__span-11-1"><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a><span class="n">Path</span><span class="p">(</span><span class="n">exists</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span>
 </span></code></pre></div>
-Parameters:
-- <code>exists</code>: If <code>True</code>, it checks whether the provided path exists.</p>
+Parameters:</p>
+<ul>
+<li><code>exists</code>: If <code>True</code>, it checks whether the provided path exists.</li>
+</ul>
 <p>Examples:</p>
 <!--- mdtest -->
 <blockquote>
 <div class="language-python highlight"><pre><span></span><code><span id="__span-12-1"><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a><span class="n">cp</span><span class="o">.</span><span class="n">Path</span><span class="p">(</span><span class="n">exists</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 </span></code></pre></div>
 </blockquote>
-<h3 id="list"><code>List</code></h3>
+<h3 id="list"><code>List</code><a class="headerlink" href="#list" title="Permanent link">&para;</a></h3>
 <p>The <code>List</code> parser parses comma-separated values into a list of parsed elements.</p>
 <div class="language-python highlight"><pre><span></span><code><span id="__span-13-1"><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a><span class="n">List</span><span class="p">(</span><span class="n">inner</span><span class="p">:</span> <span class="n">Parser</span><span class="p">[</span><span class="n">T</span><span class="p">])</span>
 </span></code></pre></div>
@@ -983,9 +993,11 @@ Parameters:
 <div class="language-python highlight"><pre><span></span><code><span id="__span-14-1"><a id="__codelineno-14-1" name="__codelineno-14-1" href="#__codelineno-14-1"></a><span class="n">cp</span><span class="o">.</span><span class="n">List</span><span class="p">(</span><span class="n">cp</span><span class="o">.</span><span class="n">Int</span><span class="p">())</span>
 </span></code></pre></div>
 </blockquote>
-<p>Parameters:
-- <code>inner</code>: The parser used to convert each list element.</p>
-<h3 id="tuple"><code>Tuple</code></h3>
+<p>Parameters:</p>
+<ul>
+<li><code>inner</code>: The parser used to convert each list element.</li>
+</ul>
+<h3 id="tuple"><code>Tuple</code><a class="headerlink" href="#tuple" title="Permanent link">&para;</a></h3>
 <p>The <code>Tuple</code> parser parses a string input into a tuple of values.</p>
 <div class="language-python highlight"><pre><span></span><code><span id="__span-15-1"><a id="__codelineno-15-1" name="__codelineno-15-1" href="#__codelineno-15-1"></a><span class="n">Tuple</span><span class="p">(</span><span class="o">*</span><span class="n">inner</span><span class="p">:</span> <span class="n">Parser</span><span class="p">,</span> <span class="n">num</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span>
 </span></code></pre></div>
@@ -999,10 +1011,12 @@ Parameters:
 </span><span id="__span-16-5"><a id="__codelineno-16-5" name="__codelineno-16-5" href="#__codelineno-16-5"></a><span class="n">cp</span><span class="o">.</span><span class="n">Tuple</span><span class="p">(</span><span class="n">cp</span><span class="o">.</span><span class="n">Str</span><span class="p">(),</span> <span class="n">cp</span><span class="o">.</span><span class="n">Int</span><span class="p">(),</span> <span class="n">num</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
 </span></code></pre></div>
 </blockquote>
-<p>Parameters:
-- <code>inner</code>: List of parsers for each tuple element.
-- <code>num</code>: Expected tuple length (optional).</p>
-<h3 id="union"><code>Union</code></h3>
+<p>Parameters:</p>
+<ul>
+<li><code>inner</code>: List of parsers for each tuple element.</li>
+<li><code>num</code>: Expected tuple length (optional).</li>
+</ul>
+<h3 id="union"><code>Union</code><a class="headerlink" href="#union" title="Permanent link">&para;</a></h3>
 <p>The <code>Union</code> parser attempts to parse input using multiple parsers.</p>
 <div class="language-python highlight"><pre><span></span><code><span id="__span-17-1"><a id="__codelineno-17-1" name="__codelineno-17-1" href="#__codelineno-17-1"></a><span class="n">Union</span><span class="p">(</span><span class="n">left</span><span class="p">:</span> <span class="n">Parser</span><span class="p">[</span><span class="n">X</span><span class="p">],</span> <span class="n">right</span><span class="p">:</span> <span class="n">Parser</span><span class="p">[</span><span class="n">Y</span><span class="p">])</span>
 </span></code></pre></div>
@@ -1013,7 +1027,7 @@ Parameters:
 </span><span id="__span-18-2"><a id="__codelineno-18-2" name="__codelineno-18-2" href="#__codelineno-18-2"></a><span class="n">cp</span><span class="o">.</span><span class="n">Path</span><span class="p">(</span><span class="n">exists</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span> <span class="o">|</span> <span class="n">cp</span><span class="o">.</span><span class="n">Str</span><span class="p">()</span>
 </span></code></pre></div>
 </blockquote>
-<h3 id="literal"><code>Literal</code></h3>
+<h3 id="literal"><code>Literal</code><a class="headerlink" href="#literal" title="Permanent link">&para;</a></h3>
 <p>The <code>Literal</code> parser ensures that input matches one of the predefined values.</p>
 <div class="language-python highlight"><pre><span></span><code><span id="__span-19-1"><a id="__codelineno-19-1" name="__codelineno-19-1" href="#__codelineno-19-1"></a><span class="n">Literal</span><span class="p">(</span><span class="o">*</span><span class="n">values</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Any</span><span class="p">)</span>
 </span></code></pre></div>
@@ -1023,7 +1037,7 @@ Parameters:
 <div class="language-python highlight"><pre><span></span><code><span id="__span-20-1"><a id="__codelineno-20-1" name="__codelineno-20-1" href="#__codelineno-20-1"></a><span class="n">cp</span><span class="o">.</span><span class="n">Literal</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="s2">&quot;foo&quot;</span><span class="p">)</span>
 </span></code></pre></div>
 </blockquote>
-<h3 id="enum"><code>Enum</code></h3>
+<h3 id="enum"><code>Enum</code><a class="headerlink" href="#enum" title="Permanent link">&para;</a></h3>
 <p>The <code>Enum</code> parser maps string input to a valid enum value.</p>
 <div class="language-python highlight"><pre><span></span><code><span id="__span-21-1"><a id="__codelineno-21-1" name="__codelineno-21-1" href="#__codelineno-21-1"></a><span class="n">Enum</span><span class="p">(</span><span class="n">enum</span><span class="p">:</span> <span class="nb">type</span><span class="p">[</span><span class="n">enum</span><span class="o">.</span><span class="n">Enum</span><span class="p">])</span>
 </span></code></pre></div>
@@ -1037,7 +1051,7 @@ Parameters:
 </span><span id="__span-22-5"><a id="__codelineno-22-5" name="__codelineno-22-5" href="#__codelineno-22-5"></a><span class="n">cp</span><span class="o">.</span><span class="n">Enum</span><span class="p">(</span><span class="n">Color</span><span class="p">)</span>
 </span></code></pre></div>
 </blockquote>
-<h3 id="from_type"><code>from_type</code></h3>
+<h3 id="from_type"><code>from_type</code><a class="headerlink" href="#from_type" title="Permanent link">&para;</a></h3>
 <p>The <code>from_type</code> function returns the appropriate parser for a given type.</p>
 <div class="language-python highlight"><pre><span></span><code><span id="__span-23-1"><a id="__codelineno-23-1" name="__codelineno-23-1" href="#__codelineno-23-1"></a><span class="nd">@tu</span><span class="o">.</span><span class="n">ignore_annotated</span>
 </span><span id="__span-23-2"><a id="__codelineno-23-2" name="__codelineno-23-2" href="#__codelineno-23-2"></a><span class="k">def</span><span class="w"> </span><span class="nf">from_type</span><span class="p">(</span><span class="n">_type</span><span class="p">:</span> <span class="nb">type</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Parser</span><span class="p">:</span> <span class="o">...</span>

@@ -627,8 +627,8 @@
 
   <h1>Config</h1>
 
-<h2 id="configuration">Configuration</h2>
-<h3 id="accessing-and-changing-the-configuration">Accessing and changing the configuration</h3>
+<h2 id="configuration">Configuration<a class="headerlink" href="#configuration" title="Permanent link">&para;</a></h2>
+<h3 id="accessing-and-changing-the-configuration">Accessing and changing the configuration<a class="headerlink" href="#accessing-and-changing-the-configuration" title="Permanent link">&para;</a></h3>
 <div class="language-python highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">clypi</span><span class="w"> </span><span class="kn">import</span> <span class="n">ClypiConfig</span><span class="p">,</span> <span class="n">configure</span><span class="p">,</span> <span class="n">get_config</span>
 </span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>
 </span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="c1"># Gets the current config (or a default)</span>
@@ -638,7 +638,7 @@
 </span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a><span class="n">config</span> <span class="o">=</span> <span class="n">ClypiConfig</span><span class="p">(</span><span class="n">help_on_fail</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 </span><span id="__span-0-8"><a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a><span class="n">configure</span><span class="p">(</span><span class="n">config</span><span class="p">)</span>
 </span></code></pre></div>
-<h3 id="default-config">Default config</h3>
+<h3 id="default-config">Default config<a class="headerlink" href="#default-config" title="Permanent link">&para;</a></h3>
 <!--- mdtest -->
 <div class="language-python highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="n">ClypiConfig</span><span class="p">(</span>
 </span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>    <span class="n">help_formatter</span><span class="o">=</span><span class="n">ClypiFormatter</span><span class="p">(</span>
@@ -663,12 +663,14 @@
 </span><span id="__span-1-21"><a id="__codelineno-1-21" name="__codelineno-1-21" href="#__codelineno-1-21"></a>    <span class="n">overflow_style</span><span class="o">=</span><span class="s2">&quot;wrap&quot;</span><span class="p">,</span>
 </span><span id="__span-1-22"><a id="__codelineno-1-22" name="__codelineno-1-22" href="#__codelineno-1-22"></a><span class="p">)</span>
 </span></code></pre></div>
-<p>Parameters:
-- <code>help_formatter</code>: the formatter class to use to display the help pages (see <a href="#formatter">Formatter</a>)
-- <code>help_on_fail</code>: whether the help page should be displayed if a user doesn't pass the right params
-- <code>nice_errors</code>: a list of errors clypi will catch and display neatly
-- <code>theme</code>: a <code>Theme</code> object used to format different styles and colors for help pages, prompts, tracebacks, etc.
-- <code>overflow_style</code>: either <code>wrap</code> or <code>ellipsis</code>. If wrap, text that is too long will get wrapped into the next line. If ellipsis, the text will be truncated with an <code>…</code> at the end.</p>
+<p>Parameters:</p>
+<ul>
+<li><code>help_formatter</code>: the formatter class to use to display the help pages (see <a href="#formatter">Formatter</a>)</li>
+<li><code>help_on_fail</code>: whether the help page should be displayed if a user doesn't pass the right params</li>
+<li><code>nice_errors</code>: a list of errors clypi will catch and display neatly</li>
+<li><code>theme</code>: a <code>Theme</code> object used to format different styles and colors for help pages, prompts, tracebacks, etc.</li>
+<li><code>overflow_style</code>: either <code>wrap</code> or <code>ellipsis</code>. If wrap, text that is too long will get wrapped into the next line. If ellipsis, the text will be truncated with an <code>…</code> at the end.</li>
+</ul>
 
 
 
