@@ -16,4 +16,28 @@
          <loc>https://danimelchor.github.io/clypi/tutorial/</loc>
          <lastmod>2025-03-17</lastmod>
     </url>
+    <url>
+         <loc>https://danimelchor.github.io/clypi/api/cli/</loc>
+         <lastmod>2025-03-17</lastmod>
+    </url>
+    <url>
+         <loc>https://danimelchor.github.io/clypi/api/colors/</loc>
+         <lastmod>2025-03-17</lastmod>
+    </url>
+    <url>
+         <loc>https://danimelchor.github.io/clypi/api/components/</loc>
+         <lastmod>2025-03-17</lastmod>
+    </url>
+    <url>
+         <loc>https://danimelchor.github.io/clypi/api/config/</loc>
+         <lastmod>2025-03-17</lastmod>
+    </url>
+    <url>
+         <loc>https://danimelchor.github.io/clypi/api/parsers/</loc>
+         <lastmod>2025-03-17</lastmod>
+    </url>
+    <url>
+         <loc>https://danimelchor.github.io/clypi/api/prompts/</loc>
+         <lastmod>2025-03-17</lastmod>
+    </url>
 </urlset>
