@@ -2,9 +2,10 @@
 
 [![PyPI version](https://badge.fury.io/py/clypi.svg)](https://badge.fury.io/py/clypi)
 [![License](https://img.shields.io/badge/license-MIT-blue)](https://opensource.org/license/mit)
-[![PyPI - Python Version](https://img.shields.io/pypi/pyversions/clypi.svg)](https://pypi.org/project/clypi/)
+[![Docs](https://img.shields.io/badge/docs-latest-purple)](https://danimelchor.github.io/clypi/)
 [![PyPI - Downloads](https://img.shields.io/pypi/dm/clypi)](https://pypi.org/project/clypi/)
 [![Contributors](https://img.shields.io/github/contributors/danimelchor/clypi)](https://github.com/danimelchor/clypi/graphs/contributors)
+<!-- [![PyPI - Python Version](https://img.shields.io/pypi/pyversions/clypi.svg)](https://pypi.org/project/clypi/) -->
 
 Your all-in-one for beautiful, lightweight, prod-ready CLIs
 
@@ -30,11 +31,11 @@ uv add clypi  # or `pip install clypi`
 
 ## 📖 Docs
 
-Read [the API docs](https://github.com/danimelchor/clypi/blob/master/docs/index.md) for examples and a full API reference. If you want a full guide on how to create and distribute your own Python CLI, check our our [tutorial](https://github.com/danimelchor/clypi/blob/master/docs/tutorial.md).
+Read [our docs](https://danimelchor.github.io/clypi/) to get started. You can also look at [the API reference](https://danimelchor.github.io/clypi/api/config/) for examples and a full API reference. If you want a full guide on how to create and distribute your own Python CLI, check our our [tutorial](https://danimelchor.github.io/clypi/tutorial/).
 
 ## 🧰 CLI
 
-Read the [docs](https://github.com/danimelchor/clypi/blob/master/docs/index.md#cli)
+Read the [docs](https://danimelchor.github.io/clypi/api/cli/)
 
 <!--- mdtest-args -v --threads 2 -->
 ```python
@@ -81,7 +82,7 @@ if __name__ == "__main__":
 
 ## 🛠️ Configurable
 
-Read the [docs](https://github.com/danimelchor/clypi/blob/master/docs/index.md#configuration)
+Read the [docs](https://danimelchor.github.io/clypi/api/config/)
 
 Clypi lets you configure the app globally. This means that all the styling will be easy,
 uniform across your entire app, and incredibly maintainable.
@@ -121,7 +122,7 @@ configure(
 
 ## 🌈 Colors
 
-Read the [docs](https://github.com/danimelchor/clypi/blob/master/docs/index.md#colors)
+Read the [docs](https://danimelchor.github.io/clypi/api/colors/)
 
 <!--- mdtest -->
 ```python
@@ -146,7 +147,7 @@ print("The old version said", wrong("the Earth was flat"))
 
 ## 🌀 Spinners
 
-Read the [docs](https://github.com/danimelchor/clypi/blob/master/docs/index.md#spinners)
+Read the [docs](https://danimelchor.github.io/clypi/api/components/#spinner)
 
 You can use spinners as an async context manager:
 <!--- mdtest -->
@@ -184,7 +185,7 @@ https://github.com/user-attachments/assets/2065b3dd-c73c-4e21-b698-8bf853e8e520
 
 ## ❓ Prompting
 
-Read the [docs](https://github.com/danimelchor/clypi/blob/master/docs/index.md#prompt)
+Read the [docs](https://danimelchor.github.io/clypi/api/prompts/)
 
 First, you'll need to import the `clypi` module:
 
