@@ -216,8 +216,6 @@ class ClypiFormatter:
         prefix = self.theme.usage("Usage:")
         command_str = self.theme.usage_command(" ".join(full_command))
 
-        command = self.theme.usage_args(" COMMAND") if subcommands else ""
-
         positionals_str: list[str] = []
         for pos in positionals:
             name = self._format_positional_with_mod(pos)
@@ -225,8 +223,9 @@ class ClypiFormatter:
         positional = " " + " ".join(positionals_str) if positionals else ""
 
         option = self.theme.usage_args(" [OPTIONS]") if options else ""
+        command = self.theme.usage_args(" COMMAND") if subcommands else ""
 
-        return f"{prefix} {command_str}{option}{positional}{command}"
+        return f"{prefix} {command_str}{positional}{option}{command}"
 
     def _format_description(self, description: str | None) -> str | None:
         if not description:
