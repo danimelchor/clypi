@@ -233,13 +233,13 @@ Examples:
 >     num_threads: int = arg(defer=True, prompt="How many threads do you want to use")
 >
 >     async def run(self):
->         print(cmd.single_threaded)  # << will not prompt yet...
->         if cmd.single_threaded:
+>         print(self.single_threaded)  # << will not prompt yet...
+>         if self.single_threaded:
 >             # if we never access num_threads in this if condition, we will
 >             # never prompt!
 >             print("Running single threaded...")
 >         else:
->             print("Running with threads: ", cmd.num_threads)  # << we prompt here!
+>             print("Running with threads: ", self.num_threads)  # << we prompt here!
 >
 > main = Main.parse()  # << will not prompt yet...
 > main.start()  # << will not prompt yet...
