@@ -492,9 +492,9 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#forwarding-arguments" class="md-nav__link">
+  <a href="#inheriting-arguments" class="md-nav__link">
     <span class="md-ellipsis">
-      Forwarding arguments
+      Inheriting arguments
     </span>
   </a>
   
@@ -836,9 +836,9 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#forwarding-arguments" class="md-nav__link">
+  <a href="#inheriting-arguments" class="md-nav__link">
     <span class="md-ellipsis">
-      Forwarding arguments
+      Inheriting arguments
     </span>
   </a>
   
@@ -1105,15 +1105,14 @@ using <code>config</code> as well:</p>
 </span><span id="__span-10-9"><a id="__codelineno-10-9" name="__codelineno-10-9" href="#__codelineno-10-9"></a><span class="k">class</span><span class="w"> </span><span class="nc">MyCommand</span><span class="p">(</span><span class="n">Command</span><span class="p">):</span>
 </span><span id="__span-10-10"><a id="__codelineno-10-10" name="__codelineno-10-10" href="#__codelineno-10-10"></a>    <span class="n">slack</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">arg</span><span class="p">(</span><span class="n">parser</span><span class="o">=</span><span class="n">parse_slack</span><span class="p">)</span>
 </span></code></pre></div>
-<h4 id="forwarding-arguments">Forwarding arguments<a class="headerlink" href="#forwarding-arguments" title="Permanent link">&para;</a></h4>
+<h4 id="inheriting-arguments">Inheriting arguments<a class="headerlink" href="#inheriting-arguments" title="Permanent link">&para;</a></h4>
 <p>If a command defines an argument you want to use in any of it's children, you can re-define the
-argument and pass in a literal ellipsis (<code>...</code>) to config to indicate the argument comes from the
-parent command. You can also use <code>forwarded=True</code> if you prefer:</p>
+argument and use <code>inherited=True</code>.</p>
 <!--- mdtest -->
 <div class="language-python highlight"><pre><span></span><code><span id="__span-11-1"><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">clypi</span><span class="w"> </span><span class="kn">import</span> <span class="n">Command</span><span class="p">,</span> <span class="n">arg</span>
 </span><span id="__span-11-2"><a id="__codelineno-11-2" name="__codelineno-11-2" href="#__codelineno-11-2"></a>
 </span><span id="__span-11-3"><a id="__codelineno-11-3" name="__codelineno-11-3" href="#__codelineno-11-3"></a><span class="k">class</span><span class="w"> </span><span class="nc">MySubCmd</span><span class="p">(</span><span class="n">Command</span><span class="p">):</span>
-</span><span id="__span-11-4"><a id="__codelineno-11-4" name="__codelineno-11-4" href="#__codelineno-11-4"></a>    <span class="n">verbose</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="n">arg</span><span class="p">(</span><span class="o">...</span><span class="p">)</span>  <span class="c1"># or `arg(forwarded=True)`</span>
+</span><span id="__span-11-4"><a id="__codelineno-11-4" name="__codelineno-11-4" href="#__codelineno-11-4"></a>    <span class="n">verbose</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="n">arg</span><span class="p">(</span><span class="n">inherited</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 </span><span id="__span-11-5"><a id="__codelineno-11-5" name="__codelineno-11-5" href="#__codelineno-11-5"></a>
 </span><span id="__span-11-6"><a id="__codelineno-11-6" name="__codelineno-11-6" href="#__codelineno-11-6"></a><span class="k">class</span><span class="w"> </span><span class="nc">MyCli</span><span class="p">(</span><span class="n">Command</span><span class="p">):</span>
 </span><span id="__span-11-7"><a id="__codelineno-11-7" name="__codelineno-11-7" href="#__codelineno-11-7"></a>    <span class="n">subcommand</span><span class="p">:</span> <span class="n">MySubCmd</span>
@@ -1134,13 +1133,13 @@ parent command. You can also use <code>forwarded=True</code> if you prefer:</p>
 </span><span id="__span-12-5"><a id="__codelineno-12-5" name="__codelineno-12-5" href="#__codelineno-12-5"></a>    <span class="n">num_threads</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">arg</span><span class="p">(</span><span class="n">defer</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">prompt</span><span class="o">=</span><span class="s2">&quot;How many threads do you want to use&quot;</span><span class="p">)</span>
 </span><span id="__span-12-6"><a id="__codelineno-12-6" name="__codelineno-12-6" href="#__codelineno-12-6"></a>
 </span><span id="__span-12-7"><a id="__codelineno-12-7" name="__codelineno-12-7" href="#__codelineno-12-7"></a>    <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-</span><span id="__span-12-8"><a id="__codelineno-12-8" name="__codelineno-12-8" href="#__codelineno-12-8"></a>        <span class="nb">print</span><span class="p">(</span><span class="n">cmd</span><span class="o">.</span><span class="n">single_threaded</span><span class="p">)</span>  <span class="c1"># &lt;&lt; will not prompt yet...</span>
-</span><span id="__span-12-9"><a id="__codelineno-12-9" name="__codelineno-12-9" href="#__codelineno-12-9"></a>        <span class="k">if</span> <span class="n">cmd</span><span class="o">.</span><span class="n">single_threaded</span><span class="p">:</span>
+</span><span id="__span-12-8"><a id="__codelineno-12-8" name="__codelineno-12-8" href="#__codelineno-12-8"></a>        <span class="nb">print</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">single_threaded</span><span class="p">)</span>  <span class="c1"># &lt;&lt; will not prompt yet...</span>
+</span><span id="__span-12-9"><a id="__codelineno-12-9" name="__codelineno-12-9" href="#__codelineno-12-9"></a>        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">single_threaded</span><span class="p">:</span>
 </span><span id="__span-12-10"><a id="__codelineno-12-10" name="__codelineno-12-10" href="#__codelineno-12-10"></a>            <span class="c1"># if we never access num_threads in this if condition, we will</span>
 </span><span id="__span-12-11"><a id="__codelineno-12-11" name="__codelineno-12-11" href="#__codelineno-12-11"></a>            <span class="c1"># never prompt!</span>
 </span><span id="__span-12-12"><a id="__codelineno-12-12" name="__codelineno-12-12" href="#__codelineno-12-12"></a>            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Running single threaded...&quot;</span><span class="p">)</span>
 </span><span id="__span-12-13"><a id="__codelineno-12-13" name="__codelineno-12-13" href="#__codelineno-12-13"></a>        <span class="k">else</span><span class="p">:</span>
-</span><span id="__span-12-14"><a id="__codelineno-12-14" name="__codelineno-12-14" href="#__codelineno-12-14"></a>            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Running with threads: &quot;</span><span class="p">,</span> <span class="n">cmd</span><span class="o">.</span><span class="n">num_threads</span><span class="p">)</span>  <span class="c1"># &lt;&lt; we prompt here!</span>
+</span><span id="__span-12-14"><a id="__codelineno-12-14" name="__codelineno-12-14" href="#__codelineno-12-14"></a>            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Running with threads: &quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_threads</span><span class="p">)</span>  <span class="c1"># &lt;&lt; we prompt here!</span>
 </span><span id="__span-12-15"><a id="__codelineno-12-15" name="__codelineno-12-15" href="#__codelineno-12-15"></a>
 </span><span id="__span-12-16"><a id="__codelineno-12-16" name="__codelineno-12-16" href="#__codelineno-12-16"></a><span class="n">main</span> <span class="o">=</span> <span class="n">Main</span><span class="o">.</span><span class="n">parse</span><span class="p">()</span>  <span class="c1"># &lt;&lt; will not prompt yet...</span>
 </span><span id="__span-12-17"><a id="__codelineno-12-17" name="__codelineno-12-17" href="#__codelineno-12-17"></a><span class="n">main</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>  <span class="c1"># &lt;&lt; will not prompt yet...</span>
@@ -1212,7 +1211,7 @@ the help page. The <code>Formatter</code> implementation should try to use the p
 <p><div class="language-python highlight"><pre><span></span><code><span id="__span-20-1"><a id="__codelineno-20-1" name="__codelineno-20-1" href="#__codelineno-20-1"></a><span class="k">class</span><span class="w"> </span><span class="nc">ClypiFormatter</span><span class="p">(</span>
 </span><span id="__span-20-2"><a id="__codelineno-20-2" name="__codelineno-20-2" href="#__codelineno-20-2"></a>    <span class="n">boxed</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
 </span><span id="__span-20-3"><a id="__codelineno-20-3" name="__codelineno-20-3" href="#__codelineno-20-3"></a>    <span class="n">show_option_types</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-</span><span id="__span-20-4"><a id="__codelineno-20-4" name="__codelineno-20-4" href="#__codelineno-20-4"></a>    <span class="n">show_forwarded_options</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+</span><span id="__span-20-4"><a id="__codelineno-20-4" name="__codelineno-20-4" href="#__codelineno-20-4"></a>    <span class="n">show_inherited_options</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
 </span><span id="__span-20-5"><a id="__codelineno-20-5" name="__codelineno-20-5" href="#__codelineno-20-5"></a>    <span class="n">normalize_dots</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span>
 </span><span id="__span-20-6"><a id="__codelineno-20-6" name="__codelineno-20-6" href="#__codelineno-20-6"></a><span class="p">)</span>
 </span></code></pre></div>
@@ -1220,7 +1219,7 @@ Parameters:</p>
 <ul>
 <li><code>boxed</code>: whether to wrap each section in a box made with ASCII characters</li>
 <li><code>show_option_types</code>: whether to display the expected type for each argument or just a placeholder. E.g.: <code>--foo TEXT</code> vs <code>--foo &lt;FOO&gt;</code></li>
-<li><code>show_forwarded_options</code>: whether to show forwarded arguments in child commands or only in parent commands</li>
+<li><code>show_inherited_options</code>: whether to show inherited arguments in child commands or only in parent commands</li>
 <li><code>normalize_dots</code>: either <code>"."</code>, <code>""</code>, or <code>None</code>. If a dot, or empty, it will add or remove trailing dots from all help messages to keep a more consistent formatting across the application.</li>
 </ul>
 <p>Clypi ships with a pre-made formatter that can display help pages with either boxes or with indented sections, and hideor show the option types. You can disable both the boxes and type of each option and display just a placeholder.</p>
