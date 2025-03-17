@@ -6,7 +6,7 @@ build-backend = "hatchling.build"
 name = "clypi"
 description = "Your all-in-one for beautiful, lightweight, prod-ready CLIs"
 readme = "README.md"
-version = "1.2.0"
+version = "1.2.1"
 license = "MIT"
 license-files = ["LICEN[CS]E*"]
 requires-python = ">=3.11"
@@ -21,8 +21,8 @@ dependencies = [
 
 
 [project.urls]
-Documentation = "https://github.com/danimelchor/clypi/blob/master/docs/index.md"
-Homepage = "https://github.com/danimelchor/clypi"
+Documentation = "https://danimelchor.github.io/clypi/"
+Homepage = "https://danimelchor.github.io/clypi/"
 Repository = "https://github.com/danimelchor/clypi"
 Issues = "https://github.com/danimelchor/clypi/issues"
 
