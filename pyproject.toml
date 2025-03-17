@@ -35,6 +35,10 @@ dev = [
   "anyio>=4.8.0",
   "types-python-dateutil>=2.9.0.20241206",
 ]
+docs = [
+  "mkdocs-material>=9.6.8",
+  "termynal>=0.13.0",
+]
 
 [tool.pytest.ini_options]
 minversion = "8.0"
