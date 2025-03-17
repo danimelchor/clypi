@@ -45,6 +45,7 @@ def __init__(
 )
 ```
 Parameters:
+
 - `title`: the initial text to display as the spinner spins
 - `animation`: a provided [`Spin`](#spin) animation or a list of frames to display
 - `prefix`: text or padding displayed before the icon
@@ -147,6 +148,7 @@ def boxed(
 Wraps text neatly in a box with the selected style, padding, and alignment.
 
 Parameters:
+
 - `lines`: the type of lines will determine it's output type. It can be one of `str`, `list[str]` or `Iterable[str]`
 - `width`: the desired width of the box
 - `style`: the desired style (see [`Boxes`](#boxes))
@@ -178,6 +180,7 @@ side by side.
 <img width="974" alt="image" src="https://github.com/user-attachments/assets/9340d828-f7ce-491c-b0a8-6a666f7b7caf" />
 
 Parameters:
+
 - `blocks`: a series of blocks of lines of strings to display side by side
 - `padding`: the space between each block
 - `lines`: if the output should be returned as lines or as a string
@@ -204,6 +207,7 @@ def separator(
 Prints a line made of the given separator character.
 
 Parameters:
+
 - `separator`: the character used to build the separator line
 - `width`: if `max` it will use the max size of the terminal. Otherwise you can provide a fixed width.
 - `title`: optionally provide a title to display in the middle of the separator
@@ -237,6 +241,7 @@ methods `rjust`, `ljust`, and `center`, `clypi.align(...)` aligns text according
 to it's true visible width (the built-in methods count color codes as width chars).
 
 Parameters:
+
 - `s`: the string being aligned
 - `alignment`: one of `left`, `right`, or `center`
 - `width`: the wished final visible width of the string

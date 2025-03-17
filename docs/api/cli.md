@@ -20,6 +20,7 @@ Utility function to configure how a specific argument should behave when display
 and parsed.
 
 Parameters:
+
 - `default`: the default value to return if the user doesn't pass in the argument (or hits enter during the prompt, if any)
 - `parser`: a function that takes in a string and returns the parsed type (see [`Parser`](#parsert))
 - `default_factory`: a function that returns a default value. Useful to defer computation or to avoid default mutable values
@@ -235,7 +236,6 @@ Examples:
 >     num_threads: int = arg(defer=True, prompt="How many threads do you want to use")
 >
 >     async def run(self):
->         cmd = Main.parse()  # << will not prompt yet...
 >         print(cmd.single_threaded)  # << will not prompt yet...
 >         if cmd.single_threaded:
 >             # if we never access num_threads in this if condition, we will
@@ -243,6 +243,9 @@ Examples:
 >             print("Running single threaded...")
 >         else:
 >             print("Running with threads: ", cmd.num_threads)  # << we prompt here!
+>
+> main = Main.parse()  # << will not prompt yet...
+> main.start()  # << will not prompt yet...
 > ```
 
 Notice how `num_threads` is actually a required option (it does not have a default value), but
@@ -305,6 +308,7 @@ def print_help(cls, exception: Exception | None = None)
 Prints the help page for a particular command.
 
 Parameters:
+
 - `exception`: an exception neatly showed to the user as a traceback. Automatically passed in during runtime.
 
 ### `Formatter`
@@ -337,6 +341,7 @@ class ClypiFormatter(
 )
 ```
 Parameters:
+
 - `boxed`: whether to wrap each section in a box made with ASCII characters
 - `show_option_types`: whether to display the expected type for each argument or just a placeholder. E.g.: `--foo TEXT` vs `--foo <FOO>`
 - `show_forwarded_options`: whether to show forwarded arguments in child commands or only in parent commands

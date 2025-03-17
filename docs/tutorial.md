@@ -14,6 +14,7 @@ A quick summary at the time of writing is:
 
 1. Create a project directory:
 
+    <!-- termynal -->
     ```
     $ mkdir zit
     $ cd zit
@@ -21,18 +22,22 @@ A quick summary at the time of writing is:
 
 2. Initialize a project:
 
+    <!-- termynal -->
     ```
     $ uv init
     ```
 3. Install clypi:
 
+    <!-- termynal -->
     ```
     $ uv add clypi
     ```
 
 4. Code your CLI. `uv` created a `main.py` file but you should create your own python package inside a subdirectory called `zit`. Inside that subdirectory create an empty file called `__init__.py` and a file called `main.py` with the following content:
 
+    <!-- termynal -->
     ```
+    $ tree
     .
     ├── README.md
     ├── pyproject.toml
@@ -71,6 +76,7 @@ A quick summary at the time of writing is:
 
 5. Test out your new CLI. You can run it locally with:
 
+    <!-- termynal -->
     ```
     $ uv run ./zit/main.py
     ```
@@ -92,6 +98,7 @@ A quick summary at the time of writing is:
 
 8. Install your package locally and run it
 
+    <!-- termynal -->
    ```
    $ uv pip install -e .
    $ zit --verbose
