@@ -23,6 +23,7 @@ def confirm(
 Prompts the user for a yes/no value.
 
 Parameters:
+
 - `text`: the text to display to the user when asking for input
 - `default`: optionally set a default value that the user can immediately accept
 - `max_attempts`: how many times to ask the user before giving up and raising
@@ -43,6 +44,7 @@ def prompt(
 Prompts the user for a value and uses the provided parser to validate and parse the input
 
 Parameters:
+
 - `text`: the text to display to the user when asking for input
 - `default`: optionally set a default value that the user can immediately accept
 - `parser`: a function that parses in the user input as a string and returns the parsed value or raises

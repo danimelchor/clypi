@@ -42,6 +42,7 @@ ClypiConfig(
 ```
 
 Parameters:
+
 - `help_formatter`: the formatter class to use to display the help pages (see [Formatter](#formatter))
 - `help_on_fail`: whether the help page should be displayed if a user doesn't pass the right params
 - `nice_errors`: a list of errors clypi will catch and display neatly

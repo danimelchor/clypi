@@ -25,6 +25,7 @@ Int(
 ```
 
 Parameters:
+
 - `gt`: A value the integer must be greater than
 - `gte`: A value the integer must be greater than or equal to
 - `lt`: A value the integer must be less than
@@ -62,6 +63,7 @@ Float(
 )
 ```
 Parameters:
+
 - `gt`: A value the float must be greater than
 - `gte`: A value the float must be greater than or equal to
 - `lt`: A value the float must be less than
@@ -108,6 +110,7 @@ Str(
 )
 ```
 Parameters:
+
 - `length`: The string must be of this length
 - `max`: The string's length must be at most than this number
 - `min`: The string's length must be at least than this number
@@ -133,6 +136,7 @@ DateTime(
 )
 ```
 Parameters:
+
 - `tz`: the timezone to convert the date to
 
 ### `TimeDelta`
@@ -174,6 +178,7 @@ The `Path` parser is useful to parse file or directory-like arguments from the C
 Path(exists: bool = False)
 ```
 Parameters:
+
 - `exists`: If `True`, it checks whether the provided path exists.
 
 Examples:
@@ -197,6 +202,7 @@ Examples:
 > ```
 
 Parameters:
+
 - `inner`: The parser used to convert each list element.
 
 ### `Tuple`
@@ -218,6 +224,7 @@ Examples:
 > ```
 
 Parameters:
+
 - `inner`: List of parsers for each tuple element.
 - `num`: Expected tuple length (optional).
 

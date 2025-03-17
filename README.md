@@ -14,13 +14,9 @@ Your all-in-one for beautiful, lightweight, prod-ready CLIs
 I've been working with Python-based CLIs for several years with many users and strict quality requirements and always run into the sames problems with the go-to packages. Therefore, I decided to embark on a journey to build a lightweight, intuitive, pretty, and production ready framework. Here are the key features:
 
 - **Type safe**: making use of dataclass-like commands, you can easily specify the types you want for each argument and clypi automatically parses and validates them.
-
 - **Asynchronous**: clypi is built to run asynchronously to provide the best performance possible when re-rendering.
-
 - **Easily testable**: thanks to being type checked and to using it's own parser, clypi let's you test each individual step. From from parsing command-line arguments to running your commands in tests just like a user would.
-
 - **Composable**: clypi lets you easily reuse arguments across subcommands without having to specify them again.
-
 - **Configurable**: clypi lets you configure almost everything you'd like to configure. You can create your own themes, help pages, error messages, and more!
 
 ### Getting started

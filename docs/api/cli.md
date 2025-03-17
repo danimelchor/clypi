@@ -20,6 +20,7 @@ Utility function to configure how a specific argument should behave when display
 and parsed.
 
 Parameters:
+
 - `default`: the default value to return if the user doesn't pass in the argument (or hits enter during the prompt, if any)
 - `parser`: a function that takes in a string and returns the parsed type (see [`Parser`](#parsert))
 - `default_factory`: a function that returns a default value. Useful to defer computation or to avoid default mutable values
@@ -305,6 +306,7 @@ def print_help(cls, exception: Exception | None = None)
 Prints the help page for a particular command.
 
 Parameters:
+
 - `exception`: an exception neatly showed to the user as a traceback. Automatically passed in during runtime.
 
 ### `Formatter`
@@ -337,6 +339,7 @@ class ClypiFormatter(
 )
 ```
 Parameters:
+
 - `boxed`: whether to wrap each section in a box made with ASCII characters
 - `show_option_types`: whether to display the expected type for each argument or just a placeholder. E.g.: `--foo TEXT` vs `--foo <FOO>`
 - `show_forwarded_options`: whether to show forwarded arguments in child commands or only in parent commands
