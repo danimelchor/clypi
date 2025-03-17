@@ -226,7 +226,7 @@ class ClypiFormatter:
 
         option = self.theme.usage_args(" [OPTIONS]") if options else ""
 
-        return f"{prefix} {command_str}{command}{positional}{option}"
+        return f"{prefix} {command_str}{option}{positional}{command}"
 
     def _format_description(self, description: str | None) -> str | None:
         if not description:
