@@ -13,9 +13,9 @@ class Remove(Command):
     )
 
     # Inherited opts
-    quiet: bool = arg(...)
-    version: bool = arg(...)
-    no_cache: bool = arg(...)
+    quiet: bool = arg(inherited=True)
+    version: bool = arg(inherited=True)
+    no_cache: bool = arg(inherited=True)
 
     async def run(self) -> None:
         clypi.cprint("Running `uv remove` command...", fg="blue")

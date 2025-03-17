@@ -11,8 +11,8 @@ class Run(Command):
     Runs all files
     """
 
-    verbose: bool = arg(...)
-    env: str = arg(...)
+    verbose: bool = arg(inherited=True)
+    env: str = arg(inherited=True)
 
 
 class Main(Command):
