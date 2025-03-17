@@ -63,7 +63,7 @@ class Main(Command):
         (["run", "-v"], {}, True),
     ],
 )
-def test_parse_forwarded(args: list[str], expected: dict[str, t.Any], fails: bool):
+def test_parse_inherited(args: list[str], expected: dict[str, t.Any], fails: bool):
     if fails:
         with pytest.raises(Exception):
             _ = Main.parse(args)

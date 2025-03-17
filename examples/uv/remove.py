@@ -12,7 +12,7 @@ class Remove(Command):
         False, help="Remove the packages from the development dependency group"
     )
 
-    # Forwarded opts
+    # Inherited opts
     quiet: bool = arg(...)
     version: bool = arg(...)
     no_cache: bool = arg(...)

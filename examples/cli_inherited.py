@@ -52,21 +52,21 @@ class Main(Command):
 
 
 if __name__ == "__main__":
-    show_forwarded = True
-    if os.getenv("SHOW_FORWARDED") != "1":
+    show_inherited = True
+    if os.getenv("SHOW_INHERITED") != "1":
         cprint(
-            "Not showing forwarded args. Try using: "
+            "Not showing inherited args. Try using: "
             + style(
-                "SHOW_FORWARDED=1 uv run -m examples.cli_forwarded "
+                "SHOW_INHERITED=1 uv run -m examples.cli_inherited "
                 + shlex.join(sys.argv[1:]),
                 bold=True,
             )
             + "\n\n",
             fg="yellow",
         )
-        show_forwarded = False
+        show_inherited = False
 
-    get_config().help_formatter = ClypiFormatter(show_forwarded_options=show_forwarded)
+    get_config().help_formatter = ClypiFormatter(show_inherited_options=show_inherited)
 
     main: Main = Main.parse()
     main.start()

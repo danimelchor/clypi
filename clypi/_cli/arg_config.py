@@ -24,7 +24,7 @@ class PartialConfig(t.Generic[T]):
     prompt: str | None = None
     hide_input: bool = False
     max_attempts: int = MAX_ATTEMPTS
-    forwarded: bool = False
+    inherited: bool = False
     hidden: bool = False
     group: str | None = None
     defer: bool = False
@@ -42,7 +42,7 @@ class Config(t.Generic[T]):
     prompt: str | None = None
     hide_input: bool = False
     max_attempts: int = MAX_ATTEMPTS
-    forwarded: bool = False
+    inherited: bool = False
     hidden: bool = False
     group: str | None = None
     defer: bool = False
@@ -145,12 +145,12 @@ def arg(
     prompt: str | None = None,
     hide_input: bool = False,
     max_attempts: int = MAX_ATTEMPTS,
-    forwarded: bool = False,
+    inherited: bool = False,
     hidden: bool = False,
     group: str | None = None,
     defer: bool = False,
 ) -> T:
-    forwarded = forwarded or default is Ellipsis
+    inherited = inherited or default is Ellipsis
     default = UNSET if default is Ellipsis else default
     return PartialConfig(
         parser=parser,
@@ -161,7 +161,7 @@ def arg(
         prompt=prompt,
         hide_input=hide_input,
         max_attempts=max_attempts,
-        forwarded=forwarded,
+        inherited=inherited,
         hidden=hidden,
         group=group,
         defer=defer,

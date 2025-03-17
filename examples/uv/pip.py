@@ -5,7 +5,7 @@ from clypi import Command, arg
 class Install(Command):
     """Install packages into an environment"""
 
-    # Forwarded opts
+    # Inherited opts
     quiet: bool = arg(...)
     version: bool = arg(...)
     no_cache: bool = arg(...)
@@ -17,7 +17,7 @@ class Install(Command):
 class Uninstall(Command):
     """Uninstall packages from an environment"""
 
-    # Forwarded opts
+    # Inherited opts
     quiet: bool = arg(...)
     version: bool = arg(...)
     no_cache: bool = arg(...)
@@ -29,7 +29,7 @@ class Uninstall(Command):
 class Freeze(Command):
     """List, in requirements format, packages installed in an environment"""
 
-    # Forwarded opts
+    # Inherited opts
     quiet: bool = arg(...)
     version: bool = arg(...)
     no_cache: bool = arg(...)
@@ -41,7 +41,7 @@ class Freeze(Command):
 class List(Command):
     """List, in tabular format, packages installed in an environment"""
 
-    # Forwarded opts
+    # Inherited opts
     quiet: bool = arg(...)
     version: bool = arg(...)
     no_cache: bool = arg(...)
@@ -55,7 +55,7 @@ class Pip(Command):
 
     subcommand: Install | Uninstall | Freeze | List
 
-    # Forwarded opts
+    # Inherited opts
     quiet: bool = arg(...)
     version: bool = arg(...)
     no_cache: bool = arg(...)

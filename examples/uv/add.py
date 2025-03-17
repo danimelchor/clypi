@@ -72,7 +72,7 @@ class Add(Command):
         False, help="Add the requirements to the development dependency group"
     )
 
-    # Forwarded opts
+    # Inherited opts
     quiet: bool = arg(...)
     version: bool = arg(...)
     no_cache: bool = arg(...)
