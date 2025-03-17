@@ -370,10 +370,16 @@ class Union(ClypiParser[t.Union[X, Y]]):
         self._right = right
 
     def __call__(self, raw: str | list[str], /) -> t.Union[X, Y]:
+        # Str classes are catch-alls, so we de-prioritize them in unions
+        # so that the other type is parsed first
+        first, second = self._left, self._right
+        if isinstance(first, Str):
+            first, second = self._right, self._left
+
         try:
-            return self._left(raw)
+            return first(raw)
         except Exception:
-            return self._right(raw)
+            return second(raw)
 
     def _parts(self):
         """
@@ -414,6 +420,8 @@ class Literal(ClypiParser[t.Any]):
 
 class NoneParser(ClypiParser[None]):
     def __call__(self, raw: str | list[str], /) -> None:
+        if not raw:
+            return None
         if isinstance(raw, str) and raw.lower() == "none":
             return None
         raise UnparseableException()

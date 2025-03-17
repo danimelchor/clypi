@@ -21,7 +21,7 @@ get_config().help_on_fail = False
 
 
 class ExampleSub(Command):
-    pos2: Positional[tuple[str | Path, ...]]
+    pos2: Positional[tuple[str, ...]]
     flag2: bool = False
     option2: int = 5
 

@@ -48,6 +48,10 @@ SUCCESS_PRIMITIVES = [
     ("foo", cp.Literal("1", "foo"), "foo"),
     ("red", cp.Enum(Color), Color.RED),
     ("blue", cp.Enum(Color), Color.BLUE),
+    ("none", cp.NoneParser(), None),
+    ("", cp.NoneParser(), None),
+    ("", cp.Str() | cp.NoneParser(), None),
+    ("", cp.NoneParser() | cp.Str(), None),
 ]
 
 FAILURE_PRIMITIVES = [
@@ -67,6 +71,7 @@ FAILURE_PRIMITIVES = [
     ("a", cp.Union(cp.Int(), cp.Bool())),
     ("2", cp.Literal("1", "foo")),
     ("green", cp.Enum(Color)),
+    ("a", cp.NoneParser()),
 ]
 
 
