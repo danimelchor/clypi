@@ -23,14 +23,21 @@ theme:
     - search.highlight
     - search.share
 
-name:
+nav:
  - Clypi: index.md
- - API: api.md
- - Planned work: planned_work.md
  - Tutorial: tutorial.md
+ - API:
+   - api/config.md
+   - api/cli.md
+   - api/components.md
+   - api/colors.md
+   - api/prompts.md
+   - api/parsers.md
+ - Planned work: planned_work.md
 
 plugins:
   - search
+  - termynal
 
 markdown_extensions:
   - admonition

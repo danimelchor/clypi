@@ -120,26 +120,30 @@ dependencies = [
 dev = [
     { name = "anyio" },
     { name = "codespell" },
-    { name = "mkdocs-material" },
     { name = "pyright", extra = ["nodejs"] },
     { name = "pytest" },
     { name = "ruff" },
     { name = "types-python-dateutil" },
+]
+docs = [
+    { name = "mkdocs-material" },
+    { name = "termynal" },
 ]
 
 [package.metadata]
 requires-dist = [
     { name = "anyio", marker = "extra == 'dev'", specifier = ">=4.8.0" },
     { name = "codespell", marker = "extra == 'dev'", specifier = ">=2.4.1" },
-    { name = "mkdocs-material", marker = "extra == 'dev'", specifier = ">=9.6.8" },
+    { name = "mkdocs-material", marker = "extra == 'docs'", specifier = ">=9.6.8" },
     { name = "pyright", extras = ["nodejs"], marker = "extra == 'dev'", specifier = ">=1.1.396" },
     { name = "pytest", marker = "extra == 'dev'", specifier = ">=8.3.5" },
     { name = "python-dateutil", specifier = ">=2.9.0.post0" },
     { name = "ruff", marker = "extra == 'dev'", specifier = ">=0.9.7" },
+    { name = "termynal", marker = "extra == 'docs'", specifier = ">=0.13.0" },
     { name = "types-python-dateutil", marker = "extra == 'dev'", specifier = ">=2.9.0.20241206" },
     { name = "typing-extensions", specifier = ">=4.4.0" },
 ]
-provides-extras = ["dev"]
+provides-extras = ["dev", "docs"]
 
 [[package]]
 name = "codespell"
@@ -576,6 +580,18 @@ source = { registry = "https://pypi.org/simple" }
 sdist = { url = "https://files.pythonhosted.org/packages/a2/87/a6771e1546d97e7e041b6ae58d80074f81b7d5121207425c964ddf5cfdbd/sniffio-1.3.1.tar.gz", hash = "sha256:f4324edc670a0f49750a81b895f35c3adb843cca46f0530f79fc1babb23789dc", size = 20372 }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/e9/44/75a9c9421471a6c4805dbf2356f7c181a29c1879239abab1ea2cc8f38b40/sniffio-1.3.1-py3-none-any.whl", hash = "sha256:2f6da418d1f1e0fddd844478f41680e794e6051915791a034ff65e5f100525a2", size = 10235 },
+]
+
+[[package]]
+name = "termynal"
+version = "0.13.0"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "markdown" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/6f/f4/499b6559a8dc8dd9d06fcab1c573d2e9e5c3b5a4ceedc5fef75de9df1776/termynal-0.13.0.tar.gz", hash = "sha256:8d41cc80b03e040398bf57f37a584d06295b5ad82a7add54f1ad000daf537573", size = 174126 }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/5e/2d/a00bb03c0db99de80944fa522d5fbfdc844b9c5aa45db31e6edb0cb5e02c/termynal-0.13.0-py3-none-any.whl", hash = "sha256:0507eba6d8d96a2b29fddb8ae4d58b07b2a48b9144bda976629de3b9e2a47ced", size = 10620 },
 ]
 
 [[package]]
