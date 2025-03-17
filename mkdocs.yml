@@ -1,4 +1,53 @@
 site_name: Clypi
-site_url: https://mydomain.org/mysite
+site_url: https://danimelchor.github.io/clypi/
+repo_name: dmelchor/clypi
+repo_url: https://github.com/dmelchor/clypi
+
 theme:
   name: material
+  features:
+    - content.code.annotate
+    - content.code.copy
+    - content.code.select
+    - content.tooltips
+    - navigation.indexes
+    - navigation.instant
+    - navigation.instant.progress
+    - navigation.path
+    - navigation.top
+    - navigation.tracking
+    - search.highlight
+    - search.share
+
+name:
+ - Clypi: index.md
+ - API: api.md
+ - Planned work: planned_work.md
+ - Tutorial: tutorial.md
+
+plugins:
+  - search
+
+markdown_extensions:
+  - admonition
+  - pymdownx.details
+  - pymdownx.highlight:
+      anchor_linenums: true
+      line_spans: __span
+      pygments_lang_class: true
+  - pymdownx.inlinehilite
+  - pymdownx.snippets
+  - pymdownx.superfences
+  - pymdownx.superfences
+  - pymdownx.tasklist
+
+extra:
+  social:
+    - icon: fontawesome/brands/github-alt
+      link: https://github.com/dmelchor/clypi
+    - icon: fontawesome/brands/twitter
+      link: https://x.com/dmelchor672
+    - icon: fontawesome/brands/linkedin
+      link: https://www.linkedin.com/in/danimelchor
+    - icon: fontawesome/solid/globe
+      link: https://dmelchor.com
