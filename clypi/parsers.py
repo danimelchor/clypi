@@ -413,7 +413,9 @@ class Literal(ClypiParser[t.Any]):
 
 
 class NoneParser(ClypiParser[None]):
-    def __call__(self, raw: str | list[str], /) -> t.Any:
+    def __call__(self, raw: str | list[str], /) -> None:
+        if isinstance(raw, str) and raw.lower() == "none":
+            return None
         raise UnparseableException()
 
     def __repr__(self):
