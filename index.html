@@ -1,0 +1,1103 @@
+<!DOCTYPE html>
+<html lang="en" data-bs-theme="light">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta name="description" content="None">
+        
+        
+        <link rel="shortcut icon" href="img/favicon.ico">
+        <title>My Docs</title>
+        <link href="css/bootstrap.min.css" rel="stylesheet">
+        <link href="css/fontawesome.min.css" rel="stylesheet">
+        <link href="css/brands.min.css" rel="stylesheet">
+        <link href="css/solid.min.css" rel="stylesheet">
+        <link href="css/v4-font-face.min.css" rel="stylesheet">
+        <link href="css/base.css" rel="stylesheet">
+        <link id="hljs-light" rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" >
+        <link id="hljs-dark" rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github-dark.min.css" disabled>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+        <script>hljs.highlightAll();</script> 
+    </head>
+
+    <body class="homepage">
+        <div class="navbar fixed-top navbar-expand-lg navbar-dark bg-primary">
+            <div class="container">
+                <a class="navbar-brand" href=".">My Docs</a>
+                <!-- Expander button -->
+                <button type="button" class="navbar-toggler" data-bs-toggle="collapse" data-bs-target="#navbar-collapse" aria-controls="navbar-collapse" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+
+                <!-- Expanded navigation -->
+                <div id="navbar-collapse" class="navbar-collapse collapse">
+                        <!-- Main navigation -->
+                        <ul class="nav navbar-nav">
+                            <li class="nav-item">
+                                <a href="." class="nav-link active" aria-current="page">🦄 clypi</a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="planned_work/" class="nav-link">Planned work</a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="tutorial/" class="nav-link">Building and distributing your CLIs</a>
+                            </li>
+                        </ul>
+
+                    <ul class="nav navbar-nav ms-md-auto">
+                        <li class="nav-item">
+                            <a href="#" class="nav-link" data-bs-toggle="modal" data-bs-target="#mkdocs_search_modal">
+                                <i class="fa fa-search"></i> Search
+                            </a>
+                        </li>
+                            <li class="nav-item">
+                                <a rel="prev" class="nav-link disabled">
+                                    <i class="fa fa-arrow-left"></i> Previous
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a rel="next" href="planned_work/" class="nav-link">
+                                    Next <i class="fa fa-arrow-right"></i>
+                                </a>
+                            </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="container">
+            <div class="row">
+                    <div class="col-md-3"><div class="navbar-expand-md bs-sidebar hidden-print affix" role="complementary">
+    <div class="navbar-header">
+        <button type="button" class="navbar-toggler collapsed" data-bs-toggle="collapse" data-bs-target="#toc-collapse" title="Table of Contents">
+            <span class="fa fa-angle-down"></span>
+        </button>
+    </div>
+
+    
+    <div id="toc-collapse" class="navbar-collapse collapse card bg-body-tertiary">
+        <ul class="nav flex-column">
+            
+            <li class="nav-item" data-bs-level="1"><a href="#clypi" class="nav-link">🦄 clypi</a>
+              <ul class="nav flex-column">
+            <li class="nav-item" data-bs-level="2"><a href="#configuration" class="nav-link">Configuration</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-bs-level="2"><a href="#cli" class="nav-link">CLI</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-bs-level="2"><a href="#prompts" class="nav-link">Prompts</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-bs-level="2"><a href="#colors" class="nav-link">Colors</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-bs-level="2"><a href="#ui" class="nav-link">UI</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-bs-level="2"><a href="#parsers" class="nav-link">Parsers</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+              </ul>
+            </li>
+            
+            <li class="nav-item" data-bs-level="1"><a href="#3-ok-10-ok-2-not-ok-11-not-ok" class="nav-link">3 (OK), 10 (OK), 2 (not OK), 11 (not OK)</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            
+            <li class="nav-item" data-bs-level="1"><a href="#3-ok-10-ok-2-not-ok-11-not-ok_1" class="nav-link">3 (OK), 10 (OK), 2 (not OK), 11 (not OK)</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            
+            <li class="nav-item" data-bs-level="1"><a href="#1-day-ok-2-weeks-ok-1-second-not-ok" class="nav-link">1 day (OK), 2 weeks (OK), 1 second (not OK)</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            
+            <li class="nav-item" data-bs-level="1"><a href="#tuplestr" class="nav-link">tuple[str, ...]</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            
+            <li class="nav-item" data-bs-level="1"><a href="#tuplestr-int" class="nav-link">tuple[str, int]</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+        </ul>
+    </div>
+</div></div>
+                    <div class="col-md-9" role="main">
+
+<h1 id="clypi">🦄 clypi</h1>
+<h2 id="configuration">Configuration</h2>
+<h3 id="accessing-and-changing-the-configuration">Accessing and changing the configuration</h3>
+<pre><code class="language-python">from clypi import ClypiConfig, configure, get_config
+
+# Gets the current config (or a default)
+conf = get_config()
+
+# Change the configuration
+config = ClypiConfig(help_on_fail=False)
+configure(config)
+</code></pre>
+<h3 id="default-config">Default config</h3>
+<!--- mdtest -->
+
+<pre><code class="language-python">ClypiConfig(
+    help_formatter=ClypiFormatter(
+        boxed=True,
+        show_option_types=True,
+    ),
+    help_on_fail=True,
+    nice_errors=(ClypiException,),
+    theme=Theme(
+        usage=Styler(fg=&quot;yellow&quot;),
+        usage_command=Styler(bold=True),
+        usage_args=Styler(),
+        section_title=Styler(),
+        subcommand=Styler(fg=&quot;blue&quot;, bold=True),
+        long_option=Styler(fg=&quot;blue&quot;, bold=True),
+        short_option=Styler(fg=&quot;green&quot;, bold=True),
+        positional=Styler(fg=&quot;blue&quot;, bold=True),
+        placeholder=Styler(fg=&quot;blue&quot;),
+        type_str=Styler(fg=&quot;yellow&quot;, bold=True),
+        prompts=Styler(fg=&quot;blue&quot;, bold=True),
+    ),
+    overflow_style=&quot;wrap&quot;,
+)
+</code></pre>
+<p>Parameters:
+- <code>help_formatter</code>: the formatter class to use to display the help pages (see <a href="#formatter">Formatter</a>)
+- <code>help_on_fail</code>: whether the help page should be displayed if a user doesn't pass the right params
+- <code>nice_errors</code>: a list of errors clypi will catch and display neatly
+- <code>theme</code>: a <code>Theme</code> object used to format different styles and colors for help pages, prompts, tracebacks, etc.
+- <code>overflow_style</code>: either <code>wrap</code> or <code>ellipsis</code>. If wrap, text that is too long will get wrapped into the next line. If ellipsis, the text will be truncated with an <code>…</code> at the end.</p>
+<h2 id="cli">CLI</h2>
+<h3 id="arg"><code>arg</code></h3>
+<pre><code class="language-python">def arg(
+    default: T | Unset | EllipsisType = UNSET,
+    parser: Parser[T] | None = None,
+    default_factory: t.Callable[[], T] | Unset = UNSET,
+    help: str | None = None,
+    short: str | None = None,
+    prompt: str | None = None,
+    hide_input: bool = False,
+    max_attempts: int = MAX_ATTEMPTS,
+    group: str | None = None,
+) -&gt; T
+</code></pre>
+<p>Utility function to configure how a specific argument should behave when displayed
+and parsed.</p>
+<p>Parameters:
+- <code>default</code>: the default value to return if the user doesn't pass in the argument (or hits enter during the prompt, if any)
+- <code>parser</code>: a function that takes in a string and returns the parsed type (see <a href="#parser[t]"><code>Parser</code></a>)
+- <code>default_factory</code>: a function that returns a default value. Useful to defer computation or to avoid default mutable values
+- <code>help</code>: a brief description to show the user when they pass in <code>-h</code> or <code>--help</code>
+- <code>short</code>: for options it defines a short way to pass in a value (e.g.: <code>short="v"</code> allows users to pass in <code>-v &lt;value&gt;</code>)
+- <code>prompt</code>: if defined, it will ask the user to provide input if not already defined in the command line args
+- <code>hide_input</code>: whether the input shouldn't be displayed as the user types (for passwords, API keys, etc.)
+- <code>max_attempts</code>: how many times to ask the user before giving up and raising
+- <code>group</code>: optionally define the name of a group to display the option in. Adding an option will automatically display the options in a different section of the help page (for an example, see the pictures in <a href="#formatter">formatter</a>).
+- <code>defer</code> (advanced): defers the fetching of a value until the value is used. This can be helpful to express complex dependencies between arguments. For example, you may not want to prompt if a different option was passed in (see <code>examples/cli_deferred.py</code>).</p>
+<h3 id="command"><code>Command</code></h3>
+<p>This is the main class you must extend when defining a command. There are no methods you must override
+other than the <a href="#run"><code>run</code></a> method. The type hints you annotate the class will define the arguments that
+command will take based on a set of rules:</p>
+<h4 id="subcommands">Subcommands</h4>
+<p>To define a subcommand, you must define a field in a class extending <code>Command</code> called <code>subcommand</code>. It's type hint must
+point to other classes extending <code>Command</code> or <code>None</code> by using either a single class, or a union of classes.</p>
+<p>These are all valid examples:</p>
+<pre><code class="language-python">from clypi import Command
+
+class MySubcommand(Command):
+    pass
+
+class MyOtherSubcommand(Command):
+    pass
+
+class MyCommand(Command):
+    # A mandatory subcommand `my-subcommand`
+    subcommand: MySubcommand
+
+    # An optional subcommand `my-subcommand`
+    subcommand: MySubcommand | None
+
+    # A mandatory subcommand `my-subcommand` or `my-other-subcommand`
+    subcommand: MySubcommand | MyOtherSubcommand
+
+    # An optional subcommand `my-subcommand` or `my-other-subcommand`
+    subcommand: MySubcommand | MyOtherSubcommand | None
+</code></pre>
+<h4 id="arguments-positional">Arguments (positional)</h4>
+<p>Arguments are mandatory positional words the user must pass in. They're defined as class attributes with no default and type hinted with the <code>Positional[T]</code> type.</p>
+<!--- mdtest -->
+
+<pre><code class="language-python">from clypi import Command, Positional
+
+# my-command 5 foo bar baz
+#        arg1^ ^^^^^^^^^^^arg2
+class MyCommand(Command):
+    arg1: Positional[int]
+    arg2: Positional[list[str]]
+</code></pre>
+<h4 id="flags">Flags</h4>
+<p>Flags are boolean options that can be either present or not. To define a flag, simply define
+a boolean class attribute in your command with a default value. The user will then be able
+to pass in <code>--my-flag</code> when running the command which will set it to True.</p>
+<!--- mdtest -->
+
+<pre><code class="language-python">from clypi import Command
+
+# With the flag ON: my-command --my-flag
+# With the flag OFF: my-command
+class MyCommand(Command):
+    my_flag: bool = False
+</code></pre>
+<h4 id="options">Options</h4>
+<p>Options are like flags but, instead of booleans, the user passes in specific values. You can think of options as key/pair items. Options can be set as required by not specifying a default value.</p>
+<!--- mdtest -->
+
+<pre><code class="language-python">from clypi import Command
+
+# With value: my-command --my-attr foo
+# With default: my-command
+class MyCommand(Command):
+    my_attr: str | int = &quot;some-default-here&quot;
+</code></pre>
+<h4 id="running-the-command">Running the command</h4>
+<p>You must implement the <a href="#run"><code>run</code></a> method so that your command can be ran. The function
+must be <code>async</code> so that we can properly render items in your screen.</p>
+<!--- mdtest -->
+
+<pre><code class="language-python">from clypi import Command, arg
+
+class MyCommand(Command):
+    verbose: bool = False
+
+    async def run(self):
+        print(f&quot;Running with verbose: {self.verbose}&quot;)
+</code></pre>
+<h4 id="help-page">Help page</h4>
+<p>You can define custom help messages for each argument using our handy <code>config</code> helper:</p>
+<!--- mdtest -->
+
+<pre><code class="language-python">from clypi import Command, arg
+
+class MyCommand(Command):
+    verbose: bool = arg(True, help=&quot;Whether to show all of the output&quot;)
+</code></pre>
+<p>You can also define custom help messages for commands by creating a docstring on the class itself:</p>
+<!--- mdtest -->
+
+<pre><code class="language-python">from clypi import Command, arg
+
+class MyCommand(Command):
+    &quot;&quot;&quot;
+    This text will show up when someone does `my-command --help`
+    and can contain any info you'd like
+    &quot;&quot;&quot;
+</code></pre>
+<h4 id="prompting">Prompting</h4>
+<p>If you want to ask the user to provide input if it's not specified, you can pass in a prompt to <code>config</code> for each field like so:</p>
+<!--- mdtest -->
+
+<pre><code class="language-python">from clypi import Command, arg
+
+class MyCommand(Command):
+    name: str = arg(prompt=&quot;What's your name?&quot;)
+</code></pre>
+<p>On runtime, if the user didn't provide a value for <code>--name</code>, the program will ask the user to provide one until they do. You can also pass in a <code>default</code> value to <code>config</code> to allow the user to just hit enter to accept the default.</p>
+<h4 id="built-in-parsers">Built-in parsers</h4>
+<p>CLypi comes with built-in parsers for all common Python types. See the <a href="#parsers"><code>Parsers</code></a> section below to find all supported types and validations. Most often, using a normal Python type will automatically load the right parser, but if you want more control or extra features you can use these directly:</p>
+<!--- mdtest -->
+
+<pre><code class="language-python">import typing as t
+from clypi import Command, arg
+import clypi.parsers as cp
+
+class MyCommand(Command):
+    file: Path = arg(parser=cp.Path(exists=True))
+</code></pre>
+<h4 id="custom-parsers">Custom parsers</h4>
+<p>If the type you want to parse from the user is too complex, you can define your own parser
+using <code>config</code> as well:</p>
+<!--- mdtest -->
+
+<pre><code class="language-python">import typing as t
+from clypi import Command, arg
+
+def parse_slack(value: t.Any) -&gt; str:
+    if not value.startswith('#'):
+        raise ValueError(&quot;Invalid Slack channel. It must start with a '#'.&quot;)
+    return value
+
+class MyCommand(Command):
+    slack: str = arg(parser=parse_slack)
+</code></pre>
+<h4 id="forwarding-arguments">Forwarding arguments</h4>
+<p>If a command defines an argument you want to use in any of it's children, you can re-define the
+argument and pass in a literal ellipsis (<code>...</code>) to config to indicate the argument comes from the
+parent command. You can also use <code>forwarded=True</code> if you prefer:</p>
+<!--- mdtest -->
+
+<pre><code class="language-python">from clypi import Command, arg
+
+class MySubCmd(Command):
+    verbose: bool = arg(...)  # or `arg(forwarded=True)`
+
+class MyCli(Command):
+    subcommand: MySubCmd
+    verbose: bool = arg(False, help=&quot;Use verbose output&quot;)
+
+cmd = MyCli.parse([&quot;my-sub-cmd&quot;, &quot;--verbose&quot;])
+assert cmd.subcommand.verbose is True
+</code></pre>
+<h4 id="deferring-arguments">Deferring arguments</h4>
+<p>CLIs can get very complex. Sometimes we want to build a complex graph of dependencies between the arguments and it is hard to do that. For example, we can have an application that does not use <code>--num-threads</code> if <code>--single-threaded</code> was provided already. For that, clypi offers <code>arg(defer=True)</code>. The internals are complex but the user experience is quite simple: clypi will not prompt or require this value being passed up until when it's executed.</p>
+<p>Examples:</p>
+<!--- mdtest-stdin 5 -->
+<blockquote>
+<p>```python
+from clypi import Command, arg</p>
+<p>class Main(Command):
+    single_threaded: bool = arg(False)
+    num_threads: int = arg(defer=True, prompt="How many threads do you want to use")</p>
+<pre><code>async def run(self):
+    cmd = Main.parse()  # &lt;&lt; will not prompt yet...
+    print(cmd.single_threaded)  # &lt;&lt; will not prompt yet...
+    if cmd.single_threaded:
+        # if we never access num_threads in this if condition, we will
+        # never prompt!
+        print("Running single threaded...")
+    else:
+        print("Running with threads: ", cmd.num_threads)  # &lt;&lt; we prompt here!
+</code></pre>
+<p>```</p>
+</blockquote>
+<p>Notice how <code>num_threads</code> is actually a required option (it does not have a default value), but
+by deferring the evaluation of that value we can express complex dependencies between our arguments or offer a better step-by-step experience.</p>
+<h4 id="autocomplete">Autocomplete</h4>
+<p>All CLIs built with clypi come with a builtin <code>--install-autocomplete</code> option that will automatically
+set up shell completions for your built CLI.</p>
+<blockquote>
+<p>[!IMPORTANT]
+This feature is brand new and might contain some bugs. Please file a ticket
+if you run into any!</p>
+</blockquote>
+<h4 id="name"><code>name</code></h4>
+<pre><code class="language-python">@t.final
+@classmethod
+def prog(cls)
+</code></pre>
+<p>The name of the command. Can be overridden to provide a custom name
+or will default to the class name extending <code>Command</code>.</p>
+<h4 id="help"><code>help</code></h4>
+<pre><code class="language-python">@t.final
+@classmethod
+def help(cls)
+</code></pre>
+<p>The help displayed for the command when the user passes in <code>-h</code> or <code>--help</code>. Defaults to the
+docstring for the class extending <code>Command</code>.</p>
+<h4 id="run"><code>run</code></h4>
+<pre><code class="language-python">async def run(self: Command) -&gt; None:
+</code></pre>
+<p>The main function you <strong>must</strong> override. This function is where the business logic of your command
+should live.</p>
+<p><code>self</code> contains the arguments for this command you can access
+as you would do with any other instance property.</p>
+<h4 id="astart-and-start"><code>astart</code> and <code>start</code></h4>
+<pre><code class="language-python">async def astart(self: Command | None = None) -&gt; None:
+</code></pre>
+<pre><code class="language-python">def start(self) -&gt; None:
+</code></pre>
+<p>These commands are the entry point for your program. You can either call <code>YourCommand.start()</code> on your class
+or, if already in an async loop, <code>await YourCommand.astart()</code>.</p>
+<h4 id="print_help"><code>print_help</code></h4>
+<pre><code class="language-python">@classmethod
+def print_help(cls, exception: Exception | None = None)
+</code></pre>
+<p>Prints the help page for a particular command.</p>
+<p>Parameters:
+- <code>exception</code>: an exception neatly showed to the user as a traceback. Automatically passed in during runtime.</p>
+<h3 id="formatter"><code>Formatter</code></h3>
+<p>A formatter is any class conforming to the following protocol. It is called on several occasions to render
+the help page. The <code>Formatter</code> implementation should try to use the provided configuration theme when possible.</p>
+<pre><code class="language-python">class Formatter(t.Protocol):
+    def format_help(
+        self,
+        full_command: list[str],
+        description: str | None,
+        epilog: str | None,
+        options: list[Argument],
+        positionals: list[Argument],
+        subcommands: list[type[Command]],
+        exception: Exception | None,
+    ) -&gt; str: ...
+</code></pre>
+<h3 id="clypiformatter"><code>ClypiFormatter</code></h3>
+<pre><code class="language-python">class ClypiFormatter(
+    boxed=True,
+    show_option_types=False,
+    show_forwarded_options=True,
+    normalize_dots=&quot;&quot;,
+)
+</code></pre>
+<p>Parameters:
+- <code>boxed</code>: whether to wrap each section in a box made with ASCII characters
+- <code>show_option_types</code>: whether to display the expected type for each argument or just a placeholder. E.g.: <code>--foo TEXT</code> vs <code>--foo &lt;FOO&gt;</code>
+- <code>show_forwarded_options</code>: whether to show forwarded arguments in child commands or only in parent commands
+- <code>normalize_dots</code>: either <code>"."</code>, <code>""</code>, or <code>None</code>. If a dot, or empty, it will add or remove trailing dots from all help messages to keep a more consistent formatting across the application.</p>
+<p>Clypi ships with a pre-made formatter that can display help pages with either boxes or with indented sections, and hideor show the option types. You can disable both the boxes and type of each option and display just a placeholder.</p>
+<p>With everything enabled:</p>
+<!--- mdtest -->
+
+<pre><code class="language-python">ClypiFormatter(boxed=True, show_option_types=True)
+</code></pre>
+<p><img width="1696" alt="image" src="https://github.com/user-attachments/assets/3170874d-d120-4b1a-968a-f121e9b8ee53" /></p>
+<p>With everything disabled:</p>
+<!--- mdtest -->
+
+<pre><code class="language-python">ClypiFormatter(boxed=False, show_option_types=False)
+</code></pre>
+<p><img width="1691" alt="image" src="https://github.com/user-attachments/assets/8838227b-d77d-4e1a-9670-32c7f430db40" /></p>
+<h2 id="prompts">Prompts</h2>
+<h3 id="parsert"><code>Parser[T]</code></h3>
+<pre><code class="language-python">Parser: TypeAlias = Callable[[Any], T] | type[T]
+</code></pre>
+<p>A function taking in any value and returns a value of type <code>T</code>. This parser
+can be a user defined function, a built-in type like <code>str</code>, <code>int</code>, etc., or a parser
+from a library.</p>
+<h3 id="confirm"><code>confirm</code></h3>
+<pre><code class="language-python">def confirm(
+    text: str,
+    *,
+    default: bool | Unset = UNSET,
+    max_attempts: int = MAX_ATTEMPTS,
+    abort: bool = False,
+) -&gt; bool:
+</code></pre>
+<p>Prompts the user for a yes/no value.</p>
+<p>Parameters:
+- <code>text</code>: the text to display to the user when asking for input
+- <code>default</code>: optionally set a default value that the user can immediately accept
+- <code>max_attempts</code>: how many times to ask the user before giving up and raising
+- <code>abort</code>: if a user answers "no", it will raise a <code>AbortException</code></p>
+<h3 id="prompt"><code>prompt</code></h3>
+<pre><code class="language-python">def prompt(
+    text: str,
+    default: T | Unset = UNSET,
+    parser: Parser[T] = str,
+    hide_input: bool = False,
+    max_attempts: int = MAX_ATTEMPTS,
+) -&gt; T:
+</code></pre>
+<p>Prompts the user for a value and uses the provided parser to validate and parse the input</p>
+<p>Parameters:
+- <code>text</code>: the text to display to the user when asking for input
+- <code>default</code>: optionally set a default value that the user can immediately accept
+- <code>parser</code>: a function that parses in the user input as a string and returns the parsed value or raises
+- <code>hide_input</code>: whether the input shouldn't be displayed as the user types (for passwords, API keys, etc.)
+- <code>max_attempts</code>: how many times to ask the user before giving up and raising</p>
+<h2 id="colors">Colors</h2>
+<h3 id="colortype"><code>ColorType</code></h3>
+<pre><code class="language-python">ColorType: t.TypeAlias = t.Literal[
+    &quot;black&quot;,
+    &quot;red&quot;,
+    &quot;green&quot;,
+    &quot;yellow&quot;,
+    &quot;blue&quot;,
+    &quot;magenta&quot;,
+    &quot;cyan&quot;,
+    &quot;white&quot;,
+    &quot;default&quot;,
+    &quot;bright_black&quot;,
+    &quot;bright_red&quot;,
+    &quot;bright_green&quot;,
+    &quot;bright_yellow&quot;,
+    &quot;bright_blue&quot;,
+    &quot;bright_magenta&quot;,
+    &quot;bright_cyan&quot;,
+    &quot;bright_white&quot;,
+    &quot;bright_default&quot;,
+]
+</code></pre>
+<h3 id="styler"><code>Styler</code></h3>
+<pre><code class="language-python">class Styler(
+    fg: ColorType | None = None,
+    bg: ColorType | None = None,
+    bold: bool = False,
+    italic: bool = False,
+    dim: bool = False,
+    underline: bool = False,
+    blink: bool = False,
+    reverse: bool = False,
+    strikethrough: bool = False,
+    reset: bool = False,
+    hide: bool = False,
+)
+</code></pre>
+<p>Returns a reusable function to style text.</p>
+<p>Examples:</p>
+<!--- mdtest -->
+<blockquote>
+<p><code>python
+wrong = clypi.Styler(fg="red", strikethrough=True)
+print("The old version said", wrong("Pluto was a planet"))
+print("The old version said", wrong("the Earth was flat"))</code></p>
+</blockquote>
+<h3 id="style"><code>style</code></h3>
+<pre><code class="language-python">def style(
+    *messages: t.Any,
+    fg: ColorType | None = None,
+    bg: ColorType | None = None,
+    bold: bool = False,
+    italic: bool = False,
+    dim: bool = False,
+    underline: bool = False,
+    blink: bool = False,
+    reverse: bool = False,
+    strikethrough: bool = False,
+    reset: bool = False,
+    hide: bool = False,
+) -&gt; str
+</code></pre>
+<p>Styles text and returns the styled string.</p>
+<p>Examples:</p>
+<!--- mdtest -->
+<blockquote>
+<p><code>python
+print(clypi.style("This is blue", fg="blue"), "and", clypi.style("this is red", fg="red"))</code></p>
+</blockquote>
+<h3 id="print"><code>print</code></h3>
+<pre><code class="language-python">def cprint(
+    *messages: t.Any,
+    fg: ColorType | None = None,
+    bg: ColorType | None = None,
+    bold: bool = False,
+    italic: bool = False,
+    dim: bool = False,
+    underline: bool = False,
+    blink: bool = False,
+    reverse: bool = False,
+    strikethrough: bool = False,
+    reset: bool = False,
+    hide: bool = False,
+    file: SupportsWrite | None = None,
+    end: str | None = &quot;\n&quot;,
+) -&gt; None
+</code></pre>
+<p>Styles and prints colored and styled text directly.</p>
+<p>Examples:</p>
+<!--- mdtest -->
+<blockquote>
+<p><code>python
+clypi.cprint("Some colorful text", fg="green", reverse=True, bold=True, italic=True)</code></p>
+</blockquote>
+<h2 id="ui">UI</h2>
+<h3 id="spinners">Spinners</h3>
+<h4 id="spin"><code>Spin</code></h4>
+<pre><code class="language-python">class Spin(Enum): ...
+</code></pre>
+<p>The spinning animation you'd like to use. The spinners are sourced from the NPM <a href="https://www.npmjs.com/package/cli-spinners">cli-spinners</a> package.</p>
+<p>You can see all the spinners in action by running <code>uv run -m examples.spinner</code>. The full list can be found in the code <a href="https://github.com/danimelchor/clypi/blob/master/clypi/_data/spinners.py">here</a>.</p>
+<h4 id="spinner"><code>Spinner</code></h4>
+<p>A spinner indicating that something is happening behind the scenes. It can be used as a context manager or <a href="#spinner-decorator">like a decorator</a>. The context manager usage is like so:</p>
+<!--- mdtest -->
+
+<pre><code class="language-python">import asyncio
+from clypi import Spinner
+
+async def main():
+    async with Spinner(&quot;Doing something&quot;, capture=True) as s:
+        await asyncio.sleep(1)
+        s.title = &quot;Slept for a bit&quot;
+        print(&quot;I slept for a bit, will sleep a bit more&quot;)
+        await asyncio.sleep(1)
+
+asyncio.run(main())
+</code></pre>
+<h5 id="spinner__init__"><code>Spinner.__init__()</code></h5>
+<pre><code class="language-python">def __init__(
+    self,
+    title: str,
+    animation: Spin | list[str] = Spin.DOTS,
+    prefix: str = &quot; &quot;,
+    suffix: str = &quot;…&quot;,
+    speed: float = 1,
+    capture: bool = False,
+)
+</code></pre>
+<p>Parameters:
+- <code>title</code>: the initial text to display as the spinner spins
+- <code>animation</code>: a provided <a href="#spin"><code>Spin</code></a> animation or a list of frames to display
+- <code>prefix</code>: text or padding displayed before the icon
+- <code>suffix</code>: text or padding displayed after the icon
+- <code>speed</code>: a multiplier to speed or slow down the frame rate of the animation
+- <code>capture</code>: if enabled, the Spinner will capture all stdout and stderr and display it nicely</p>
+<h5 id="done"><code>done</code></h5>
+<pre><code class="language-python">async def done(self, msg: str | None = None)
+</code></pre>
+<p>Mark the spinner as done early and optionally display a message.</p>
+<h5 id="fail"><code>fail</code></h5>
+<pre><code class="language-python">async def fail(self, msg: str | None = None)
+</code></pre>
+<p>Mark the spinner as failed early and optionally display an error message.</p>
+<h5 id="log"><code>log</code></h5>
+<pre><code class="language-python">async def log(self, msg: str | None = None)
+</code></pre>
+<p>Display extra log messages to the user as the spinner spins and your work progresses.</p>
+<h5 id="pipe"><code>pipe</code></h5>
+<pre><code class="language-python">async def pipe(
+    self,
+    pipe: asyncio.StreamReader | None,
+    color: ColorType = &quot;blue&quot;,
+    prefix: str = &quot;&quot;,
+)
+</code></pre>
+<p>Pipe the output of an async subprocess into the spinner and display the stdout or stderr
+with a particular color and prefix.</p>
+<p>Examples:</p>
+<!--- mdtest -->
+<blockquote>
+<p><code>python
+async def main():
+    async with Spinner("Doing something") as s:
+        proc = await asyncio.create_subprocess_shell(
+            "for i in $(seq 1 10); do date &amp;&amp; sleep 0.4; done;",
+            stdout=asyncio.subprocess.PIPE,
+            stderr=asyncio.subprocess.PIPE,
+        )
+        await asyncio.gather(
+            s.pipe(proc.stdout, color="blue", prefix="(stdout)"),
+            s.pipe(proc.stderr, color="red", prefix="(stdout)"),
+        )</code></p>
+</blockquote>
+<h4 id="spinner-decorator"><code>spinner</code> (decorator)</h4>
+<p>This is just a utility decorator that let's you wrap functions so that a spinner
+displays while they run. <code>spinner</code> accepts the same arguments as the context manager <a href="#spinner"><code>Spinner</code></a>.</p>
+<!--- mdtest -->
+
+<pre><code class="language-python">import asyncio
+from clypi import spinner
+
+@spinner(&quot;Doing work&quot;, capture=True)
+async def do_some_work():
+    await asyncio.sleep(2)
+
+asyncio.run(do_some_work())
+</code></pre>
+<h3 id="boxed">Boxed</h3>
+<h4 id="boxes"><code>Boxes</code></h4>
+<pre><code class="language-python">class Boxes(Enum): ...
+</code></pre>
+<p>The border style you'd like to use. To see all the box styles in action run <code>uv run -m examples.boxed</code>.</p>
+<p>The full list can be found in the code <a href="https://github.com/danimelchor/clypi/blob/master/clypi/_data/boxes.py">here</a>.</p>
+<h4 id="boxed_1"><code>boxed</code></h4>
+<pre><code class="language-python">def boxed(
+    lines: T,
+    width: int | None = None,
+    style: Boxes = Boxes.HEAVY,
+    alignment: AlignType = &quot;left&quot;,
+    title: str | None = None,
+    color: ColorType = &quot;bright_white&quot;,
+) -&gt; T:
+</code></pre>
+<p>Wraps text neatly in a box with the selected style, padding, and alignment.</p>
+<p>Parameters:
+- <code>lines</code>: the type of lines will determine it's output type. It can be one of <code>str</code>, <code>list[str]</code> or <code>Iterable[str]</code>
+- <code>width</code>: the desired width of the box
+- <code>style</code>: the desired style (see <a href="#Boxes"><code>Boxes</code></a>)
+- <code>alignment</code>: the style of alignment (see <a href="#align"><code>align</code></a>)
+- <code>title</code>: optionally define a title for the box, it's length must be &lt; width
+- <code>color</code>: a color for the box border and title (see <a href="#colors"><code>colors</code></a>)</p>
+<p>Examples:</p>
+<!--- mdtest -->
+<blockquote>
+<p><code>python
+print(clypi.boxed("Some boxed text", color="red", width=30, align="center"))</code></p>
+</blockquote>
+<p><img width="697" alt="image" src="https://github.com/user-attachments/assets/87e325a3-397c-4022-a3eb-a13984bfa855" /></p>
+<h3 id="stack">Stack</h3>
+<pre><code class="language-python">def stack(*blocks: list[str], padding: int = 1) -&gt; str:
+def stack(*blocks: list[str], padding: int = 1, lines: bool) -&gt; list[str]:
+</code></pre>
+<p>Horizontally aligns blocks of text to display a nice layout where each block is displayed
+side by side.</p>
+<p><img width="974" alt="image" src="https://github.com/user-attachments/assets/9340d828-f7ce-491c-b0a8-6a666f7b7caf" /></p>
+<p>Parameters:
+- <code>blocks</code>: a series of blocks of lines of strings to display side by side
+- <code>padding</code>: the space between each block
+- <code>lines</code>: if the output should be returned as lines or as a string</p>
+<p>Examples:</p>
+<!--- mdtest -->
+<blockquote>
+<p><code>python
+names = clypi.boxed(["Daniel", "Pedro", "Paul"], title="Names", width=15)
+colors = clypi.boxed(["Blue", "Red", "Green"], title="Colors", width=15)
+print(clypi.stack(names, colors))</code></p>
+</blockquote>
+<h3 id="separator">Separator</h3>
+<h4 id="separator_1"><code>separator</code></h4>
+<pre><code class="language-python">def separator(
+    separator: str = &quot;━&quot;,
+    width: t.Literal[&quot;max&quot;] | int = &quot;max&quot;,
+    title: str | None = None,
+    color: ColorType | None = None,
+) -&gt; str:
+</code></pre>
+<p>Prints a line made of the given separator character.</p>
+<p>Parameters:
+- <code>separator</code>: the character used to build the separator line
+- <code>width</code>: if <code>max</code> it will use the max size of the terminal. Otherwise you can provide a fixed width.
+- <code>title</code>: optionally provide a title to display in the middle of the separator
+- <code>color</code>: the color for the characters</p>
+<!--- mdtest -->
+<blockquote>
+<p><code>python
+print(clypi.separator(title="Some title", color="red", width=30))</code></p>
+</blockquote>
+<p><img width="716" alt="image" src="https://github.com/user-attachments/assets/42be7ee3-7357-44fb-8a22-11b065a23558" /></p>
+<h3 id="indented">Indented</h3>
+<h4 id="indented_1"><code>indented</code></h4>
+<pre><code class="language-python">def indented(lines: list[str], prefix: str = &quot;  &quot;) -&gt; list[str]
+</code></pre>
+<p>Indents a set of lines with the given prefix</p>
+<h3 id="align">Align</h3>
+<h4 id="align_1"><code>align</code></h4>
+<pre><code class="language-python">def align(s: str, alignment: AlignType, width: int) -&gt; str
+</code></pre>
+<p>Aligns text according to <code>alignment</code> and <code>width</code>. In contrast with the built-in
+methods <code>rjust</code>, <code>ljust</code>, and <code>center</code>, <code>clypi.align(...)</code> aligns text according
+to it's true visible width (the built-in methods count color codes as width chars).</p>
+<p>Parameters:
+- <code>s</code>: the string being aligned
+- <code>alignment</code>: one of <code>left</code>, <code>right</code>, or <code>center</code>
+- <code>width</code>: the wished final visible width of the string</p>
+<p>Examples:</p>
+<blockquote>
+<p><code>python
+clypi.align("foo", "left", 10) # -&gt; "foo       "
+clypi.align("foo", "right", 10) # -&gt; "          foo"
+clypi.align("foo", "center", 10) # -&gt; "   foo   "</code></p>
+</blockquote>
+<h2 id="parsers">Parsers</h2>
+<p>For this section, parsers will be imported as such:</p>
+<pre><code class="language-python">import clypi.parsers as cp
+</code></pre>
+<h3 id="int"><code>Int</code></h3>
+<p>The <code>Int</code> parser converts string input into an integer.</p>
+<pre><code class="language-python">Int(
+    gt: int | None = None,
+    gte: int | None = None,
+    lt: int | None = None,
+    lte: int | None = None,
+    max: int | None = None,
+    min: int | None = None,
+    positive: bool = False,
+    nonpositive: bool = False,
+    negative: bool = False,
+    nonnegative: bool = False,
+
+</code></pre>
+<p>Parameters:
+- <code>gt</code>: A value the integer must be greater than
+- <code>gte</code>: A value the integer must be greater than or equal to
+- <code>lt</code>: A value the integer must be less than
+- <code>lte</code>: A value the integer must be less than or equal to
+- <code>max</code>: The maximum value the integer can be (same as lte)
+- <code>min</code>: The maximum value the integer can be (same as gte)
+- <code>positive</code>: The integer must be greater than 0
+- <code>nonpostive</code>: The integer must be less than or equal to 0
+- <code>negative</code>: The integer must be less than 0
+- <code>nonnegative</code>: The integer must be greater than or equal to 0</p>
+<p>Examples:</p>
+<!--- mdtest -->
+<blockquote>
+<p>```python</p>
+<h1 id="3-ok-10-ok-2-not-ok-11-not-ok">3 (OK), 10 (OK), 2 (not OK), 11 (not OK)</h1>
+<p>cp.Int(lte=10, gt=2)
+```</p>
+</blockquote>
+<h3 id="float"><code>Float</code></h3>
+<p>The <code>Float</code> parser converts string input into a floating-point number.</p>
+<pre><code class="language-python">Float(
+    gt: float | None = None,
+    gte: float | None = None,
+    lt: float | None = None,
+    lte: float | None = None,
+    max: float | None = None,
+    min: float | None = None,
+    positive: bool = False,
+    nonpositive: bool = False,
+    negative: bool = False,
+    nonnegative: bool = False,
+)
+</code></pre>
+<p>Parameters:
+- <code>gt</code>: A value the float must be greater than
+- <code>gte</code>: A value the float must be greater than or equal to
+- <code>lt</code>: A value the float must be less than
+- <code>lte</code>: A value the float must be less than or equal to
+- <code>max</code>: The maximum value the float can be (same as lte)
+- <code>min</code>: The maximum value the float can be (same as gte)
+- <code>positive</code>: The float must be greater than 0
+- <code>nonpostive</code>: The float must be less than or equal to 0
+- <code>negative</code>: The float must be less than 0
+- <code>nonnegative</code>: The float must be greater than or equal to 0</p>
+<p>Examples:</p>
+<!--- mdtest -->
+<blockquote>
+<p>```python</p>
+<h1 id="3-ok-10-ok-2-not-ok-11-not-ok_1">3 (OK), 10 (OK), 2 (not OK), 11 (not OK)</h1>
+<p>cp.Float(lte=10, gt=2)
+```</p>
+</blockquote>
+<h3 id="bool"><code>Bool</code></h3>
+<p>The <code>Bool</code> parser converts string input into a boolean.</p>
+<pre><code class="language-python">Bool()
+</code></pre>
+<p>Accepted values:
+- <code>true</code>, <code>yes</code>, <code>y</code> → <code>True</code>
+- <code>false</code>, <code>no</code>, <code>n</code> → <code>False</code></p>
+<h3 id="str"><code>Str</code></h3>
+<p>The <code>Str</code> parser returns the string input as-is.</p>
+<pre><code class="language-python">Str(
+    length: int | None = None,
+    max: int | None = None,
+    min: int | None = None,
+    startswith: str | None = None,
+    endswith: str | None = None,
+    regex: str | None = None,
+    regex_group: int | None = None,
+)
+</code></pre>
+<p>Parameters:
+- <code>length</code>: The string must be of this length
+- <code>max</code>: The string's length must be at most than this number
+- <code>min</code>: The string's length must be at least than this number
+- <code>startswith</code>: The string must start with that substring
+- <code>endsswith</code>: The string must end with that substring
+- <code>regex</code>: The string must match this regular expression
+- <code>regex_group</code>: (required <code>regex</code>) extracts the group from the regular expression</p>
+<p>Examples:</p>
+<!--- mdtest -->
+<blockquote>
+<p><code>python
+cp.Str(regex=r"[a-z]([0-9])", regex_group=1) # f1 -&gt; 1</code></p>
+</blockquote>
+<h3 id="datetime"><code>DateTime</code></h3>
+<p>The <code>DateTime</code> parser converts string input into a <code>datetime</code> object.</p>
+<pre><code class="language-python">DateTime(
+    tz: timezone | None = None,
+)
+</code></pre>
+<p>Parameters:
+- <code>tz</code>: the timezone to convert the date to</p>
+<h3 id="timedelta"><code>TimeDelta</code></h3>
+<p>The <code>TimeDelta</code> parser converts string input into a <code>timedelta</code> object.</p>
+<pre><code class="language-python">TimeDelta(
+    gt: timedelta | None = None,
+    gte: timedelta | None = None,
+    lt: timedelta | None = None,
+    lte: timedelta | None = None,
+    max: timedelta | None = None,
+    min: timedelta | None = None,
+)
+</code></pre>
+<ul>
+<li><code>gt</code>: A value the timedelta must be greater than</li>
+<li><code>gte</code>: A value the timedelta must be greater than or equal to</li>
+<li><code>lt</code>: A value the timedelta must be less than</li>
+<li><code>lte</code>: A value the timedelta must be less than or equal to</li>
+<li><code>max</code>: The maximum value the timedelta can be (same as lte)</li>
+<li><code>min</code>: The maximum value the timedelta can be (same as gte)</li>
+</ul>
+<p>Examples:</p>
+<!--- mdtest -->
+<blockquote>
+<p>```python</p>
+<h1 id="1-day-ok-2-weeks-ok-1-second-not-ok">1 day (OK), 2 weeks (OK), 1 second (not OK)</h1>
+<p>cp.TimeDelta(gte=timedelta(days=1))
+```</p>
+</blockquote>
+<p>Supported time units:
+- <code>weeks (w)</code>, <code>days (d)</code>, <code>hours (h)</code>, <code>minutes (m)</code>, <code>seconds (s)</code>, <code>milliseconds (ms)</code>, <code>microseconds (us)</code></p>
+<h3 id="path"><code>Path</code></h3>
+<p>The <code>Path</code> parser is useful to parse file or directory-like arguments from the CLI.</p>
+<pre><code class="language-python">Path(exists: bool = False)
+</code></pre>
+<p>Parameters:
+- <code>exists</code>: If <code>True</code>, it checks whether the provided path exists.</p>
+<p>Examples:</p>
+<!--- mdtest -->
+<blockquote>
+<p><code>python
+cp.Path(exists=True)</code></p>
+</blockquote>
+<h3 id="list"><code>List</code></h3>
+<p>The <code>List</code> parser parses comma-separated values into a list of parsed elements.</p>
+<pre><code class="language-python">List(inner: Parser[T])
+</code></pre>
+<p>Examples:</p>
+<!--- mdtest -->
+<blockquote>
+<p><code>python
+cp.List(cp.Int())</code></p>
+</blockquote>
+<p>Parameters:
+- <code>inner</code>: The parser used to convert each list element.</p>
+<h3 id="tuple"><code>Tuple</code></h3>
+<p>The <code>Tuple</code> parser parses a string input into a tuple of values.</p>
+<pre><code class="language-python">Tuple(*inner: Parser, num: int | None = None)
+</code></pre>
+<p>Examples:</p>
+<!--- mdtest -->
+<blockquote>
+<p>```python</p>
+<h1 id="tuplestr">tuple[str, ...]</h1>
+<p>cp.Tuple(cp.Str())</p>
+<h1 id="tuplestr-int">tuple[str, int]</h1>
+<p>cp.Tuple(cp.Str(), cp.Int(), num=2)
+```</p>
+</blockquote>
+<p>Parameters:
+- <code>inner</code>: List of parsers for each tuple element.
+- <code>num</code>: Expected tuple length (optional).</p>
+<h3 id="union"><code>Union</code></h3>
+<p>The <code>Union</code> parser attempts to parse input using multiple parsers.</p>
+<pre><code class="language-python">Union(left: Parser[X], right: Parser[Y])
+</code></pre>
+<p>You can also use the short hand <code>|</code> syntax for two parsers, e.g.:</p>
+<!--- mdtest -->
+<blockquote>
+<p><code>python
+cp.Union(cp.Path(exists=True), cp.Str())
+cp.Path(exists=True) | cp.Str()</code></p>
+</blockquote>
+<h3 id="literal"><code>Literal</code></h3>
+<p>The <code>Literal</code> parser ensures that input matches one of the predefined values.</p>
+<pre><code class="language-python">Literal(*values: t.Any)
+</code></pre>
+<p>Examples:</p>
+<!--- mdtest -->
+<blockquote>
+<p><code>python
+cp.Literal(1, "foo")</code></p>
+</blockquote>
+<h3 id="enum"><code>Enum</code></h3>
+<p>The <code>Enum</code> parser maps string input to a valid enum value.</p>
+<pre><code class="language-python">Enum(enum: type[enum.Enum])
+</code></pre>
+<p>Examples:</p>
+<!--- mdtest -->
+<blockquote>
+<p>```python
+class Color(Enum):
+    RED = 1
+    BLUE = 2</p>
+<p>cp.Enum(Color)
+```</p>
+</blockquote>
+<h3 id="from_type"><code>from_type</code></h3>
+<p>The <code>from_type</code> function returns the appropriate parser for a given type.</p>
+<pre><code class="language-python">@tu.ignore_annotated
+def from_type(_type: type) -&gt; Parser: ...
+</code></pre>
+<p>Examples:</p>
+<!--- mdtest -->
+<blockquote>
+<p><code>python
+assert cp.from_type(bool) == cp.Bool()</code></p>
+</blockquote></div>
+            </div>
+        </div>
+
+        <footer class="col-md-12">
+            <hr>
+            <p>Documentation built with <a href="https://www.mkdocs.org/">MkDocs</a>.</p>
+        </footer>
+        <script src="js/bootstrap.bundle.min.js"></script>
+        <script>
+            var base_url = ".",
+                shortcuts = {"help": 191, "next": 78, "previous": 80, "search": 83};
+        </script>
+        <script src="js/base.js"></script>
+        <script src="search/main.js"></script>
+
+        <div class="modal" id="mkdocs_search_modal" tabindex="-1" role="dialog" aria-labelledby="searchModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="searchModalLabel">Search</h4>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p>From here you can search these documents. Enter your search terms below.</p>
+                <form>
+                    <div class="form-group">
+                        <input type="search" class="form-control" placeholder="Search..." id="mkdocs-search-query" title="Type search term here">
+                    </div>
+                </form>
+                <div id="mkdocs-search-results" data-no-results-text="No results found"></div>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div><div class="modal" id="mkdocs_keyboard_modal" tabindex="-1" role="dialog" aria-labelledby="keyboardModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="keyboardModalLabel">Keyboard Shortcuts</h4>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th style="width: 20%;">Keys</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td class="help shortcut"><kbd>?</kbd></td>
+                    <td>Open this help</td>
+                  </tr>
+                  <tr>
+                    <td class="next shortcut"><kbd>n</kbd></td>
+                    <td>Next page</td>
+                  </tr>
+                  <tr>
+                    <td class="prev shortcut"><kbd>p</kbd></td>
+                    <td>Previous page</td>
+                  </tr>
+                  <tr>
+                    <td class="search shortcut"><kbd>s</kbd></td>
+                    <td>Search</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div>
+
+    </body>
+</html>
+
+<!--
+MkDocs version : 1.6.1
+Build Date UTC : 2025-03-17 00:01:38.779608+00:00
+-->
