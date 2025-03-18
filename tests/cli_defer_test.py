@@ -76,3 +76,28 @@ def test_defer_not_provided():
     with replace_stdin("foo"):
         assert cmd.some_arg == "foo"
     assert called
+
+
+def test_defer_not_provided_changed_default():
+    called = Signal()
+
+    class Main(Command):
+        verbose: bool = False
+        some_arg: str = arg(
+            prompt="What's the value?",
+            defer=True,
+            parser=SignalParser(called),
+            default="a",
+        )
+
+    cmd = Main.parse([])
+
+    assert not called
+
+    # Change the default value
+    cmd.some_arg = "b"
+    assert not called
+
+    # Happens during attribute access
+    with replace_stdin("\n"):
+        assert cmd.some_arg == "b"

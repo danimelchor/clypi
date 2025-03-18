@@ -42,6 +42,9 @@ class DeferredValue(t.Generic[T]):
             )
         return self._value
 
+    def __set__(self, obj: t.Any, default: T):
+        self.default = default
+
     # Autogen all dunder methods to trigger __get__
     # NOTE: I hate having to do this but I did not find how to trigger
     # the evaluation of a descriptor when a dunder method is called on it
