@@ -356,7 +356,7 @@ class Command(metaclass=_CommandMeta):
         """
         pass
 
-    async def post_run_hook(self) -> None:
+    async def post_run_hook(self, exception: Exception | None) -> None:
         """
         This function will execute on every command and subcommand right
         after running it.
@@ -374,23 +374,39 @@ class Command(metaclass=_CommandMeta):
         self.print_help()
 
     @t.final
-    async def astart(self) -> None:
+    async def astart(self) -> Exception | None:
+        exc: Exception | None = None
+
+        # If the class has a subcommand, traverse into the child cmd
         if subcommand := getattr(self, "subcommand", None):
             await self.pre_run_hook()
-            await subcommand.astart()
-            await self.post_run_hook()
-            return
+            try:
+                exc = await subcommand.astart()
+            except Exception as e:
+                exc = e
+                raise
+            finally:
+                await self.post_run_hook(exc)
 
-        try:
+        # Otherwise this is the command to run, run it
+        else:
             await self.pre_run_hook()
-            await self.run()
-            await self.post_run_hook()
-        except get_config().nice_errors as e:
-            print_traceback(e)
+            try:
+                await self.run()
+            except get_config().nice_errors as e:
+                exc = e
+                print_traceback(e)
+            except Exception as e:
+                exc = e
+                raise
+            finally:
+                await self.post_run_hook(exc)
+
+        return exc
 
     @t.final
-    def start(self) -> None:
-        asyncio.run(self.astart())
+    def start(self) -> Exception | None:
+        return asyncio.run(self.astart())
 
     @t.final
     @classmethod
