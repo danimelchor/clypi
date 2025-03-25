@@ -31,7 +31,7 @@ def test_cli_hooks_run_in_order():
     global _counter
     _counter = []
 
-    ExampleSubCommand().parse().start()
+    ExampleSubCommand().parse([]).start()
 
     # Pre-run, run, post-run no exception
     assert _counter == [1, 2, 3]
