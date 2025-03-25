@@ -349,6 +349,20 @@ class Command(metaclass=_CommandMeta):
         doc = inspect.getdoc(cls) or ""
         return doc.replace("\n", " ")
 
+    async def pre_run_hook(self) -> None:
+        """
+        This function will execute on every command and subcommand right
+        before running it.
+        """
+        pass
+
+    async def post_run_hook(self, exception: Exception | None) -> None:
+        """
+        This function will execute on every command and subcommand right
+        after running it.
+        """
+        pass
+
     async def run(self) -> None:
         """
         This function is where the business logic of your command
@@ -360,18 +374,39 @@ class Command(metaclass=_CommandMeta):
         self.print_help()
 
     @t.final
-    async def astart(self) -> None:
-        if subcommand := getattr(self, "subcommand", None):
-            return await subcommand.astart()
+    async def astart(self) -> Exception | None:
+        exc: Exception | None = None
 
-        try:
-            return await self.run()
-        except get_config().nice_errors as e:
-            print_traceback(e)
+        # If the class has a subcommand, traverse into the child cmd
+        if subcommand := getattr(self, "subcommand", None):
+            await self.pre_run_hook()
+            try:
+                exc = await subcommand.astart()
+            except Exception as e:
+                exc = e
+                raise
+            finally:
+                await self.post_run_hook(exc)
+
+        # Otherwise this is the command to run, run it
+        else:
+            await self.pre_run_hook()
+            try:
+                await self.run()
+            except get_config().nice_errors as e:
+                exc = e
+                print_traceback(e)
+            except Exception as e:
+                exc = e
+                raise
+            finally:
+                await self.post_run_hook(exc)
+
+        return exc
 
     @t.final
-    def start(self) -> None:
-        asyncio.run(self.astart())
+    def start(self) -> Exception | None:
+        return asyncio.run(self.astart())
 
     @t.final
     @classmethod

@@ -6,8 +6,7 @@ from pathlib import Path
 import pytest
 from typing_extensions import override
 
-from clypi import Command, Positional, arg
-from clypi._configuration import get_config
+from clypi import Command, Positional, arg, get_config
 
 
 def parametrize(args: str, cases: list[tuple[t.Any, ...]]):

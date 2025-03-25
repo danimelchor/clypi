@@ -308,6 +308,39 @@ Parameters:
 
 - `exception`: an exception neatly showed to the user as a traceback. Automatically passed in during runtime.
 
+#### `pre_run_hook`
+```python
+async def pre_run_hook(self: Command) -> None:
+```
+A function that will run on every parent command and subcommand right before it's execution. Useful
+to print before commands, emit metrics, and more!
+
+Examples:
+
+<!--- mdtest -->
+> ```python
+> import logging
+> from clypi import Command, arg
+>
+> class Main(Command):
+>     async def pre_run_hook(self):
+>         cmd_str = " ".join(self.full_command())
+>         logging.debug("Running %s", cmd_str)
+>
+>     async def run(self):
+>         print("Hey")
+>
+> main = Main.parse()
+> main.start()
+> ```
+
+#### `post_run_hook`
+```python
+async def post_run_hook(self: Command) -> None:
+```
+A function that will run on every parent command and subcommand right after it's execution. Useful
+to print after commands, emit metrics, and more!
+
 ### `Formatter`
 
 A formatter is any class conforming to the following protocol. It is called on several occasions to render
