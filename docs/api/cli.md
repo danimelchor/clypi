@@ -308,6 +308,20 @@ Parameters:
 
 - `exception`: an exception neatly showed to the user as a traceback. Automatically passed in during runtime.
 
+#### `pre_run_hook`
+```python
+async def pre_run_hook(self: Command) -> None:
+```
+A function that will run on every parent command and subcommand right before it's execution. Useful
+to print before commands, emit metrics, and more!
+
+#### `post_run_hook`
+```python
+async def post_run_hook(self: Command) -> None:
+```
+A function that will run on every parent command and subcommand right after it's execution. Useful
+to print after commands, emit metrics, and more!
+
 ### `Formatter`
 
 A formatter is any class conforming to the following protocol. It is called on several occasions to render

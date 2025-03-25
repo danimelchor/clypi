@@ -349,6 +349,20 @@ class Command(metaclass=_CommandMeta):
         doc = inspect.getdoc(cls) or ""
         return doc.replace("\n", " ")
 
+    async def pre_run_hook(self) -> None:
+        """
+        This function will execute on every command and subcommand right
+        before running it.
+        """
+        pass
+
+    async def post_run_hook(self) -> None:
+        """
+        This function will execute on every command and subcommand right
+        after running it.
+        """
+        pass
+
     async def run(self) -> None:
         """
         This function is where the business logic of your command
@@ -362,10 +376,15 @@ class Command(metaclass=_CommandMeta):
     @t.final
     async def astart(self) -> None:
         if subcommand := getattr(self, "subcommand", None):
-            return await subcommand.astart()
+            await self.pre_run_hook()
+            await subcommand.astart()
+            await self.post_run_hook()
+            return
 
         try:
-            return await self.run()
+            await self.pre_run_hook()
+            await self.run()
+            await self.post_run_hook()
         except get_config().nice_errors as e:
             print_traceback(e)
 
