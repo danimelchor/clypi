@@ -415,18 +415,36 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#need-more-control-use-our-arg-helper-and-built-in-parsers" class="md-nav__link">
+  <a href="#need-more-control" class="md-nav__link">
     <span class="md-ellipsis">
-      Need more control? Use our arg helper and built-in parsers
+      Need more control?
     </span>
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#easily-create-subcommands" class="md-nav__link">
+  <a href="#easily-document-your-clis" class="md-nav__link">
     <span class="md-ellipsis">
-      Easily create subcommands
+      Easily document your CLIs
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#intuitive-subcommands-groups-of-commands" class="md-nav__link">
+    <span class="md-ellipsis">
+      Intuitive subcommands (groups of commands)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#getting-started" class="md-nav__link">
+    <span class="md-ellipsis">
+      Getting started
     </span>
   </a>
   
@@ -434,15 +452,6 @@
         
       </ul>
     </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#getting-started" class="md-nav__link">
-    <span class="md-ellipsis">
-      Getting started
-    </span>
-  </a>
   
 </li>
       
@@ -1038,15 +1047,20 @@
 
 
 <h1 id="clypi">🦄 clypi<a class="headerlink" href="#clypi" title="Permanent link">&para;</a></h1>
-<p><a href="https://badge.fury.io/py/clypi"><img alt="PyPI version" src="https://badge.fury.io/py/clypi.svg" /></a>
-<a href="https://opensource.org/license/mit"><img alt="License" src="https://img.shields.io/badge/license-MIT-blue" /></a>
-<a href="https://danimelchor.github.io/clypi/"><img alt="Docs" src="https://img.shields.io/badge/docs-latest-purple" /></a>
-<a href="https://pypi.org/project/clypi/"><img alt="PyPI - Downloads" src="https://img.shields.io/pypi/dm/clypi" /></a>
-<a href="https://github.com/danimelchor/clypi/graphs/contributors"><img alt="Contributors" src="https://img.shields.io/github/contributors/danimelchor/clypi" /></a></p>
-<!-- [![PyPI - Python Version](https://img.shields.io/pypi/pyversions/clypi.svg)](https://pypi.org/project/clypi/) -->
+<!-- docs/asserts/logo.png -->
+<div align="center">
+    <p>
+        <a class="glightbox" href="https://github.com/user-attachments/assets/5541cdaf-f7f1-4bb1-b888-41ca3fb43d02" data-type="image" data-width="auto" data-height="auto" data-desc-position="bottom"><img width="50%" src="https://github.com/user-attachments/assets/5541cdaf-f7f1-4bb1-b888-41ca3fb43d02" /></a>
+    <p/>
+    <p>Your all-in-one for beautiful, lightweight, prod-ready CLIs</p>
+    <a class="glightbox" href="https://badge.fury.io/py/clypi.svg" data-type="image" data-width="auto" data-height="auto" data-desc-position="bottom"><img src="https://badge.fury.io/py/clypi.svg" /></a>
+    <a class="glightbox" href="https://img.shields.io/badge/license-MIT-blue" data-type="image" data-width="auto" data-height="auto" data-desc-position="bottom"><img src="https://img.shields.io/badge/license-MIT-blue" /></a>
+    <a class="glightbox" href="https://img.shields.io/badge/docs-latest-purple" data-type="image" data-width="auto" data-height="auto" data-desc-position="bottom"><img src="https://img.shields.io/badge/docs-latest-purple" /></a>
+    <a class="glightbox" href="https://img.shields.io/pypi/dm/clypi" data-type="image" data-width="auto" data-height="auto" data-desc-position="bottom"><img src="https://img.shields.io/pypi/dm/clypi" /></a>
+    <a class="glightbox" href="https://img.shields.io/github/contributors/danimelchor/clypi" data-type="image" data-width="auto" data-height="auto" data-desc-position="bottom"><img src="https://img.shields.io/github/contributors/danimelchor/clypi" /></a>
+</div>
 
-<p>Your all-in-one for beautiful, lightweight, prod-ready CLIs</p>
-<h3 id="what-is-clypi">What is clypi?<a class="headerlink" href="#what-is-clypi" title="Permanent link">&para;</a></h3>
+<h2 id="what-is-clypi">What is clypi?<a class="headerlink" href="#what-is-clypi" title="Permanent link">&para;</a></h2>
 <p>I've been working with Python-based CLIs for several years with many users and strict quality requirements and always run into the sames problems with the go-to packages. Therefore, I decided to embark on a journey to build a lightweight, intuitive, pretty, and production ready framework. Here are the key features:</p>
 <ul>
 <li><strong>Type safe</strong>: making use of dataclass-like commands, you can easily specify the types you want for each argument and clypi automatically parses and validates them.</li>
@@ -1055,13 +1069,14 @@
 <li><strong>Composable</strong>: clypi lets you easily reuse arguments across subcommands without having to specify them again.</li>
 <li><strong>Configurable</strong>: clypi lets you configure almost everything you'd like to configure. You can create your own themes, help pages, error messages, and more!</li>
 </ul>
-<h4 id="define-arguments-with-type-annotations">Define Arguments with Type Annotations<a class="headerlink" href="#define-arguments-with-type-annotations" title="Permanent link">&para;</a></h4>
+<h3 id="define-arguments-with-type-annotations">Define Arguments with Type Annotations<a class="headerlink" href="#define-arguments-with-type-annotations" title="Permanent link">&para;</a></h3>
 <p>Just like <code>dataclass</code>, arguments are defined as class-level type annotations.</p>
 <!-- mdtest -->
 <div class="language-python highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="k">class</span><span class="w"> </span><span class="nc">MyCli</span><span class="p">(</span><span class="n">Command</span><span class="p">):</span>
 </span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>    <span class="n">verbose</span><span class="p">:</span> <span class="nb">bool</span>  <span class="c1"># Automatically parsed from CLI args!</span>
 </span></code></pre></div>
-<h4 id="need-more-control-use-our-arg-helper-and-built-in-parsers">Need more control? Use our <code>arg</code> helper and built-in parsers<a class="headerlink" href="#need-more-control-use-our-arg-helper-and-built-in-parsers" title="Permanent link">&para;</a></h4>
+<h3 id="need-more-control">Need more control?<a class="headerlink" href="#need-more-control" title="Permanent link">&para;</a></h3>
+<p>Use our <code>arg</code> helper and built-in parsers</p>
 <!-- mdtest -->
 <div class="language-python highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="k">class</span><span class="w"> </span><span class="nc">MyCli</span><span class="p">(</span><span class="n">Command</span><span class="p">):</span>
 </span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>    <span class="n">threads</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">arg</span><span class="p">(</span>
@@ -1069,26 +1084,39 @@
 </span><span id="__span-1-4"><a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a>        <span class="n">parser</span><span class="o">=</span><span class="n">cp</span><span class="o">.</span><span class="n">Int</span><span class="p">(</span><span class="nb">min</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="nb">max</span><span class="o">=</span><span class="mi">10</span><span class="p">),</span>  <span class="c1"># Restrict to values 1-10</span>
 </span><span id="__span-1-5"><a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a>    <span class="p">)</span>
 </span></code></pre></div>
-<h4 id="easily-create-subcommands">Easily create subcommands<a class="headerlink" href="#easily-create-subcommands" title="Permanent link">&para;</a></h4>
+<h3 id="easily-document-your-clis">Easily document your CLIs<a class="headerlink" href="#easily-document-your-clis" title="Permanent link">&para;</a></h3>
+<p>Using docstrings automatically applies them to your CLI's <code>--help</code> page</p>
 <!-- mdtest -->
-<div class="language-python highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="k">class</span><span class="w"> </span><span class="nc">Lint</span><span class="p">(</span><span class="n">Command</span><span class="p">):</span>
-</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>    <span class="n">verbose</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="n">arg</span><span class="p">(</span><span class="n">inherited</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>  <span class="c1"># Inherits the argument def from `Cli`</span>
-</span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a>
-</span><span id="__span-2-4"><a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a><span class="k">class</span><span class="w"> </span><span class="nc">Run</span><span class="p">(</span><span class="n">Command</span><span class="p">):</span>
-</span><span id="__span-2-5"><a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a>    <span class="o">...</span>
-</span><span id="__span-2-6"><a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a>
-</span><span id="__span-2-7"><a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a><span class="k">class</span><span class="w"> </span><span class="nc">Cli</span><span class="p">(</span><span class="n">Command</span><span class="p">):</span>
-</span><span id="__span-2-8"><a id="__codelineno-2-8" name="__codelineno-2-8" href="#__codelineno-2-8"></a>    <span class="n">subcommand</span><span class="p">:</span> <span class="n">Lint</span> <span class="o">|</span> <span class="n">Run</span>
-</span><span id="__span-2-9"><a id="__codelineno-2-9" name="__codelineno-2-9" href="#__codelineno-2-9"></a>    <span class="n">verbose</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="n">arg</span><span class="p">(</span><span class="kc">False</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Whether to show more output&quot;</span><span class="p">)</span>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="k">class</span><span class="w"> </span><span class="nc">MyCli</span><span class="p">(</span><span class="n">Command</span><span class="p">):</span>
+</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;A simple CLI&quot;&quot;&quot;</span>
+</span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a>    <span class="n">threads</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">arg</span><span class="p">(</span>
+</span><span id="__span-2-4"><a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a>        <span class="n">default</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span>
+</span><span id="__span-2-5"><a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a>        <span class="n">help</span><span class="o">=</span><span class="s2">&quot;The number of threads to run the tool with&quot;</span><span class="p">,</span>
+</span><span id="__span-2-6"><a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a>    <span class="p">)</span>
+</span></code></pre></div>
+<h3 id="intuitive-subcommands-groups-of-commands">Intuitive subcommands (groups of commands)<a class="headerlink" href="#intuitive-subcommands-groups-of-commands" title="Permanent link">&para;</a></h3>
+<p>Just create and compose more clypi commands!</p>
+<!-- mdtest -->
+<div class="language-python highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="k">class</span><span class="w"> </span><span class="nc">Lint</span><span class="p">(</span><span class="n">Command</span><span class="p">):</span>
+</span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Lint a set of files&quot;&quot;&quot;</span>
+</span><span id="__span-3-3"><a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a>    <span class="n">verbose</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="n">arg</span><span class="p">(</span><span class="n">inherited</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>  <span class="c1"># Inherits the argument def from `Cli`</span>
+</span><span id="__span-3-4"><a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a>
+</span><span id="__span-3-5"><a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a><span class="k">class</span><span class="w"> </span><span class="nc">Run</span><span class="p">(</span><span class="n">Command</span><span class="p">):</span>
+</span><span id="__span-3-6"><a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Run a set of files&quot;&quot;&quot;</span>
+</span><span id="__span-3-7"><a id="__codelineno-3-7" name="__codelineno-3-7" href="#__codelineno-3-7"></a>
+</span><span id="__span-3-8"><a id="__codelineno-3-8" name="__codelineno-3-8" href="#__codelineno-3-8"></a><span class="k">class</span><span class="w"> </span><span class="nc">Cli</span><span class="p">(</span><span class="n">Command</span><span class="p">):</span>
+</span><span id="__span-3-9"><a id="__codelineno-3-9" name="__codelineno-3-9" href="#__codelineno-3-9"></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;A simple CLI to lint and run files&quot;&quot;&quot;</span>
+</span><span id="__span-3-10"><a id="__codelineno-3-10" name="__codelineno-3-10" href="#__codelineno-3-10"></a>    <span class="n">subcommand</span><span class="p">:</span> <span class="n">Lint</span> <span class="o">|</span> <span class="n">Run</span>
+</span><span id="__span-3-11"><a id="__codelineno-3-11" name="__codelineno-3-11" href="#__codelineno-3-11"></a>    <span class="n">verbose</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="n">arg</span><span class="p">(</span><span class="kc">False</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Whether to show more output&quot;</span><span class="p">)</span>
 </span></code></pre></div>
 <h3 id="getting-started">Getting started<a class="headerlink" href="#getting-started" title="Permanent link">&para;</a></h3>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>uv<span class="w"> </span>add<span class="w"> </span>clypi<span class="w">  </span><span class="c1"># or `pip install clypi`</span>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>uv<span class="w"> </span>add<span class="w"> </span>clypi<span class="w">  </span><span class="c1"># or `pip install clypi`</span>
 </span></code></pre></div>
 <h2 id="docs">📖 Docs<a class="headerlink" href="#docs" title="Permanent link">&para;</a></h2>
 <p>Read <a href="https://danimelchor.github.io/clypi/learn/getting_started/">our docs</a> to get started. You can also look at <a href="https://danimelchor.github.io/clypi/api/cli/">the API reference</a> for examples and a full API reference. If you want a full guide on how to create and distribute your own Python CLI, check our our <a href="https://danimelchor.github.io/clypi/packaging/">tutorial</a>.</p>
 <h2 id="beautiful-by-default">🪐 Beautiful by default<a class="headerlink" href="#beautiful-by-default" title="Permanent link">&para;</a></h2>
 <p>Clypi comes with pre-defined themes and modern features like suggestions on typos:</p>
-<div class="language-text highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>$ uv run -m examples.cli run run-seria
+<div class="language-text highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>$ uv run -m examples.cli run run-seria
 </span></code></pre></div>
 <p><a class="glightbox" href="https://github.com/user-attachments/assets/3170874d-d120-4b1a-968a-f121e9b8ee53" data-type="image" data-width="auto" data-height="auto" data-desc-position="bottom"><img width="1696" alt="image" src="https://github.com/user-attachments/assets/3170874d-d120-4b1a-968a-f121e9b8ee53" /></a></p>
 <h2 id="configurable">🛠️ Configurable<a class="headerlink" href="#configurable" title="Permanent link">&para;</a></h2>
@@ -1096,65 +1124,65 @@
 uniform across your entire app, and incredibly maintainable.</p>
 <p>For example, this is how you'd achieve a UI like <code>uv</code>'s CLI:</p>
 <!-- mdtest -->
-<div class="language-python highlight"><span class="filename">examples/uv/__main__.py</span><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">clypi</span><span class="w"> </span><span class="kn">import</span> <span class="n">ClypiConfig</span><span class="p">,</span> <span class="n">ClypiFormatter</span><span class="p">,</span> <span class="n">Styler</span><span class="p">,</span> <span class="n">Theme</span><span class="p">,</span> <span class="n">configure</span>
-</span><span id="__span-5-2"><a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a>
-</span><span id="__span-5-3"><a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a><span class="n">configure</span><span class="p">(</span>
-</span><span id="__span-5-4"><a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a>    <span class="n">ClypiConfig</span><span class="p">(</span>
-</span><span id="__span-5-5"><a id="__codelineno-5-5" name="__codelineno-5-5" href="#__codelineno-5-5"></a>        <span class="n">theme</span><span class="o">=</span><span class="n">Theme</span><span class="p">(</span>
-</span><span id="__span-5-6"><a id="__codelineno-5-6" name="__codelineno-5-6" href="#__codelineno-5-6"></a>            <span class="n">usage</span><span class="o">=</span><span class="n">Styler</span><span class="p">(</span><span class="n">fg</span><span class="o">=</span><span class="s2">&quot;green&quot;</span><span class="p">,</span> <span class="n">bold</span><span class="o">=</span><span class="kc">True</span><span class="p">),</span>
-</span><span id="__span-5-7"><a id="__codelineno-5-7" name="__codelineno-5-7" href="#__codelineno-5-7"></a>            <span class="n">usage_command</span><span class="o">=</span><span class="n">Styler</span><span class="p">(</span><span class="n">fg</span><span class="o">=</span><span class="s2">&quot;cyan&quot;</span><span class="p">,</span> <span class="n">bold</span><span class="o">=</span><span class="kc">True</span><span class="p">),</span>
-</span><span id="__span-5-8"><a id="__codelineno-5-8" name="__codelineno-5-8" href="#__codelineno-5-8"></a>            <span class="n">usage_args</span><span class="o">=</span><span class="n">Styler</span><span class="p">(</span><span class="n">fg</span><span class="o">=</span><span class="s2">&quot;cyan&quot;</span><span class="p">),</span>
-</span><span id="__span-5-9"><a id="__codelineno-5-9" name="__codelineno-5-9" href="#__codelineno-5-9"></a>            <span class="n">section_title</span><span class="o">=</span><span class="n">Styler</span><span class="p">(</span><span class="n">fg</span><span class="o">=</span><span class="s2">&quot;green&quot;</span><span class="p">,</span> <span class="n">bold</span><span class="o">=</span><span class="kc">True</span><span class="p">),</span>
-</span><span id="__span-5-10"><a id="__codelineno-5-10" name="__codelineno-5-10" href="#__codelineno-5-10"></a>            <span class="n">subcommand</span><span class="o">=</span><span class="n">Styler</span><span class="p">(</span><span class="n">fg</span><span class="o">=</span><span class="s2">&quot;cyan&quot;</span><span class="p">,</span> <span class="n">bold</span><span class="o">=</span><span class="kc">True</span><span class="p">),</span>
-</span><span id="__span-5-11"><a id="__codelineno-5-11" name="__codelineno-5-11" href="#__codelineno-5-11"></a>            <span class="n">long_option</span><span class="o">=</span><span class="n">Styler</span><span class="p">(</span><span class="n">fg</span><span class="o">=</span><span class="s2">&quot;cyan&quot;</span><span class="p">,</span> <span class="n">bold</span><span class="o">=</span><span class="kc">True</span><span class="p">),</span>
-</span><span id="__span-5-12"><a id="__codelineno-5-12" name="__codelineno-5-12" href="#__codelineno-5-12"></a>            <span class="n">short_option</span><span class="o">=</span><span class="n">Styler</span><span class="p">(</span><span class="n">fg</span><span class="o">=</span><span class="s2">&quot;cyan&quot;</span><span class="p">,</span> <span class="n">bold</span><span class="o">=</span><span class="kc">True</span><span class="p">),</span>
-</span><span id="__span-5-13"><a id="__codelineno-5-13" name="__codelineno-5-13" href="#__codelineno-5-13"></a>            <span class="n">positional</span><span class="o">=</span><span class="n">Styler</span><span class="p">(</span><span class="n">fg</span><span class="o">=</span><span class="s2">&quot;cyan&quot;</span><span class="p">),</span>
-</span><span id="__span-5-14"><a id="__codelineno-5-14" name="__codelineno-5-14" href="#__codelineno-5-14"></a>            <span class="n">placeholder</span><span class="o">=</span><span class="n">Styler</span><span class="p">(</span><span class="n">fg</span><span class="o">=</span><span class="s2">&quot;cyan&quot;</span><span class="p">),</span>
-</span><span id="__span-5-15"><a id="__codelineno-5-15" name="__codelineno-5-15" href="#__codelineno-5-15"></a>            <span class="n">prompts</span><span class="o">=</span><span class="n">Styler</span><span class="p">(</span><span class="n">fg</span><span class="o">=</span><span class="s2">&quot;green&quot;</span><span class="p">,</span> <span class="n">bold</span><span class="o">=</span><span class="kc">True</span><span class="p">),</span>
-</span><span id="__span-5-16"><a id="__codelineno-5-16" name="__codelineno-5-16" href="#__codelineno-5-16"></a>        <span class="p">),</span>
-</span><span id="__span-5-17"><a id="__codelineno-5-17" name="__codelineno-5-17" href="#__codelineno-5-17"></a>        <span class="n">help_formatter</span><span class="o">=</span><span class="n">ClypiFormatter</span><span class="p">(</span>
-</span><span id="__span-5-18"><a id="__codelineno-5-18" name="__codelineno-5-18" href="#__codelineno-5-18"></a>            <span class="n">boxed</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-</span><span id="__span-5-19"><a id="__codelineno-5-19" name="__codelineno-5-19" href="#__codelineno-5-19"></a>            <span class="n">show_option_types</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-</span><span id="__span-5-20"><a id="__codelineno-5-20" name="__codelineno-5-20" href="#__codelineno-5-20"></a>        <span class="p">),</span>
-</span><span id="__span-5-21"><a id="__codelineno-5-21" name="__codelineno-5-21" href="#__codelineno-5-21"></a>    <span class="p">)</span>
-</span><span id="__span-5-22"><a id="__codelineno-5-22" name="__codelineno-5-22" href="#__codelineno-5-22"></a><span class="p">)</span>
+<div class="language-python highlight"><span class="filename">examples/uv/__main__.py</span><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">clypi</span><span class="w"> </span><span class="kn">import</span> <span class="n">ClypiConfig</span><span class="p">,</span> <span class="n">ClypiFormatter</span><span class="p">,</span> <span class="n">Styler</span><span class="p">,</span> <span class="n">Theme</span><span class="p">,</span> <span class="n">configure</span>
+</span><span id="__span-6-2"><a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a>
+</span><span id="__span-6-3"><a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a><span class="n">configure</span><span class="p">(</span>
+</span><span id="__span-6-4"><a id="__codelineno-6-4" name="__codelineno-6-4" href="#__codelineno-6-4"></a>    <span class="n">ClypiConfig</span><span class="p">(</span>
+</span><span id="__span-6-5"><a id="__codelineno-6-5" name="__codelineno-6-5" href="#__codelineno-6-5"></a>        <span class="n">theme</span><span class="o">=</span><span class="n">Theme</span><span class="p">(</span>
+</span><span id="__span-6-6"><a id="__codelineno-6-6" name="__codelineno-6-6" href="#__codelineno-6-6"></a>            <span class="n">usage</span><span class="o">=</span><span class="n">Styler</span><span class="p">(</span><span class="n">fg</span><span class="o">=</span><span class="s2">&quot;green&quot;</span><span class="p">,</span> <span class="n">bold</span><span class="o">=</span><span class="kc">True</span><span class="p">),</span>
+</span><span id="__span-6-7"><a id="__codelineno-6-7" name="__codelineno-6-7" href="#__codelineno-6-7"></a>            <span class="n">usage_command</span><span class="o">=</span><span class="n">Styler</span><span class="p">(</span><span class="n">fg</span><span class="o">=</span><span class="s2">&quot;cyan&quot;</span><span class="p">,</span> <span class="n">bold</span><span class="o">=</span><span class="kc">True</span><span class="p">),</span>
+</span><span id="__span-6-8"><a id="__codelineno-6-8" name="__codelineno-6-8" href="#__codelineno-6-8"></a>            <span class="n">usage_args</span><span class="o">=</span><span class="n">Styler</span><span class="p">(</span><span class="n">fg</span><span class="o">=</span><span class="s2">&quot;cyan&quot;</span><span class="p">),</span>
+</span><span id="__span-6-9"><a id="__codelineno-6-9" name="__codelineno-6-9" href="#__codelineno-6-9"></a>            <span class="n">section_title</span><span class="o">=</span><span class="n">Styler</span><span class="p">(</span><span class="n">fg</span><span class="o">=</span><span class="s2">&quot;green&quot;</span><span class="p">,</span> <span class="n">bold</span><span class="o">=</span><span class="kc">True</span><span class="p">),</span>
+</span><span id="__span-6-10"><a id="__codelineno-6-10" name="__codelineno-6-10" href="#__codelineno-6-10"></a>            <span class="n">subcommand</span><span class="o">=</span><span class="n">Styler</span><span class="p">(</span><span class="n">fg</span><span class="o">=</span><span class="s2">&quot;cyan&quot;</span><span class="p">,</span> <span class="n">bold</span><span class="o">=</span><span class="kc">True</span><span class="p">),</span>
+</span><span id="__span-6-11"><a id="__codelineno-6-11" name="__codelineno-6-11" href="#__codelineno-6-11"></a>            <span class="n">long_option</span><span class="o">=</span><span class="n">Styler</span><span class="p">(</span><span class="n">fg</span><span class="o">=</span><span class="s2">&quot;cyan&quot;</span><span class="p">,</span> <span class="n">bold</span><span class="o">=</span><span class="kc">True</span><span class="p">),</span>
+</span><span id="__span-6-12"><a id="__codelineno-6-12" name="__codelineno-6-12" href="#__codelineno-6-12"></a>            <span class="n">short_option</span><span class="o">=</span><span class="n">Styler</span><span class="p">(</span><span class="n">fg</span><span class="o">=</span><span class="s2">&quot;cyan&quot;</span><span class="p">,</span> <span class="n">bold</span><span class="o">=</span><span class="kc">True</span><span class="p">),</span>
+</span><span id="__span-6-13"><a id="__codelineno-6-13" name="__codelineno-6-13" href="#__codelineno-6-13"></a>            <span class="n">positional</span><span class="o">=</span><span class="n">Styler</span><span class="p">(</span><span class="n">fg</span><span class="o">=</span><span class="s2">&quot;cyan&quot;</span><span class="p">),</span>
+</span><span id="__span-6-14"><a id="__codelineno-6-14" name="__codelineno-6-14" href="#__codelineno-6-14"></a>            <span class="n">placeholder</span><span class="o">=</span><span class="n">Styler</span><span class="p">(</span><span class="n">fg</span><span class="o">=</span><span class="s2">&quot;cyan&quot;</span><span class="p">),</span>
+</span><span id="__span-6-15"><a id="__codelineno-6-15" name="__codelineno-6-15" href="#__codelineno-6-15"></a>            <span class="n">prompts</span><span class="o">=</span><span class="n">Styler</span><span class="p">(</span><span class="n">fg</span><span class="o">=</span><span class="s2">&quot;green&quot;</span><span class="p">,</span> <span class="n">bold</span><span class="o">=</span><span class="kc">True</span><span class="p">),</span>
+</span><span id="__span-6-16"><a id="__codelineno-6-16" name="__codelineno-6-16" href="#__codelineno-6-16"></a>        <span class="p">),</span>
+</span><span id="__span-6-17"><a id="__codelineno-6-17" name="__codelineno-6-17" href="#__codelineno-6-17"></a>        <span class="n">help_formatter</span><span class="o">=</span><span class="n">ClypiFormatter</span><span class="p">(</span>
+</span><span id="__span-6-18"><a id="__codelineno-6-18" name="__codelineno-6-18" href="#__codelineno-6-18"></a>            <span class="n">boxed</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+</span><span id="__span-6-19"><a id="__codelineno-6-19" name="__codelineno-6-19" href="#__codelineno-6-19"></a>            <span class="n">show_option_types</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+</span><span id="__span-6-20"><a id="__codelineno-6-20" name="__codelineno-6-20" href="#__codelineno-6-20"></a>        <span class="p">),</span>
+</span><span id="__span-6-21"><a id="__codelineno-6-21" name="__codelineno-6-21" href="#__codelineno-6-21"></a>    <span class="p">)</span>
+</span><span id="__span-6-22"><a id="__codelineno-6-22" name="__codelineno-6-22" href="#__codelineno-6-22"></a><span class="p">)</span>
 </span></code></pre></div>
-<div class="language-text highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a>$ uv run -m examples.uv add -c
+<div class="language-text highlight"><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a>$ uv run -m examples.uv add -c
 </span></code></pre></div>
 <p><a class="glightbox" href="https://github.com/user-attachments/assets/dbf73404-1913-4315-81b6-1b690746680e" data-type="image" data-width="auto" data-height="auto" data-desc-position="bottom"><img width="1699" alt="image" src="https://github.com/user-attachments/assets/dbf73404-1913-4315-81b6-1b690746680e" /></a></p>
 <p>Read the <a href="https://danimelchor.github.io/clypi/learn/configuration/">docs</a> and <a href="https://danimelchor.github.io/clypi/api/config/">API reference</a>.</p>
 <h2 id="colors">🌈 Colors<a class="headerlink" href="#colors" title="Permanent link">&para;</a></h2>
 <p>Clypi let's you easily print colorful formatted output full:</p>
 <!-- mdtest -->
-<div class="language-python highlight"><span class="filename">examples/colors.py</span><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="c1"># demo.py</span>
-</span><span id="__span-7-2"><a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a><span class="kn">import</span><span class="w"> </span><span class="nn">clypi</span>
-</span><span id="__span-7-3"><a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a>
-</span><span id="__span-7-4"><a id="__codelineno-7-4" name="__codelineno-7-4" href="#__codelineno-7-4"></a><span class="c1"># Print with colors directly</span>
-</span><span id="__span-7-5"><a id="__codelineno-7-5" name="__codelineno-7-5" href="#__codelineno-7-5"></a><span class="n">clypi</span><span class="o">.</span><span class="n">cprint</span><span class="p">(</span><span class="s2">&quot;Some colorful text&quot;</span><span class="p">,</span> <span class="n">fg</span><span class="o">=</span><span class="s2">&quot;green&quot;</span><span class="p">,</span> <span class="n">reverse</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">bold</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">italic</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-</span><span id="__span-7-6"><a id="__codelineno-7-6" name="__codelineno-7-6" href="#__codelineno-7-6"></a>
-</span><span id="__span-7-7"><a id="__codelineno-7-7" name="__codelineno-7-7" href="#__codelineno-7-7"></a><span class="c1"># Style text</span>
-</span><span id="__span-7-8"><a id="__codelineno-7-8" name="__codelineno-7-8" href="#__codelineno-7-8"></a><span class="nb">print</span><span class="p">(</span><span class="n">clypi</span><span class="o">.</span><span class="n">style</span><span class="p">(</span><span class="s2">&quot;This is blue&quot;</span><span class="p">,</span> <span class="n">fg</span><span class="o">=</span><span class="s2">&quot;blue&quot;</span><span class="p">),</span> <span class="s2">&quot;and&quot;</span><span class="p">,</span> <span class="n">clypi</span><span class="o">.</span><span class="n">style</span><span class="p">(</span><span class="s2">&quot;this is red&quot;</span><span class="p">,</span> <span class="n">fg</span><span class="o">=</span><span class="s2">&quot;red&quot;</span><span class="p">))</span>
-</span><span id="__span-7-9"><a id="__codelineno-7-9" name="__codelineno-7-9" href="#__codelineno-7-9"></a>
-</span><span id="__span-7-10"><a id="__codelineno-7-10" name="__codelineno-7-10" href="#__codelineno-7-10"></a><span class="c1"># Store a styler and reuse it</span>
-</span><span id="__span-7-11"><a id="__codelineno-7-11" name="__codelineno-7-11" href="#__codelineno-7-11"></a><span class="n">wrong</span> <span class="o">=</span> <span class="n">clypi</span><span class="o">.</span><span class="n">Styler</span><span class="p">(</span><span class="n">fg</span><span class="o">=</span><span class="s2">&quot;red&quot;</span><span class="p">,</span> <span class="n">strikethrough</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-</span><span id="__span-7-12"><a id="__codelineno-7-12" name="__codelineno-7-12" href="#__codelineno-7-12"></a><span class="nb">print</span><span class="p">(</span><span class="s2">&quot;The old version said&quot;</span><span class="p">,</span> <span class="n">wrong</span><span class="p">(</span><span class="s2">&quot;Pluto was a planet&quot;</span><span class="p">))</span>
-</span><span id="__span-7-13"><a id="__codelineno-7-13" name="__codelineno-7-13" href="#__codelineno-7-13"></a><span class="nb">print</span><span class="p">(</span><span class="s2">&quot;The old version said&quot;</span><span class="p">,</span> <span class="n">wrong</span><span class="p">(</span><span class="s2">&quot;the Earth was flat&quot;</span><span class="p">))</span>
+<div class="language-python highlight"><span class="filename">examples/colors.py</span><pre><span></span><code><span id="__span-8-1"><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a><span class="c1"># demo.py</span>
+</span><span id="__span-8-2"><a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a><span class="kn">import</span><span class="w"> </span><span class="nn">clypi</span>
+</span><span id="__span-8-3"><a id="__codelineno-8-3" name="__codelineno-8-3" href="#__codelineno-8-3"></a>
+</span><span id="__span-8-4"><a id="__codelineno-8-4" name="__codelineno-8-4" href="#__codelineno-8-4"></a><span class="c1"># Print with colors directly</span>
+</span><span id="__span-8-5"><a id="__codelineno-8-5" name="__codelineno-8-5" href="#__codelineno-8-5"></a><span class="n">clypi</span><span class="o">.</span><span class="n">cprint</span><span class="p">(</span><span class="s2">&quot;Some colorful text&quot;</span><span class="p">,</span> <span class="n">fg</span><span class="o">=</span><span class="s2">&quot;green&quot;</span><span class="p">,</span> <span class="n">reverse</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">bold</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">italic</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</span><span id="__span-8-6"><a id="__codelineno-8-6" name="__codelineno-8-6" href="#__codelineno-8-6"></a>
+</span><span id="__span-8-7"><a id="__codelineno-8-7" name="__codelineno-8-7" href="#__codelineno-8-7"></a><span class="c1"># Style text</span>
+</span><span id="__span-8-8"><a id="__codelineno-8-8" name="__codelineno-8-8" href="#__codelineno-8-8"></a><span class="nb">print</span><span class="p">(</span><span class="n">clypi</span><span class="o">.</span><span class="n">style</span><span class="p">(</span><span class="s2">&quot;This is blue&quot;</span><span class="p">,</span> <span class="n">fg</span><span class="o">=</span><span class="s2">&quot;blue&quot;</span><span class="p">),</span> <span class="s2">&quot;and&quot;</span><span class="p">,</span> <span class="n">clypi</span><span class="o">.</span><span class="n">style</span><span class="p">(</span><span class="s2">&quot;this is red&quot;</span><span class="p">,</span> <span class="n">fg</span><span class="o">=</span><span class="s2">&quot;red&quot;</span><span class="p">))</span>
+</span><span id="__span-8-9"><a id="__codelineno-8-9" name="__codelineno-8-9" href="#__codelineno-8-9"></a>
+</span><span id="__span-8-10"><a id="__codelineno-8-10" name="__codelineno-8-10" href="#__codelineno-8-10"></a><span class="c1"># Store a styler and reuse it</span>
+</span><span id="__span-8-11"><a id="__codelineno-8-11" name="__codelineno-8-11" href="#__codelineno-8-11"></a><span class="n">wrong</span> <span class="o">=</span> <span class="n">clypi</span><span class="o">.</span><span class="n">Styler</span><span class="p">(</span><span class="n">fg</span><span class="o">=</span><span class="s2">&quot;red&quot;</span><span class="p">,</span> <span class="n">strikethrough</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</span><span id="__span-8-12"><a id="__codelineno-8-12" name="__codelineno-8-12" href="#__codelineno-8-12"></a><span class="nb">print</span><span class="p">(</span><span class="s2">&quot;The old version said&quot;</span><span class="p">,</span> <span class="n">wrong</span><span class="p">(</span><span class="s2">&quot;Pluto was a planet&quot;</span><span class="p">))</span>
+</span><span id="__span-8-13"><a id="__codelineno-8-13" name="__codelineno-8-13" href="#__codelineno-8-13"></a><span class="nb">print</span><span class="p">(</span><span class="s2">&quot;The old version said&quot;</span><span class="p">,</span> <span class="n">wrong</span><span class="p">(</span><span class="s2">&quot;the Earth was flat&quot;</span><span class="p">))</span>
 </span></code></pre></div>
-<div class="language-text highlight"><pre><span></span><code><span id="__span-8-1"><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a>$ uv run -m examples.colors
+<div class="language-text highlight"><pre><span></span><code><span id="__span-9-1"><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a>$ uv run -m examples.colors
 </span></code></pre></div>
 <p><a class="glightbox" href="https://github.com/user-attachments/assets/9340d828-f7ce-491c-b0a8-6a666f7b7caf" data-type="image" data-width="auto" data-height="auto" data-desc-position="bottom"><img width="974" alt="image" src="https://github.com/user-attachments/assets/9340d828-f7ce-491c-b0a8-6a666f7b7caf" /></a></p>
 <p>Read the <a href="https://danimelchor.github.io/clypi/learn/beautiful_uis/">docs</a></p>
 <h2 id="spinners">🌀 Spinners<a class="headerlink" href="#spinners" title="Permanent link">&para;</a></h2>
 <p>You can easily use spinners to indicate progress on long-running tasks:</p>
 <!-- mdtest -->
-<div class="language-python highlight"><span class="filename">examples/spinner.py</span><pre><span></span><code><span id="__span-9-1"><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a><span class="kn">import</span><span class="w"> </span><span class="nn">asyncio</span>
-</span><span id="__span-9-2"><a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a><span class="kn">from</span><span class="w"> </span><span class="nn">clypi</span><span class="w"> </span><span class="kn">import</span> <span class="n">spinner</span>
-</span><span id="__span-9-3"><a id="__codelineno-9-3" name="__codelineno-9-3" href="#__codelineno-9-3"></a>
-</span><span id="__span-9-4"><a id="__codelineno-9-4" name="__codelineno-9-4" href="#__codelineno-9-4"></a><span class="nd">@spinner</span><span class="p">(</span><span class="s2">&quot;Doing work&quot;</span><span class="p">,</span> <span class="n">capture</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-</span><span id="__span-9-5"><a id="__codelineno-9-5" name="__codelineno-9-5" href="#__codelineno-9-5"></a><span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">do_some_work</span><span class="p">():</span>
-</span><span id="__span-9-6"><a id="__codelineno-9-6" name="__codelineno-9-6" href="#__codelineno-9-6"></a>    <span class="k">await</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
-</span><span id="__span-9-7"><a id="__codelineno-9-7" name="__codelineno-9-7" href="#__codelineno-9-7"></a>
-</span><span id="__span-9-8"><a id="__codelineno-9-8" name="__codelineno-9-8" href="#__codelineno-9-8"></a><span class="n">asyncio</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">do_some_work</span><span class="p">())</span>
+<div class="language-python highlight"><span class="filename">examples/spinner.py</span><pre><span></span><code><span id="__span-10-1"><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a><span class="kn">import</span><span class="w"> </span><span class="nn">asyncio</span>
+</span><span id="__span-10-2"><a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a><span class="kn">from</span><span class="w"> </span><span class="nn">clypi</span><span class="w"> </span><span class="kn">import</span> <span class="n">spinner</span>
+</span><span id="__span-10-3"><a id="__codelineno-10-3" name="__codelineno-10-3" href="#__codelineno-10-3"></a>
+</span><span id="__span-10-4"><a id="__codelineno-10-4" name="__codelineno-10-4" href="#__codelineno-10-4"></a><span class="nd">@spinner</span><span class="p">(</span><span class="s2">&quot;Doing work&quot;</span><span class="p">,</span> <span class="n">capture</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</span><span id="__span-10-5"><a id="__codelineno-10-5" name="__codelineno-10-5" href="#__codelineno-10-5"></a><span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">do_some_work</span><span class="p">():</span>
+</span><span id="__span-10-6"><a id="__codelineno-10-6" name="__codelineno-10-6" href="#__codelineno-10-6"></a>    <span class="k">await</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+</span><span id="__span-10-7"><a id="__codelineno-10-7" name="__codelineno-10-7" href="#__codelineno-10-7"></a>
+</span><span id="__span-10-8"><a id="__codelineno-10-8" name="__codelineno-10-8" href="#__codelineno-10-8"></a><span class="n">asyncio</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">do_some_work</span><span class="p">())</span>
 </span></code></pre></div>
 <p><code>uv run -m examples.spinner</code></p>
 <p>https://github.com/user-attachments/assets/2065b3dd-c73c-4e21-b698-8bf853e8e520</p>
@@ -1168,11 +1196,11 @@ Most often, these actions can be made asynchronous since they involve things lik
 from the arguments you pass in.</p>
 <p>In this example your editor will correctly infer the type:</p>
 <!-- mdtest-stdin 23 -->
-<div class="language-python highlight"><pre><span></span><code><span id="__span-10-1"><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a><span class="n">hours</span> <span class="o">=</span> <span class="n">clypi</span><span class="o">.</span><span class="n">prompt</span><span class="p">(</span>
-</span><span id="__span-10-2"><a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a>    <span class="s2">&quot;How many hours are there in a year?&quot;</span><span class="p">,</span>
-</span><span id="__span-10-3"><a id="__codelineno-10-3" name="__codelineno-10-3" href="#__codelineno-10-3"></a>    <span class="n">parser</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="nb">float</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span> <span class="k">else</span> <span class="n">timedelta</span><span class="p">(</span><span class="n">days</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="p">)),</span>
-</span><span id="__span-10-4"><a id="__codelineno-10-4" name="__codelineno-10-4" href="#__codelineno-10-4"></a><span class="p">)</span>
-</span><span id="__span-10-5"><a id="__codelineno-10-5" name="__codelineno-10-5" href="#__codelineno-10-5"></a><span class="n">reveal_type</span><span class="p">(</span><span class="n">hours</span><span class="p">)</span>  <span class="c1"># Type of &quot;res&quot; is &quot;float | timedelta&quot;</span>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-11-1"><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a><span class="n">hours</span> <span class="o">=</span> <span class="n">clypi</span><span class="o">.</span><span class="n">prompt</span><span class="p">(</span>
+</span><span id="__span-11-2"><a id="__codelineno-11-2" name="__codelineno-11-2" href="#__codelineno-11-2"></a>    <span class="s2">&quot;How many hours are there in a year?&quot;</span><span class="p">,</span>
+</span><span id="__span-11-3"><a id="__codelineno-11-3" name="__codelineno-11-3" href="#__codelineno-11-3"></a>    <span class="n">parser</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="nb">float</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span> <span class="k">else</span> <span class="n">timedelta</span><span class="p">(</span><span class="n">days</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="p">)),</span>
+</span><span id="__span-11-4"><a id="__codelineno-11-4" name="__codelineno-11-4" href="#__codelineno-11-4"></a><span class="p">)</span>
+</span><span id="__span-11-5"><a id="__codelineno-11-5" name="__codelineno-11-5" href="#__codelineno-11-5"></a><span class="n">reveal_type</span><span class="p">(</span><span class="n">hours</span><span class="p">)</span>  <span class="c1"># Type of &quot;res&quot; is &quot;float | timedelta&quot;</span>
 </span></code></pre></div>
 <h4 id="why-should-i-care">Why should I care?<a class="headerlink" href="#why-should-i-care" title="Permanent link">&para;</a></h4>
 <p>Type checking will help you catch issues way earlier in the development cycle. It will also
