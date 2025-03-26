@@ -1,17 +1,28 @@
-# 🦄 clypi
 
 <!-- docs/asserts/logo.png -->
 <div align="center">
     <p>
-        <img width="50%" src="https://github.com/user-attachments/assets/5541cdaf-f7f1-4bb1-b888-41ca3fb43d02" />
+        <img width="50%" src="https://github.com/user-attachments/assets/5541cdaf-f7f1-4bb1-b888-41ca3fb43d02" alt="Clypi logo" />
     <p/>
     <p>Your all-in-one for beautiful, lightweight, prod-ready CLIs</p>
-    <img src="https://badge.fury.io/py/clypi.svg" />
-    <img src="https://img.shields.io/badge/license-MIT-blue" />
-    <img src="https://img.shields.io/badge/docs-latest-purple" />
-    <img src="https://img.shields.io/pypi/dm/clypi" />
-    <img src="https://img.shields.io/github/contributors/danimelchor/clypi" />
+    <a href="https://pypi.org/project/clypi/" target="_blank">
+        <img src="https://badge.fury.io/py/clypi.svg" alt="pypi project" />
+    </a>
+    <a href="https://github.com/danimelchor/clypi?tab=MIT-1-ov-file">
+        <img src="https://img.shields.io/badge/license-MIT-blue" alt="MIT license" />
+    </a>
+    <a href="https://danimelchor.github.io/clypi/learn/getting_started/" target="_blank">
+        <img src="https://img.shields.io/badge/docs-latest-purple" alt="docs" />
+    </a>
+    <a href="https://pypi.org/project/clypi/" target="_blank">
+        <img src="https://img.shields.io/pypi/dm/clypi" alt="pypi monthly downloads" />
+    </a>
+    <img src="https://img.shields.io/github/contributors/danimelchor/clypi" alt="contributors" />
 </div>
+
+## 📖 Docs
+
+Read [our docs](https://danimelchor.github.io/clypi/learn/getting_started/) to get started. You can also look at [the API reference](https://danimelchor.github.io/clypi/api/cli/) for examples and a full API reference. Otherwise, feel free to browse the source code in the [GitHub repository](https://github.com/danimelchor/clypi).
 
 
 ## What is clypi?
@@ -25,17 +36,18 @@ I've been working with Python-based CLIs for several years with many users and s
 - **Configurable**: clypi lets you configure almost everything you'd like to configure. You can create your own themes, help pages, error messages, and more!
 
 ### Define Arguments with Type Annotations
-Just like `dataclass`, arguments are defined as class-level type annotations.
+Just like you do with [dataclasses](https://docs.python.org/3/library/dataclasses.html), clypi CLI arguments can defined as class-level type annotations.
 
 <!-- mdtest -->
 ```python
 class MyCli(Command):
-    verbose: bool  # Automatically parsed from CLI args!
+    name: str  # Automatically parsed as `--name <NAME>`.
 ```
 
 ### Need more control?
 
-Use our `arg` helper and built-in parsers
+Use our `arg` helper and built-in parsers to define defaults, parsers,
+groups, and more!
 
 <!-- mdtest -->
 ```python
@@ -84,10 +96,6 @@ class Cli(Command):
 ```bash
 uv add clypi  # or `pip install clypi`
 ```
-
-## 📖 Docs
-
-Read [our docs](https://danimelchor.github.io/clypi/learn/getting_started/) to get started. You can also look at [the API reference](https://danimelchor.github.io/clypi/api/cli/) for examples and a full API reference. If you want a full guide on how to create and distribute your own Python CLI, check our our [tutorial](https://danimelchor.github.io/clypi/packaging/).
 
 ## 🪐 Beautiful by default
 
