@@ -33,7 +33,7 @@ Read [our docs](https://danimelchor.github.io/clypi/) to get started. You can al
 
 Read the [docs](https://danimelchor.github.io/clypi/api/cli/)
 
-<!--- mdtest-args -v --threads 2 -->
+<!-- mdtest-args -v --threads 2 -->
 ```python
 # examples/cli_basic.py
 from clypi import Command, Positional, arg
@@ -85,7 +85,7 @@ uniform across your entire app, and incredibly maintainable.
 
 For example, this is how you'd achieve a UI like `uv`'s CLI:
 
-<!--- mdtest -->
+<!-- mdtest -->
 ```python
 from clypi import ClypiConfig, ClypiFormatter, Styler, Theme, configure
 
@@ -120,7 +120,7 @@ configure(
 
 Read the [docs](https://danimelchor.github.io/clypi/api/colors/)
 
-<!--- mdtest -->
+<!-- mdtest -->
 ```python
 # demo.py
 import clypi
@@ -146,7 +146,7 @@ print("The old version said", wrong("the Earth was flat"))
 Read the [docs](https://danimelchor.github.io/clypi/api/components/#spinner)
 
 You can use spinners as an async context manager:
-<!--- mdtest -->
+<!-- mdtest -->
 ```python
 import asyncio
 from clypi import Spinner
@@ -162,7 +162,7 @@ asyncio.run(main())
 
 Or as a decorator:
 
-<!--- mdtest -->
+<!-- mdtest -->
 ```python
 import asyncio
 from clypi import spinner
@@ -185,7 +185,7 @@ Read the [docs](https://danimelchor.github.io/clypi/api/prompts/)
 
 First, you'll need to import the `clypi` module:
 
-<!--- mdtest-stdin y -->
+<!-- mdtest-stdin y -->
 ```python
 import clypi
 
@@ -206,7 +206,7 @@ from the arguments you pass in.
 
 In this example your editor will correctly infer the type:
 
-<!--- mdtest-stdin 23 -->
+<!-- mdtest-stdin 23 -->
 ```python
 hours = clypi.prompt(
     "How many hours are there in a year?",

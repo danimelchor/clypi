@@ -69,7 +69,7 @@ class MyCommand(Command):
 
 Arguments are mandatory positional words the user must pass in. They're defined as class attributes with no default and type hinted with the `Positional[T]` type.
 
-<!--- mdtest -->
+<!-- mdtest -->
 ```python hl_lines="6 7"
 from clypi import Command, Positional
 
@@ -86,7 +86,7 @@ Flags are boolean options that can be either present or not. To define a flag, s
 a boolean class attribute in your command with a default value. The user will then be able
 to pass in `--my-flag` when running the command which will set it to True.
 
-<!--- mdtest -->
+<!-- mdtest -->
 ```python hl_lines="6"
 from clypi import Command
 
@@ -101,7 +101,7 @@ class MyCommand(Command):
 
 Options are like flags but, instead of booleans, the user passes in specific values. You can think of options as key/pair items. Options can be set as required by not specifying a default value.
 
-<!--- mdtest -->
+<!-- mdtest -->
 ```python hl_lines="6"
 from clypi import Command
 
@@ -116,7 +116,7 @@ class MyCommand(Command):
 You must implement the [`run`](#run) method so that your command can be ran. The function
 must be `async` so that we can properly render items in your screen.
 
-<!--- mdtest -->
+<!-- mdtest -->
 ```python hl_lines="6 7"
 from clypi import Command, arg
 
@@ -131,7 +131,7 @@ class MyCommand(Command):
 
 You can define custom help messages for each argument using our handy `config` helper:
 
-<!--- mdtest -->
+<!-- mdtest -->
 ```python hl_lines="6"
 from clypi import Command, arg
 
@@ -143,7 +143,7 @@ class MyCommand(Command):
 ```
 
 You can also define custom help messages for commands by creating a docstring on the class itself:
-<!--- mdtest -->
+<!-- mdtest -->
 ```python hl_lines="5 6"
 from clypi import Command, arg
 
@@ -158,7 +158,7 @@ class MyCommand(Command):
 
 If you want to ask the user to provide input if it's not specified, you can pass in a prompt to `config` for each field like so:
 
-<!--- mdtest -->
+<!-- mdtest -->
 ```python hl_lines="4"
 from clypi import Command, arg
 
@@ -167,92 +167,6 @@ class MyCommand(Command):
 ```
 
 On runtime, if the user didn't provide a value for `--name`, the program will ask the user to provide one until they do. You can also pass in a `default` value to `config` to allow the user to just hit enter to accept the default.
-
-### Built-in parsers
-
-CLypi comes with built-in parsers for all common Python types. See the [`Parsers`](#parsers) section below to find all supported types and validations. Most often, using a normal Python type will automatically load the right parser, but if you want more control or extra features you can use these directly:
-
-<!--- mdtest -->
-```python hl_lines="6"
-import typing as t
-from clypi import Command, arg
-import clypi.parsers as cp
-
-class MyCommand(Command):
-    file: Path = arg(parser=cp.Path(exists=True))
-```
-
-### Custom parsers
-
-If the type you want to parse from the user is too complex, you can define your own parser
-using `config` as well:
-
-<!--- mdtest -->
-```python hl_lines="4-7"
-import typing as t
-from clypi import Command, arg
-
-def parse_slack(value: t.Any) -> str:
-    if not value.startswith('#'):
-        raise ValueError("Invalid Slack channel. It must start with a '#'.")
-    return value
-
-class MyCommand(Command):
-    slack: str = arg(parser=parse_slack)
-```
-
-### Inheriting arguments
-
-If a command defines an argument you want to use in any of it's children, you can re-define the
-argument and use `inherited=True`.
-
-<!--- mdtest -->
-```python hl_lines="4"
-from clypi import Command, arg
-
-class MySubCmd(Command):
-    verbose: bool = arg(inherited=True)
-
-class MyCli(Command):
-    subcommand: MySubCmd
-    verbose: bool = arg(False, help="Use verbose output")
-
-cmd = MyCli.parse(["my-sub-cmd", "--verbose"])
-assert cmd.subcommand.verbose is True
-```
-
-### Deferring arguments
-
-CLIs can get very complex. Sometimes we want to build a complex graph of dependencies between the arguments and it is hard to do that. For example, we can have an application that does not use `--num-threads` if `--single-threaded` was provided already. For that, clypi offers `arg(defer=True)`. The internals are complex but the user experience is quite simple: clypi will not prompt or require this value being passed up until when it's executed.
-
-Examples:
-
-<!--- mdtest-stdin 5 -->
-> ```python hl_lines="6"
-> from clypi import Command, arg
->
-> class Main(Command):
->     single_threaded: bool = arg(False)
->     num_threads: int = arg(
->         defer=True,
->         prompt="How many threads do you want to use"
->     )
->
->     async def run(self):
->         print(self.single_threaded)  # << will not prompt yet...
->         if self.single_threaded:
->             # if we never access num_threads in this if condition, we will
->             # never prompt!
->             print("Running single threaded...")
->         else:
->             print("Running with threads: ", self.num_threads)  # << we prompt here!
->
-> main = Main.parse()  # << will not prompt yet...
-> main.start()  # << will not prompt yet...
-> ```
-
-Notice how `num_threads` is actually a required option (it does not have a default value), but
-by deferring the evaluation of that value we can express complex dependencies between our arguments or offer a better step-by-step experience.
 
 ### Autocomplete
 
@@ -327,7 +241,7 @@ to print before commands, emit metrics, and more!
 
 Examples:
 
-<!--- mdtest -->
+<!-- mdtest -->
 > ```python hl_lines="5-7"
 > import logging
 > from clypi import Command, arg
@@ -395,7 +309,7 @@ Clypi ships with a pre-made formatter that can display help pages with either bo
 
 With everything enabled:
 
-<!--- mdtest -->
+<!-- mdtest -->
 ```python
 ClypiFormatter(boxed=True, show_option_types=True)
 ```
@@ -405,7 +319,7 @@ ClypiFormatter(boxed=True, show_option_types=True)
 
 With everything disabled:
 
-<!--- mdtest -->
+<!-- mdtest -->
 ```python
 ClypiFormatter(boxed=False, show_option_types=False)
 ```

@@ -1,3 +1,6 @@
+!!! tip
+    Follow the [Beautiful UIs guide](../learn/beautiful_uis.md) for examples.!
+
 ### Spinners
 
 #### `Spin`
@@ -14,7 +17,7 @@ You can see all the spinners in action by running `uv run -m examples.spinner`. 
 
 A spinner indicating that something is happening behind the scenes. It can be used as a context manager or [like a decorator](#spinner-decorator). The context manager usage is like so:
 
-<!--- mdtest -->
+<!-- mdtest -->
 ```python hl_lines="5"
 import asyncio
 from clypi import Spinner
@@ -86,7 +89,7 @@ Pipe the output of an async subprocess into the spinner and display the stdout o
 with a particular color and prefix.
 
 Examples:
-<!--- mdtest -->
+<!-- mdtest -->
 > ```python
 > async def main():
 >     async with Spinner("Doing something") as s:
@@ -106,7 +109,7 @@ Examples:
 This is just a utility decorator that let's you wrap functions so that a spinner
 displays while they run. `spinner` accepts the same arguments as the context manager [`Spinner`](#spinner).
 
-<!--- mdtest -->
+<!-- mdtest -->
 ```python hl_lines="4"
 import asyncio
 from clypi import spinner
@@ -154,16 +157,6 @@ Parameters:
 - `title`: optionally define a title for the box, it's length must be < width
 - `color`: a color for the box border and title (see [`colors`](#colors))
 
-Examples:
-
-<!--- mdtest -->
-> ```python
-> print(clypi.boxed("Some boxed text", color="red", width=30, align="center"))
-> ```
-
-<img width="697" alt="image" src="https://github.com/user-attachments/assets/87e325a3-397c-4022-a3eb-a13984bfa855" />
-
-
 ### Stack
 
 ```python
@@ -174,22 +167,11 @@ def stack(*blocks: list[str], padding: int = 1, lines: bool) -> list[str]:
 Horizontally aligns blocks of text to display a nice layout where each block is displayed
 side by side.
 
-
-<img width="974" alt="image" src="https://github.com/user-attachments/assets/9340d828-f7ce-491c-b0a8-6a666f7b7caf" />
-
 Parameters:
 
 - `blocks`: a series of blocks of lines of strings to display side by side
 - `padding`: the space between each block
 - `lines`: if the output should be returned as lines or as a string
-
-Examples:
-<!--- mdtest -->
-> ```python
-> names = clypi.boxed(["Daniel", "Pedro", "Paul"], title="Names", width=15)
-> colors = clypi.boxed(["Blue", "Red", "Green"], title="Colors", width=15)
-> print(clypi.stack(names, colors))
-> ```
 
 ### Separator
 
@@ -210,13 +192,6 @@ Parameters:
 - `width`: if `max` it will use the max size of the terminal. Otherwise you can provide a fixed width.
 - `title`: optionally provide a title to display in the middle of the separator
 - `color`: the color for the characters
-
-<!--- mdtest -->
-> ```python
-> print(clypi.separator(title="Some title", color="red", width=30))
-> ```
-
-<img width="716" alt="image" src="https://github.com/user-attachments/assets/42be7ee3-7357-44fb-8a22-11b065a23558" />
 
 
 ### Indented

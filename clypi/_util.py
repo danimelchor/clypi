@@ -19,6 +19,9 @@ def visible_width(s: str) -> int:
 
 
 def get_term_width():
+    if width := os.getenv("CLYPI_TERM_WIDTH"):
+        return int(width)
+
     try:
         return os.get_terminal_size().columns
     except OSError:

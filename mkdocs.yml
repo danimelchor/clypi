@@ -7,7 +7,7 @@ theme:
   name: material
   font:
     text: Roboto
-    code: Roboto Mono
+    code: JetBrains Mono
   palette:
     scheme: slate
     primary: deep purple
@@ -32,6 +32,9 @@ nav:
   - Clypi: index.md
   - Learn:
     - Install: learn/install.md
+    - Getting Started: learn/getting_started.md
+    - Advanced Configuration: learn/advanced_configuration.md
+    - Beautiful UIs: learn/beautiful_uis.md
   - API:
     - Configuration: api/config.md
     - CLI: api/cli.md
@@ -49,6 +52,9 @@ hooks:
 
 extra_css:
   - stylesheets/extra.css
+
+extra_javascript:
+  - javascripts/spinner.js
 
 plugins:
   - search
@@ -74,6 +80,8 @@ markdown_extensions:
       custom_checkbox: true
   - toc:
       permalink: true
+  - pymdownx.tabbed:
+      alternate_style: true
 
 extra:
   social:

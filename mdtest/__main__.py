@@ -69,17 +69,17 @@ async def parse_file(sm: asyncio.Semaphore, file: Path) -> list[Test]:
                 current_test.append(line.removeprefix("> ").removeprefix(">").rstrip())
 
             # Mdtest arg definition
-            elif g := re.search("<!--- mdtest-args (.*) -->", line):
+            elif g := re.search("<!-- mdtest-args (.*) -->", line):
                 args = g.group(1)
                 in_test = True
 
             # Mdtest stdin definition
-            elif g := re.search("<!--- mdtest-stdin (.*) -->", line):
+            elif g := re.search("<!-- mdtest-stdin (.*) -->", line):
                 stdin = g.group(1)
                 in_test = True
 
             # Mdtest generic definition
-            elif g := re.search("<!--- mdtest -->", line):
+            elif g := re.search("<!-- mdtest -->", line):
                 in_test = True
 
     sm.release()

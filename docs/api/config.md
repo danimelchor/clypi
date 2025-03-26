@@ -13,7 +13,7 @@ configure(config)
 
 ### Default config
 
-<!--- mdtest -->
+<!-- mdtest -->
 ```python
 ClypiConfig(
     help_formatter=ClypiFormatter(
