@@ -1,15 +1,20 @@
 # 🦄 clypi
 
-[![PyPI version](https://badge.fury.io/py/clypi.svg)](https://badge.fury.io/py/clypi)
-[![License](https://img.shields.io/badge/license-MIT-blue)](https://opensource.org/license/mit)
-[![Docs](https://img.shields.io/badge/docs-latest-purple)](https://danimelchor.github.io/clypi/)
-[![PyPI - Downloads](https://img.shields.io/pypi/dm/clypi)](https://pypi.org/project/clypi/)
-[![Contributors](https://img.shields.io/github/contributors/danimelchor/clypi)](https://github.com/danimelchor/clypi/graphs/contributors)
-<!-- [![PyPI - Python Version](https://img.shields.io/pypi/pyversions/clypi.svg)](https://pypi.org/project/clypi/) -->
+<!-- docs/asserts/logo.png -->
+<div align="center">
+    <p>
+        <img width="50%" src="https://github.com/user-attachments/assets/5541cdaf-f7f1-4bb1-b888-41ca3fb43d02" />
+    <p/>
+    <p>Your all-in-one for beautiful, lightweight, prod-ready CLIs</p>
+    <img src="https://badge.fury.io/py/clypi.svg" />
+    <img src="https://img.shields.io/badge/license-MIT-blue" />
+    <img src="https://img.shields.io/badge/docs-latest-purple" />
+    <img src="https://img.shields.io/pypi/dm/clypi" />
+    <img src="https://img.shields.io/github/contributors/danimelchor/clypi" />
+</div>
 
-Your all-in-one for beautiful, lightweight, prod-ready CLIs
 
-### What is clypi?
+## What is clypi?
 
 I've been working with Python-based CLIs for several years with many users and strict quality requirements and always run into the sames problems with the go-to packages. Therefore, I decided to embark on a journey to build a lightweight, intuitive, pretty, and production ready framework. Here are the key features:
 
@@ -19,7 +24,7 @@ I've been working with Python-based CLIs for several years with many users and s
 - **Composable**: clypi lets you easily reuse arguments across subcommands without having to specify them again.
 - **Configurable**: clypi lets you configure almost everything you'd like to configure. You can create your own themes, help pages, error messages, and more!
 
-#### Define Arguments with Type Annotations
+### Define Arguments with Type Annotations
 Just like `dataclass`, arguments are defined as class-level type annotations.
 
 <!-- mdtest -->
@@ -28,7 +33,9 @@ class MyCli(Command):
     verbose: bool  # Automatically parsed from CLI args!
 ```
 
-#### Need more control? Use our `arg` helper and built-in parsers
+### Need more control?
+
+Use our `arg` helper and built-in parsers
 
 <!-- mdtest -->
 ```python
@@ -39,17 +46,35 @@ class MyCli(Command):
     )
 ```
 
-#### Easily create subcommands
+### Easily document your CLIs
+
+Using docstrings automatically applies them to your CLI's `--help` page
+
+<!-- mdtest -->
+```python
+class MyCli(Command):
+    """A simple CLI"""
+    threads: int = arg(
+        default=4,
+        help="The number of threads to run the tool with",
+    )
+```
+
+### Intuitive subcommands (groups of commands)
+
+Just create and compose more clypi commands!
 
 <!-- mdtest -->
 ```python
 class Lint(Command):
+    """Lint a set of files"""
     verbose: bool = arg(inherited=True)  # Inherits the argument def from `Cli`
 
 class Run(Command):
-    ...
+    """Run a set of files"""
 
 class Cli(Command):
+    """A simple CLI to lint and run files"""
     subcommand: Lint | Run
     verbose: bool = arg(False, help="Whether to show more output")
 ```

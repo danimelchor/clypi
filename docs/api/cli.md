@@ -20,7 +20,7 @@ and parsed.
 Parameters:
 
 - `default`: the default value to return if the user doesn't pass in the argument (or hits enter during the prompt, if any)
-- `parser`: a function that takes in a string and returns the parsed type (see [`Parser`](#parsert))
+- `parser`: a function that takes in a string and returns the parsed type (see [`Parser`](./parsers.md))
 - `default_factory`: a function that returns a default value. Useful to defer computation or to avoid default mutable values
 - `help`: a brief description to show the user when they pass in `-h` or `--help`
 - `short`: for options it defines a short way to pass in a value (e.g.: `short="v"` allows users to pass in `-v <value>`)

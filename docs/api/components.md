@@ -155,7 +155,7 @@ Parameters:
 - `style`: the desired style (see [`Boxes`](#boxes))
 - `alignment`: the style of alignment (see [`align`](#align))
 - `title`: optionally define a title for the box, it's length must be < width
-- `color`: a color for the box border and title (see [`colors`](#colors))
+- `color`: a color for the box border and title (see [`colors`](./colors.md))
 
 ### Stack
 
