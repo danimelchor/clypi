@@ -7,8 +7,8 @@ theme:
   name: material
   palette:
     scheme: slate
-    primary: blue grey
-    accent: deep purple
+    primary: deep purple
+    accent: purple
   features:
     - content.code.annotate
     - content.code.copy
@@ -16,12 +16,14 @@ theme:
     - content.tooltips
     - navigation.indexes
     - navigation.instant
-    - navigation.instant.progress
     - navigation.path
+    - navigation.tabs
     - navigation.top
     - navigation.tracking
     - search.highlight
     - search.share
+    - toc.integrate
+    - toc.follow
 
 nav:
  - Clypi: index.md
@@ -34,6 +36,12 @@ nav:
    - Prompts: api/prompts.md
    - Parsers: api/parsers.md
  - Planned work: planned_work.md
+
+hooks:
+  - docs/hooks/helpers.py
+
+extra_css:
+  - stylesheets/extra.css
 
 plugins:
   - search
@@ -50,6 +58,9 @@ markdown_extensions:
       line_spans: __span
       pygments_lang_class: true
   - pymdownx.inlinehilite
+  - pymdownx.emoji:
+      emoji_generator: !!python/name:material.extensions.emoji.to_svg
+      emoji_index: !!python/name:material.extensions.emoji.twemoji
   - pymdownx.snippets
   - pymdownx.superfences
   - pymdownx.tasklist:

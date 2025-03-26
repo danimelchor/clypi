@@ -1,4 +1,4 @@
-### `arg`
+## `arg`
 
 ```python
 def arg(
@@ -30,13 +30,13 @@ Parameters:
 - `group`: optionally define the name of a group to display the option in. Adding an option will automatically display the options in a different section of the help page (for an example, see the pictures in [formatter](#formatter)).
 - `defer` (advanced): defers the fetching of a value until the value is used. This can be helpful to express complex dependencies between arguments. For example, you may not want to prompt if a different option was passed in (see `examples/cli_deferred.py`).
 
-### `Command`
+## `Command`
 
 This is the main class you must extend when defining a command. There are no methods you must override
 other than the [`run`](#run) method. The type hints you annotate the class will define the arguments that
 command will take based on a set of rules:
 
-#### Subcommands
+### Subcommands
 
 To define a subcommand, you must define a field in a class extending `Command` called `subcommand`. It's type hint must
 point to other classes extending `Command` or `None` by using either a single class, or a union of classes.
@@ -65,7 +65,7 @@ class MyCommand(Command):
     subcommand: MySubcommand | MyOtherSubcommand | None
 ```
 
-#### Arguments (positional)
+### Arguments (positional)
 
 Arguments are mandatory positional words the user must pass in. They're defined as class attributes with no default and type hinted with the `Positional[T]` type.
 
@@ -80,7 +80,7 @@ class MyCommand(Command):
     arg2: Positional[list[str]]
 ```
 
-#### Flags
+### Flags
 
 Flags are boolean options that can be either present or not. To define a flag, simply define
 a boolean class attribute in your command with a default value. The user will then be able
@@ -97,7 +97,7 @@ class MyCommand(Command):
 ```
 
 
-#### Options
+### Options
 
 Options are like flags but, instead of booleans, the user passes in specific values. You can think of options as key/pair items. Options can be set as required by not specifying a default value.
 
@@ -111,7 +111,7 @@ class MyCommand(Command):
     my_attr: str | int = "some-default-here"
 ```
 
-#### Running the command
+### Running the command
 
 You must implement the [`run`](#run) method so that your command can be ran. The function
 must be `async` so that we can properly render items in your screen.
@@ -127,7 +127,7 @@ class MyCommand(Command):
         print(f"Running with verbose: {self.verbose}")
 ```
 
-#### Help page
+### Help page
 
 You can define custom help messages for each argument using our handy `config` helper:
 
@@ -151,7 +151,7 @@ class MyCommand(Command):
     """
 ```
 
-#### Prompting
+### Prompting
 
 If you want to ask the user to provide input if it's not specified, you can pass in a prompt to `config` for each field like so:
 
@@ -165,7 +165,7 @@ class MyCommand(Command):
 
 On runtime, if the user didn't provide a value for `--name`, the program will ask the user to provide one until they do. You can also pass in a `default` value to `config` to allow the user to just hit enter to accept the default.
 
-#### Built-in parsers
+### Built-in parsers
 
 CLypi comes with built-in parsers for all common Python types. See the [`Parsers`](#parsers) section below to find all supported types and validations. Most often, using a normal Python type will automatically load the right parser, but if you want more control or extra features you can use these directly:
 
@@ -179,7 +179,7 @@ class MyCommand(Command):
     file: Path = arg(parser=cp.Path(exists=True))
 ```
 
-#### Custom parsers
+### Custom parsers
 
 If the type you want to parse from the user is too complex, you can define your own parser
 using `config` as well:
@@ -198,7 +198,7 @@ class MyCommand(Command):
     slack: str = arg(parser=parse_slack)
 ```
 
-#### Inheriting arguments
+### Inheriting arguments
 
 If a command defines an argument you want to use in any of it's children, you can re-define the
 argument and use `inherited=True`.
@@ -218,7 +218,7 @@ cmd = MyCli.parse(["my-sub-cmd", "--verbose"])
 assert cmd.subcommand.verbose is True
 ```
 
-#### Deferring arguments
+### Deferring arguments
 
 CLIs can get very complex. Sometimes we want to build a complex graph of dependencies between the arguments and it is hard to do that. For example, we can have an application that does not use `--num-threads` if `--single-threaded` was provided already. For that, clypi offers `arg(defer=True)`. The internals are complex but the user experience is quite simple: clypi will not prompt or require this value being passed up until when it's executed.
 
@@ -248,7 +248,7 @@ Examples:
 Notice how `num_threads` is actually a required option (it does not have a default value), but
 by deferring the evaluation of that value we can express complex dependencies between our arguments or offer a better step-by-step experience.
 
-#### Autocomplete
+### Autocomplete
 
 All CLIs built with clypi come with a builtin `--install-autocomplete` option that will automatically
 set up shell completions for your built CLI.
@@ -257,7 +257,7 @@ set up shell completions for your built CLI.
 > This feature is brand new and might contain some bugs. Please file a ticket
 > if you run into any!
 
-#### `name`
+### `name`
 ```python
 @t.final
 @classmethod
@@ -266,7 +266,7 @@ def prog(cls)
 The name of the command. Can be overridden to provide a custom name
 or will default to the class name extending `Command`.
 
-#### `help`
+### `help`
 ```python
 @t.final
 @classmethod
@@ -275,7 +275,7 @@ def help(cls)
 The help displayed for the command when the user passes in `-h` or `--help`. Defaults to the
 docstring for the class extending `Command`.
 
-#### `run`
+### `run`
 ```python
 async def run(self: Command) -> None:
 ```
@@ -286,7 +286,7 @@ should live.
 as you would do with any other instance property.
 
 
-#### `astart` and `start`
+### `astart` and `start`
 ```python
 async def astart(self: Command | None = None) -> None:
 ```
@@ -297,7 +297,7 @@ These commands are the entry point for your program. You can either call `YourCo
 or, if already in an async loop, `await YourCommand.astart()`.
 
 
-#### `print_help`
+### `print_help`
 ```python
 @classmethod
 def print_help(cls, exception: Exception | None = None)
@@ -308,7 +308,11 @@ Parameters:
 
 - `exception`: an exception neatly showed to the user as a traceback. Automatically passed in during runtime.
 
-#### `pre_run_hook`
+### `pre_run_hook`
+
+
+<!-- md:version 1.2.7 -->
+
 ```python
 async def pre_run_hook(self: Command) -> None:
 ```
@@ -334,14 +338,17 @@ Examples:
 > main.start()
 > ```
 
-#### `post_run_hook`
+### `post_run_hook`
+
+<!-- md:version 1.2.7 -->
+
 ```python
 async def post_run_hook(self: Command) -> None:
 ```
 A function that will run on every parent command and subcommand right after it's execution. Useful
 to print after commands, emit metrics, and more!
 
-### `Formatter`
+## `Formatter`
 
 A formatter is any class conforming to the following protocol. It is called on several occasions to render
 the help page. The `Formatter` implementation should try to use the provided configuration theme when possible.
@@ -360,7 +367,7 @@ class Formatter(t.Protocol):
     ) -> str: ...
 ```
 
-### `ClypiFormatter`
+## `ClypiFormatter`
 
 ```python
 class ClypiFormatter(
