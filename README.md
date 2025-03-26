@@ -37,17 +37,18 @@ I've been working with Python-based CLIs for several years with many users and s
 - **Configurable**: clypi lets you configure almost everything you'd like to configure. You can create your own themes, help pages, error messages, and more!
 
 ### Define Arguments with Type Annotations
-Just like `dataclass`, arguments are defined as class-level type annotations.
+Just like you do with [dataclasses](https://docs.python.org/3/library/dataclasses.html), clypi CLI arguments can defined as class-level type annotations.
 
 <!-- mdtest -->
 ```python
 class MyCli(Command):
-    verbose: bool  # Automatically parsed from CLI args!
+    name: str  # Automatically parsed as `--name <NAME>`.
 ```
 
 ### Need more control?
 
-Use our `arg` helper and built-in parsers
+Use our `arg` helper and built-in parsers to define defaults, parsers,
+groups, and more!
 
 <!-- mdtest -->
 ```python

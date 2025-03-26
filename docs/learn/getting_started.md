@@ -272,3 +272,57 @@ class MyCommand(Command):
 ```
 
 You can also create your own parser if there's a complex data type we do not support. Refer to the [Custom parsers](./advanced_arguments.md/#custom-parsers) docs.
+
+
+## Argument groups
+
+Sometimes you want to separate your options based on behaviors. For example, you might want to split up environment options from output options. For that, just define a `group` parameter in the `arg`s you want to group together:
+
+<!-- mdtest-stdin Daniel -->
+```python title="cli.py" hl_lines="15 20"
+from typing import Literal
+from clypi import Command, Positional, arg
+
+class Cli(Command):
+    """A very simple CLI"""
+
+    # Output configs here
+    format: Literal["json", "raw"] = arg("raw", help="The output format to use")
+    verbose: bool = arg(False, help="Whether to show verbose output")
+
+    # Cluster configs here...
+    env: Literal["qa", "prod"] = arg(
+        "qa",
+        help="The environment to run in",
+        group="environment",
+    )
+    cluster: Literal["default", "secondary"] = arg(
+        "default",
+        help="The cluster to run in",
+        group="environment",
+    )
+
+if __name__ == '__main__':
+    cmd = Cli.parse()
+    cmd.start()
+```
+
+You can see they now get displayed in different groups:
+
+<!-- termynal -->
+```
+$ python cli.py --help
+A very simple CLI
+
+Usage: cli [OPTIONS]
+
+┏━ Options ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
+┃ --format <FORMAT>  The output format to use {JSON|RAW}                       ┃
+┃ --verbose          Whether to show verbose output                            ┃
+┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
+
+┏━ Environment options ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
+┃ --env <ENV>          The environment to run in {QA|PROD}                     ┃
+┃ --cluster <CLUSTER>  The cluster to run in {DEFAULT|SECONDARY}               ┃
+┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
+```

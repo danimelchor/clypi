@@ -1,3 +1,5 @@
+## Argument groups
+
 ## Argument inheritance
 
 Say you have arguments that you want every command to be able to use but you want to avoid
