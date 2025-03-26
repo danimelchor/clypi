@@ -1,4 +1,3 @@
-# 🦄 clypi
 
 <!-- docs/asserts/logo.png -->
 <div align="center">
@@ -6,16 +5,16 @@
         <img width="50%" src="https://github.com/user-attachments/assets/5541cdaf-f7f1-4bb1-b888-41ca3fb43d02" />
     <p/>
     <p>Your all-in-one for beautiful, lightweight, prod-ready CLIs</p>
-    <a href="https://pypi.org/project/clypi/" target="_blank">
+    <a href="https://pypi.org/project/clypi/" target="_blank" style="text-decoration:none;">
         <img src="https://badge.fury.io/py/clypi.svg" />
     </a>
-    <a href="https://github.com/danimelchor/clypi?tab=MIT-1-ov-file">
+    <a href="https://github.com/danimelchor/clypi?tab=MIT-1-ov-file" style="text-decoration:none;">
         <img src="https://img.shields.io/badge/license-MIT-blue" />
     </a>
-    <a href="https://danimelchor.github.io/clypi/learn/getting_started/" target="_blank">
+    <a href="https://danimelchor.github.io/clypi/learn/getting_started/" target="_blank" style="text-decoration:none;">
         <img src="https://img.shields.io/badge/docs-latest-purple" />
     </a>
-    <a href="https://pypi.org/project/clypi/" target="_blank">
+    <a href="https://pypi.org/project/clypi/" target="_blank" style="text-decoration:none;">
         <img src="https://img.shields.io/pypi/dm/clypi" />
     </a>
     <img src="https://img.shields.io/github/contributors/danimelchor/clypi" />
