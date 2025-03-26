@@ -14,7 +14,7 @@
         <link rel="prev" href="../prompts/">
       
       
-        <link rel="next" href="../../planned_work/">
+        <link rel="next" href="../../packaging/">
       
       
       <link rel="icon" href="../../assets/images/favicon.png">
@@ -43,10 +43,12 @@
         
         
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
-        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CJetBrains+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"JetBrains Mono"}</style>
       
     
+    
+      <link rel="stylesheet" href="../../stylesheets/extra.css">
     
       <link rel="stylesheet" href="../../termynal.css">
     
@@ -57,7 +59,16 @@
     
     
     
-  </head>
+   <link href="../../assets/stylesheets/glightbox.min.css" rel="stylesheet"/><style>
+    html.glightbox-open { overflow: initial; height: 100%; }
+    .gslide-title { margin-top: 0px; user-select: text; }
+    .gslide-desc { color: #666; user-select: text; }
+    .gslide-image img { background: white; }
+    .gscrollbar-fixer { padding-right: 15px; }
+    .gdesc-inner { font-size: 0.75rem; }
+    body[data-md-color-scheme="slate"] .gdesc-inner { background: var(--md-default-bg-color);}
+    body[data-md-color-scheme="slate"] .gslide-title { color: var(--md-default-fg-color);}
+    body[data-md-color-scheme="slate"] .gslide-desc { color: var(--md-default-fg-color);}</style> <script src="../../assets/javascripts/glightbox.min.js"></script></head>
   
   
     
@@ -65,7 +76,7 @@
     
     
     
-    <body dir="ltr" data-md-color-scheme="slate" data-md-color-primary="blue-grey" data-md-color-accent="deep-purple">
+    <body dir="ltr" data-md-color-scheme="slate" data-md-color-primary="deep-purple" data-md-color-accent="purple">
   
     
     <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
@@ -86,9 +97,7 @@
     
       
 
-  
-
-<header class="md-header md-header--shadow" data-md-component="header">
+<header class="md-header" data-md-component="header">
   <nav class="md-header__inner md-grid" aria-label="Header">
     <a href="../.." title="Clypi" class="md-header__button md-logo" aria-label="Clypi" data-md-component="logo">
       
@@ -186,6 +195,111 @@
       
         
           
+            
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../.." class="md-tabs__link">
+        
+  
+    
+  
+  Clypi
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../learn/install/" class="md-tabs__link">
+          
+  
+    
+  
+  Learn
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+    
+  
+  
+    
+    
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="../config/" class="md-tabs__link">
+          
+  
+    
+  
+  API
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../packaging/" class="md-tabs__link">
+        
+  
+    
+  
+  Packaging
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../about/why/" class="md-tabs__link">
+          
+  
+    
+  
+  About
+
+        </a>
+      </li>
+    
+  
+
+      
+    </ul>
+  </div>
+</nav>
+          
         
       
       <main class="md-main" data-md-component="main">
@@ -199,8 +313,12 @@
                     
 
 
+  
 
-<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+
+  
+
+<nav class="md-nav md-nav--primary md-nav--lifted md-nav--integrated" aria-label="Navigation" data-md-level="0">
   <label class="md-nav__title" for="__drawer">
     <a href="../.." title="Clypi" class="md-nav__button md-logo" aria-label="Clypi" data-md-component="logo">
       
@@ -252,17 +370,164 @@
   
   
   
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    Learn
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            Learn
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
     <li class="md-nav__item">
-      <a href="../../tutorial/" class="md-nav__link">
+      <a href="../../learn/install/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
-    Tutorial
+    Install
     
   </span>
   
 
       </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../learn/getting_started/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Getting Started
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../learn/advanced_arguments/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Advanced Arguments
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../learn/beautiful_uis/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Beautiful UIs
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../learn/configuration/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Configuring clypi
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
     </li>
   
 
@@ -292,15 +557,21 @@
       
     
     
+      
+        
+        
+      
+      
     
-    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
       
         
         
         <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" checked>
         
           
-          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="">
             
   
   <span class="md-ellipsis">
@@ -619,7 +890,95 @@
   
   
     <li class="md-nav__item">
-      <a href="../../planned_work/" class="md-nav__link">
+      <a href="../../packaging/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Packaging
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" >
+        
+          
+          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    About
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5">
+            <span class="md-nav__icon md-icon"></span>
+            About
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../about/why/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Why Clypi?
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../about/planned_work/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -632,6 +991,14 @@
     </li>
   
 
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
     
   </ul>
 </nav>
@@ -639,147 +1006,6 @@
                 </div>
               </div>
             
-            
-              
-              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
-                <div class="md-sidebar__scrollwrap">
-                  <div class="md-sidebar__inner">
-                    
-
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#int" class="md-nav__link">
-    <span class="md-ellipsis">
-      Int
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#float" class="md-nav__link">
-    <span class="md-ellipsis">
-      Float
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#bool" class="md-nav__link">
-    <span class="md-ellipsis">
-      Bool
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#str" class="md-nav__link">
-    <span class="md-ellipsis">
-      Str
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#datetime" class="md-nav__link">
-    <span class="md-ellipsis">
-      DateTime
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#timedelta" class="md-nav__link">
-    <span class="md-ellipsis">
-      TimeDelta
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#path" class="md-nav__link">
-    <span class="md-ellipsis">
-      Path
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#list" class="md-nav__link">
-    <span class="md-ellipsis">
-      List
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#tuple" class="md-nav__link">
-    <span class="md-ellipsis">
-      Tuple
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#union" class="md-nav__link">
-    <span class="md-ellipsis">
-      Union
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#literal" class="md-nav__link">
-    <span class="md-ellipsis">
-      Literal
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#enum" class="md-nav__link">
-    <span class="md-ellipsis">
-      Enum
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#from_type" class="md-nav__link">
-    <span class="md-ellipsis">
-      from_type
-    </span>
-  </a>
-  
-</li>
-      
-    </ul>
-  
-</nav>
-                  </div>
-                </div>
-              </div>
             
           
           
@@ -826,7 +1052,7 @@
 <li><code>nonnegative</code>: The integer must be greater than or equal to 0</li>
 </ul>
 <p>Examples:</p>
-<!--- mdtest -->
+<!-- mdtest -->
 <blockquote>
 <div class="language-python highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="c1"># 3 (OK), 10 (OK), 2 (not OK), 11 (not OK)</span>
 </span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="n">cp</span><span class="o">.</span><span class="n">Int</span><span class="p">(</span><span class="n">lte</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">gt</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
@@ -861,7 +1087,7 @@ Parameters:</p>
 <li><code>nonnegative</code>: The float must be greater than or equal to 0</li>
 </ul>
 <p>Examples:</p>
-<!--- mdtest -->
+<!-- mdtest -->
 <blockquote>
 <div class="language-python highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="c1"># 3 (OK), 10 (OK), 2 (not OK), 11 (not OK)</span>
 </span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a><span class="n">cp</span><span class="o">.</span><span class="n">Float</span><span class="p">(</span><span class="n">lte</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">gt</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
@@ -897,7 +1123,7 @@ Parameters:</p>
 <li><code>regex_group</code>: (required <code>regex</code>) extracts the group from the regular expression</li>
 </ul>
 <p>Examples:</p>
-<!--- mdtest -->
+<!-- mdtest -->
 <blockquote>
 <div class="language-python highlight"><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="n">cp</span><span class="o">.</span><span class="n">Str</span><span class="p">(</span><span class="n">regex</span><span class="o">=</span><span class="sa">r</span><span class="s2">&quot;[a-z]([0-9])&quot;</span><span class="p">,</span> <span class="n">regex_group</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span> <span class="c1"># f1 -&gt; 1</span>
 </span></code></pre></div>
@@ -930,7 +1156,7 @@ Parameters:</p>
 - <code>max</code>: The maximum value the timedelta can be (same as lte)
 - <code>min</code>: The maximum value the timedelta can be (same as gte)</p>
 <p>Examples:</p>
-<!--- mdtest -->
+<!-- mdtest -->
 <blockquote>
 <div class="language-python highlight"><pre><span></span><code><span id="__span-10-1"><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a><span class="c1"># 1 day (OK), 2 weeks (OK), 1 second (not OK)</span>
 </span><span id="__span-10-2"><a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a><span class="n">cp</span><span class="o">.</span><span class="n">TimeDelta</span><span class="p">(</span><span class="n">gte</span><span class="o">=</span><span class="n">timedelta</span><span class="p">(</span><span class="n">days</span><span class="o">=</span><span class="mi">1</span><span class="p">))</span>
@@ -947,7 +1173,7 @@ Parameters:</p>
 <li><code>exists</code>: If <code>True</code>, it checks whether the provided path exists.</li>
 </ul>
 <p>Examples:</p>
-<!--- mdtest -->
+<!-- mdtest -->
 <blockquote>
 <div class="language-python highlight"><pre><span></span><code><span id="__span-12-1"><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a><span class="n">cp</span><span class="o">.</span><span class="n">Path</span><span class="p">(</span><span class="n">exists</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 </span></code></pre></div>
@@ -957,7 +1183,7 @@ Parameters:</p>
 <div class="language-python highlight"><pre><span></span><code><span id="__span-13-1"><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a><span class="n">List</span><span class="p">(</span><span class="n">inner</span><span class="p">:</span> <span class="n">Parser</span><span class="p">[</span><span class="n">T</span><span class="p">])</span>
 </span></code></pre></div>
 <p>Examples:</p>
-<!--- mdtest -->
+<!-- mdtest -->
 <blockquote>
 <div class="language-python highlight"><pre><span></span><code><span id="__span-14-1"><a id="__codelineno-14-1" name="__codelineno-14-1" href="#__codelineno-14-1"></a><span class="n">cp</span><span class="o">.</span><span class="n">List</span><span class="p">(</span><span class="n">cp</span><span class="o">.</span><span class="n">Int</span><span class="p">())</span>
 </span></code></pre></div>
@@ -971,7 +1197,7 @@ Parameters:</p>
 <div class="language-python highlight"><pre><span></span><code><span id="__span-15-1"><a id="__codelineno-15-1" name="__codelineno-15-1" href="#__codelineno-15-1"></a><span class="n">Tuple</span><span class="p">(</span><span class="o">*</span><span class="n">inner</span><span class="p">:</span> <span class="n">Parser</span><span class="p">,</span> <span class="n">num</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span>
 </span></code></pre></div>
 <p>Examples:</p>
-<!--- mdtest -->
+<!-- mdtest -->
 <blockquote>
 <div class="language-python highlight"><pre><span></span><code><span id="__span-16-1"><a id="__codelineno-16-1" name="__codelineno-16-1" href="#__codelineno-16-1"></a><span class="c1"># tuple[str, ...]</span>
 </span><span id="__span-16-2"><a id="__codelineno-16-2" name="__codelineno-16-2" href="#__codelineno-16-2"></a><span class="n">cp</span><span class="o">.</span><span class="n">Tuple</span><span class="p">(</span><span class="n">cp</span><span class="o">.</span><span class="n">Str</span><span class="p">())</span>
@@ -990,7 +1216,7 @@ Parameters:</p>
 <div class="language-python highlight"><pre><span></span><code><span id="__span-17-1"><a id="__codelineno-17-1" name="__codelineno-17-1" href="#__codelineno-17-1"></a><span class="n">Union</span><span class="p">(</span><span class="n">left</span><span class="p">:</span> <span class="n">Parser</span><span class="p">[</span><span class="n">X</span><span class="p">],</span> <span class="n">right</span><span class="p">:</span> <span class="n">Parser</span><span class="p">[</span><span class="n">Y</span><span class="p">])</span>
 </span></code></pre></div>
 <p>You can also use the short hand <code>|</code> syntax for two parsers, e.g.:</p>
-<!--- mdtest -->
+<!-- mdtest -->
 <blockquote>
 <div class="language-python highlight"><pre><span></span><code><span id="__span-18-1"><a id="__codelineno-18-1" name="__codelineno-18-1" href="#__codelineno-18-1"></a><span class="n">cp</span><span class="o">.</span><span class="n">Union</span><span class="p">(</span><span class="n">cp</span><span class="o">.</span><span class="n">Path</span><span class="p">(</span><span class="n">exists</span><span class="o">=</span><span class="kc">True</span><span class="p">),</span> <span class="n">cp</span><span class="o">.</span><span class="n">Str</span><span class="p">())</span>
 </span><span id="__span-18-2"><a id="__codelineno-18-2" name="__codelineno-18-2" href="#__codelineno-18-2"></a><span class="n">cp</span><span class="o">.</span><span class="n">Path</span><span class="p">(</span><span class="n">exists</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span> <span class="o">|</span> <span class="n">cp</span><span class="o">.</span><span class="n">Str</span><span class="p">()</span>
@@ -1001,7 +1227,7 @@ Parameters:</p>
 <div class="language-python highlight"><pre><span></span><code><span id="__span-19-1"><a id="__codelineno-19-1" name="__codelineno-19-1" href="#__codelineno-19-1"></a><span class="n">Literal</span><span class="p">(</span><span class="o">*</span><span class="n">values</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Any</span><span class="p">)</span>
 </span></code></pre></div>
 <p>Examples:</p>
-<!--- mdtest -->
+<!-- mdtest -->
 <blockquote>
 <div class="language-python highlight"><pre><span></span><code><span id="__span-20-1"><a id="__codelineno-20-1" name="__codelineno-20-1" href="#__codelineno-20-1"></a><span class="n">cp</span><span class="o">.</span><span class="n">Literal</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="s2">&quot;foo&quot;</span><span class="p">)</span>
 </span></code></pre></div>
@@ -1011,7 +1237,7 @@ Parameters:</p>
 <div class="language-python highlight"><pre><span></span><code><span id="__span-21-1"><a id="__codelineno-21-1" name="__codelineno-21-1" href="#__codelineno-21-1"></a><span class="n">Enum</span><span class="p">(</span><span class="n">enum</span><span class="p">:</span> <span class="nb">type</span><span class="p">[</span><span class="n">enum</span><span class="o">.</span><span class="n">Enum</span><span class="p">])</span>
 </span></code></pre></div>
 <p>Examples:</p>
-<!--- mdtest -->
+<!-- mdtest -->
 <blockquote>
 <div class="language-python highlight"><pre><span></span><code><span id="__span-22-1"><a id="__codelineno-22-1" name="__codelineno-22-1" href="#__codelineno-22-1"></a><span class="k">class</span><span class="w"> </span><span class="nc">Color</span><span class="p">(</span><span class="n">Enum</span><span class="p">):</span>
 </span><span id="__span-22-2"><a id="__codelineno-22-2" name="__codelineno-22-2" href="#__codelineno-22-2"></a>    <span class="n">RED</span> <span class="o">=</span> <span class="mi">1</span>
@@ -1026,7 +1252,7 @@ Parameters:</p>
 </span><span id="__span-23-2"><a id="__codelineno-23-2" name="__codelineno-23-2" href="#__codelineno-23-2"></a><span class="k">def</span><span class="w"> </span><span class="nf">from_type</span><span class="p">(</span><span class="n">_type</span><span class="p">:</span> <span class="nb">type</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Parser</span><span class="p">:</span> <span class="o">...</span>
 </span></code></pre></div>
 <p>Examples:</p>
-<!--- mdtest -->
+<!-- mdtest -->
 <blockquote>
 <div class="language-python highlight"><pre><span></span><code><span id="__span-24-1"><a id="__codelineno-24-1" name="__codelineno-24-1" href="#__codelineno-24-1"></a><span class="k">assert</span> <span class="n">cp</span><span class="o">.</span><span class="n">from_type</span><span class="p">(</span><span class="nb">bool</span><span class="p">)</span> <span class="o">==</span> <span class="n">cp</span><span class="o">.</span><span class="n">Bool</span><span class="p">()</span>
 </span></code></pre></div>
@@ -1130,16 +1356,18 @@ Parameters:</p>
       <div class="md-dialog__inner md-typeset"></div>
     </div>
     
-      <div class="md-progress" data-md-component="progress" role="progressbar"></div>
     
-    
-    <script id="__config" type="application/json">{"base": "../..", "features": ["content.code.annotate", "content.code.copy", "content.code.select", "content.tooltips", "navigation.indexes", "navigation.instant", "navigation.instant.progress", "navigation.path", "navigation.top", "navigation.tracking", "search.highlight", "search.share"], "search": "../../assets/javascripts/workers/search.f8cc74c7.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
+    <script id="__config" type="application/json">{"base": "../..", "features": ["content.code.annotate", "content.code.copy", "content.code.select", "content.tooltips", "navigation.indexes", "navigation.instant", "navigation.path", "navigation.tabs", "navigation.top", "navigation.tracking", "search.highlight", "search.share", "toc.integrate", "toc.follow"], "search": "../../assets/javascripts/workers/search.f8cc74c7.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
     
     
       <script src="../../assets/javascripts/bundle.c8b220af.min.js"></script>
       
+        <script src="../../javascripts/spinner.js"></script>
+      
         <script src="../../termynal.js"></script>
       
     
-  </body>
+  <script id="init-glightbox">const lightbox = GLightbox({"touchNavigation": true, "loop": false, "zoomable": true, "draggable": true, "openEffect": "zoom", "closeEffect": "zoom", "slideEffect": "slide"});
+document$.subscribe(() => { lightbox.reload() });
+</script></body>
 </html>
