@@ -15,7 +15,7 @@ You can see all the spinners in action by running `uv run -m examples.spinner`. 
 A spinner indicating that something is happening behind the scenes. It can be used as a context manager or [like a decorator](#spinner-decorator). The context manager usage is like so:
 
 <!--- mdtest -->
-```python
+```python hl_lines="5"
 import asyncio
 from clypi import Spinner
 
@@ -107,7 +107,7 @@ This is just a utility decorator that let's you wrap functions so that a spinner
 displays while they run. `spinner` accepts the same arguments as the context manager [`Spinner`](#spinner).
 
 <!--- mdtest -->
-```python
+```python hl_lines="4"
 import asyncio
 from clypi import spinner
 

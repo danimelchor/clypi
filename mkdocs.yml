@@ -30,7 +30,6 @@ theme:
 
 nav:
  - Clypi: index.md
- - Tutorial: tutorial.md
  - API:
    - Configuration: api/config.md
    - CLI: api/cli.md
@@ -38,6 +37,7 @@ nav:
    - Colors: api/colors.md
    - Prompts: api/prompts.md
    - Parsers: api/parsers.md
+ - Packaging: packaging.md
  - Planned work: planned_work.md
 
 hooks:
