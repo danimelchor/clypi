@@ -11,7 +11,7 @@ I want to make sure almost every code block in the clypi repository is runnable 
 
 ### Non-input tests
 ````
-<!--- mdtest -->
+<!-- mdtest -->
 ```python
 assert 1 + 1 == 2, f"Expected 1 + 1 to equal 2"
 ```
@@ -19,7 +19,7 @@ assert 1 + 1 == 2, f"Expected 1 + 1 to equal 2"
 
 ### Command-line tests
 ````
-<!--- mdtest-args --foo 2 -->
+<!-- mdtest-args --foo 2 -->
 ```python
 import sys
 assert sys.argv[1] == '--foo', f"Expected the first arg to be 'foo'"
@@ -28,7 +28,7 @@ assert sys.argv[1] == '--foo', f"Expected the first arg to be 'foo'"
 
 ### User input tests
 ````
-<!--- mdtest-stdin hello world -->
+<!-- mdtest-stdin hello world -->
 ```python
 import sys
 assert input() == 'hello world', f"Expected the stdin to be 'hello world'"

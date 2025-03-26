@@ -1,3 +1,6 @@
+!!! tip
+    Follow the [Beautiful UIs guide](../learn/beautiful_uis.md) for examples.!
+
 ### `ColorType`
 
 ```python
@@ -41,14 +44,6 @@ class Styler(
 ```
 Returns a reusable function to style text.
 
-Examples:
-<!--- mdtest -->
-> ```python
-> wrong = clypi.Styler(fg="red", strikethrough=True)
-> print("The old version said", wrong("Pluto was a planet"))
-> print("The old version said", wrong("the Earth was flat"))
-> ```
-
 ### `style`
 ```python
 def style(
@@ -68,11 +63,6 @@ def style(
 ```
 Styles text and returns the styled string.
 
-Examples:
-<!--- mdtest -->
-> ```python
-> print(clypi.style("This is blue", fg="blue"), "and", clypi.style("this is red", fg="red"))
-> ```
 
 ### `print`
 
@@ -95,9 +85,3 @@ def cprint(
 ) -> None
 ```
 Styles and prints colored and styled text directly.
-
-Examples:
-<!--- mdtest -->
-> ```python
-> clypi.cprint("Some colorful text", fg="green", reverse=True, bold=True, italic=True)
-> ```

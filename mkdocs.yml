@@ -5,9 +5,12 @@ repo_url: https://github.com/danimelchor/clypi
 
 theme:
   name: material
+  font:
+    text: Roboto
+    code: JetBrains Mono
   palette:
     scheme: slate
-    primary: black
+    primary: deep purple
     accent: purple
   features:
     - content.code.annotate
@@ -16,32 +19,53 @@ theme:
     - content.tooltips
     - navigation.indexes
     - navigation.instant
-    - navigation.instant.progress
     - navigation.path
+    - navigation.tabs
     - navigation.top
     - navigation.tracking
     - search.highlight
     - search.share
+    - toc.integrate
+    - toc.follow
 
 nav:
- - Clypi: index.md
- - Tutorial: tutorial.md
- - API:
-   - Configuration: api/config.md
-   - CLI: api/cli.md
-   - UI Components: api/components.md
-   - Colors: api/colors.md
-   - Prompts: api/prompts.md
-   - Parsers: api/parsers.md
- - Planned work: planned_work.md
+  - Clypi: index.md
+  - Learn:
+    - Install: learn/install.md
+    - Getting Started: learn/getting_started.md
+    - Advanced Arguments: learn/advanced_arguments.md
+    - Beautiful UIs: learn/beautiful_uis.md
+    - Configuring clypi: learn/configuration.md
+  - API:
+    - Configuration: api/config.md
+    - CLI: api/cli.md
+    - UI Components: api/components.md
+    - Colors: api/colors.md
+    - Prompts: api/prompts.md
+    - Parsers: api/parsers.md
+  - Packaging: packaging.md
+  - About:
+    - Why Clypi?: about/why.md
+    - Planned work: about/planned_work.md
+
+hooks:
+  - docs/hooks/helpers.py
+
+extra_css:
+  - stylesheets/extra.css
+
+extra_javascript:
+  - javascripts/spinner.js
 
 plugins:
   - search
   - termynal
+  - glightbox
 
 markdown_extensions:
   - admonition
   - attr_list
+  - github-callouts
   - md_in_html
   - pymdownx.details
   - pymdownx.highlight:
@@ -49,12 +73,17 @@ markdown_extensions:
       line_spans: __span
       pygments_lang_class: true
   - pymdownx.inlinehilite
+  - pymdownx.emoji:
+      emoji_generator: !!python/name:material.extensions.emoji.to_svg
+      emoji_index: !!python/name:material.extensions.emoji.twemoji
   - pymdownx.snippets
   - pymdownx.superfences
   - pymdownx.tasklist:
       custom_checkbox: true
   - toc:
       permalink: true
+  - pymdownx.tabbed:
+      alternate_style: true
 
 extra:
   social:

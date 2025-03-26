@@ -36,7 +36,7 @@ Parameters:
 - `nonnegative`: The integer must be greater than or equal to 0
 
 Examples:
-<!--- mdtest -->
+<!-- mdtest -->
 > ```python
 > # 3 (OK), 10 (OK), 2 (not OK), 11 (not OK)
 > cp.Int(lte=10, gt=2)
@@ -74,7 +74,7 @@ Parameters:
 - `nonnegative`: The float must be greater than or equal to 0
 
 Examples:
-<!--- mdtest -->
+<!-- mdtest -->
 > ```python
 > # 3 (OK), 10 (OK), 2 (not OK), 11 (not OK)
 > cp.Float(lte=10, gt=2)
@@ -119,7 +119,7 @@ Parameters:
 
 Examples:
 
-<!--- mdtest -->
+<!-- mdtest -->
 > ```python
 > cp.Str(regex=r"[a-z]([0-9])", regex_group=1) # f1 -> 1
 > ```
@@ -159,7 +159,7 @@ TimeDelta(
 - `min`: The maximum value the timedelta can be (same as gte)
 
 Examples:
-<!--- mdtest -->
+<!-- mdtest -->
 > ```python
 > # 1 day (OK), 2 weeks (OK), 1 second (not OK)
 > cp.TimeDelta(gte=timedelta(days=1))
@@ -180,7 +180,7 @@ Parameters:
 - `exists`: If `True`, it checks whether the provided path exists.
 
 Examples:
-<!--- mdtest -->
+<!-- mdtest -->
 > ```python
 > cp.Path(exists=True)
 > ```
@@ -194,7 +194,7 @@ List(inner: Parser[T])
 ```
 
 Examples:
-<!--- mdtest -->
+<!-- mdtest -->
 > ```python
 > cp.List(cp.Int())
 > ```
@@ -212,7 +212,7 @@ Tuple(*inner: Parser, num: int | None = None)
 ```
 
 Examples:
-<!--- mdtest -->
+<!-- mdtest -->
 > ```python
 > # tuple[str, ...]
 > cp.Tuple(cp.Str())
@@ -235,7 +235,7 @@ Union(left: Parser[X], right: Parser[Y])
 ```
 
 You can also use the short hand `|` syntax for two parsers, e.g.:
-<!--- mdtest -->
+<!-- mdtest -->
 > ```python
 > cp.Union(cp.Path(exists=True), cp.Str())
 > cp.Path(exists=True) | cp.Str()
@@ -250,7 +250,7 @@ Literal(*values: t.Any)
 ```
 
 Examples:
-<!--- mdtest -->
+<!-- mdtest -->
 > ```python
 > cp.Literal(1, "foo")
 > ```
@@ -264,7 +264,7 @@ Enum(enum: type[enum.Enum])
 ```
 
 Examples:
-<!--- mdtest -->
+<!-- mdtest -->
 > ```python
 > class Color(Enum):
 >     RED = 1
@@ -283,7 +283,7 @@ def from_type(_type: type) -> Parser: ...
 ```
 
 Examples:
-<!--- mdtest -->
+<!-- mdtest -->
 > ```python
 > assert cp.from_type(bool) == cp.Bool()
 > ```

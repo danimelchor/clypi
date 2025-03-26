@@ -118,9 +118,12 @@ The TLDR is `uv build` then `uv publish`, but you'll want to set up your project
 
 To build a shiv with uv and clypi given the above `zit` example, run:
 
+<!-- termynal -->
 ```
 $ uvx shiv -c zit -o zit-bin .
+
 $ ./zit-bin --verbose
+Sorry I don't know how to use git, it's too hard! ...
 ```
 
 You now have a binary (`zit-bin`) that you can distribute and run like any other binary. You'll have to manually add it to a `$PATH` location though ([What is $PATH?](https://askubuntu.com/a/551993)).
