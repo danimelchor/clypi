@@ -1106,7 +1106,7 @@ and parsed.</p>
 <li><code>prompt</code>: if defined, it will ask the user to provide input if not already defined in the command line args</li>
 <li><code>hide_input</code>: whether the input shouldn't be displayed as the user types (for passwords, API keys, etc.)</li>
 <li><code>max_attempts</code>: how many times to ask the user before giving up and raising</li>
-<li><code>group</code>: optionally define the name of a group to display the option in. Adding an option will automatically display the options in a different section of the help page (for an example, see the pictures in <a href="#formatter">formatter</a>).</li>
+<li><code>group</code>: optionally define the name of a group to display the option in. Adding an option will automatically display the options in a different section of the help page (see the <a href="../../learn/getting_started/#argument-groups">Argument groups</a> docs).</li>
 <li><code>defer</code> (advanced): defers the fetching of a value until the value is used. This can be helpful to express complex dependencies between arguments. For example, you may not want to prompt if a different option was passed in (see <code>examples/cli_deferred.py</code>).</li>
 </ul>
 <h2 id="command"><code>Command</code><a class="headerlink" href="#command" title="Permanent link">&para;</a></h2>
