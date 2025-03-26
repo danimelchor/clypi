@@ -1,4 +1,4 @@
-.PHONY: publish tag
+.PHONY: publish tag docs
 
 tag:
 	./scripts/tag
