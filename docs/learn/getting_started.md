@@ -29,7 +29,7 @@ care about the position they are in (hence the name positional).
 In this example, whatever the first argument to our program is will be passed in as `name`,
 and the second argument will be passed as `age` since they're defined in that order.
 
-<!-- mdtest -->
+<!-- mdtest-args foo 1 -->
 ```python title="cli.py" hl_lines="4-5"
 from clypi import Command, Positional
 
@@ -68,7 +68,7 @@ Hello, Daniel. You are 22!
 
 Options are named arguments, and they are usually optional. A user of your CLI must provide the name of the argument and the value(s) to assign to it.
 
-<!-- mdtest -->
+<!-- mdtest-args foo -->
 ```python title="cli.py" hl_lines="5"
 from clypi import Command, Positional
 
@@ -122,7 +122,7 @@ to help our users understand what our CLI is and how to use it.
 To document the overall command we can use Python docstrings. To document each argument
 and option we can make user of clypi's `arg` helper.
 
-<!-- mdtest -->
+<!-- mdtest-args foo --age 10 -->
 ```python title="cli.py" hl_lines="4 6 7"
 from clypi import Command, Positional, arg
 
@@ -168,7 +168,7 @@ to select which tool to use inside your CLI.
 Creating subcommands is very easy. Just create more commands and then define a class-level attribute
 in your main CLI with the name `subcommand`:
 
-<!-- mdtest -->
+<!-- mdtest-args wave daniel -->
 ```python title="cli.py" hl_lines="19"
 from clypi import Command, Positional, arg
 
@@ -228,7 +228,7 @@ Sometimes we want to make arguments required (by not providing a default) but we
 force our users to pass in an argument directly. We might want to ask them in a more user-friendly
 way. For that, we can set up a prompt in case the user does not manually pass in a value:
 
-<!-- mdtest -->
+<!-- mdtest-stdin Daniel -->
 ```python title="cli.py" hl_lines="5"
 from clypi import Command, Positional, arg
 
@@ -260,7 +260,7 @@ Hello, Daniel!
 
 CLypi comes with built-in parsers for all common Python types. See the [`Parsers`](../api/parsers.md) section in the API docs to find all supported types and validations. Most often, using a normal Python type will automatically load the right parser, but if you want more control or extra features you can use these directly:
 
-<!-- mdtest -->
+<!-- mdtest-args . -->
 ```python hl_lines="2 6"
 from clypi import Command, arg
 import clypi.parsers as cp

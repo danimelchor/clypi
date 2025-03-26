@@ -33,8 +33,9 @@ nav:
   - Learn:
     - Install: learn/install.md
     - Getting Started: learn/getting_started.md
-    - Advanced Configuration: learn/advanced_configuration.md
+    - Advanced Arguments: learn/advanced_arguments.md
     - Beautiful UIs: learn/beautiful_uis.md
+    - Configuring clypi: learn/configuration.md
   - API:
     - Configuration: api/config.md
     - CLI: api/cli.md
@@ -59,6 +60,7 @@ extra_javascript:
 plugins:
   - search
   - termynal
+  - glightbox
 
 markdown_extensions:
   - admonition

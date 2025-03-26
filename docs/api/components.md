@@ -90,19 +90,19 @@ with a particular color and prefix.
 
 Examples:
 <!-- mdtest -->
-> ```python
-> async def main():
->     async with Spinner("Doing something") as s:
->         proc = await asyncio.create_subprocess_shell(
->             "for i in $(seq 1 10); do date && sleep 0.4; done;",
->             stdout=asyncio.subprocess.PIPE,
->             stderr=asyncio.subprocess.PIPE,
->         )
->         await asyncio.gather(
->             s.pipe(proc.stdout, color="blue", prefix="(stdout)"),
->             s.pipe(proc.stderr, color="red", prefix="(stdout)"),
->         )
-> ```
+```python
+async def main():
+    async with Spinner("Doing something") as s:
+        proc = await asyncio.create_subprocess_shell(
+            "for i in $(seq 1 10); do date && sleep 0.4; done;",
+            stdout=asyncio.subprocess.PIPE,
+            stderr=asyncio.subprocess.PIPE,
+        )
+        await asyncio.gather(
+            s.pipe(proc.stdout, color="blue", prefix="(stdout)"),
+            s.pipe(proc.stderr, color="red", prefix="(stdout)"),
+        )
+```
 
 #### `spinner` (decorator)
 
@@ -221,8 +221,8 @@ Parameters:
 
 Examples:
 
-> ```python
-> clypi.align("foo", "left", 10) # -> "foo       "
-> clypi.align("foo", "right", 10) # -> "          foo"
-> clypi.align("foo", "center", 10) # -> "   foo   "
->```
+```python
+ clypi.align("foo", "left", 10) # -> "foo       "
+ clypi.align("foo", "right", 10) # -> "          foo"
+ clypi.align("foo", "center", 10) # -> "   foo   "
+```
