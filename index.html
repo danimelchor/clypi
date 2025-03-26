@@ -83,7 +83,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#clypi" class="md-skip">
+        <a href="#docs" class="md-skip">
           Skip to content
         </a>
       
@@ -354,8 +354,6 @@
       <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
       
       
-        
-      
       
         <label class="md-nav__link md-nav__link--active" for="__toc">
           
@@ -386,14 +384,21 @@
   
   
   
-    
-  
   
     <label class="md-nav__title" for="__toc">
       <span class="md-nav__icon md-icon"></span>
       Table of contents
     </label>
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#docs" class="md-nav__link">
+    <span class="md-ellipsis">
+      📖 Docs
+    </span>
+  </a>
+  
+</li>
       
         <li class="md-nav__item">
   <a href="#what-is-clypi" class="md-nav__link">
@@ -452,15 +457,6 @@
         
       </ul>
     </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#docs" class="md-nav__link">
-    <span class="md-ellipsis">
-      📖 Docs
-    </span>
-  </a>
   
 </li>
       
@@ -1046,20 +1042,31 @@
   
 
 
-<h1 id="clypi">🦄 clypi<a class="headerlink" href="#clypi" title="Permanent link">&para;</a></h1>
+  <h1>Clypi</h1>
+
 <!-- docs/asserts/logo.png -->
 <div align="center">
     <p>
-        <a class="glightbox" href="https://github.com/user-attachments/assets/5541cdaf-f7f1-4bb1-b888-41ca3fb43d02" data-type="image" data-width="auto" data-height="auto" data-desc-position="bottom"><img width="50%" src="https://github.com/user-attachments/assets/5541cdaf-f7f1-4bb1-b888-41ca3fb43d02" /></a>
+        <a class="glightbox" href="https://github.com/user-attachments/assets/5541cdaf-f7f1-4bb1-b888-41ca3fb43d02" data-type="image" data-width="auto" data-height="auto" data-desc-position="bottom"><img width="50%" src="https://github.com/user-attachments/assets/5541cdaf-f7f1-4bb1-b888-41ca3fb43d02" alt="Clypi logo" /></a>
     <p/>
     <p>Your all-in-one for beautiful, lightweight, prod-ready CLIs</p>
-    <a class="glightbox" href="https://badge.fury.io/py/clypi.svg" data-type="image" data-width="auto" data-height="auto" data-desc-position="bottom"><img src="https://badge.fury.io/py/clypi.svg" /></a>
-    <a class="glightbox" href="https://img.shields.io/badge/license-MIT-blue" data-type="image" data-width="auto" data-height="auto" data-desc-position="bottom"><img src="https://img.shields.io/badge/license-MIT-blue" /></a>
-    <a class="glightbox" href="https://img.shields.io/badge/docs-latest-purple" data-type="image" data-width="auto" data-height="auto" data-desc-position="bottom"><img src="https://img.shields.io/badge/docs-latest-purple" /></a>
-    <a class="glightbox" href="https://img.shields.io/pypi/dm/clypi" data-type="image" data-width="auto" data-height="auto" data-desc-position="bottom"><img src="https://img.shields.io/pypi/dm/clypi" /></a>
-    <a class="glightbox" href="https://img.shields.io/github/contributors/danimelchor/clypi" data-type="image" data-width="auto" data-height="auto" data-desc-position="bottom"><img src="https://img.shields.io/github/contributors/danimelchor/clypi" /></a>
+    <a href="https://pypi.org/project/clypi/" target="_blank">
+        <img src="https://badge.fury.io/py/clypi.svg" alt="pypi project" />
+    </a>
+    <a href="https://github.com/danimelchor/clypi?tab=MIT-1-ov-file">
+        <img src="https://img.shields.io/badge/license-MIT-blue" alt="MIT license" />
+    </a>
+    <a href="https://danimelchor.github.io/clypi/learn/getting_started/" target="_blank">
+        <img src="https://img.shields.io/badge/docs-latest-purple" alt="docs" />
+    </a>
+    <a href="https://pypi.org/project/clypi/" target="_blank">
+        <img src="https://img.shields.io/pypi/dm/clypi" alt="pypi monthly downloads" />
+    </a>
+    <a class="glightbox" href="https://img.shields.io/github/contributors/danimelchor/clypi" data-type="image" data-width="auto" data-height="auto" data-desc-position="bottom"><img src="https://img.shields.io/github/contributors/danimelchor/clypi" alt="contributors" /></a>
 </div>
 
+<h2 id="docs">📖 Docs<a class="headerlink" href="#docs" title="Permanent link">&para;</a></h2>
+<p>Read <a href="https://danimelchor.github.io/clypi/learn/getting_started/">our docs</a> to get started. You can also look at <a href="https://danimelchor.github.io/clypi/api/cli/">the API reference</a> for examples and a full API reference. Otherwise, feel free to browse the source code in the <a href="https://github.com/danimelchor/clypi">GitHub repository</a>.</p>
 <h2 id="what-is-clypi">What is clypi?<a class="headerlink" href="#what-is-clypi" title="Permanent link">&para;</a></h2>
 <p>I've been working with Python-based CLIs for several years with many users and strict quality requirements and always run into the sames problems with the go-to packages. Therefore, I decided to embark on a journey to build a lightweight, intuitive, pretty, and production ready framework. Here are the key features:</p>
 <ul>
@@ -1070,13 +1077,14 @@
 <li><strong>Configurable</strong>: clypi lets you configure almost everything you'd like to configure. You can create your own themes, help pages, error messages, and more!</li>
 </ul>
 <h3 id="define-arguments-with-type-annotations">Define Arguments with Type Annotations<a class="headerlink" href="#define-arguments-with-type-annotations" title="Permanent link">&para;</a></h3>
-<p>Just like <code>dataclass</code>, arguments are defined as class-level type annotations.</p>
+<p>Just like you do with <a href="https://docs.python.org/3/library/dataclasses.html">dataclasses</a>, clypi CLI arguments can defined as class-level type annotations.</p>
 <!-- mdtest -->
 <div class="language-python highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="k">class</span><span class="w"> </span><span class="nc">MyCli</span><span class="p">(</span><span class="n">Command</span><span class="p">):</span>
-</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>    <span class="n">verbose</span><span class="p">:</span> <span class="nb">bool</span>  <span class="c1"># Automatically parsed from CLI args!</span>
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>    <span class="n">name</span><span class="p">:</span> <span class="nb">str</span>  <span class="c1"># Automatically parsed as `--name &lt;NAME&gt;`.</span>
 </span></code></pre></div>
 <h3 id="need-more-control">Need more control?<a class="headerlink" href="#need-more-control" title="Permanent link">&para;</a></h3>
-<p>Use our <code>arg</code> helper and built-in parsers</p>
+<p>Use our <code>arg</code> helper and built-in parsers to define defaults, parsers,
+groups, and more!</p>
 <!-- mdtest -->
 <div class="language-python highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="k">class</span><span class="w"> </span><span class="nc">MyCli</span><span class="p">(</span><span class="n">Command</span><span class="p">):</span>
 </span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>    <span class="n">threads</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">arg</span><span class="p">(</span>
@@ -1112,8 +1120,6 @@
 <h3 id="getting-started">Getting started<a class="headerlink" href="#getting-started" title="Permanent link">&para;</a></h3>
 <div class="language-bash highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>uv<span class="w"> </span>add<span class="w"> </span>clypi<span class="w">  </span><span class="c1"># or `pip install clypi`</span>
 </span></code></pre></div>
-<h2 id="docs">📖 Docs<a class="headerlink" href="#docs" title="Permanent link">&para;</a></h2>
-<p>Read <a href="https://danimelchor.github.io/clypi/learn/getting_started/">our docs</a> to get started. You can also look at <a href="https://danimelchor.github.io/clypi/api/cli/">the API reference</a> for examples and a full API reference. If you want a full guide on how to create and distribute your own Python CLI, check our our <a href="https://danimelchor.github.io/clypi/packaging/">tutorial</a>.</p>
 <h2 id="beautiful-by-default">🪐 Beautiful by default<a class="headerlink" href="#beautiful-by-default" title="Permanent link">&para;</a></h2>
 <p>Clypi comes with pre-defined themes and modern features like suggestions on typos:</p>
 <div class="language-text highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>$ uv run -m examples.cli run run-seria
