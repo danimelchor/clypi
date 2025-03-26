@@ -8,7 +8,9 @@
     <p>Your all-in-one for beautiful, lightweight, prod-ready CLIs</p>
     <img src="https://badge.fury.io/py/clypi.svg" />
     <img src="https://img.shields.io/badge/license-MIT-blue" />
-    <img src="https://img.shields.io/badge/docs-latest-purple" />
+    <a href="https://danimelchor.github.io/clypi/learn/getting_started/">
+        <img src="https://img.shields.io/badge/docs-latest-purple" />
+    </a>
     <img src="https://img.shields.io/pypi/dm/clypi" />
     <img src="https://img.shields.io/github/contributors/danimelchor/clypi" />
 </div>
