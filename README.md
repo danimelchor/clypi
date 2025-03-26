@@ -1,13 +1,18 @@
 # 🦄 clypi
 
-[![PyPI version](https://badge.fury.io/py/clypi.svg)](https://badge.fury.io/py/clypi)
-[![License](https://img.shields.io/badge/license-MIT-blue)](https://opensource.org/license/mit)
-[![Docs](https://img.shields.io/badge/docs-latest-purple)](https://danimelchor.github.io/clypi/)
-[![PyPI - Downloads](https://img.shields.io/pypi/dm/clypi)](https://pypi.org/project/clypi/)
-[![Contributors](https://img.shields.io/github/contributors/danimelchor/clypi)](https://github.com/danimelchor/clypi/graphs/contributors)
-<!-- [![PyPI - Python Version](https://img.shields.io/pypi/pyversions/clypi.svg)](https://pypi.org/project/clypi/) -->
+<!-- docs/asserts/logo.png -->
+<div align="center">
+    <p>
+        <img width="50%" src="https://github.com/user-attachments/assets/5541cdaf-f7f1-4bb1-b888-41ca3fb43d02" />
+    <p/>
+    <p>Your all-in-one for beautiful, lightweight, prod-ready CLIs</p>
+    <img src="https://badge.fury.io/py/clypi.svg" />
+    <img src="https://img.shields.io/badge/license-MIT-blue" />
+    <img src="https://img.shields.io/badge/docs-latest-purple" />
+    <img src="https://img.shields.io/pypi/dm/clypi" />
+    <img src="https://img.shields.io/github/contributors/danimelchor/clypi" />
+</div>
 
-Your all-in-one for beautiful, lightweight, prod-ready CLIs
 
 ## What is clypi?
 
