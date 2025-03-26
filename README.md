@@ -6,14 +6,24 @@
         <img width="50%" src="https://github.com/user-attachments/assets/5541cdaf-f7f1-4bb1-b888-41ca3fb43d02" />
     <p/>
     <p>Your all-in-one for beautiful, lightweight, prod-ready CLIs</p>
-    <img src="https://badge.fury.io/py/clypi.svg" />
-    <img src="https://img.shields.io/badge/license-MIT-blue" />
-    <a href="https://danimelchor.github.io/clypi/learn/getting_started/">
+    <a href="https://pypi.org/project/clypi/" target="_blank">
+        <img src="https://badge.fury.io/py/clypi.svg" />
+    </a>
+    <a href="https://github.com/danimelchor/clypi?tab=MIT-1-ov-file">
+        <img src="https://img.shields.io/badge/license-MIT-blue" />
+    </a>
+    <a href="https://danimelchor.github.io/clypi/learn/getting_started/" target="_blank">
         <img src="https://img.shields.io/badge/docs-latest-purple" />
     </a>
-    <img src="https://img.shields.io/pypi/dm/clypi" />
+    <a href="https://pypi.org/project/clypi/" target="_blank">
+        <img src="https://img.shields.io/pypi/dm/clypi" />
+    </a>
     <img src="https://img.shields.io/github/contributors/danimelchor/clypi" />
 </div>
+
+## 📖 Docs
+
+Read [our docs](https://danimelchor.github.io/clypi/learn/getting_started/) to get started. You can also look at [the API reference](https://danimelchor.github.io/clypi/api/cli/) for examples and a full API reference. Otherwise, feel free to browse the source code in the [GitHub repository](https://github.com/danimelchor/clypi).
 
 
 ## What is clypi?
@@ -86,10 +96,6 @@ class Cli(Command):
 ```bash
 uv add clypi  # or `pip install clypi`
 ```
-
-## 📖 Docs
-
-Read [our docs](https://danimelchor.github.io/clypi/learn/getting_started/) to get started. You can also look at [the API reference](https://danimelchor.github.io/clypi/api/cli/) for examples and a full API reference. If you want a full guide on how to create and distribute your own Python CLI, check our our [tutorial](https://danimelchor.github.io/clypi/packaging/).
 
 ## 🪐 Beautiful by default
 
