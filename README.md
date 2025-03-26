@@ -44,7 +44,7 @@ class MyCli(Command):
 <!-- mdtest -->
 ```python
 class Lint(Command):
-    verbose: bool = arg(inherit=True)  # Inherits the argument def from `Cli`
+    verbose: bool = arg(inherited=True)  # Inherits the argument def from `Cli`
 
 class Run(Command):
     ...
