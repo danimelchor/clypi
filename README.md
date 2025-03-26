@@ -9,7 +9,7 @@
 
 Your all-in-one for beautiful, lightweight, prod-ready CLIs
 
-### What is clypi?
+## What is clypi?
 
 I've been working with Python-based CLIs for several years with many users and strict quality requirements and always run into the sames problems with the go-to packages. Therefore, I decided to embark on a journey to build a lightweight, intuitive, pretty, and production ready framework. Here are the key features:
 
@@ -19,7 +19,7 @@ I've been working with Python-based CLIs for several years with many users and s
 - **Composable**: clypi lets you easily reuse arguments across subcommands without having to specify them again.
 - **Configurable**: clypi lets you configure almost everything you'd like to configure. You can create your own themes, help pages, error messages, and more!
 
-#### Define Arguments with Type Annotations
+### Define Arguments with Type Annotations
 Just like `dataclass`, arguments are defined as class-level type annotations.
 
 <!-- mdtest -->
@@ -28,7 +28,9 @@ class MyCli(Command):
     verbose: bool  # Automatically parsed from CLI args!
 ```
 
-#### Need more control? Use our `arg` helper and built-in parsers
+### Need more control?
+
+Use our `arg` helper and built-in parsers
 
 <!-- mdtest -->
 ```python
@@ -39,7 +41,7 @@ class MyCli(Command):
     )
 ```
 
-#### Easily document your CLIs
+### Easily document your CLIs
 
 Using docstrings automatically applies them to your CLI's `--help` page
 
@@ -53,7 +55,9 @@ class MyCli(Command):
     )
 ```
 
-#### Easily create subcommands
+### Intuitive subcommands (groups of commands)
+
+Just create and compose more clypi commands!
 
 <!-- mdtest -->
 ```python
