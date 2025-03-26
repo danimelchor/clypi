@@ -39,17 +39,33 @@ class MyCli(Command):
     )
 ```
 
+#### Easily document your CLIs
+
+Using docstrings automatically applies them to your CLI's `--help` page
+
+<!-- mdtest -->
+```python
+class MyCli(Command):
+    """A simple CLI"""
+    threads: int = arg(
+        default=4,
+        help="The number of threads to run the tool with",
+    )
+```
+
 #### Easily create subcommands
 
 <!-- mdtest -->
 ```python
 class Lint(Command):
+    """Lint a set of files"""
     verbose: bool = arg(inherited=True)  # Inherits the argument def from `Cli`
 
 class Run(Command):
-    ...
+    """Run a set of files"""
 
 class Cli(Command):
+    """A simple CLI to lint and run files"""
     subcommand: Lint | Run
     verbose: bool = arg(False, help="Whether to show more output")
 ```
