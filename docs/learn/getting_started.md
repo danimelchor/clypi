@@ -271,4 +271,4 @@ class MyCommand(Command):
     )
 ```
 
-You can also create your own parser if there's a complex data type we do not support. Refer to the [Custom parsers](./advanced_configuration.md/#custom-parsers) docs.
+You can also create your own parser if there's a complex data type we do not support. Refer to the [Custom parsers](./advanced_arguments.md/#custom-parsers) docs.
