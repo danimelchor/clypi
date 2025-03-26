@@ -63,7 +63,7 @@
     
     
     
-    <body dir="ltr" data-md-color-scheme="slate" data-md-color-primary="black" data-md-color-accent="purple">
+    <body dir="ltr" data-md-color-scheme="slate" data-md-color-primary="blue-grey" data-md-color-accent="deep-purple">
   
     
     <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
@@ -792,36 +792,28 @@
 <h1 id="clypi">🦄 clypi<a class="headerlink" href="#clypi" title="Permanent link">&para;</a></h1>
 <p><a href="https://badge.fury.io/py/clypi"><img alt="PyPI version" src="https://badge.fury.io/py/clypi.svg" /></a>
 <a href="https://opensource.org/license/mit"><img alt="License" src="https://img.shields.io/badge/license-MIT-blue" /></a>
-<a href="https://pypi.org/project/clypi/"><img alt="PyPI - Python Version" src="https://img.shields.io/pypi/pyversions/clypi.svg" /></a>
+<a href="https://danimelchor.github.io/clypi/"><img alt="Docs" src="https://img.shields.io/badge/docs-latest-purple" /></a>
 <a href="https://pypi.org/project/clypi/"><img alt="PyPI - Downloads" src="https://img.shields.io/pypi/dm/clypi" /></a>
 <a href="https://github.com/danimelchor/clypi/graphs/contributors"><img alt="Contributors" src="https://img.shields.io/github/contributors/danimelchor/clypi" /></a></p>
+<!-- [![PyPI - Python Version](https://img.shields.io/pypi/pyversions/clypi.svg)](https://pypi.org/project/clypi/) -->
+
 <p>Your all-in-one for beautiful, lightweight, prod-ready CLIs</p>
 <h3 id="what-is-clypi">What is clypi?<a class="headerlink" href="#what-is-clypi" title="Permanent link">&para;</a></h3>
 <p>I've been working with Python-based CLIs for several years with many users and strict quality requirements and always run into the sames problems with the go-to packages. Therefore, I decided to embark on a journey to build a lightweight, intuitive, pretty, and production ready framework. Here are the key features:</p>
 <ul>
-<li>
-<p><strong>Type safe</strong>: making use of dataclass-like commands, you can easily specify the types you want for each argument and clypi automatically parses and validates them.</p>
-</li>
-<li>
-<p><strong>Asynchronous</strong>: clypi is built to run asynchronously to provide the best performance possible when re-rendering.</p>
-</li>
-<li>
-<p><strong>Easily testable</strong>: thanks to being type checked and to using it's own parser, clypi let's you test each individual step. From from parsing command-line arguments to running your commands in tests just like a user would.</p>
-</li>
-<li>
-<p><strong>Composable</strong>: clypi lets you easily reuse arguments across subcommands without having to specify them again.</p>
-</li>
-<li>
-<p><strong>Configurable</strong>: clypi lets you configure almost everything you'd like to configure. You can create your own themes, help pages, error messages, and more!</p>
-</li>
+<li><strong>Type safe</strong>: making use of dataclass-like commands, you can easily specify the types you want for each argument and clypi automatically parses and validates them.</li>
+<li><strong>Asynchronous</strong>: clypi is built to run asynchronously to provide the best performance possible when re-rendering.</li>
+<li><strong>Easily testable</strong>: thanks to being type checked and to using it's own parser, clypi let's you test each individual step. From from parsing command-line arguments to running your commands in tests just like a user would.</li>
+<li><strong>Composable</strong>: clypi lets you easily reuse arguments across subcommands without having to specify them again.</li>
+<li><strong>Configurable</strong>: clypi lets you configure almost everything you'd like to configure. You can create your own themes, help pages, error messages, and more!</li>
 </ul>
 <h3 id="getting-started">Getting started<a class="headerlink" href="#getting-started" title="Permanent link">&para;</a></h3>
 <div class="language-bash highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>uv<span class="w"> </span>add<span class="w"> </span>clypi<span class="w">  </span><span class="c1"># or `pip install clypi`</span>
 </span></code></pre></div>
 <h2 id="docs">📖 Docs<a class="headerlink" href="#docs" title="Permanent link">&para;</a></h2>
-<p>Read <a href="https://github.com/danimelchor/clypi/blob/master/docs/index.md">the API docs</a> for examples and a full API reference. If you want a full guide on how to create and distribute your own Python CLI, check our our <a href="https://github.com/danimelchor/clypi/blob/master/docs/tutorial.md">tutorial</a>.</p>
+<p>Read <a href="https://danimelchor.github.io/clypi/">our docs</a> to get started. You can also look at <a href="https://danimelchor.github.io/clypi/api/config/">the API reference</a> for examples and a full API reference. If you want a full guide on how to create and distribute your own Python CLI, check our our <a href="https://danimelchor.github.io/clypi/tutorial/">tutorial</a>.</p>
 <h2 id="cli">🧰 CLI<a class="headerlink" href="#cli" title="Permanent link">&para;</a></h2>
-<p>Read the <a href="https://github.com/danimelchor/clypi/blob/master/docs/index.md#cli">docs</a></p>
+<p>Read the <a href="https://danimelchor.github.io/clypi/api/cli/">docs</a></p>
 <!--- mdtest-args -v --threads 2 -->
 <div class="language-python highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="c1"># examples/cli_basic.py</span>
 </span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="kn">from</span><span class="w"> </span><span class="nn">clypi</span><span class="w"> </span><span class="kn">import</span> <span class="n">Command</span><span class="p">,</span> <span class="n">Positional</span><span class="p">,</span> <span class="n">arg</span>
@@ -860,7 +852,7 @@
 <p><code>uv run -m examples.cli run run-seria</code></p>
 <p><img width="1696" alt="image" src="https://github.com/user-attachments/assets/3170874d-d120-4b1a-968a-f121e9b8ee53" /></p>
 <h2 id="configurable">🛠️ Configurable<a class="headerlink" href="#configurable" title="Permanent link">&para;</a></h2>
-<p>Read the <a href="https://github.com/danimelchor/clypi/blob/master/docs/index.md#configuration">docs</a></p>
+<p>Read the <a href="https://danimelchor.github.io/clypi/api/config/">docs</a></p>
 <p>Clypi lets you configure the app globally. This means that all the styling will be easy,
 uniform across your entire app, and incredibly maintainable.</p>
 <p>For example, this is how you'd achieve a UI like <code>uv</code>'s CLI:</p>
@@ -891,7 +883,7 @@ uniform across your entire app, and incredibly maintainable.</p>
 <p><code>uv run -m examples.uv add -c</code></p>
 <p><img width="1699" alt="image" src="https://github.com/user-attachments/assets/dbf73404-1913-4315-81b6-1b690746680e" /></p>
 <h2 id="colors">🌈 Colors<a class="headerlink" href="#colors" title="Permanent link">&para;</a></h2>
-<p>Read the <a href="https://github.com/danimelchor/clypi/blob/master/docs/index.md#colors">docs</a></p>
+<p>Read the <a href="https://danimelchor.github.io/clypi/api/colors/">docs</a></p>
 <!--- mdtest -->
 <div class="language-python highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="c1"># demo.py</span>
 </span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="kn">import</span><span class="w"> </span><span class="nn">clypi</span>
@@ -910,7 +902,7 @@ uniform across your entire app, and incredibly maintainable.</p>
 <p><code>uv run -m examples.colors</code></p>
 <p><img width="974" alt="image" src="https://github.com/user-attachments/assets/9340d828-f7ce-491c-b0a8-6a666f7b7caf" /></p>
 <h2 id="spinners">🌀 Spinners<a class="headerlink" href="#spinners" title="Permanent link">&para;</a></h2>
-<p>Read the <a href="https://github.com/danimelchor/clypi/blob/master/docs/index.md#spinners">docs</a></p>
+<p>Read the <a href="https://danimelchor.github.io/clypi/api/components/#spinner">docs</a></p>
 <p>You can use spinners as an async context manager:</p>
 <!--- mdtest -->
 <div class="language-python highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="kn">import</span><span class="w"> </span><span class="nn">asyncio</span>
@@ -938,7 +930,7 @@ uniform across your entire app, and incredibly maintainable.</p>
 <p><code>uv run -m examples.spinner</code></p>
 <p>https://github.com/user-attachments/assets/2065b3dd-c73c-4e21-b698-8bf853e8e520</p>
 <h2 id="prompting">❓ Prompting<a class="headerlink" href="#prompting" title="Permanent link">&para;</a></h2>
-<p>Read the <a href="https://github.com/danimelchor/clypi/blob/master/docs/index.md#prompt">docs</a></p>
+<p>Read the <a href="https://danimelchor.github.io/clypi/api/prompts/">docs</a></p>
 <p>First, you'll need to import the <code>clypi</code> module:</p>
 <!--- mdtest-stdin y -->
 <div class="language-python highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="kn">import</span><span class="w"> </span><span class="nn">clypi</span>
@@ -964,12 +956,12 @@ from the arguments you pass in.</p>
 <p>Type checking will help you catch issues way earlier in the development cycle. It will also
 provide nice autocomplete features in your editor that will make you faster 󱐋.</p>
 <h2 id="comparison-to-other-packages">📦 Comparison to other packages<a class="headerlink" href="#comparison-to-other-packages" title="Permanent link">&para;</a></h2>
-<blockquote>
-<p>[!NOTE]
-This section is my (danimelchor's) personal opinion I've gathered during my time
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>This section is my (danimelchor's) personal opinion I've gathered during my time
 working with Python CLIs. If you do not agree, please feel free to reach out and I'm
 open to discussing / trying out new tools.</p>
-</blockquote>
+</div>
 <p><a href="https://docs.python.org/3/library/argparse.html">Argparse</a> is the builtin solution for CLIs, but, as expected, it's functionality is very restrictive. It is not very extensible, it's UI is not pretty and very hard to change, lacks type checking and type parsers, and does not offer any modern UI components that we all love.</p>
 <p><a href="https://rich.readthedocs.io/en/stable/">Rich</a> is too complex and threaded. The vast catalog of UI components they offer is amazing, but it is both easy to get wrong and break the UI, and too complicated/verbose to onboard coworkers to. It's prompting functionality is also quite limited and it does not offer command-line arguments parsing.</p>
 <p><a href="https://click.palletsprojects.com/en/stable/">Click</a> is too restrictive. It enforces you to use decorators, which is great for locality of behavior but not so much if you're trying to reuse arguments across your application. It is also painful to deal with the way arguments are injected into functions and very easy to miss one, misspell, or get the wrong type. Click is also fully untyped for the core CLI functionality and hard to test.</p>
