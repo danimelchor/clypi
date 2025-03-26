@@ -128,6 +128,7 @@ dev = [
 docs = [
     { name = "markdown-callouts" },
     { name = "mkdocs-material" },
+    { name = "pygments" },
     { name = "termynal" },
 ]
 
@@ -137,6 +138,7 @@ requires-dist = [
     { name = "codespell", marker = "extra == 'dev'", specifier = ">=2.4.1" },
     { name = "markdown-callouts", marker = "extra == 'docs'", specifier = ">=0.4.0" },
     { name = "mkdocs-material", marker = "extra == 'docs'", specifier = ">=9.6.8" },
+    { name = "pygments", marker = "extra == 'docs'", specifier = ">=2.19.1" },
     { name = "pyright", extras = ["nodejs"], marker = "extra == 'dev'", specifier = ">=1.1.396" },
     { name = "pytest", marker = "extra == 'dev'", specifier = ">=8.3.5" },
     { name = "python-dateutil", specifier = ">=2.9.0.post0" },
