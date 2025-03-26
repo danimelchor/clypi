@@ -36,6 +36,7 @@ dev = [
   "types-python-dateutil>=2.9.0.20241206",
 ]
 docs = [
+  "markdown-callouts>=0.4.0",
   "mkdocs-material>=9.6.8",
   "termynal>=0.13.0",
 ]

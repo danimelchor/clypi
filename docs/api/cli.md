@@ -253,9 +253,9 @@ by deferring the evaluation of that value we can express complex dependencies be
 All CLIs built with clypi come with a builtin `--install-autocomplete` option that will automatically
 set up shell completions for your built CLI.
 
-!!! warning
-    This feature is brand new and might contain some bugs. Please file a ticket
-    if you run into any!
+> [!WARNING]
+> This feature is brand new and might contain some bugs. Please file a ticket
+> if you run into any!
 
 #### `name`
 ```python

@@ -2,9 +2,10 @@
 
 [![PyPI version](https://badge.fury.io/py/clypi.svg)](https://badge.fury.io/py/clypi)
 [![License](https://img.shields.io/badge/license-MIT-blue)](https://opensource.org/license/mit)
-[![PyPI - Python Version](https://img.shields.io/pypi/pyversions/clypi.svg)](https://pypi.org/project/clypi/)
+[![Docs](https://img.shields.io/badge/docs-latest-purple)](https://danimelchor.github.io/clypi/)
 [![PyPI - Downloads](https://img.shields.io/pypi/dm/clypi)](https://pypi.org/project/clypi/)
 [![Contributors](https://img.shields.io/github/contributors/danimelchor/clypi)](https://github.com/danimelchor/clypi/graphs/contributors)
+<!-- [![PyPI - Python Version](https://img.shields.io/pypi/pyversions/clypi.svg)](https://pypi.org/project/clypi/) -->
 
 Your all-in-one for beautiful, lightweight, prod-ready CLIs
 
@@ -13,13 +14,9 @@ Your all-in-one for beautiful, lightweight, prod-ready CLIs
 I've been working with Python-based CLIs for several years with many users and strict quality requirements and always run into the sames problems with the go-to packages. Therefore, I decided to embark on a journey to build a lightweight, intuitive, pretty, and production ready framework. Here are the key features:
 
 - **Type safe**: making use of dataclass-like commands, you can easily specify the types you want for each argument and clypi automatically parses and validates them.
-
 - **Asynchronous**: clypi is built to run asynchronously to provide the best performance possible when re-rendering.
-
 - **Easily testable**: thanks to being type checked and to using it's own parser, clypi let's you test each individual step. From from parsing command-line arguments to running your commands in tests just like a user would.
-
 - **Composable**: clypi lets you easily reuse arguments across subcommands without having to specify them again.
-
 - **Configurable**: clypi lets you configure almost everything you'd like to configure. You can create your own themes, help pages, error messages, and more!
 
 ### Getting started
@@ -30,11 +27,11 @@ uv add clypi  # or `pip install clypi`
 
 ## 📖 Docs
 
-Read [the API docs](https://github.com/danimelchor/clypi/blob/master/docs/index.md) for examples and a full API reference. If you want a full guide on how to create and distribute your own Python CLI, check our our [tutorial](https://github.com/danimelchor/clypi/blob/master/docs/tutorial.md).
+Read [our docs](https://danimelchor.github.io/clypi/) to get started. You can also look at [the API reference](https://danimelchor.github.io/clypi/api/config/) for examples and a full API reference. If you want a full guide on how to create and distribute your own Python CLI, check our our [tutorial](https://danimelchor.github.io/clypi/tutorial/).
 
 ## 🧰 CLI
 
-Read the [docs](https://github.com/danimelchor/clypi/blob/master/docs/index.md#cli)
+Read the [docs](https://danimelchor.github.io/clypi/api/cli/)
 
 <!--- mdtest-args -v --threads 2 -->
 ```python
@@ -81,7 +78,7 @@ if __name__ == "__main__":
 
 ## 🛠️ Configurable
 
-Read the [docs](https://github.com/danimelchor/clypi/blob/master/docs/index.md#configuration)
+Read the [docs](https://danimelchor.github.io/clypi/api/config/)
 
 Clypi lets you configure the app globally. This means that all the styling will be easy,
 uniform across your entire app, and incredibly maintainable.
@@ -121,7 +118,7 @@ configure(
 
 ## 🌈 Colors
 
-Read the [docs](https://github.com/danimelchor/clypi/blob/master/docs/index.md#colors)
+Read the [docs](https://danimelchor.github.io/clypi/api/colors/)
 
 <!--- mdtest -->
 ```python
@@ -146,7 +143,7 @@ print("The old version said", wrong("the Earth was flat"))
 
 ## 🌀 Spinners
 
-Read the [docs](https://github.com/danimelchor/clypi/blob/master/docs/index.md#spinners)
+Read the [docs](https://danimelchor.github.io/clypi/api/components/#spinner)
 
 You can use spinners as an async context manager:
 <!--- mdtest -->
@@ -184,7 +181,7 @@ https://github.com/user-attachments/assets/2065b3dd-c73c-4e21-b698-8bf853e8e520
 
 ## ❓ Prompting
 
-Read the [docs](https://github.com/danimelchor/clypi/blob/master/docs/index.md#prompt)
+Read the [docs](https://danimelchor.github.io/clypi/api/prompts/)
 
 First, you'll need to import the `clypi` module:
 

@@ -7,8 +7,8 @@ theme:
   name: material
   palette:
     scheme: slate
-    primary: black
-    accent: purple
+    primary: blue grey
+    accent: deep purple
   features:
     - content.code.annotate
     - content.code.copy
@@ -42,6 +42,7 @@ plugins:
 markdown_extensions:
   - admonition
   - attr_list
+  - github-callouts
   - md_in_html
   - pymdownx.details
   - pymdownx.highlight:
