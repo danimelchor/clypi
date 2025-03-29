@@ -42,6 +42,9 @@ Just like you do with [dataclasses](https://docs.python.org/3/library/dataclasse
 ```python
 class MyCli(Command):
     name: str  # Automatically parsed as `--name <NAME>`.
+
+    async def run(self):
+        print(f"Hi {self.name}!")
 ```
 
 ### Need more control?
