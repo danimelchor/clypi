@@ -41,4 +41,5 @@ def _badge(icon: str, text: str = "", icon_tooltip: str | None = None):
 
 
 def _version_badge(version: str):
+    assert re.match(r"^\d+\.\d+\.\d+$", version), f"Unexpected version {version}"
     return _badge(icon=VERSION_ICON, text=f"{version}", icon_tooltip="Minimum version")
