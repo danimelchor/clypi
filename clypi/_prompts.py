@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import typing as t
+from enum import Enum
 from getpass import getpass
 
 import clypi
@@ -29,6 +30,8 @@ def _input(prompt: str, hide_input: bool = False) -> str:
 def _display_default(default: t.Any) -> str:
     if isinstance(default, bool):
         return "Y/n" if default else "y/N"
+    if isinstance(default, Enum):
+        return default.name.lower()
     return f"{default}"
 
 
