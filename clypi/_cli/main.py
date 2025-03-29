@@ -342,11 +342,12 @@ class Command(metaclass=_CommandMeta):
         return getattr(cls, CLYPI_PARENTS, [])
 
     @t.final
-    def get_unparsed(self) -> list[str]:
+    @classmethod
+    def get_unparsed(cls) -> list[str]:
         """
         The list of unparsed arguments for this command
         """
-        return getattr(self, CLYPI_UNPARSED, [])
+        return getattr(cls, CLYPI_UNPARSED, [])
 
     @t.final
     @classmethod
