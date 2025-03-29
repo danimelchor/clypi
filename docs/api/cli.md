@@ -40,8 +40,8 @@ Clypi supports:
 - Long options: `--foo 123` or `--foo=123`
 - Short options: `-f 123` or `-f=123`
 - Flags: `--verbose`
-- Concatenated short options: `-a -b -c` is the same as `-abc`
-- A double dash (`--`) stops parsing: `my-cli foo -- anything after is okay`
+- <!-- md:version 1.2.12 --> Concatenated short options: `-a -b -c` is the same as `-abc`
+- <!-- md:version 1.2.13 --> A double dash (`--`) stops parsing: `my-cli foo -- anything after is okay`
 
 
 ### Subcommands
@@ -219,6 +219,9 @@ def parents(cls)
 A list of parent commands for this command.
 
 ### `get_unparsed`
+
+<!-- md:version 1.2.13 -->
+
 ```python
 @t.final
 @classmethod
