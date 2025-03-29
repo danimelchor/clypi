@@ -1151,8 +1151,8 @@ other than the <a href="#run"><code>run</code></a> method.</p>
 <li>Long options: <code>--foo 123</code> or <code>--foo=123</code></li>
 <li>Short options: <code>-f 123</code> or <code>-f=123</code></li>
 <li>Flags: <code>--verbose</code></li>
-<li>Concatenated short options: <code>-a -b -c</code> is the same as <code>-abc</code></li>
-<li>A double dash (<code>--</code>) stops parsing: <code>my-cli foo -- anything after is okay</code></li>
+<li><span class="clypi-badge"><span class="clypi-badge-icon"><span class="twemoji" title="Minimum version"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m21.41 11.58-9-9A2 2 0 0 0 11 2H4a2 2 0 0 0-2 2v7a2 2 0 0 0 .59 1.42l9 9A2 2 0 0 0 13 22a2 2 0 0 0 1.41-.59l7-7A2 2 0 0 0 22 13a2 2 0 0 0-.59-1.42M13 20l-9-9V4h7l9 9M6.5 5A1.5 1.5 0 1 1 5 6.5 1.5 1.5 0 0 1 6.5 5"/></svg></span></span><span class="clypi-badge-text">1.2.12</span></span> Concatenated short options: <code>-a -b -c</code> is the same as <code>-abc</code></li>
+<li><span class="clypi-badge"><span class="clypi-badge-icon"><span class="twemoji" title="Minimum version"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m21.41 11.58-9-9A2 2 0 0 0 11 2H4a2 2 0 0 0-2 2v7a2 2 0 0 0 .59 1.42l9 9A2 2 0 0 0 13 22a2 2 0 0 0 1.41-.59l7-7A2 2 0 0 0 22 13a2 2 0 0 0-.59-1.42M13 20l-9-9V4h7l9 9M6.5 5A1.5 1.5 0 1 1 5 6.5 1.5 1.5 0 0 1 6.5 5"/></svg></span></span><span class="clypi-badge-text">1.2.13</span></span> A double dash (<code>--</code>) stops parsing: <code>my-cli foo -- anything after is okay</code></li>
 </ul>
 <h3 id="subcommands">Subcommands<a class="headerlink" href="#subcommands" title="Permanent link">&para;</a></h3>
 <p>To define a subcommand, you must define a field in a class extending <code>Command</code> called <code>subcommand</code>. It's type hint must
@@ -1288,6 +1288,7 @@ The full path of commands to the current command being ran.</p>
 </span></code></pre></div>
 A list of parent commands for this command.</p>
 <h3 id="get_unparsed"><code>get_unparsed</code><a class="headerlink" href="#get_unparsed" title="Permanent link">&para;</a></h3>
+<p><span class="clypi-badge"><span class="clypi-badge-icon"><span class="twemoji" title="Minimum version"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m21.41 11.58-9-9A2 2 0 0 0 11 2H4a2 2 0 0 0-2 2v7a2 2 0 0 0 .59 1.42l9 9A2 2 0 0 0 13 22a2 2 0 0 0 1.41-.59l7-7A2 2 0 0 0 22 13a2 2 0 0 0-.59-1.42M13 20l-9-9V4h7l9 9M6.5 5A1.5 1.5 0 1 1 5 6.5 1.5 1.5 0 0 1 6.5 5"/></svg></span></span><span class="clypi-badge-text">1.2.13</span></span></p>
 <p><div class="language-python highlight"><pre><span></span><code><span id="__span-13-1"><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a><span class="nd">@t</span><span class="o">.</span><span class="n">final</span>
 </span><span id="__span-13-2"><a id="__codelineno-13-2" name="__codelineno-13-2" href="#__codelineno-13-2"></a><span class="nd">@classmethod</span>
 </span><span id="__span-13-3"><a id="__codelineno-13-3" name="__codelineno-13-3" href="#__codelineno-13-3"></a><span class="k">def</span><span class="w"> </span><span class="nf">get_unparsed</span><span class="p">(</span><span class="bp">cls</span><span class="p">)</span>
