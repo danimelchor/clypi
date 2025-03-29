@@ -48,5 +48,5 @@ Parameters:
 - `nice_errors`: a list of errors clypi will catch and display neatly
 - `theme`: a `Theme` object used to format different styles and colors for help pages, prompts, tracebacks, etc.
 - `overflow_style`: either `wrap` or `ellipsis`. If wrap, text that is too long will get wrapped into the next line. If ellipsis, the text will be truncated with an `…` at the end
-- <!-- md:version 1.11 --> `disable_colors`: whether we should disable all colors and text styles
-- <!-- md:version 1.11 --> `fallback_term_width`: if we cannot get the current terminal width (e.g.: subprocesses, non-tty devices, etc.), what should the fallback terminal width be (mostly used for displaying errors)
+- <!-- md:version 1.2.11 --> `disable_colors`: whether we should disable all colors and text styles
+- <!-- md:version 1.2.11 --> `fallback_term_width`: if we cannot get the current terminal width (e.g.: subprocesses, non-tty devices, etc.), what should the fallback terminal width be (mostly used for displaying errors)
