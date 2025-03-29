@@ -5,6 +5,8 @@ repo_url: https://github.com/danimelchor/clypi
 
 theme:
   name: material
+  logo: assets/icon.png
+  favicon: assets/icon.png
   font:
     text: Roboto
     code: JetBrains Mono
