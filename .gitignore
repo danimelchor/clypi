@@ -176,3 +176,6 @@ cython_debug/
 .pypirc
 
 .site/
+
+# MacOS
+.DS_Store
