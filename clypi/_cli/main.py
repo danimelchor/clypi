@@ -39,6 +39,7 @@ CLYPI_POSITIONALS = "__clypi_positionals__"
 CLYPI_IN_ORDER_FIELD_NAMES = "__clypi_in_order_field_names__"
 CLYPI_SUBCOMMANDS = "__clypi_subcommands__"
 CLYPI_PARENTS = "__clypi_parents__"
+CLYPI_UNPARSED = "__clypi_unparsed__"
 
 
 def _camel_to_dashed(s: str):
@@ -342,6 +343,14 @@ class Command(metaclass=_CommandMeta):
 
     @t.final
     @classmethod
+    def get_unparsed(cls) -> list[str]:
+        """
+        The list of unparsed arguments for this command
+        """
+        return getattr(cls, CLYPI_UNPARSED, [])
+
+    @t.final
+    @classmethod
     def help(cls):
         """
         A brief description for the command
@@ -531,8 +540,13 @@ class Command(metaclass=_CommandMeta):
         requested_help = sys.argv[-1].lower() in HELP_ARGS
 
         # Parse the cmd line arguments
-        for a in args:
-            parsed = arg_parser.parse_as_attr(a)
+        for unparsed_arg in args:
+            # Double dash means stop parsing
+            if unparsed_arg == "--":
+                setattr(cls, CLYPI_UNPARSED, list(args))
+                break
+
+            parsed = arg_parser.parse_as_attr(unparsed_arg)
 
             # If we've reached -h or --help
             if parsed.orig.lower() in HELP_ARGS:

@@ -41,6 +41,7 @@ Clypi supports:
 - Short options: `-f 123` or `-f=123`
 - Flags: `--verbose`
 - Concatenated short options: `-a -b -c` is the same as `-abc`
+- A double dash (`--`) stops parsing: `my-cli foo -- anything after is okay`
 
 
 ### Subcommands
@@ -192,6 +193,39 @@ def prog(cls)
 ```
 The name of the command. Can be overridden to provide a custom name
 or will default to the class name extending `Command`.
+
+### `epilog`
+```python
+@t.final
+@classmethod
+def epilog(cls)
+```
+Optionally define text to display after the help message
+
+### `full_command`
+```python
+@t.final
+@classmethod
+def full_command(cls)
+```
+The full path of commands to the current command being ran.
+
+### `parents`
+```python
+@t.final
+@classmethod
+def parents(cls)
+```
+A list of parent commands for this command.
+
+### `get_unparsed`
+```python
+@t.final
+@classmethod
+def get_unparsed(cls)
+```
+The list of unparsed arguments for this command. If a user passes in `--`, anything after
+the double dash will be left unparsed for the command to process as they wish.
 
 ### `help`
 ```python
