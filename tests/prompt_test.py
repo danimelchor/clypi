@@ -1,17 +1,20 @@
 from __future__ import annotations
 
+import datetime as dt
 import io
 import re
 import sys
-from contextlib import contextmanager
+import typing as t
+from contextlib import contextmanager, suppress
 from datetime import date, datetime, timedelta
+from enum import Enum
 
 import pytest
 from pytest import mark
 
 import clypi
-from clypi import AbortException, MaxAttemptsException
-from clypi._configuration import get_config
+from clypi import AbortException, MaxAttemptsException, get_config
+from clypi._colors import remove_style
 
 
 @contextmanager
@@ -51,6 +54,11 @@ def assert_prompted_times(prompted: io.StringIO, times: int):
 
 def _raise_error(x: str | list[str]) -> None:
     raise ValueError(f"Invalid number {x}")
+
+
+class _TestEnum(Enum):
+    QA = 1
+    PROD = 2
 
 
 class TestCase:
@@ -153,3 +161,23 @@ class TestCase:
     def test_prompt_with_bad_validate(self):
         with replace_stdin("2") as _, pytest.raises(MaxAttemptsException):
             clypi.prompt("Some prompt", parser=_raise_error, max_attempts=1)
+
+    @mark.parametrize(
+        "default,expected",
+        [
+            (False, "y/N"),
+            (True, "Y/n"),
+            (_TestEnum.QA, "qa"),
+            (_TestEnum.PROD, "prod"),
+            (dt.datetime(2025, 1, 1), "2025-01-01 00:00:00"),
+            (dt.timedelta(days=1), "1 day, 0:00:00"),
+        ],
+    )
+    def test_prompt_default_repr(self, default: t.Any, expected: str):
+        with (
+            replace_stdin(["", ""]) as _,
+            replace_stdout() as stdout,
+            suppress(MaxAttemptsException),
+        ):
+            clypi.prompt("Some prompt", max_attempts=1, default=default)
+            assert remove_style(stdout.getvalue()) == f"Some prompt [{expected}]: "
