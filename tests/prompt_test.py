@@ -2,7 +2,6 @@ from __future__ import annotations
 
 import datetime as dt
 import io
-import re
 import sys
 import typing as t
 from contextlib import contextmanager, suppress
@@ -14,7 +13,6 @@ from pytest import mark
 
 import clypi
 from clypi import AbortException, MaxAttemptsException, get_config
-from clypi._colors import remove_style
 
 
 @contextmanager
@@ -37,17 +35,9 @@ def replace_stdout():
     sys.stdout = orig
 
 
-def _escape_ansi(line: str) -> str:
-    """
-    https://stackoverflow.com/questions/14693701/how-can-i-remove-the-ansi-escape-sequences-from-a-string-in-python
-    """
-    ansi_escape = re.compile(r"(?:\x1B[@-_]|[\x80-\x9F])[0-?]*[ -/]*[@-~]")
-    return ansi_escape.sub("", line)
-
-
 def assert_prompted_times(prompted: io.StringIO, times: int):
     __tracebackhide__ = True
-    text = _escape_ansi(prompted.getvalue())
+    text = prompted.getvalue()
     lines = list(filter(None, text.split(": ")))
     assert len(lines) == times
 
@@ -66,6 +56,7 @@ class TestCase:
         conf = get_config()
         conf.help_on_fail = False
         conf.nice_errors = tuple()
+        conf.disable_colors = True
 
     @mark.parametrize(
         "expected",
@@ -180,4 +171,4 @@ class TestCase:
             suppress(MaxAttemptsException),
         ):
             clypi.prompt("Some prompt", max_attempts=1, default=default)
-            assert remove_style(stdout.getvalue()) == f"Some prompt [{expected}]: "
+            assert stdout.getvalue() == f"Some prompt [{expected}]: "

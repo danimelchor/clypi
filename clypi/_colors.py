@@ -108,6 +108,13 @@ def remove_style(s: str):
     return ANSI_ESCAPE.sub("", s)
 
 
+def _should_disable_colors() -> bool:
+    # Dynamic import to avoid cycles
+    from clypi._configuration import get_config
+
+    return get_config().disable_colors
+
+
 @dataclass
 class Styler:
     fg: ColorType | None = None
@@ -128,6 +135,11 @@ class Styler:
             return ""
 
         text = " ".join(str(m) for m in messages)
+
+        # If the user wants to disable colors, never format
+        if _should_disable_colors():
+            return text
+
         text = _apply_fg(text, self.fg) if self.fg else text
         text = _apply_bg(text, self.bg) if self.bg else text
         text = _apply_style(text, StyleCode.BOLD) if self.bold else text
