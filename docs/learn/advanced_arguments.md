@@ -64,7 +64,7 @@ $ python cli.py Daniel -v
 
 ## Deferring arguments
 
-CLIs can get very complex. Sometimes we want to build a complex graph of dependencies between the arguments and it is hard to do that. For example, we can have an application that does not use `--num-threads` if `--single-threaded` was provided already. For that, clypi offers `arg(defer=True)`.
+CLIs can get very complex. Sometimes we want to build a complex graph of dependencies between the arguments and it is hard to do that. For example, we can have an application that does not use `--num-cores` if `--single-threaded` was provided already. For that, clypi offers `arg(defer=True)`.
 
 The internals are complex but the user experience is quite simple: clypi will not prompt or require this value being passed up until when it's executed.
 
@@ -82,7 +82,7 @@ class Cli(Command):
     async def run(self):
         print(f"Running single theaded:", self.single_threaded)  # << will not prompt yet...
         if self.single_threaded:
-            # if we never access num_threads in this if condition, we will
+            # if we never access num_cores in this if condition, we will
             # never prompt!
             print("Running single threaded...")
         else:
