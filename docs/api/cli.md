@@ -33,8 +33,15 @@ Parameters:
 ## `Command`
 
 This is the main class you must extend when defining a command. There are no methods you must override
-other than the [`run`](#run) method. The type hints you annotate the class will define the arguments that
-command will take based on a set of rules:
+other than the [`run`](#run) method.
+
+Clypi supports:
+
+- Long options: `--foo 123` or `--foo=123`
+- Short options: `-f 123` or `-f=123`
+- Flags: `--verbose`
+- Concatenated short options: `-a -b -c` is the same as `-abc`
+
 
 ### Subcommands
 

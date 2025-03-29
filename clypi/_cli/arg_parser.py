@@ -14,8 +14,15 @@ def snake_to_dash(s: str) -> str:
 def normalize_args(args: t.Sequence[str]) -> list[str]:
     new_args: list[str] = []
     for a in args:
+        # Expand -a=1 or --a=1 into --a 1
         if a.startswith("-") and "=" in a:
             new_args.extend(a.split("=", 1))
+
+        # Expand -abc into -a -b -c
+        elif a.startswith("-") and not a.startswith("--") and len(a) > 2:
+            new_args.extend(f"-{arg}" for arg in a[1:])
+
+        # Leave as is
         else:
             new_args.append(a)
     return new_args

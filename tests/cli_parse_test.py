@@ -7,6 +7,7 @@ import pytest
 from typing_extensions import override
 
 from clypi import Command, Positional, arg, get_config
+from clypi._cli.arg_parser import normalize_args
 
 
 def parametrize(args: str, cases: list[tuple[t.Any, ...]]):
@@ -17,6 +18,35 @@ def parametrize(args: str, cases: list[tuple[t.Any, ...]]):
 
 
 get_config().help_on_fail = False
+
+
+@pytest.mark.parametrize(
+    "args,expected",
+    [
+        (
+            ["--foo", "123"],
+            ["--foo", "123"],
+        ),
+        (
+            ["--foo=123"],
+            ["--foo", "123"],
+        ),
+        (
+            ["-o", "123"],
+            ["-o", "123"],
+        ),
+        (
+            ["-o=123"],
+            ["-o", "123"],
+        ),
+        (
+            ["-abc"],
+            ["-a", "-b", "-c"],
+        ),
+    ],
+)
+def test_normalize_args(args: list[str], expected: list[str]):
+    assert normalize_args(args) == expected
 
 
 class ExampleSub(Command):
