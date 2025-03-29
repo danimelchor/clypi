@@ -31,7 +31,7 @@ Parameters:
 - `max`: The maximum value the integer can be (same as lte)
 - `min`: The maximum value the integer can be (same as gte)
 - `positive`: The integer must be greater than 0
-- `nonpostive`: The integer must be less than or equal to 0
+- `nonpositive`: The integer must be less than or equal to 0
 - `negative`: The integer must be less than 0
 - `nonnegative`: The integer must be greater than or equal to 0
 
@@ -69,7 +69,7 @@ Parameters:
 - `max`: The maximum value the float can be (same as lte)
 - `min`: The maximum value the float can be (same as gte)
 - `positive`: The float must be greater than 0
-- `nonpostive`: The float must be less than or equal to 0
+- `nonpositive`: The float must be less than or equal to 0
 - `negative`: The float must be less than 0
 - `nonnegative`: The float must be greater than or equal to 0
 
