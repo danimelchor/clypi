@@ -25,4 +25,6 @@ def get_term_width():
     try:
         return os.get_terminal_size().columns
     except OSError:
-        return 50
+        from clypi._configuration import get_config
+
+        return get_config().fallback_term_width

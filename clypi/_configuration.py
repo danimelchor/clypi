@@ -32,13 +32,28 @@ class Theme:
 
 @dataclass
 class ClypiConfig:
+    # The theme sets Clypi's colors
     theme: Theme = field(default_factory=Theme)
+
+    # What formatting class should we use?
     help_formatter: Formatter = field(default_factory=ClypiFormatter)
+
+    # Should we display the help page if we are missing required args?
     help_on_fail: bool = True
+
+    # What errors should we catch and neatly display?
     nice_errors: tuple[type[Exception]] = field(
         default_factory=lambda: (ClypiException,)
     )
+
+    # How should sentences overwrap if they're too long?
     overflow_style: OverflowStyle = "wrap"
+
+    # Should we disable all color printing?
+    disable_colors: bool = False
+
+    # If we cannot get the terminal size, what should be the fallback?
+    fallback_term_width: int = 100
 
 
 _config = ClypiConfig()
