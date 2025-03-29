@@ -955,7 +955,9 @@
 </span><span id="__span-1-19"><a id="__codelineno-1-19" name="__codelineno-1-19" href="#__codelineno-1-19"></a>        <span class="n">prompts</span><span class="o">=</span><span class="n">Styler</span><span class="p">(</span><span class="n">fg</span><span class="o">=</span><span class="s2">&quot;blue&quot;</span><span class="p">,</span> <span class="n">bold</span><span class="o">=</span><span class="kc">True</span><span class="p">),</span>
 </span><span id="__span-1-20"><a id="__codelineno-1-20" name="__codelineno-1-20" href="#__codelineno-1-20"></a>    <span class="p">),</span>
 </span><span id="__span-1-21"><a id="__codelineno-1-21" name="__codelineno-1-21" href="#__codelineno-1-21"></a>    <span class="n">overflow_style</span><span class="o">=</span><span class="s2">&quot;wrap&quot;</span><span class="p">,</span>
-</span><span id="__span-1-22"><a id="__codelineno-1-22" name="__codelineno-1-22" href="#__codelineno-1-22"></a><span class="p">)</span>
+</span><span id="__span-1-22"><a id="__codelineno-1-22" name="__codelineno-1-22" href="#__codelineno-1-22"></a>    <span class="n">disable_colors</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+</span><span id="__span-1-23"><a id="__codelineno-1-23" name="__codelineno-1-23" href="#__codelineno-1-23"></a>    <span class="n">fallback_term_width</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span>
+</span><span id="__span-1-24"><a id="__codelineno-1-24" name="__codelineno-1-24" href="#__codelineno-1-24"></a><span class="p">)</span>
 </span></code></pre></div>
 <p>Parameters:</p>
 <ul>
@@ -963,7 +965,9 @@
 <li><code>help_on_fail</code>: whether the help page should be displayed if a user doesn't pass the right params</li>
 <li><code>nice_errors</code>: a list of errors clypi will catch and display neatly</li>
 <li><code>theme</code>: a <code>Theme</code> object used to format different styles and colors for help pages, prompts, tracebacks, etc.</li>
-<li><code>overflow_style</code>: either <code>wrap</code> or <code>ellipsis</code>. If wrap, text that is too long will get wrapped into the next line. If ellipsis, the text will be truncated with an <code>…</code> at the end.</li>
+<li><code>overflow_style</code>: either <code>wrap</code> or <code>ellipsis</code>. If wrap, text that is too long will get wrapped into the next line. If ellipsis, the text will be truncated with an <code>…</code> at the end</li>
+<li><code>disable_colors</code>: whether we should disable all colors and text styles</li>
+<li><code>fallback_term_width</code>: if we cannot get the current terminal width (e.g.: subprocesses, non-tty devices, etc.), what should the fallback terminal width be (mostly used for displaying errors)</li>
 </ul>
 
 
