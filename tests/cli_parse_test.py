@@ -229,6 +229,16 @@ def test_expected_parsing_subcommand(
         assert getattr(sc, k) == v
 
 
+def test_expected_double_dash_ends_parsing():
+    ec = Example.parse(["--flag", "./some-path", "--", "--option", "a"])
+    assert ec.flag is True
+    assert ec.pos == Path("./some-path")
+
+    # --option a is ignored
+    assert ec.option == []
+    assert ec.get_unparsed() == ["--option", "a"]
+
+
 @parametrize(
     "args,expected,fails",
     [
