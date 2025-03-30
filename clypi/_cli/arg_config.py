@@ -10,7 +10,7 @@ from clypi.parsers import Parser
 
 T = t.TypeVar("T")
 
-Nargs: t.TypeAlias = t.Literal["*", "+"] | float
+Nargs: t.TypeAlias = t.Literal["*"] | float
 
 
 @dataclass
@@ -118,10 +118,6 @@ class Config(t.Generic[T]):
 
         if _type_util.is_list(self.arg_type):
             return "*"
-
-        if _type_util.is_tuple(self.arg_type):
-            sz = _type_util.tuple_size(self.arg_type)
-            return "+" if sz == float("inf") else sz
 
         return 1
 

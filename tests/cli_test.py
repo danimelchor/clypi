@@ -67,7 +67,7 @@ def test_expected_positional():
 
     assert pos["positional"].name == "positional"
     assert pos["positional"].arg_type == Positional[tuple[str | Path, ...]]
-    assert pos["positional"].nargs == "+"
+    assert pos["positional"].nargs == 1
 
 
 def test_expected_subcommands():

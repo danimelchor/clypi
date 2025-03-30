@@ -198,11 +198,13 @@ Examples:
 <!-- mdtest -->
 ```python
 # list[int]
+# E.g.: --foo 1 2 3
 parser = cp.List(cp.Int())
 assert parser(["1", "2", "3"]) == [1, 2, 3]
 assert parser("1, 2, 3") == [1, 2, 3]
 
 # list[list[int]]
+# E.g.: --foo 1,2 2,3 3,4
 parser = cp.List(cp.List(cp.Int()))
 assert parser(["1,2", "2,3", "3, 4"]) == [
     [1, 2],
@@ -227,16 +229,19 @@ Examples:
 <!-- mdtest -->
 ```python
 # tuple[str, ...]
+# E.g.: --foo a b c
 parser = cp.Tuple(cp.Str(), num=None)
 assert parser(["a", "b", "c"]) == ("a", "b", "c")
 assert parser("a,b,c") == ("a", "b", "c")
 
 # tuple[str, int]
+# E.g.: --foo a 2
 parser = cp.Tuple(cp.Str(), cp.Int())
 assert parser(["a", "2"]) == ("a", 2)
 assert parser("a,2") == ("a", 2)
 
 # list[tuple[str, int]]
+# E.g.: --foo a,2 b,3 c,4
 parser = cp.List(cp.Tuple(cp.Str(), cp.Int()))
 assert parser(["a,2", "b,3", "c, 4"]) == [
     ("a", 2),

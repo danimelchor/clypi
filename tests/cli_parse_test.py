@@ -20,6 +20,16 @@ def parametrize(args: str, cases: list[tuple[t.Any, ...]]):
 get_config().help_on_fail = False
 
 
+def join_mult(s: str, n: int):
+    """
+    Joins a string with itself n times
+
+    E.g.:
+        join_mult("foo", 3) -> foo,foo,foo
+    """
+    return (f"{s}," * n).rstrip(",")
+
+
 @pytest.mark.parametrize(
     "args,expected",
     [
@@ -136,7 +146,7 @@ SUBCMD: list[tuple[t.Any, ...]] = [
         },
     ),
     (
-        ["example-sub", "foo", "bar"],
+        ["example-sub", "foo,bar"],
         {
             "pos2": ("foo", "bar"),
             "flag2": False,
@@ -144,7 +154,7 @@ SUBCMD: list[tuple[t.Any, ...]] = [
         },
     ),
     (
-        ["example-sub", "foo", "bar", "--flag2"],
+        ["example-sub", "foo,bar", "--flag2"],
         {
             "pos2": ("foo", "bar"),
             "flag2": True,
@@ -152,7 +162,7 @@ SUBCMD: list[tuple[t.Any, ...]] = [
         },
     ),
     (
-        ["example-sub", "--flag2", "foo", "bar"],
+        ["example-sub", "--flag2", "foo,bar"],
         {
             "pos2": ("foo", "bar"),
             "flag2": True,
@@ -160,7 +170,7 @@ SUBCMD: list[tuple[t.Any, ...]] = [
         },
     ),
     (
-        ["example-sub", "foo", "bar", "--option2", "6"],
+        ["example-sub", "foo,bar", "--option2", "6"],
         {
             "pos2": ("foo", "bar"),
             "flag2": False,
@@ -168,7 +178,7 @@ SUBCMD: list[tuple[t.Any, ...]] = [
         },
     ),
     (
-        ["example-sub", "--option2", "6", "foo", "bar"],
+        ["example-sub", "--option2", "6", "foo, bar"],
         {
             "pos2": ("foo", "bar"),
             "flag2": False,
@@ -176,7 +186,7 @@ SUBCMD: list[tuple[t.Any, ...]] = [
         },
     ),
     (
-        ["example-sub", "--option2", "6", "foo", "bar", "--flag2"],
+        ["example-sub", "--option2", "6", "foo, bar", "--flag2"],
         {
             "pos2": ("foo", "bar"),
             "flag2": True,
@@ -184,7 +194,7 @@ SUBCMD: list[tuple[t.Any, ...]] = [
         },
     ),
     (
-        ["example-sub", "--flag2", "--option2", "6", "foo", "bar"],
+        ["example-sub", "--flag2", "--option2", "6", "foo,bar"],
         {
             "pos2": ("foo", "bar"),
             "flag2": True,
@@ -192,7 +202,7 @@ SUBCMD: list[tuple[t.Any, ...]] = [
         },
     ),
     (
-        ["example-sub", "--flag2", "foo", "bar", "--option2", "6"],
+        ["example-sub", "--flag2", "foo, bar", "--option2", "6"],
         {
             "pos2": ("foo", "bar"),
             "flag2": True,
@@ -293,18 +303,26 @@ def test_parse_lists(args: list[str], expected: dict[str, t.Any], fails: bool):
         (["foo"], {}, True),
         (["foo", "--opt", "bar"], {}, True),
         (
-            ["foo", "--opt", "bar", "baz"],
+            ["foo", "--opt", "bar, baz"],
             {"pos": ("foo",), "opt": ("bar", "baz"), "opt2": tuple()},
             False,
         ),
         (
-            ["foo", "--opt", "bar", "baz", "--opt2", "qux"],
+            ["foo", "--opt", "bar,baz", "--opt2", "qux"],
             {"pos": ("foo",), "opt": ("bar", "baz"), "opt2": ("qux",)},
             False,
         ),
-        ([*(["foo"] * 2), "--opt", "bar", "--opt2", "qux"], {}, True),
-        (["foo", "--opt", *(["bar"] * 3), "--opt2", "qux"], {}, True),
-        (["foo", "--opt", *(["bar"] * 2), "--opt2", *(["qux"] * 10)], {}, False),
+        ([join_mult("foo", 2), "--opt", "bar", "--opt2", "qux"], {}, True),
+        (["foo", "--opt", join_mult("bar", 3), "--opt2", "qux"], {}, True),
+        (
+            ["foo", "--opt", join_mult("bar", 2), "--opt2", join_mult("qux", 10)],
+            {
+                "pos": ("foo",),
+                "opt": ("bar", "bar"),
+                "opt2": tuple(["qux"] * 10),
+            },
+            False,
+        ),
     ],
 )
 def test_parse_tuples(args: list[str], expected: dict[str, t.Any], fails: bool):

@@ -351,7 +351,7 @@ class Tuple(ClypiParser[tuple[t.Any]]):
 
         if self._num and len(raw) != self._num:
             raise ValueError(
-                f"Expected tuple of length {self._num} but instead got {len(raw)} items"
+                f"Expected tuple of length {self._num} but instead got {len(raw)} items: {raw!r}"
             )
 
         # Get all parsers for each item in the tuple (or reuse if tuple[T, ...])
