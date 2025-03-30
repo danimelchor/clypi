@@ -182,3 +182,12 @@ def test_parser_from_type(_type: t.Any, expected: cp.Parser[t.Any]):
 )
 def test_parser_str(parser: cp.Parser[t.Any], expected: cp.Parser[t.Any]):
     assert str(parser) == expected
+
+
+def test_parse_tuple_list():
+    parser = cp.List(cp.Tuple(cp.Str(), cp.Int(), num=2))
+    assert parser(["a,1", "b,2", "c,3"]) == [
+        ("a", 1),
+        ("b", 2),
+        ("c", 3),
+    ]

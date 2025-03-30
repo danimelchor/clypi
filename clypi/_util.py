@@ -28,3 +28,9 @@ def get_term_width():
         from clypi._configuration import get_config
 
         return get_config().fallback_term_width
+
+
+def trim_split_collection(s: str):
+    if ", " in s:
+        return s.split(", ")
+    return s.split(",")

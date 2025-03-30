@@ -11,6 +11,7 @@ from pathlib import Path as _Path
 
 from clypi import _type_util as tu
 from clypi._exceptions import ClypiException
+from clypi._util import UNSET, Unset, trim_split_collection
 
 T = t.TypeVar("T", covariant=True)
 X = t.TypeVar("X")
@@ -331,7 +332,7 @@ class List(ClypiParser[list[X]]):
 
     def __call__(self, raw: str | list[str], /) -> list[X]:
         if isinstance(raw, str):
-            raw = raw.split(",")
+            raw = trim_split_collection(raw)
         return [self._inner(item) for item in raw]
 
     def __repr__(self) -> str:
@@ -339,18 +340,18 @@ class List(ClypiParser[list[X]]):
 
 
 class Tuple(ClypiParser[tuple[t.Any]]):
-    def __init__(self, *inner: Parser[t.Any], num: int | None = None) -> None:
+    def __init__(self, *inner: Parser[t.Any], num: int | None | Unset = UNSET) -> None:
         self._inner = list(inner)
-        self._num = num
+        self._num = num if num is not UNSET else len(self._inner)
 
     # TODO: can we return the right type here?
     def __call__(self, raw: str | list[str], /) -> tuple[t.Any, ...]:
         if isinstance(raw, str):
-            raw = raw.split(",")
+            raw = trim_split_collection(raw)
 
         if self._num and len(raw) != self._num:
             raise ValueError(
-                f"Expected tuple of length {self._num} but instead got {len(raw)} items"
+                f"Expected tuple of length {self._num} but instead got {len(raw)} items: {raw!r}"
             )
 
         # Get all parsers for each item in the tuple (or reuse if tuple[T, ...])

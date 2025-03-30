@@ -19,15 +19,11 @@ class CurrentCtx:
     def needs_more(self) -> bool:
         if isinstance(self.nargs, float | int):
             return self.nargs > 0
-        elif self.nargs == "+":
-            return True
         return False
 
     def collect(self, item: str) -> None:
         if isinstance(self.nargs, float | int):
             self.nargs -= 1
-        elif self.nargs == "+":
-            self.nargs = "*"
 
         self._collected.append(item)
 
