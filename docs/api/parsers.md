@@ -187,7 +187,8 @@ Examples:
 
 ### `List`
 
-The `List` parser parses comma-separated values into a list of parsed elements.
+The `List` parser parses comma-separated values into a list of parsed elements. The CLI parser will, by default, pass
+in multiple arguments as a list of strings to the top-level `List` parser. Nested items will be parsed by splitting the string by commas.
 
 ```python
 List(inner: Parser[T])
@@ -195,9 +196,20 @@ List(inner: Parser[T])
 
 Examples:
 <!-- mdtest -->
-> ```python
-> cp.List(cp.Int())
-> ```
+```python
+# list[int]
+parser = cp.List(cp.Int())
+assert parser(["1", "2", "3"]) == [1, 2, 3]
+assert parser("1, 2, 3") == [1, 2, 3]
+
+# list[list[int]]
+parser = cp.List(cp.List(cp.Int()))
+assert parser(["1,2", "2,3", "3, 4"]) == [
+    [1, 2],
+    [2, 3],
+    [3, 4],
+]
+```
 
 Parameters:
 
@@ -213,18 +225,30 @@ Tuple(*inner: Parser, num: int | None = None)
 
 Examples:
 <!-- mdtest -->
-> ```python
-> # tuple[str, ...]
-> cp.Tuple(cp.Str())
->
-> # tuple[str, int]
-> cp.Tuple(cp.Str(), cp.Int(), num=2)
-> ```
+```python
+# tuple[str, ...]
+parser = cp.Tuple(cp.Str(), num=None)
+assert parser(["a", "b", "c"]) == ("a", "b", "c")
+assert parser("a,b,c") == ("a", "b", "c")
+
+# tuple[str, int]
+parser = cp.Tuple(cp.Str(), cp.Int())
+assert parser(["a", "2"]) == ("a", 2)
+assert parser("a,2") == ("a", 2)
+
+# list[tuple[str, int]]
+parser = cp.List(cp.Tuple(cp.Str(), cp.Int()))
+assert parser(["a,2", "b,3", "c, 4"]) == [
+    ("a", 2),
+    ("b", 3),
+    ("c", 4),
+]
+```
 
 Parameters:
 
 - `inner`: List of parsers for each tuple element.
-- `num`: Expected tuple length (optional).
+- `num`: Expected tuple length. If None, the tuple will accept unlimited arguments (equivalent to `tuple[<type>, ...]`)
 
 ### `Union`
 
