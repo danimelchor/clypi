@@ -1177,37 +1177,62 @@ Parameters:</p>
 </span></code></pre></div>
 </blockquote>
 <h3 id="list"><code>List</code><a class="headerlink" href="#list" title="Permanent link">&para;</a></h3>
-<p>The <code>List</code> parser parses comma-separated values into a list of parsed elements.</p>
+<p>The <code>List</code> parser parses comma-separated values into a list of parsed elements. The CLI parser will, by default, pass
+in multiple arguments as a list of strings to the top-level <code>List</code> parser. Nested items will be parsed by splitting the string by commas.</p>
 <div class="language-python highlight"><pre><span></span><code><span id="__span-13-1"><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a><span class="n">List</span><span class="p">(</span><span class="n">inner</span><span class="p">:</span> <span class="n">Parser</span><span class="p">[</span><span class="n">T</span><span class="p">])</span>
 </span></code></pre></div>
 <p>Examples:</p>
 <!-- mdtest -->
-<blockquote>
-<div class="language-python highlight"><pre><span></span><code><span id="__span-14-1"><a id="__codelineno-14-1" name="__codelineno-14-1" href="#__codelineno-14-1"></a><span class="n">cp</span><span class="o">.</span><span class="n">List</span><span class="p">(</span><span class="n">cp</span><span class="o">.</span><span class="n">Int</span><span class="p">())</span>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-14-1"><a id="__codelineno-14-1" name="__codelineno-14-1" href="#__codelineno-14-1"></a><span class="c1"># list[int]</span>
+</span><span id="__span-14-2"><a id="__codelineno-14-2" name="__codelineno-14-2" href="#__codelineno-14-2"></a><span class="c1"># E.g.: --foo 1 2 3</span>
+</span><span id="__span-14-3"><a id="__codelineno-14-3" name="__codelineno-14-3" href="#__codelineno-14-3"></a><span class="n">parser</span> <span class="o">=</span> <span class="n">cp</span><span class="o">.</span><span class="n">List</span><span class="p">(</span><span class="n">cp</span><span class="o">.</span><span class="n">Int</span><span class="p">())</span>
+</span><span id="__span-14-4"><a id="__codelineno-14-4" name="__codelineno-14-4" href="#__codelineno-14-4"></a><span class="k">assert</span> <span class="n">parser</span><span class="p">([</span><span class="s2">&quot;1&quot;</span><span class="p">,</span> <span class="s2">&quot;2&quot;</span><span class="p">,</span> <span class="s2">&quot;3&quot;</span><span class="p">])</span> <span class="o">==</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">]</span>
+</span><span id="__span-14-5"><a id="__codelineno-14-5" name="__codelineno-14-5" href="#__codelineno-14-5"></a><span class="k">assert</span> <span class="n">parser</span><span class="p">(</span><span class="s2">&quot;1, 2, 3&quot;</span><span class="p">)</span> <span class="o">==</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">]</span>
+</span><span id="__span-14-6"><a id="__codelineno-14-6" name="__codelineno-14-6" href="#__codelineno-14-6"></a>
+</span><span id="__span-14-7"><a id="__codelineno-14-7" name="__codelineno-14-7" href="#__codelineno-14-7"></a><span class="c1"># list[list[int]]</span>
+</span><span id="__span-14-8"><a id="__codelineno-14-8" name="__codelineno-14-8" href="#__codelineno-14-8"></a><span class="c1"># E.g.: --foo 1,2 2,3 3,4</span>
+</span><span id="__span-14-9"><a id="__codelineno-14-9" name="__codelineno-14-9" href="#__codelineno-14-9"></a><span class="n">parser</span> <span class="o">=</span> <span class="n">cp</span><span class="o">.</span><span class="n">List</span><span class="p">(</span><span class="n">cp</span><span class="o">.</span><span class="n">List</span><span class="p">(</span><span class="n">cp</span><span class="o">.</span><span class="n">Int</span><span class="p">()))</span>
+</span><span id="__span-14-10"><a id="__codelineno-14-10" name="__codelineno-14-10" href="#__codelineno-14-10"></a><span class="k">assert</span> <span class="n">parser</span><span class="p">([</span><span class="s2">&quot;1,2&quot;</span><span class="p">,</span> <span class="s2">&quot;2,3&quot;</span><span class="p">,</span> <span class="s2">&quot;3, 4&quot;</span><span class="p">])</span> <span class="o">==</span> <span class="p">[</span>
+</span><span id="__span-14-11"><a id="__codelineno-14-11" name="__codelineno-14-11" href="#__codelineno-14-11"></a>    <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">],</span>
+</span><span id="__span-14-12"><a id="__codelineno-14-12" name="__codelineno-14-12" href="#__codelineno-14-12"></a>    <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">],</span>
+</span><span id="__span-14-13"><a id="__codelineno-14-13" name="__codelineno-14-13" href="#__codelineno-14-13"></a>    <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">],</span>
+</span><span id="__span-14-14"><a id="__codelineno-14-14" name="__codelineno-14-14" href="#__codelineno-14-14"></a><span class="p">]</span>
 </span></code></pre></div>
-</blockquote>
 <p>Parameters:</p>
 <ul>
 <li><code>inner</code>: The parser used to convert each list element.</li>
 </ul>
 <h3 id="tuple"><code>Tuple</code><a class="headerlink" href="#tuple" title="Permanent link">&para;</a></h3>
-<p>The <code>Tuple</code> parser parses a string input into a tuple of values.</p>
+<p>The <code>Tuple</code> parser parses a string input into a tuple of values. The tuple parser will split the input string by commas.</p>
 <div class="language-python highlight"><pre><span></span><code><span id="__span-15-1"><a id="__codelineno-15-1" name="__codelineno-15-1" href="#__codelineno-15-1"></a><span class="n">Tuple</span><span class="p">(</span><span class="o">*</span><span class="n">inner</span><span class="p">:</span> <span class="n">Parser</span><span class="p">,</span> <span class="n">num</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span>
 </span></code></pre></div>
 <p>Examples:</p>
 <!-- mdtest -->
-<blockquote>
 <div class="language-python highlight"><pre><span></span><code><span id="__span-16-1"><a id="__codelineno-16-1" name="__codelineno-16-1" href="#__codelineno-16-1"></a><span class="c1"># tuple[str, ...]</span>
-</span><span id="__span-16-2"><a id="__codelineno-16-2" name="__codelineno-16-2" href="#__codelineno-16-2"></a><span class="n">cp</span><span class="o">.</span><span class="n">Tuple</span><span class="p">(</span><span class="n">cp</span><span class="o">.</span><span class="n">Str</span><span class="p">())</span>
-</span><span id="__span-16-3"><a id="__codelineno-16-3" name="__codelineno-16-3" href="#__codelineno-16-3"></a>
-</span><span id="__span-16-4"><a id="__codelineno-16-4" name="__codelineno-16-4" href="#__codelineno-16-4"></a><span class="c1"># tuple[str, int]</span>
-</span><span id="__span-16-5"><a id="__codelineno-16-5" name="__codelineno-16-5" href="#__codelineno-16-5"></a><span class="n">cp</span><span class="o">.</span><span class="n">Tuple</span><span class="p">(</span><span class="n">cp</span><span class="o">.</span><span class="n">Str</span><span class="p">(),</span> <span class="n">cp</span><span class="o">.</span><span class="n">Int</span><span class="p">(),</span> <span class="n">num</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+</span><span id="__span-16-2"><a id="__codelineno-16-2" name="__codelineno-16-2" href="#__codelineno-16-2"></a><span class="c1"># E.g.: --foo a,b,c</span>
+</span><span id="__span-16-3"><a id="__codelineno-16-3" name="__codelineno-16-3" href="#__codelineno-16-3"></a><span class="n">parser</span> <span class="o">=</span> <span class="n">cp</span><span class="o">.</span><span class="n">Tuple</span><span class="p">(</span><span class="n">cp</span><span class="o">.</span><span class="n">Str</span><span class="p">(),</span> <span class="n">num</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+</span><span id="__span-16-4"><a id="__codelineno-16-4" name="__codelineno-16-4" href="#__codelineno-16-4"></a><span class="k">assert</span> <span class="n">parser</span><span class="p">([</span><span class="s2">&quot;a&quot;</span><span class="p">,</span> <span class="s2">&quot;b&quot;</span><span class="p">,</span> <span class="s2">&quot;c&quot;</span><span class="p">])</span> <span class="o">==</span> <span class="p">(</span><span class="s2">&quot;a&quot;</span><span class="p">,</span> <span class="s2">&quot;b&quot;</span><span class="p">,</span> <span class="s2">&quot;c&quot;</span><span class="p">)</span>
+</span><span id="__span-16-5"><a id="__codelineno-16-5" name="__codelineno-16-5" href="#__codelineno-16-5"></a><span class="k">assert</span> <span class="n">parser</span><span class="p">(</span><span class="s2">&quot;a,b,c&quot;</span><span class="p">)</span> <span class="o">==</span> <span class="p">(</span><span class="s2">&quot;a&quot;</span><span class="p">,</span> <span class="s2">&quot;b&quot;</span><span class="p">,</span> <span class="s2">&quot;c&quot;</span><span class="p">)</span>
+</span><span id="__span-16-6"><a id="__codelineno-16-6" name="__codelineno-16-6" href="#__codelineno-16-6"></a>
+</span><span id="__span-16-7"><a id="__codelineno-16-7" name="__codelineno-16-7" href="#__codelineno-16-7"></a><span class="c1"># tuple[str, int]</span>
+</span><span id="__span-16-8"><a id="__codelineno-16-8" name="__codelineno-16-8" href="#__codelineno-16-8"></a><span class="c1"># E.g.: --foo a,2</span>
+</span><span id="__span-16-9"><a id="__codelineno-16-9" name="__codelineno-16-9" href="#__codelineno-16-9"></a><span class="n">parser</span> <span class="o">=</span> <span class="n">cp</span><span class="o">.</span><span class="n">Tuple</span><span class="p">(</span><span class="n">cp</span><span class="o">.</span><span class="n">Str</span><span class="p">(),</span> <span class="n">cp</span><span class="o">.</span><span class="n">Int</span><span class="p">())</span>
+</span><span id="__span-16-10"><a id="__codelineno-16-10" name="__codelineno-16-10" href="#__codelineno-16-10"></a><span class="k">assert</span> <span class="n">parser</span><span class="p">([</span><span class="s2">&quot;a&quot;</span><span class="p">,</span> <span class="s2">&quot;2&quot;</span><span class="p">])</span> <span class="o">==</span> <span class="p">(</span><span class="s2">&quot;a&quot;</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+</span><span id="__span-16-11"><a id="__codelineno-16-11" name="__codelineno-16-11" href="#__codelineno-16-11"></a><span class="k">assert</span> <span class="n">parser</span><span class="p">(</span><span class="s2">&quot;a,2&quot;</span><span class="p">)</span> <span class="o">==</span> <span class="p">(</span><span class="s2">&quot;a&quot;</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+</span><span id="__span-16-12"><a id="__codelineno-16-12" name="__codelineno-16-12" href="#__codelineno-16-12"></a>
+</span><span id="__span-16-13"><a id="__codelineno-16-13" name="__codelineno-16-13" href="#__codelineno-16-13"></a><span class="c1"># list[tuple[str, int]]</span>
+</span><span id="__span-16-14"><a id="__codelineno-16-14" name="__codelineno-16-14" href="#__codelineno-16-14"></a><span class="c1"># E.g.: --foo a,2 b,3 c,4</span>
+</span><span id="__span-16-15"><a id="__codelineno-16-15" name="__codelineno-16-15" href="#__codelineno-16-15"></a><span class="n">parser</span> <span class="o">=</span> <span class="n">cp</span><span class="o">.</span><span class="n">List</span><span class="p">(</span><span class="n">cp</span><span class="o">.</span><span class="n">Tuple</span><span class="p">(</span><span class="n">cp</span><span class="o">.</span><span class="n">Str</span><span class="p">(),</span> <span class="n">cp</span><span class="o">.</span><span class="n">Int</span><span class="p">()))</span>
+</span><span id="__span-16-16"><a id="__codelineno-16-16" name="__codelineno-16-16" href="#__codelineno-16-16"></a><span class="k">assert</span> <span class="n">parser</span><span class="p">([</span><span class="s2">&quot;a,2&quot;</span><span class="p">,</span> <span class="s2">&quot;b,3&quot;</span><span class="p">,</span> <span class="s2">&quot;c, 4&quot;</span><span class="p">])</span> <span class="o">==</span> <span class="p">[</span>
+</span><span id="__span-16-17"><a id="__codelineno-16-17" name="__codelineno-16-17" href="#__codelineno-16-17"></a>    <span class="p">(</span><span class="s2">&quot;a&quot;</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span>
+</span><span id="__span-16-18"><a id="__codelineno-16-18" name="__codelineno-16-18" href="#__codelineno-16-18"></a>    <span class="p">(</span><span class="s2">&quot;b&quot;</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span>
+</span><span id="__span-16-19"><a id="__codelineno-16-19" name="__codelineno-16-19" href="#__codelineno-16-19"></a>    <span class="p">(</span><span class="s2">&quot;c&quot;</span><span class="p">,</span> <span class="mi">4</span><span class="p">),</span>
+</span><span id="__span-16-20"><a id="__codelineno-16-20" name="__codelineno-16-20" href="#__codelineno-16-20"></a><span class="p">]</span>
 </span></code></pre></div>
-</blockquote>
 <p>Parameters:</p>
 <ul>
 <li><code>inner</code>: List of parsers for each tuple element.</li>
-<li><code>num</code>: Expected tuple length (optional).</li>
+<li><code>num</code>: Expected tuple length. If None, the tuple will accept unlimited arguments (equivalent to <code>tuple[&lt;type&gt;, ...]</code>)</li>
 </ul>
 <h3 id="union"><code>Union</code><a class="headerlink" href="#union" title="Permanent link">&para;</a></h3>
 <p>The <code>Union</code> parser attempts to parse input using multiple parsers.</p>
