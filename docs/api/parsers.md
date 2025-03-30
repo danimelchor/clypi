@@ -219,7 +219,7 @@ Parameters:
 
 ### `Tuple`
 
-The `Tuple` parser parses a string input into a tuple of values.
+The `Tuple` parser parses a string input into a tuple of values. The tuple parser will split the input string by commas.
 
 ```python
 Tuple(*inner: Parser, num: int | None = None)
@@ -229,13 +229,13 @@ Examples:
 <!-- mdtest -->
 ```python
 # tuple[str, ...]
-# E.g.: --foo a b c
+# E.g.: --foo a,b,c
 parser = cp.Tuple(cp.Str(), num=None)
 assert parser(["a", "b", "c"]) == ("a", "b", "c")
 assert parser("a,b,c") == ("a", "b", "c")
 
 # tuple[str, int]
-# E.g.: --foo a 2
+# E.g.: --foo a,2
 parser = cp.Tuple(cp.Str(), cp.Int())
 assert parser(["a", "2"]) == ("a", 2)
 assert parser("a,2") == ("a", 2)
