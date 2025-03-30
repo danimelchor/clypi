@@ -368,3 +368,15 @@ def test_parse_enums(args: list[str], expected: dict[str, t.Any], fails: bool):
         lc_v = getattr(ec, k)
         assert lc_v == v
         assert isinstance(lc_v, Env)
+
+
+def test_parse_tuple_list():
+    class EnumCommand(Command):
+        arg: list[tuple[str, int]]
+
+    ec = EnumCommand.parse(["--arg", "a,1", "b,2", "c,3"])
+    assert ec.arg == [
+        ("a", 1),
+        ("b", 2),
+        ("c", 3),
+    ]
