@@ -7,7 +7,7 @@ import logging
 import re
 import sys
 import typing as t
-from types import NoneType, UnionType
+from types import NoneType
 
 from clypi import _type_util, parsers
 from clypi._cli import arg_config, arg_parser, autocomplete
@@ -144,7 +144,7 @@ class _CommandMeta(type):
 
         _type = annotations["subcommand"]
         subcmds_tmp = [_type]
-        if isinstance(_type, UnionType):
+        if _type_util.is_union(_type):
             subcmds_tmp = _type_util.union_inner(_type)
 
         # Store in mapping (name -> type)

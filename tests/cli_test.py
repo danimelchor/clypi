@@ -1,4 +1,5 @@
 from pathlib import Path
+from typing import Optional
 
 import pytest
 from typing_extensions import override
@@ -22,7 +23,7 @@ class ExampleCommand(Command):
     """
 
     flag: bool = False
-    subcommand: ExampleSubCommand | None = None
+    subcommand: Optional[ExampleSubCommand] = None
     option: list[str] = arg(
         short="o", help="A list of strings please", default_factory=list
     )
