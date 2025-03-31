@@ -286,21 +286,21 @@ to print before commands, emit metrics, and more!
 Examples:
 
 <!-- mdtest -->
-> ```python hl_lines="5-7"
-> import logging
-> from clypi import Command, arg
->
-> class Main(Command):
->     async def pre_run_hook(self):
->         cmd_str = " ".join(self.full_command())
->         logging.debug("Running %s", cmd_str)
->
->     async def run(self):
->         print("Hey")
->
-> main = Main.parse()
-> main.start()
-> ```
+```python hl_lines="5-7"
+import logging
+from clypi import Command, arg
+
+class Main(Command):
+    async def pre_run_hook(self):
+        cmd_str = " ".join(self.full_command())
+        logging.debug("Running %s", cmd_str)
+
+    async def run(self):
+        print("Hey")
+
+main = Main.parse()
+main.start()
+```
 
 ### `post_run_hook`
 

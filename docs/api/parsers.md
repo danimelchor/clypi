@@ -37,10 +37,10 @@ Parameters:
 
 Examples:
 <!-- mdtest -->
-> ```python
-> # 3 (OK), 10 (OK), 2 (not OK), 11 (not OK)
-> cp.Int(lte=10, gt=2)
-> ```
+```python
+# 3 (OK), 10 (OK), 2 (not OK), 11 (not OK)
+cp.Int(lte=10, gt=2)
+```
 
 ### `Float`
 
@@ -75,10 +75,10 @@ Parameters:
 
 Examples:
 <!-- mdtest -->
-> ```python
-> # 3 (OK), 10 (OK), 2 (not OK), 11 (not OK)
-> cp.Float(lte=10, gt=2)
-> ```
+```python
+# 3 (OK), 10 (OK), 2 (not OK), 11 (not OK)
+cp.Float(lte=10, gt=2)
+```
 
 ### `Bool`
 
@@ -120,9 +120,9 @@ Parameters:
 Examples:
 
 <!-- mdtest -->
-> ```python
-> cp.Str(regex=r"[a-z]([0-9])", regex_group=1) # f1 -> 1
-> ```
+```python
+cp.Str(regex=r"[a-z]([0-9])", regex_group=1) # f1 -> 1
+```
 
 ### `DateTime`
 
@@ -160,10 +160,10 @@ TimeDelta(
 
 Examples:
 <!-- mdtest -->
-> ```python
-> # 1 day (OK), 2 weeks (OK), 1 second (not OK)
-> cp.TimeDelta(gte=timedelta(days=1))
-> ```
+```python
+# 1 day (OK), 2 weeks (OK), 1 second (not OK)
+cp.TimeDelta(gte=timedelta(days=1))
+```
 
 Supported time units:
 - `weeks (w)`, `days (d)`, `hours (h)`, `minutes (m)`, `seconds (s)`, `milliseconds (ms)`, `microseconds (us)`
@@ -181,9 +181,9 @@ Parameters:
 
 Examples:
 <!-- mdtest -->
-> ```python
-> cp.Path(exists=True)
-> ```
+```python
+cp.Path(exists=True)
+```
 
 ### `List`
 
@@ -265,10 +265,10 @@ Union(left: Parser[X], right: Parser[Y])
 
 You can also use the short hand `|` syntax for two parsers, e.g.:
 <!-- mdtest -->
-> ```python
-> cp.Union(cp.Path(exists=True), cp.Str())
-> cp.Path(exists=True) | cp.Str()
-> ```
+```python
+cp.Union(cp.Path(exists=True), cp.Str())
+cp.Path(exists=True) | cp.Str()
+```
 
 ### `Literal`
 
@@ -280,9 +280,9 @@ Literal(*values: t.Any)
 
 Examples:
 <!-- mdtest -->
-> ```python
-> cp.Literal(1, "foo")
-> ```
+```python
+cp.Literal(1, "foo")
+```
 
 ### `Enum`
 
@@ -294,13 +294,13 @@ Enum(enum: type[enum.Enum])
 
 Examples:
 <!-- mdtest -->
-> ```python
-> class Color(Enum):
->     RED = 1
->     BLUE = 2
->
-> cp.Enum(Color)
-> ```
+```python
+class Color(Enum):
+    RED = 1
+    BLUE = 2
+
+cp.Enum(Color)
+```
 
 ### `from_type`
 
@@ -313,6 +313,6 @@ def from_type(_type: type) -> Parser: ...
 
 Examples:
 <!-- mdtest -->
-> ```python
-> assert cp.from_type(bool) == cp.Bool()
-> ```
+```python
+assert cp.from_type(bool) == cp.Bool()
+```
