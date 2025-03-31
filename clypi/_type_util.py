@@ -48,7 +48,7 @@ def tuple_inner(_type: t.Any) -> tuple[list[t.Any], int | None]:
 
 @ignore_annotated
 def is_union(_type: t.Any) -> t.TypeGuard[UnionType]:
-    return isinstance(_type, UnionType)
+    return t.get_origin(_type) in (UnionType, t.Union)
 
 
 @ignore_annotated
@@ -59,6 +59,19 @@ def union_inner(_type: t.Any) -> list[t.Any]:
 @ignore_annotated
 def is_literal(_type: t.Any) -> bool:
     return t.get_origin(_type) == t.Literal
+
+
+@ignore_annotated
+def is_optional(_type: t.Any) -> bool:
+    """Check type for <type>|None"""
+    if not is_union(_type):
+        return False
+    inner = union_inner(_type)
+    if len(inner) != 2:
+        return False
+    if NoneType not in inner:
+        return False
+    return True
 
 
 @ignore_annotated
@@ -87,19 +100,3 @@ def is_enum(_type: t.Any) -> t.TypeGuard[type[Enum]]:
 @ignore_annotated
 def has_metavar(_type: t.Any) -> bool:
     return is_enum(_type) or is_literal(_type)
-
-
-@ignore_annotated
-def remove_optionality(_type: t.Any) -> t.Any:
-    if not isinstance(_type, UnionType):
-        return _type
-
-    new_args: list[t.Any] = []
-    for arg in _type.__args__:
-        if arg is not type[None]:
-            new_args.append(arg)
-
-    if len(new_args) == 1:
-        return new_args[0]
-
-    return t.Union[*new_args]
