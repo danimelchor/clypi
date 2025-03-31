@@ -158,6 +158,7 @@ def test_successfull_two_item_tuple_parsers(
         (t.Literal[1, "foo"], cp.Literal("1", "foo")),
         (Color, cp.Enum(Color)),
         (int | None, cp.Union(cp.Int(), cp.NoneParser())),
+        (t.Optional[int], cp.Union(cp.Int(), cp.NoneParser())),
     ],
 )
 def test_parser_from_type(_type: t.Any, expected: cp.Parser[t.Any]):
