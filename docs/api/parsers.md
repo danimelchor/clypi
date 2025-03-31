@@ -342,3 +342,28 @@ Examples:
 ```python
 assert cp.from_type(bool) == cp.Bool()
 ```
+
+#### Supported built-in types
+
+- `None` :material-arrow-right: `cp.NoneParser()`
+- `bool` :material-arrow-right: `cp.Bool()`
+- `int` :material-arrow-right: `cp.Int()`
+- `float` :material-arrow-right: `cp.Float()`
+- `str` :material-arrow-right: `cp.Str()`
+- `Path` :material-arrow-right: `cp.Path()`
+- `datetime` :material-arrow-right: `cp.DateTime()`
+- `timedelta` :material-arrow-right: `cp.TimeDelta()`
+- `Enum` :material-arrow-right: `cp.Enum(<type>)`
+- `list[<type>]` :material-arrow-right: `cp.List(<type>)`. E.g.:
+    - `list[str]` :material-arrow-right: `cp.List(cp.Str())`)
+- `tuple[<type(s)>]` :material-arrow-right: `cp.Tuple(<type>, <len>)`. E.g.:
+    - `tuple[str]` :material-arrow-right: `cp.Tuple(cp.Str())`)
+    - `tuple[str, int]` :material-arrow-right: `cp.Tuple(cp.Str(), cp.Int())`)
+    - `tuple[str, ...]` :material-arrow-right: `cp.Tuple(cp.Str(), num=None)`)
+- `Union[<type(s)>]` :material-arrow-right: `cp.Union(*<type(s)>)`. E.g.:
+    - `str | None` :material-arrow-right: `cp.Union(cp.Str(), cp.NoneParser())`)
+    - `str | bool | int` :material-arrow-right: `cp.Union(cp.Str(), cp.Bool(), cp.Int())`)
+- `Optional[<type>]` :material-arrow-right: `cp.Union(<type>, cp.NoneParser())`. E.g.:
+    - `Optional[str]` :material-arrow-right: `cp.Union(cp.Str(), cp.NoneParser())`)
+- `Literal[<value(s)>]` :material-arrow-right: `cp.Literal(*<value(s)>)`. E.g.:
+    - `Literal[1, "foo"]` :material-arrow-right: `cp.Literal(1, "foo")`)
