@@ -23,6 +23,14 @@ from clypi import *
 from enum import Enum
 import asyncio
 from datetime import datetime, timedelta
+
+def assert_raises(func):
+    exc = None
+    try:
+        func()
+    except Exception as e:
+        exc = e
+    assert exc is not None
 """
 
 

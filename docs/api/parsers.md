@@ -37,10 +37,12 @@ Parameters:
 
 Examples:
 <!-- mdtest -->
-> ```python
-> # 3 (OK), 10 (OK), 2 (not OK), 11 (not OK)
-> cp.Int(lte=10, gt=2)
-> ```
+```python
+parser = cp.Int(lte=10, gt=2)
+assert parser("3") == 3
+assert_raises(lambda: parser("2"))  # Not >2
+assert_raises(lambda: parser("11"))  # Not <=10
+```
 
 ### `Float`
 
@@ -75,10 +77,13 @@ Parameters:
 
 Examples:
 <!-- mdtest -->
-> ```python
-> # 3 (OK), 10 (OK), 2 (not OK), 11 (not OK)
-> cp.Float(lte=10, gt=2)
-> ```
+```python
+parser = cp.Float(lte=10, gt=2)
+assert parser("3") == 3
+assert parser("2.01") == 2.01
+assert_raises(lambda: parser("2"))  # Not >2
+assert_raises(lambda: parser("11"))  # Not <=10
+```
 
 ### `Bool`
 
@@ -91,6 +96,15 @@ Bool()
 Accepted values:
 - `true`, `yes`, `y` → `True`
 - `false`, `no`, `n` → `False`
+
+
+Examples:
+<!-- mdtest -->
+```python
+parser = cp.Bool()
+assert parser("y") is True
+assert parser("NO") is False
+```
 
 ### `Str`
 
@@ -120,9 +134,13 @@ Parameters:
 Examples:
 
 <!-- mdtest -->
-> ```python
-> cp.Str(regex=r"[a-z]([0-9])", regex_group=1) # f1 -> 1
-> ```
+```python
+parser = cp.Str(regex=r"[a-z]([0-9]+)", regex_group=1)
+assert parser("f1") == "1"
+assert parser("f123") == "123"
+assert_raises(lambda: parser("123f"))
+assert_raises(lambda: parser("f"))
+```
 
 ### `DateTime`
 
@@ -160,10 +178,12 @@ TimeDelta(
 
 Examples:
 <!-- mdtest -->
-> ```python
-> # 1 day (OK), 2 weeks (OK), 1 second (not OK)
-> cp.TimeDelta(gte=timedelta(days=1))
-> ```
+```python
+parser = cp.TimeDelta(gte=timedelta(days=1))
+assert parser("1 day") == timedelta(days=1)
+assert parser("1w") == timedelta(weeks=1)
+assert_raises(lambda: parser("23h")) # Under 1 day
+```
 
 Supported time units:
 - `weeks (w)`, `days (d)`, `hours (h)`, `minutes (m)`, `seconds (s)`, `milliseconds (ms)`, `microseconds (us)`
@@ -181,9 +201,9 @@ Parameters:
 
 Examples:
 <!-- mdtest -->
-> ```python
-> cp.Path(exists=True)
-> ```
+```python
+cp.Path(exists=True)
+```
 
 ### `List`
 
@@ -265,10 +285,10 @@ Union(left: Parser[X], right: Parser[Y])
 
 You can also use the short hand `|` syntax for two parsers, e.g.:
 <!-- mdtest -->
-> ```python
-> cp.Union(cp.Path(exists=True), cp.Str())
-> cp.Path(exists=True) | cp.Str()
-> ```
+```python
+cp.Union(cp.Path(exists=True), cp.Str())
+cp.Path(exists=True) | cp.Str()
+```
 
 ### `Literal`
 
@@ -280,9 +300,12 @@ Literal(*values: t.Any)
 
 Examples:
 <!-- mdtest -->
-> ```python
-> cp.Literal(1, "foo")
-> ```
+```python
+parser = cp.Literal(1, "foo")
+assert parser("1") == 1
+assert parser("foo") == "foo"
+assert_raises(lambda: parser("bar"))
+```
 
 ### `Enum`
 
@@ -294,13 +317,16 @@ Enum(enum: type[enum.Enum])
 
 Examples:
 <!-- mdtest -->
-> ```python
-> class Color(Enum):
->     RED = 1
->     BLUE = 2
->
-> cp.Enum(Color)
-> ```
+```python
+class Color(Enum):
+    RED = 1
+    BLUE = 2
+
+parser = cp.Enum(Color)
+assert parser("red") == Color.RED
+assert parser("blue") == Color.BLUE
+assert_raises(lambda: parser("green"))
+```
 
 ### `from_type`
 
@@ -313,6 +339,31 @@ def from_type(_type: type) -> Parser: ...
 
 Examples:
 <!-- mdtest -->
-> ```python
-> assert cp.from_type(bool) == cp.Bool()
-> ```
+```python
+assert cp.from_type(bool) == cp.Bool()
+```
+
+### Supported built-in types
+
+- `None` :material-arrow-right: `cp.NoneParser()`
+- `bool` :material-arrow-right: `cp.Bool()`
+- `int` :material-arrow-right: `cp.Int()`
+- `float` :material-arrow-right: `cp.Float()`
+- `str` :material-arrow-right: `cp.Str()`
+- `Path` :material-arrow-right: `cp.Path()`
+- `datetime` :material-arrow-right: `cp.DateTime()`
+- `timedelta` :material-arrow-right: `cp.TimeDelta()`
+- `Enum` :material-arrow-right: `cp.Enum(<type>)`
+- `list[<type>]` :material-arrow-right: `cp.List(<type>)`. E.g.:
+    - `list[str]` :material-arrow-right: `cp.List(cp.Str())`)
+- `tuple[<type(s)>]` :material-arrow-right: `cp.Tuple(<type>, <len>)`. E.g.:
+    - `tuple[str]` :material-arrow-right: `cp.Tuple(cp.Str())`)
+    - `tuple[str, int]` :material-arrow-right: `cp.Tuple(cp.Str(), cp.Int())`)
+    - `tuple[str, ...]` :material-arrow-right: `cp.Tuple(cp.Str(), num=None)`)
+- `Union[<type(s)>]` :material-arrow-right: `cp.Union(*<type(s)>)`. E.g.:
+    - `str | None` :material-arrow-right: `cp.Union(cp.Str(), cp.NoneParser())`)
+    - `str | bool | int` :material-arrow-right: `cp.Union(cp.Str(), cp.Bool(), cp.Int())`)
+- <!-- md:version 1.2.15 --> `Optional[<type>]` :material-arrow-right: `cp.Union(<type>, cp.NoneParser())`. E.g.:
+    - `Optional[str]` :material-arrow-right: `cp.Union(cp.Str(), cp.NoneParser())`)
+- <!-- md:version 1.2.17 --> `Literal[<value(s)>]` :material-arrow-right: `cp.Literal(*<value(s)>)`. E.g.:
+    - `Literal[1, "foo"]` :material-arrow-right: `cp.Literal(1, "foo")`)
