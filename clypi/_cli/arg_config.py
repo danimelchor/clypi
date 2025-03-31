@@ -20,6 +20,12 @@ def _get_nargs(_type: t.Any) -> Nargs:
     if _type_util.is_list(_type):
         return "*"
 
+    if _type_util.is_union(_type):
+        nargs = [_get_nargs(t) for t in _type_util.union_inner(_type)]
+        if "*" in nargs:
+            return "*"
+        return max(t.cast(list[int], nargs))
+
     return 1
 
 
