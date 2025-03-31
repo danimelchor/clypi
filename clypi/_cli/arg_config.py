@@ -13,6 +13,16 @@ T = t.TypeVar("T")
 Nargs: t.TypeAlias = t.Literal["*"] | float
 
 
+def _get_nargs(_type: t.Any) -> Nargs:
+    if _type is bool:
+        return 0
+
+    if _type_util.is_list(_type):
+        return "*"
+
+    return 1
+
+
 @dataclass
 class PartialConfig(t.Generic[T]):
     parser: Parser[T] | None = None
@@ -113,13 +123,7 @@ class Config(t.Generic[T]):
 
     @property
     def nargs(self) -> Nargs:
-        if self.arg_type is bool:
-            return 0
-
-        if _type_util.is_list(self.arg_type):
-            return "*"
-
-        return 1
+        return _get_nargs(self.arg_type)
 
     @property
     def modifier(self) -> str:
