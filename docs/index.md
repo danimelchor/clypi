@@ -40,6 +40,8 @@ Just like you do with [dataclasses](https://docs.python.org/3/library/dataclasse
 
 <!-- mdtest -->
 ```python
+from clypi import Command
+
 class MyCli(Command):
     name: str  # Automatically parsed as `--name <NAME>`.
 
@@ -54,6 +56,8 @@ groups, and more!
 
 <!-- mdtest -->
 ```python
+from clypi import Command, arg
+
 class MyCli(Command):
     threads: int = arg(
         default=4,
@@ -67,6 +71,8 @@ Using docstrings automatically applies them to your CLI's `--help` page
 
 <!-- mdtest -->
 ```python
+from clypi import Command, arg
+
 class MyCli(Command):
     """A simple CLI"""
     threads: int = arg(
@@ -81,6 +87,8 @@ Just create and compose more clypi commands!
 
 <!-- mdtest -->
 ```python
+from clypi import Command, arg
+
 class Lint(Command):
     """Lint a set of files"""
     verbose: bool = arg(inherited=True)  # Inherits the argument def from `Cli`
@@ -221,6 +229,8 @@ In this example your editor will correctly infer the type:
 
 <!-- mdtest-stdin 23 -->
 ```python
+import clypi
+
 hours = clypi.prompt(
     "How many hours are there in a year?",
     parser=lambda x: float(x) if isinstance(x, str) else timedelta(days=len(x)),
