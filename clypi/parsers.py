@@ -410,12 +410,14 @@ class Union(ClypiParser[t.Union[X, Y]]):
 class Literal(ClypiParser[t.Any]):
     def __init__(self, *values: t.Any) -> None:
         self._values = values
+        self._parsers = [from_type(type(v)) for v in values]
 
     # TODO: can we return the right type here?
     def __call__(self, raw: str | list[str], /) -> t.Any:
-        for v in self._values:
-            if v == raw:
-                return v
+        for value, parser in zip(self._values, self._parsers):
+            with suppress(*CATCH_ERRORS):
+                if parser(raw) == value:
+                    return value
         raise CannotParseAs(raw, self)
 
     def __repr__(self):

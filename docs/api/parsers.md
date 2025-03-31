@@ -38,8 +38,10 @@ Parameters:
 Examples:
 <!-- mdtest -->
 ```python
-# 3 (OK), 10 (OK), 2 (not OK), 11 (not OK)
-cp.Int(lte=10, gt=2)
+parser = cp.Int(lte=10, gt=2)
+assert parser("3") == 3
+assert_raises(lambda: parser("2"))  # Not >2
+assert_raises(lambda: parser("11"))  # Not <=10
 ```
 
 ### `Float`
@@ -76,8 +78,11 @@ Parameters:
 Examples:
 <!-- mdtest -->
 ```python
-# 3 (OK), 10 (OK), 2 (not OK), 11 (not OK)
-cp.Float(lte=10, gt=2)
+parser = cp.Float(lte=10, gt=2)
+assert parser("3") == 3
+assert parser("2.01") == 2.01
+assert_raises(lambda: parser("2"))  # Not >2
+assert_raises(lambda: parser("11"))  # Not <=10
 ```
 
 ### `Bool`
@@ -91,6 +96,15 @@ Bool()
 Accepted values:
 - `true`, `yes`, `y` → `True`
 - `false`, `no`, `n` → `False`
+
+
+Examples:
+<!-- mdtest -->
+```python
+parser = cp.Bool()
+assert parser("y") is True
+assert parser("NO") is False
+```
 
 ### `Str`
 
@@ -121,7 +135,11 @@ Examples:
 
 <!-- mdtest -->
 ```python
-cp.Str(regex=r"[a-z]([0-9])", regex_group=1) # f1 -> 1
+parser = cp.Str(regex=r"[a-z]([0-9]+)", regex_group=1)
+assert parser("f1") == "1"
+assert parser("f123") == "123"
+assert_raises(lambda: parser("123f"))
+assert_raises(lambda: parser("f"))
 ```
 
 ### `DateTime`
@@ -161,8 +179,10 @@ TimeDelta(
 Examples:
 <!-- mdtest -->
 ```python
-# 1 day (OK), 2 weeks (OK), 1 second (not OK)
-cp.TimeDelta(gte=timedelta(days=1))
+parser = cp.TimeDelta(gte=timedelta(days=1))
+assert parser("1 day") == timedelta(days=1)
+assert parser("1w") == timedelta(weeks=1)
+assert_raises(lambda: parser("23h")) # Under 1 day
 ```
 
 Supported time units:
@@ -281,7 +301,10 @@ Literal(*values: t.Any)
 Examples:
 <!-- mdtest -->
 ```python
-cp.Literal(1, "foo")
+parser = cp.Literal(1, "foo")
+assert parser("1") == 1
+assert parser("foo") == "foo"
+assert_raises(lambda: parser("bar"))
 ```
 
 ### `Enum`
@@ -299,7 +322,10 @@ class Color(Enum):
     RED = 1
     BLUE = 2
 
-cp.Enum(Color)
+parser = cp.Enum(Color)
+assert parser("red") == Color.RED
+assert parser("blue") == Color.BLUE
+assert_raises(lambda: parser("green"))
 ```
 
 ### `from_type`
