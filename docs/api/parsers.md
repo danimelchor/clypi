@@ -363,7 +363,7 @@ assert cp.from_type(bool) == cp.Bool()
 - `Union[<type(s)>]` :material-arrow-right: `cp.Union(*<type(s)>)`. E.g.:
     - `str | None` :material-arrow-right: `cp.Union(cp.Str(), cp.NoneParser())`)
     - `str | bool | int` :material-arrow-right: `cp.Union(cp.Str(), cp.Bool(), cp.Int())`)
-- `Optional[<type>]` :material-arrow-right: `cp.Union(<type>, cp.NoneParser())`. E.g.:
+- <!-- md:version 1.2.15 --> `Optional[<type>]` :material-arrow-right: `cp.Union(<type>, cp.NoneParser())`. E.g.:
     - `Optional[str]` :material-arrow-right: `cp.Union(cp.Str(), cp.NoneParser())`)
-- `Literal[<value(s)>]` :material-arrow-right: `cp.Literal(*<value(s)>)`. E.g.:
+- <!-- md:version 1.2.17 --> `Literal[<value(s)>]` :material-arrow-right: `cp.Literal(*<value(s)>)`. E.g.:
     - `Literal[1, "foo"]` :material-arrow-right: `cp.Literal(1, "foo")`)

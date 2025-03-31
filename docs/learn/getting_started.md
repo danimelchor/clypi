@@ -258,7 +258,7 @@ Hello, Daniel!
 
 ## Built-in parsers
 
-CLypi comes with built-in parsers for all common Python types. See the [`Parsers`](../api/parsers.md) section in the API docs to find all supported types and validations. Most often, using a normal Python type will automatically load the right parser, but if you want more control or extra features you can use these directly:
+Clypi comes with built-in parsers for all common Python types. See the [built-in types](../api/parsers.md#supported-built-in-types) section in the API docs to find all supported types and validations. Most often, using a normal Python type will automatically load the right parser, but if you want more control or extra features you can use these directly:
 
 <!-- mdtest-args . -->
 ```python hl_lines="2 6"
