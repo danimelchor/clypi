@@ -343,7 +343,7 @@ Examples:
 assert cp.from_type(bool) == cp.Bool()
 ```
 
-#### Supported built-in types
+### Supported built-in types
 
 - `None` :material-arrow-right: `cp.NoneParser()`
 - `bool` :material-arrow-right: `cp.Bool()`
