@@ -1,0 +1,15 @@
+#!/usr/bin/env python3
+
+from pathlib import Path
+
+REPLACEMENTS = {
+    "./assets/logo.png": "http://danimelchor.github.io/clypi/assets/logo.png",
+}
+
+index = Path("docs/index.md")
+content = index.read_text()
+for orig, repl in REPLACEMENTS.items():
+    content = content.replace(orig, repl)
+
+output = Path("README.md")
+output.write_text(content)

@@ -1,8 +1,6 @@
-
-<!-- docs/asserts/logo.png -->
 <div align="center">
     <p>
-        <img width="50%" src="https://github.com/user-attachments/assets/5541cdaf-f7f1-4bb1-b888-41ca3fb43d02" alt="Clypi logo" />
+        <img width="50%" src="./assets/logo.png" alt="Clypi logo" />
     <p/>
     <p>Your all-in-one for beautiful, lightweight, prod-ready CLIs</p>
     <a href="https://pypi.org/project/clypi/" target="_blank">

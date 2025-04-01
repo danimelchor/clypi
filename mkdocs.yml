@@ -11,9 +11,19 @@ theme:
     text: Roboto
     code: JetBrains Mono
   palette:
-    scheme: slate
-    primary: deep purple
-    accent: purple
+    - scheme: slate
+      primary: deep purple
+      accent: purple
+      toggle:
+        icon: material/weather-sunny
+        name: Switch to light mode
+
+    - scheme: default
+      primary: deep purple
+      accent: purple
+      toggle:
+        icon: material/weather-night
+        name: Switch to dark mode
   features:
     - content.code.annotate
     - content.code.copy
