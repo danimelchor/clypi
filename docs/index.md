@@ -1,5 +1,3 @@
-
-<!-- docs/asserts/logo.png -->
 <div align="center">
     <p>
         <img width="50%" src="./assets/logo.png" alt="Clypi logo" />
