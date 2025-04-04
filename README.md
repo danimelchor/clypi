@@ -36,7 +36,7 @@ I've been working with Python-based CLIs for several years with many users and s
 ### Define Arguments with Type Annotations
 Just like you do with [dataclasses](https://docs.python.org/3/library/dataclasses.html), clypi CLI arguments can defined as class-level type annotations.
 
-<!-- mdtest -->
+<!-- mdtest-args --name foo -->
 ```python
 from clypi import Command
 
@@ -45,6 +45,9 @@ class MyCli(Command):
 
     async def run(self):
         print(f"Hi {self.name}!")
+
+cli = MyCli.parse()
+cli.run()
 ```
 
 ### Need more control?
@@ -61,6 +64,9 @@ class MyCli(Command):
         default=4,
         parser=cp.Int(min=1, max=10),  # Restrict to values 1-10
     )
+
+cli = MyCli.parse()
+cli.run()
 ```
 
 ### Easily document your CLIs
@@ -77,27 +83,33 @@ class MyCli(Command):
         default=4,
         help="The number of threads to run the tool with",
     )
+
+cli = MyCli.parse()
+cli.run()
 ```
 
 ### Intuitive subcommands (groups of commands)
 
 Just create and compose more clypi commands!
 
-<!-- mdtest -->
+<!-- mdtest-args run -->
 ```python
 from clypi import Command, arg
 
 class Lint(Command):
     """Lint a set of files"""
-    verbose: bool = arg(inherited=True)  # Inherits the argument def from `Cli`
+    verbose: bool = arg(inherited=True)  # Inherits the argument def from `MyCli`
 
 class Run(Command):
     """Run a set of files"""
 
-class Cli(Command):
+class MyCli(Command):
     """A simple CLI to lint and run files"""
     subcommand: Lint | Run
     verbose: bool = arg(False, help="Whether to show more output")
+
+cli = MyCli.parse()
+cli.run()
 ```
 
 ### Getting started
