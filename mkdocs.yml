@@ -65,6 +65,7 @@ hooks:
 
 extra_css:
   - stylesheets/extra.css
+  - stylesheets/termynal.css
 
 extra_javascript:
   - javascripts/spinner.js
