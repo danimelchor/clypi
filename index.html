@@ -1103,7 +1103,7 @@
 </ul>
 <h3 id="define-arguments-with-type-annotations">Define Arguments with Type Annotations<a class="headerlink" href="#define-arguments-with-type-annotations" title="Permanent link">&para;</a></h3>
 <p>Just like you do with <a href="https://docs.python.org/3/library/dataclasses.html">dataclasses</a>, clypi CLI arguments can defined as class-level type annotations.</p>
-<!-- mdtest -->
+<!-- mdtest-args --name foo -->
 <div class="language-python highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">clypi</span><span class="w"> </span><span class="kn">import</span> <span class="n">Command</span>
 </span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>
 </span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="k">class</span><span class="w"> </span><span class="nc">MyCli</span><span class="p">(</span><span class="n">Command</span><span class="p">):</span>
@@ -1147,7 +1147,7 @@ groups, and more!</p>
 </span></code></pre></div>
 <h3 id="intuitive-subcommands-groups-of-commands">Intuitive subcommands (groups of commands)<a class="headerlink" href="#intuitive-subcommands-groups-of-commands" title="Permanent link">&para;</a></h3>
 <p>Just create and compose more clypi commands!</p>
-<!-- mdtest -->
+<!-- mdtest-args run -->
 <div class="language-python highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">clypi</span><span class="w"> </span><span class="kn">import</span> <span class="n">Command</span><span class="p">,</span> <span class="n">arg</span>
 </span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a>
 </span><span id="__span-3-3"><a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a><span class="k">class</span><span class="w"> </span><span class="nc">Lint</span><span class="p">(</span><span class="n">Command</span><span class="p">):</span>
