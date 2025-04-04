@@ -36,7 +36,7 @@ I've been working with Python-based CLIs for several years with many users and s
 ### Define Arguments with Type Annotations
 Just like you do with [dataclasses](https://docs.python.org/3/library/dataclasses.html), clypi CLI arguments can defined as class-level type annotations.
 
-<!-- mdtest -->
+<!-- mdtest-args --name foo -->
 ```python
 from clypi import Command
 
@@ -92,7 +92,7 @@ cli.run()
 
 Just create and compose more clypi commands!
 
-<!-- mdtest -->
+<!-- mdtest-args run -->
 ```python
 from clypi import Command, arg
 
