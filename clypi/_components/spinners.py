@@ -136,6 +136,7 @@ class Spinner(AbstractAsyncContextManager["Spinner"]):
         self._stdout = RedirectStdPipe("stdout", self.log)
         self._stderr = RedirectStdPipe("stderr", self.log)
 
+    @override
     async def __aenter__(self):
         if self._capture:
             self._stdout.start()

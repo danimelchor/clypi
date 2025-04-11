@@ -8,6 +8,8 @@ from abc import ABC, abstractmethod
 from pathlib import Path
 from textwrap import dedent
 
+from typing_extensions import override
+
 from clypi import _colors
 from clypi._cli import arg_parser
 
@@ -72,20 +74,24 @@ class AutocompleteInstaller(ABC):
 
 
 class FishInstaller(AutocompleteInstaller):
+    @override
     def path(self) -> Path:
         return Path.home() / ".config" / "fish" / "completions" / f"{self.name}.fish"
 
+    @override
     def script(self) -> str:
         return f'complete -c {self.name} --no-files -a "({self.gen_args})" -n "{self.gen_args}"'
 
 
 class BashInstaller(AutocompleteInstaller):
+    @override
     def path(self) -> Path:
         base = Path("/etc/bash_completion.d/")
         if Path("/usr/local/etc/bash_completion.d").exists():
             base = Path("/usr/local/etc/bash_completion.d")
         return base / self.name
 
+    @override
     def post_install(self, path: Path):
         bashrc = Path.home() / ".bashrc"
         with open(bashrc, "a+") as f:
@@ -95,6 +101,7 @@ class BashInstaller(AutocompleteInstaller):
 
             f.write(f"source '{path}'")
 
+    @override
     def script(self) -> str:
         return dedent(
             """
@@ -111,9 +118,11 @@ class BashInstaller(AutocompleteInstaller):
 
 
 class ZshInstaller(AutocompleteInstaller):
+    @override
     def path(self) -> Path:
         return Path.home() / ".zfunc" / f"_{self.name}"
 
+    @override
     def post_install(self, path: Path):
         autoload_comp = "fpath+=~/.zfunc; autoload -Uz compinit; compinit"
         zshrc = Path.home() / ".zshrc"
@@ -124,6 +133,7 @@ class ZshInstaller(AutocompleteInstaller):
 
             f.write(autoload_comp)
 
+    @override
     def script(self) -> str:
         return dedent(
             """

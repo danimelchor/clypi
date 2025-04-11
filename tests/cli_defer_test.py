@@ -1,3 +1,5 @@
+from typing_extensions import override
+
 from clypi import Command, arg
 from clypi.parsers import Str
 from tests.prompt_test import replace_stdin
@@ -20,6 +22,7 @@ class SignalParser(Str):
     def __init__(self, signal: Signal) -> None:
         self._signal = signal
 
+    @override
     def __call__(self, raw: str | list[str], /) -> str:
         self._signal.called = True
         return super().__call__(raw)

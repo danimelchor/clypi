@@ -2,6 +2,8 @@ import asyncio
 import re
 from pathlib import Path
 
+from typing_extensions import override
+
 import clypi
 from clypi import ClypiException, Command, Positional, Spinner, arg
 
@@ -77,6 +79,7 @@ class Add(Command):
     version: bool = arg(inherited=True)
     no_cache: bool = arg(inherited=True)
 
+    @override
     async def run(self) -> None:
         clypi.cprint("Running `uv add` command...\n", fg="blue", bold=True)
 
