@@ -9,6 +9,8 @@ import sys
 import typing as t
 from types import NoneType
 
+from typing_extensions import override
+
 from clypi import _type_util, parsers
 from clypi._cli import arg_config, arg_parser, autocomplete
 from clypi._cli.arg_config import Config, Positional, arg
@@ -695,6 +697,7 @@ class Command(metaclass=_CommandMeta):
         sys.stdout.flush()
         sys.exit(1 if exception else 0)
 
+    @override
     def __repr__(self) -> str:
         fields = ", ".join(
             f"{k}={v}"

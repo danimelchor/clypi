@@ -36,6 +36,7 @@ class RunParallel(Command):
     exceptions_with_reasons: Path | None = arg(None, parser=cp.Path(exists=True))
     env: Env = arg(inherited=True)
 
+    @override
     async def run(self):
         debug(self)
         cprint(f"{self.env.name} - Running all files", fg="blue", bold=True)
@@ -57,6 +58,7 @@ class RunSerial(Command):
     files: Positional[list[Path]] = arg(parser=cp.List(cp.Path(exists=True)))
     env: Env = arg(inherited=True)
 
+    @override
     async def run(self):
         debug(self)
         cprint(f"{self.env.name} - Running all files", fg="blue", bold=True)
@@ -103,6 +105,7 @@ class Lint(Command):
         prompt="What index do you want to download termuff from?",
     )
 
+    @override
     async def run(self) -> None:
         debug(self)
         async with Spinner(f"Linting {', '.join(self.files)}"):

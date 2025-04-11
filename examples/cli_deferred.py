@@ -1,3 +1,5 @@
+from typing_extensions import override
+
 import clypi.parsers as cp
 from clypi import Command, arg, cprint
 
@@ -5,6 +7,7 @@ from clypi import Command, arg, cprint
 class VerboseIntParser(cp.Int):
     """Helper parser to show the user when the parsing is being done"""
 
+    @override
     def __call__(self, raw: str | list[str], /) -> int:
         cprint(f"⚠️ The call to to parse {raw} as an int was executed!", fg="yellow")
         return super().__call__(raw)
@@ -23,6 +26,7 @@ class Main(Command):
         parser=VerboseIntParser(),
     )
 
+    @override
     async def run(self):
         print("Command execution started...")
 

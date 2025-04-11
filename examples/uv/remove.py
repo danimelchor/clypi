@@ -1,3 +1,5 @@
+from typing_extensions import override
+
 import clypi
 from clypi import Command, Positional, arg
 
@@ -17,6 +19,7 @@ class Remove(Command):
     version: bool = arg(inherited=True)
     no_cache: bool = arg(inherited=True)
 
+    @override
     async def run(self) -> None:
         clypi.cprint("Running `uv remove` command...", fg="blue")
 

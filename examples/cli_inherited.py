@@ -17,6 +17,7 @@ class Run(Command):
     verbose: bool = arg(inherited=True, group="global")
     env: str = arg(inherited=True, group="global")
 
+    @override
     async def run(self):
         cprint("Running with:", fg="blue", bold=True)
         cprint(f" - Files: {self.files}", fg="blue")
@@ -44,6 +45,7 @@ class Main(Command):
     def epilog(cls):
         return "Learn more at http://4ward.org"
 
+    @override
     async def run(self):
         cprint("Running with:", fg="blue", bold=True)
         cprint(f" - Verbose: {self.verbose}", fg="blue")

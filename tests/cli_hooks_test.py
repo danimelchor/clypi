@@ -1,4 +1,5 @@
 import pytest
+from typing_extensions import override
 
 from clypi import Command
 
@@ -14,12 +15,15 @@ class ExampleSubCommand(Command):
 
     should_raise: bool = False
 
+    @override
     async def pre_run_hook(self) -> None:
         _counter.append(1)
 
+    @override
     async def post_run_hook(self, exception: Exception | None) -> None:
         _counter.append(exception or 3)
 
+    @override
     async def run(self):
         _counter.append(2)
 

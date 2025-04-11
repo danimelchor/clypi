@@ -1,5 +1,7 @@
 from pathlib import Path
 
+from typing_extensions import override
+
 import clypi
 from clypi import Command, Positional, arg
 
@@ -17,5 +19,6 @@ class Init(Command):
         prompt="What's your project/script's description?",
     )
 
+    @override
     async def run(self) -> None:
         clypi.cprint("Running `uv init` command...", fg="blue")

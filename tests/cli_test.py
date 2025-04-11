@@ -13,6 +13,7 @@ class ExampleSubCommand(Command):
 
     positional: Positional[tuple[str | Path, ...]]
 
+    @override
     async def run(self):
         print("subcommand")
 
@@ -38,6 +39,7 @@ class ExampleCommand(Command):
     def epilog(cls):
         return "Some text to display after..."
 
+    @override
     async def run(self):
         print("main")
 

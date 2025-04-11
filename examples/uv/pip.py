@@ -1,3 +1,5 @@
+from typing_extensions import override
+
 import clypi
 from clypi import Command, arg
 
@@ -10,6 +12,7 @@ class Install(Command):
     version: bool = arg(inherited=True)
     no_cache: bool = arg(inherited=True)
 
+    @override
     async def run(self) -> None:
         clypi.cprint("Running `uv pip install` command...", fg="blue")
 
@@ -22,6 +25,7 @@ class Uninstall(Command):
     version: bool = arg(inherited=True)
     no_cache: bool = arg(inherited=True)
 
+    @override
     async def run(self) -> None:
         clypi.cprint("Running `uv pip uninstall` command...", fg="blue")
 
@@ -34,6 +38,7 @@ class Freeze(Command):
     version: bool = arg(inherited=True)
     no_cache: bool = arg(inherited=True)
 
+    @override
     async def run(self) -> None:
         clypi.cprint("Running `uv pip freeze` command...", fg="blue")
 
@@ -46,6 +51,7 @@ class List(Command):
     version: bool = arg(inherited=True)
     no_cache: bool = arg(inherited=True)
 
+    @override
     async def run(self) -> None:
         clypi.cprint("Running `uv pip list` command...", fg="blue")
 

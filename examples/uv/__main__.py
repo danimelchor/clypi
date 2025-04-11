@@ -1,5 +1,7 @@
 import sys
 
+from typing_extensions import override
+
 import clypi
 from clypi import ClypiConfig, ClypiFormatter, Command, Styler, Theme, arg, configure
 from examples.uv.add import Add
@@ -23,6 +25,7 @@ class Uv(Command):
         group="global",
     )
 
+    @override
     async def run(self) -> None:
         # If the version was requested, print it
         if self.version:

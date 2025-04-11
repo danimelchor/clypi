@@ -9,6 +9,8 @@ from dataclasses import dataclass
 from datetime import datetime, timedelta, timezone
 from pathlib import Path as _Path
 
+from typing_extensions import override
+
 from clypi import _type_util as tu
 from clypi._exceptions import ClypiException
 from clypi._util import UNSET, Unset, trim_split_collection
@@ -49,6 +51,7 @@ class ClypiParser(ABC, t.Generic[X]):
     def __or__(self, other: ClypiParser[Y]) -> Union[X, Y]:
         return Union(self, other)
 
+    @override
     def __eq__(self, other: t.Any):
         if not isinstance(other, ClypiParser):
             return False
@@ -79,6 +82,7 @@ class Int(ClypiParser[int]):
     negative: bool = False
     nonnegative: bool = False
 
+    @override
     def __call__(self, raw: str | list[str], /) -> int:
         if isinstance(raw, list):
             raise CannotParseAs(raw, self)
@@ -109,6 +113,7 @@ class Int(ClypiParser[int]):
 
         return parsed
 
+    @override
     def __repr__(self) -> str:
         return "integer"
 
@@ -126,6 +131,7 @@ class Float(ClypiParser[float]):
     negative: bool = False
     nonnegative: bool = False
 
+    @override
     def __call__(self, raw: str | list[str], /) -> float:
         if isinstance(raw, list):
             raise CannotParseAs(raw, self)
@@ -153,6 +159,7 @@ class Float(ClypiParser[float]):
             a(parsed >= 0, parsed, "is non non-negative")
         return parsed
 
+    @override
     def __repr__(self) -> str:
         return "float"
 
@@ -161,6 +168,7 @@ class Bool(ClypiParser[bool]):
     TRUE_BOOL_STR_LITERALS: set[str] = {"true", "yes", "y"}
     FALSE_BOOL_STR_LITERALS: set[str] = {"false", "no", "n"}
 
+    @override
     def __call__(self, raw: str | list[str], /) -> bool:
         if isinstance(raw, list):
             raise CannotParseAs(raw, self)
@@ -173,6 +181,7 @@ class Bool(ClypiParser[bool]):
             )
         return raw_lower in self.TRUE_BOOL_STR_LITERALS
 
+    @override
     def __repr__(self):
         return "{yes|no}"
 
@@ -193,6 +202,7 @@ class Str(ClypiParser[str]):
     regex: str | None = None
     regex_group: int | None = None
 
+    @override
     def __call__(self, raw: str | list[str], /) -> str:
         if isinstance(raw, list):
             raise CannotParseAs(raw, self)
@@ -221,6 +231,7 @@ class Str(ClypiParser[str]):
 
         return raw
 
+    @override
     def __repr__(self) -> str:
         return "text"
 
@@ -229,6 +240,7 @@ class Str(ClypiParser[str]):
 class DateTime(ClypiParser[datetime]):
     tz: timezone | None = None
 
+    @override
     def __call__(self, raw: str | list[str], /) -> datetime:
         from dateutil.parser import parse
 
@@ -241,6 +253,7 @@ class DateTime(ClypiParser[datetime]):
 
         return parsed
 
+    @override
     def __repr__(self) -> str:
         return "datetime"
 
@@ -265,6 +278,7 @@ class TimeDelta(ClypiParser[timedelta]):
     }
     TIMEDELTA_REGEX = re.compile(r"^(\d+)\s*(\w+)$")
 
+    @override
     def __call__(self, raw: str | list[str], /) -> timedelta:
         if isinstance(raw, timedelta):
             return raw
@@ -303,6 +317,7 @@ class TimeDelta(ClypiParser[timedelta]):
 
         return parsed
 
+    @override
     def __repr__(self) -> str:
         return "timedelta"
 
@@ -311,6 +326,7 @@ class TimeDelta(ClypiParser[timedelta]):
 class Path(ClypiParser[_Path]):
     exists: bool = False
 
+    @override
     def __call__(self, raw: str | list[str], /) -> _Path:
         if isinstance(raw, list):
             raise CannotParseAs(raw, self)
@@ -322,6 +338,7 @@ class Path(ClypiParser[_Path]):
 
         return p
 
+    @override
     def __repr__(self) -> str:
         return "path"
 
@@ -330,11 +347,13 @@ class List(ClypiParser[list[X]]):
     def __init__(self, inner: Parser[X]) -> None:
         self._inner = inner
 
+    @override
     def __call__(self, raw: str | list[str], /) -> list[X]:
         if isinstance(raw, str):
             raw = trim_split_collection(raw)
         return [self._inner(item) for item in raw]
 
+    @override
     def __repr__(self) -> str:
         return f"list({self._inner})"
 
@@ -345,6 +364,7 @@ class Tuple(ClypiParser[tuple[t.Any]]):
         self._num = num if num is not UNSET else len(self._inner)
 
     # TODO: can we return the right type here?
+    @override
     def __call__(self, raw: str | list[str], /) -> tuple[t.Any, ...]:
         if isinstance(raw, str):
             raw = trim_split_collection(raw)
@@ -363,6 +383,7 @@ class Tuple(ClypiParser[tuple[t.Any]]):
         # Parse each item with it's corresponding parser
         return tuple(parser(raw_item) for parser, raw_item in zip(inner_parsers, raw))
 
+    @override
     def __repr__(self) -> str:
         args = ", ".join(str(it) for it in self._inner)
         return f"tuple({args})"
@@ -373,6 +394,7 @@ class Union(ClypiParser[t.Union[X, Y]]):
         self._left = left
         self._right = right
 
+    @override
     def __call__(self, raw: str | list[str], /) -> t.Union[X, Y]:
         # Str classes are catch-alls, so we de-prioritize them in unions
         # so that the other type is parsed first
@@ -403,6 +425,7 @@ class Union(ClypiParser[t.Union[X, Y]]):
 
         return parts
 
+    @override
     def __repr__(self):
         return "(" + "|".join(self._parts()) + ")"
 
@@ -413,6 +436,7 @@ class Literal(ClypiParser[t.Any]):
         self._parsers = [from_type(type(v)) for v in values]
 
     # TODO: can we return the right type here?
+    @override
     def __call__(self, raw: str | list[str], /) -> t.Any:
         for value, parser in zip(self._values, self._parsers):
             with suppress(*CATCH_ERRORS):
@@ -420,12 +444,14 @@ class Literal(ClypiParser[t.Any]):
                     return value
         raise CannotParseAs(raw, self)
 
+    @override
     def __repr__(self):
         values = "|".join(str(v) for v in self._values)
         return "{" + values + "}"
 
 
 class NoneParser(ClypiParser[None]):
+    @override
     def __call__(self, raw: str | list[str], /) -> None:
         if not raw:
             return None
@@ -433,6 +459,7 @@ class NoneParser(ClypiParser[None]):
             return None
         raise CannotParseAs(raw, self)
 
+    @override
     def __repr__(self):
         return "none"
 
@@ -441,6 +468,7 @@ class Enum(ClypiParser[type[enum.Enum]]):
     def __init__(self, _type: type[enum.Enum]) -> None:
         self._type = _type
 
+    @override
     def __call__(self, raw: str | list[str], /) -> t.Any:
         if not isinstance(raw, str):
             raise CannotParseAs(raw, self)
@@ -451,6 +479,7 @@ class Enum(ClypiParser[type[enum.Enum]]):
 
         raise ValueError(f"Value {raw} is not a valid choice between {self}")
 
+    @override
     def __repr__(self):
         values = "|".join(v.name.lower() for v in self._type)
         return "{" + values + "}"

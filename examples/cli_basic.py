@@ -1,5 +1,7 @@
 from pathlib import Path
 
+from typing_extensions import override
+
 import clypi.parsers as cp
 from clypi import Command, Positional, arg
 
@@ -8,6 +10,7 @@ class Lint(Command):
     files: Positional[tuple[Path, ...]]
     verbose: bool = arg(inherited=True)  # Comes from MyCli but I want to use it too
 
+    @override
     async def run(self):
         print(f"Linting {self.files=} and {self.verbose=}")
 
@@ -30,6 +33,7 @@ class MyCli(Command):
         short="v",  # User can pass in --verbose or -v
     )
 
+    @override
     async def run(self):
         print(f"Running the main command with {self.verbose}")
 
