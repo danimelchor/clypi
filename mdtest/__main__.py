@@ -1,6 +1,5 @@
 import asyncio
 import re
-import shutil
 import time
 from contextlib import suppress
 from dataclasses import dataclass
@@ -13,18 +12,15 @@ import tomllib
 import clypi.parsers as cp
 from clypi import Command, Positional, Spinner, arg, boxed, cprint, style
 
-MDTEST_DIR = Path.cwd() / ".mdtest"
+MDTEST_DIR = Path.cwd() / "mdtest_autogen"
 PREAMBLE = """\
-import clypi
-import clypi.parsers as cp
-from pathlib import Path
-from typing import reveal_type
-from clypi import *
-from enum import Enum
-import asyncio
-from datetime import datetime, timedelta
+from pathlib import Path  # pyright: ignore
+from typing import reveal_type, Any  # pyright: ignore
+from clypi import *  # pyright: ignore
+from enum import Enum  # pyright: ignore
+from datetime import datetime, timedelta  # pyright: ignore
 
-def assert_raises(func):
+def assert_raises(func: Any) -> Any:  
     exc = None
     try:
         func()
@@ -112,9 +108,10 @@ def error_msg(test: Test, stdout: str | None = None, stderr: str | None = None) 
 
 
 class Runner:
-    def __init__(self, parallel: int, timeout: int) -> None:
+    def __init__(self, parallel: int, timeout: int, verbose: bool) -> None:
         self.sm = asyncio.Semaphore(parallel)
         self.timeout = timeout
+        self.verbose = verbose
 
     async def run_test(self, test: Test) -> tuple[str, list[str]]:
         # Save test to temp file
@@ -144,6 +141,11 @@ class Runner:
 
             # If no errors, return
             if proc.returncode == 0:
+                if self.verbose:
+                    cprint(
+                        style("✔", fg="green")
+                        + f" Test {test.name} passed with command: {command}"
+                    )
                 continue
 
             # If there was an error, pretty print it
@@ -200,8 +202,9 @@ class Mdtest(Command):
         default=None,
     )
     parallel: int | None = arg(None, parser=cp.Int(positive=True))
-    timeout: int = arg(4, parser=cp.Int(positive=True))
+    timeout: int = arg(6, parser=cp.Int(positive=True))
     config: Path = Path("./pyproject.toml")
+    verbose: bool = arg(False, help="Enable verbose output", short="v")
 
     def load_config(self):
         if not self.config.exists():
@@ -248,10 +251,13 @@ class Mdtest(Command):
 
             # Run each file
             print()
-            code = await Runner(parallel, self.timeout).run_mdtests(all_tests)
+            code = await Runner(parallel, self.timeout, self.verbose).run_mdtests(
+                all_tests
+            )
         finally:
             # Cleanup
-            shutil.rmtree(MDTEST_DIR)
+            # shutil.rmtree(MDTEST_DIR)
+            pass
 
         raise SystemExit(code)
 

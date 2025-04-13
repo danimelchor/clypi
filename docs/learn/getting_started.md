@@ -5,8 +5,10 @@ An extremely simple clypi CLI can be built in a couple of lines:
 <!-- mdtest -->
 ```python title="cli.py"
 from clypi import Command
+from typing_extensions import override
 
 class Cli(Command):
+    @override
     async def run(self):
         print(f"Hello, world!")
 
@@ -32,11 +34,13 @@ and the second argument will be passed as `age` since they're defined in that or
 <!-- mdtest-args foo 1 -->
 ```python title="cli.py" hl_lines="4-5"
 from clypi import Command, Positional
+from typing_extensions import override
 
 class Cli(Command):
     name: Positional[str]
     age: Positional[int]
 
+    @override
     async def run(self):
         print(f"Hello, {self.name}. You are {self.age}!")
 
@@ -71,11 +75,13 @@ Options are named arguments, and they are usually optional. A user of your CLI m
 <!-- mdtest-args foo -->
 ```python title="cli.py" hl_lines="5"
 from clypi import Command, Positional
+from typing_extensions import override
 
 class Cli(Command):
     name: Positional[str]
     age: int | None = None
 
+    @override
     async def run(self):
         print(f"Hello, {self.name}.")
         if self.age is not None:
@@ -125,6 +131,7 @@ and option we can make user of clypi's `arg` helper.
 <!-- mdtest-args foo --age 10 -->
 ```python title="cli.py" hl_lines="4 6 7"
 from clypi import Command, Positional, arg
+from typing_extensions import override
 
 class Cli(Command):
     """A very simple CLI"""
@@ -132,6 +139,7 @@ class Cli(Command):
     name: Positional[str] = arg(help="Your name")
     age: int | None = arg(None, help="Your age in years")
 
+    @override
     async def run(self):
         print(f"Hello, {self.name}.")
         if self.age is not None:
@@ -171,11 +179,13 @@ in your main CLI with the name `subcommand`:
 <!-- mdtest-args wave daniel -->
 ```python title="cli.py" hl_lines="19"
 from clypi import Command, Positional, arg
+from typing_extensions import override
 
 class Greet(Command):
     """Say hi to someone"""
     name: Positional[str] = arg(help="Your name")
 
+    @override
     async def run(self):
         print(f"Hello, {self.name}")
 
@@ -183,6 +193,7 @@ class Wave(Command):
     """Wave at someone"""
     name: Positional[str] = arg(help="Your name")
 
+    @override
     async def run(self):
         print(f"👋 {self.name}")
 
@@ -231,11 +242,13 @@ way. For that, we can set up a prompt in case the user does not manually pass in
 <!-- mdtest-stdin Daniel -->
 ```python title="cli.py" hl_lines="5"
 from clypi import Command, Positional, arg
+from typing_extensions import override
 
 class Cli(Command):
     """A very simple CLI"""
     name: Positional[str] = arg(prompt="What's your name?")
 
+    @override
     async def run(self):
         print(f"Hello, {self.name}!")
 
@@ -281,7 +294,7 @@ Sometimes you want to separate your options based on behaviors. For example, you
 <!-- mdtest-stdin Daniel -->
 ```python title="cli.py" hl_lines="15 20"
 from typing import Literal
-from clypi import Command, Positional, arg
+from clypi import Command, arg
 
 class Cli(Command):
     """A very simple CLI"""

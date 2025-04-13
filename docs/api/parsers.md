@@ -38,6 +38,8 @@ Parameters:
 Examples:
 <!-- mdtest -->
 ```python
+import clypi.parsers as cp
+
 parser = cp.Int(lte=10, gt=2)
 assert parser("3") == 3
 assert_raises(lambda: parser("2"))  # Not >2
@@ -78,6 +80,8 @@ Parameters:
 Examples:
 <!-- mdtest -->
 ```python
+import clypi.parsers as cp
+
 parser = cp.Float(lte=10, gt=2)
 assert parser("3") == 3
 assert parser("2.01") == 2.01
@@ -101,6 +105,8 @@ Accepted values:
 Examples:
 <!-- mdtest -->
 ```python
+import clypi.parsers as cp
+
 parser = cp.Bool()
 assert parser("y") is True
 assert parser("NO") is False
@@ -135,6 +141,8 @@ Examples:
 
 <!-- mdtest -->
 ```python
+import clypi.parsers as cp
+
 parser = cp.Str(regex=r"[a-z]([0-9]+)", regex_group=1)
 assert parser("f1") == "1"
 assert parser("f123") == "123"
@@ -179,6 +187,8 @@ TimeDelta(
 Examples:
 <!-- mdtest -->
 ```python
+import clypi.parsers as cp
+
 parser = cp.TimeDelta(gte=timedelta(days=1))
 assert parser("1 day") == timedelta(days=1)
 assert parser("1w") == timedelta(weeks=1)
@@ -202,6 +212,8 @@ Parameters:
 Examples:
 <!-- mdtest -->
 ```python
+import clypi.parsers as cp
+
 cp.Path(exists=True)
 ```
 
@@ -217,6 +229,8 @@ List(inner: Parser[T])
 Examples:
 <!-- mdtest -->
 ```python
+import clypi.parsers as cp
+
 # list[int]
 # E.g.: --foo 1 2 3
 parser = cp.List(cp.Int())
@@ -248,6 +262,8 @@ Tuple(*inner: Parser, num: int | None = None)
 Examples:
 <!-- mdtest -->
 ```python
+import clypi.parsers as cp
+
 # tuple[str, ...]
 # E.g.: --foo a,b,c
 parser = cp.Tuple(cp.Str(), num=None)
@@ -286,8 +302,14 @@ Union(left: Parser[X], right: Parser[Y])
 You can also use the short hand `|` syntax for two parsers, e.g.:
 <!-- mdtest -->
 ```python
-cp.Union(cp.Path(exists=True), cp.Str())
-cp.Path(exists=True) | cp.Str()
+import clypi.parsers as cp
+from pathlib import Path
+
+parser = cp.Union(cp.Path(exists=True), cp.Int())
+parser = cp.Path(exists=True) | cp.Int()
+assert parser("README.md") == Path("README.md")
+assert parser("1") == 1
+assert_raises(lambda: parser("foo"))
 ```
 
 ### `Literal`
@@ -301,6 +323,8 @@ Literal(*values: t.Any)
 Examples:
 <!-- mdtest -->
 ```python
+import clypi.parsers as cp
+
 parser = cp.Literal(1, "foo")
 assert parser("1") == 1
 assert parser("foo") == "foo"
@@ -318,6 +342,9 @@ Enum(enum: type[enum.Enum])
 Examples:
 <!-- mdtest -->
 ```python
+import clypi.parsers as cp
+from enum import Enum
+
 class Color(Enum):
     RED = 1
     BLUE = 2
@@ -340,6 +367,8 @@ def from_type(_type: type) -> Parser: ...
 Examples:
 <!-- mdtest -->
 ```python
+import clypi.parsers as cp
+
 assert cp.from_type(bool) == cp.Bool()
 ```
 

@@ -10,12 +10,14 @@ without having to redefine them.
 <!-- mdtest -->
 ```python title="cli.py" hl_lines="6 15-17"
 from clypi import Command, Positional, arg
+from typing_extensions import override
 
 class Wave(Command):
     """Wave at someone"""
     name: Positional[str]
     verbose: bool = arg(inherited=True)
 
+    @override
     async def run(self) -> None:
         print(f"👋 Hey {self.name}")
         if self.verbose:
@@ -23,10 +25,10 @@ class Wave(Command):
 
 class Cli(Command):
     """A very simple CLI"""
+    subcommand: Wave | None
     verbose: bool = arg(
         False, short="v", help="Whether to show verbose output", group="global"
     )
-    subcommand: Wave | None
 
 if __name__ == "__main__":
     cmd = Cli.parse()
@@ -71,6 +73,7 @@ The internals are complex but the user experience is quite simple: clypi will no
 <!-- mdtest-stdin 5 -->
 ```python hl_lines="6 17"
 from clypi import Command, arg
+from typing_extensions import override
 
 class Cli(Command):
     single_threaded: bool = arg(False)
@@ -79,6 +82,7 @@ class Cli(Command):
         prompt="How many CPU cores do you want to use?"
     )
 
+    @override
     async def run(self):
         print(f"Running single theaded:", self.single_threaded)  # << will not prompt yet...
         if self.single_threaded:
