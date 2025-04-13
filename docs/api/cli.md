@@ -126,11 +126,13 @@ must be `async` so that we can properly render items in your screen.
 
 <!-- mdtest -->
 ```python hl_lines="6 7"
-from clypi import Command, arg
+from clypi import Command
+from typing_extensions import override
 
 class MyCommand(Command):
     verbose: bool = False
 
+    @override
     async def run(self):
         print(f"Running with verbose: {self.verbose}")
 ```
@@ -153,7 +155,7 @@ class MyCommand(Command):
 You can also define custom help messages for commands by creating a docstring on the class itself:
 <!-- mdtest -->
 ```python hl_lines="5 6"
-from clypi import Command, arg
+from clypi import Command
 
 class MyCommand(Command):
     """
@@ -288,13 +290,16 @@ Examples:
 <!-- mdtest -->
 ```python hl_lines="5-7"
 import logging
-from clypi import Command, arg
+from typing_extensions import override
+from clypi import Command
 
 class Main(Command):
+    @override
     async def pre_run_hook(self):
         cmd_str = " ".join(self.full_command())
         logging.debug("Running %s", cmd_str)
 
+    @override
     async def run(self):
         print("Hey")
 

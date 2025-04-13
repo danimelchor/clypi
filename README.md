@@ -39,15 +39,17 @@ Just like you do with [dataclasses](https://docs.python.org/3/library/dataclasse
 <!-- mdtest-args --name foo -->
 ```python
 from clypi import Command
+from typing_extensions import override
 
 class MyCli(Command):
     name: str  # Automatically parsed as `--name <NAME>`.
 
+    @override
     async def run(self):
         print(f"Hi {self.name}!")
 
 cli = MyCli.parse()
-cli.run()
+cli.start()
 ```
 
 ### Need more control?
@@ -58,6 +60,7 @@ groups, and more!
 <!-- mdtest -->
 ```python
 from clypi import Command, arg
+import clypi.parsers as cp
 
 class MyCli(Command):
     threads: int = arg(
@@ -66,7 +69,7 @@ class MyCli(Command):
     )
 
 cli = MyCli.parse()
-cli.run()
+cli.start()
 ```
 
 ### Easily document your CLIs
@@ -85,7 +88,7 @@ class MyCli(Command):
     )
 
 cli = MyCli.parse()
-cli.run()
+cli.start()
 ```
 
 ### Intuitive subcommands (groups of commands)
@@ -109,7 +112,7 @@ class MyCli(Command):
     verbose: bool = arg(False, help="Whether to show more output")
 
 cli = MyCli.parse()
-cli.run()
+cli.start()
 ```
 
 ### Getting started

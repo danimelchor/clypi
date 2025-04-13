@@ -20,6 +20,8 @@ You can also style individual pieces of text:
 
 <!-- mdtest -->
 ```python title="colors.py"
+import clypi
+
 print(clypi.style("This is blue", fg="blue"), "and", clypi.style("this is red", fg="red"))
 ```
 
@@ -32,6 +34,8 @@ And also create a reusable styler:
 
 <!-- mdtest -->
 ```python title="colors.py"
+import clypi
+
 wrong = clypi.Styler(fg="red", strikethrough=True)
 print("The old version said", wrong("Pluto was a planet"))
 print("The old version said", wrong("the Earth was flat"))
@@ -47,6 +51,8 @@ print("The old version said", wrong("the Earth was flat"))
 
 <!-- mdtest -->
 ```python title="boxed.py"
+import clypi
+
 print(clypi.boxed("Some boxed text", width=30, align="center"))
 ```
 
@@ -62,6 +68,8 @@ print(clypi.boxed("Some boxed text", width=30, align="center"))
 
 <!-- mdtest -->
 ```python title="stacks.py"
+import clypi
+
 names = clypi.boxed(["Daniel", "Pedro", "Paul"], title="Names", width=15)
 colors = clypi.boxed(["Blue", "Red", "Green"], title="Colors", width=15)
 print(clypi.stack(names, colors))
@@ -80,6 +88,8 @@ print(clypi.stack(names, colors))
 
 <!-- mdtest -->
 ```python title="separator.py"
+import clypi
+
 print(clypi.separator(title="Some title", color="red", width=30))
 ```
 
@@ -120,7 +130,7 @@ import asyncio
 from clypi import Spinner
 
 async def main():
-    async with Spinner("Doing something", capture=True) as s:
+    async with Spinner("Doing something", capture=True):
         await asyncio.sleep(2)
 
 asyncio.run(main())

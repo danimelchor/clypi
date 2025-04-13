@@ -54,6 +54,7 @@ include = [
     "tests",
     "type_tests",
     "clypi",
+    "mdtest_autogen",
 ]
 typeCheckingMode = "strict"
 reportImplicitOverride = "error"

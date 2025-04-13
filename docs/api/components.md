@@ -91,6 +91,8 @@ with a particular color and prefix.
 Examples:
 <!-- mdtest -->
 ```python
+import asyncio
+
 async def main():
     async with Spinner("Doing something") as s:
         proc = await asyncio.create_subprocess_shell(
@@ -222,6 +224,8 @@ Parameters:
 Examples:
 
 ```python
+import clypi
+
  clypi.align("foo", "left", 10) # -> "foo       "
  clypi.align("foo", "right", 10) # -> "          foo"
  clypi.align("foo", "center", 10) # -> "   foo   "

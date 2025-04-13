@@ -9,22 +9,20 @@ from textwrap import dedent
 
 import anyio
 import tomllib
+from typing_extensions import override
 
 import clypi.parsers as cp
 from clypi import Command, Positional, Spinner, arg, boxed, cprint, style
 
-MDTEST_DIR = Path.cwd() / ".mdtest"
+MDTEST_DIR = Path.cwd() / "mdtest_autogen"
 PREAMBLE = """\
-import clypi
-import clypi.parsers as cp
-from pathlib import Path
-from typing import reveal_type
-from clypi import *
-from enum import Enum
-import asyncio
-from datetime import datetime, timedelta
+from pathlib import Path  # pyright: ignore
+from typing import reveal_type, Any  # pyright: ignore
+from clypi import *  # pyright: ignore
+from enum import Enum  # pyright: ignore
+from datetime import datetime, timedelta  # pyright: ignore
 
-def assert_raises(func):
+def assert_raises(func: Any) -> Any:  
     exc = None
     try:
         func()
@@ -43,8 +41,31 @@ class Test:
     name: str
     orig: str
     code: str
-    args: str
-    stdin: str
+    args: str = ""
+    stdin: str = ""
+
+    @property
+    def command(self) -> str:
+        return ""
+
+
+@dataclass
+class RunTest(Test):
+    @property
+    @override
+    def command(self) -> str:
+        cmd = f"uv run --all-extras {MDTEST_DIR / self.name}.py"
+        if self.args:
+            cmd += f" {self.args}"
+        return cmd
+
+
+@dataclass
+class RunPyright(Test):
+    @property
+    @override
+    def command(self) -> str:
+        return f"uv run --all-extras pyright {MDTEST_DIR / self.name}.py"
 
 
 async def parse_file(sm: asyncio.Semaphore, file: Path) -> list[Test]:
@@ -61,14 +82,21 @@ async def parse_file(sm: asyncio.Semaphore, file: Path) -> list[Test]:
             # End of a code block
             if "```" in line and current_test:
                 code = "\n".join(current_test[1:])
-                tests.append(
-                    Test(
-                        name=f"{base_name}-{len(tests)}",
-                        orig=dedent(code),
-                        code=PREAMBLE + dedent(code),
-                        args=args,
-                        stdin=stdin + "\n",
-                    )
+                tests.extend(
+                    [
+                        RunTest(
+                            name=f"{base_name}-{len(tests)}-run",
+                            orig=dedent(code),
+                            code=PREAMBLE + dedent(code),
+                            args=args,
+                            stdin=stdin + "\n",
+                        ),
+                        RunPyright(
+                            name=f"{base_name}-{len(tests)}-pyright",
+                            orig=dedent(code),
+                            code=PREAMBLE + dedent(code),
+                        ),
+                    ]
                 )
                 in_test, current_test, args, stdin = False, [], "", ""
 
@@ -112,48 +140,43 @@ def error_msg(test: Test, stdout: str | None = None, stderr: str | None = None) 
 
 
 class Runner:
-    def __init__(self, parallel: int, timeout: int) -> None:
+    def __init__(self, parallel: int, timeout: int, verbose: bool) -> None:
         self.sm = asyncio.Semaphore(parallel)
         self.timeout = timeout
+        self.verbose = verbose
 
-    async def run_test(self, test: Test) -> tuple[str, list[str]]:
+    async def run_test(self, test: Test) -> tuple[str, str | None]:
         # Save test to temp file
         test_file = MDTEST_DIR / f"{test.name}.py"
         test_file.write_text(test.code)
 
-        commands = [f"uv run --all-extras {test_file}"]
-        if test.args:
-            commands[0] += f" {test.args}"
-        commands.append(f"uv run --all-extras pyright {test_file}")
+        # Await the subprocess to run it
+        proc = await asyncio.create_subprocess_shell(
+            test.command,
+            stdout=asyncio.subprocess.PIPE,
+            stdin=asyncio.subprocess.PIPE,
+            stderr=asyncio.subprocess.PIPE,
+        )
+        try:
+            stdout, stderr = await proc.communicate(test.stdin.encode())
+        except:
+            proc.terminate()
+            raise
 
-        # Run the test
-        errors: list[str] = []
-        for command in commands:
-            # Await the subprocess to run it
-            proc = await asyncio.create_subprocess_shell(
-                command,
-                stdout=asyncio.subprocess.PIPE,
-                stdin=asyncio.subprocess.PIPE,
-                stderr=asyncio.subprocess.PIPE,
-            )
-            try:
-                stdout, stderr = await proc.communicate(test.stdin.encode())
-            except:
-                proc.terminate()
-                raise
+        # If no errors, return
+        if proc.returncode == 0:
+            if self.verbose:
+                cprint(
+                    style("✔", fg="green")
+                    + f" Test {test.name} passed with command: {test.command}"
+                )
+            return test.name, None
 
-            # If no errors, return
-            if proc.returncode == 0:
-                continue
+        # If there was an error, pretty print it
+        error = error_msg(test, stdout.decode(), stderr.decode())
+        return test.name, error
 
-            # If there was an error, pretty print it
-            errors.append(error_msg(test, stdout.decode(), stderr.decode()))
-
-        if not errors:
-            return test.name, []
-        return test.name, errors
-
-    async def run_test_with_timeout(self, test: Test) -> tuple[str, list[str]]:
+    async def run_test_with_timeout(self, test: Test) -> tuple[str, str | None]:
         await self.sm.acquire()
         start = time.perf_counter()
         try:
@@ -164,7 +187,7 @@ class Runner:
                 test,
                 stderr=f"Test timed out after {time.perf_counter() - start:.3f}s",
             )
-            return test.name, [error]
+            return test.name, error
         finally:
             self.sm.release()
 
@@ -174,10 +197,10 @@ class Runner:
             coros = [self.run_test_with_timeout(test) for test in tests]
             for task in asyncio.as_completed(coros):
                 idx, err = await task
-                if not err:
+                if err is None:
                     cprint(style("✔", fg="green") + f" Finished test {idx}")
                 else:
-                    errors.extend(err)
+                    errors.append(err)
                     cprint(style("×", fg="red") + f" Finished test {idx}")
 
             if errors:
@@ -200,8 +223,9 @@ class Mdtest(Command):
         default=None,
     )
     parallel: int | None = arg(None, parser=cp.Int(positive=True))
-    timeout: int = arg(4, parser=cp.Int(positive=True))
+    timeout: int = arg(6, parser=cp.Int(positive=True))
     config: Path = Path("./pyproject.toml")
+    verbose: bool = arg(False, help="Enable verbose output", short="v")
 
     def load_config(self):
         if not self.config.exists():
@@ -218,6 +242,7 @@ class Mdtest(Command):
 
         return Mdtest()
 
+    @override
     async def run(self) -> None:
         conf = self.load_config()
         files = self.files or conf.files
@@ -248,7 +273,9 @@ class Mdtest(Command):
 
             # Run each file
             print()
-            code = await Runner(parallel, self.timeout).run_mdtests(all_tests)
+            code = await Runner(parallel, self.timeout, self.verbose).run_mdtests(
+                all_tests
+            )
         finally:
             # Cleanup
             shutil.rmtree(MDTEST_DIR)
