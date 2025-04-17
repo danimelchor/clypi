@@ -312,10 +312,10 @@ main.start()
 <!-- md:version 1.2.7 -->
 
 ```python
-async def post_run_hook(self: Command) -> None:
+async def post_run_hook(self: Command, exception: Exception | None) -> None:
 ```
 A function that will run on every parent command and subcommand right after it's execution. Useful
-to print after commands, emit metrics, and more!
+to print after commands, process exceptions, emit metrics, and more!
 
 ## `Formatter`
 
