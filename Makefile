@@ -11,5 +11,7 @@ docs:
 	pre-commit install
 	rm -rf site
 
+local-docs:
+	uv run --extra docs mkdocs serve
 
 publish: tag docs

@@ -18,6 +18,7 @@ def parametrize(args: str, cases: list[tuple[t.Any, ...]]):
 
 
 get_config().help_on_fail = False
+get_config().negative_flags = True
 
 
 def join_mult(s: str, n: int):
@@ -100,6 +101,10 @@ COMMAND: list[tuple[t.Any, ...]] = [
     ),
     (
         ["./some-path", "--option", "a"],
+        {"flag": False, "pos": Path("./some-path"), "option": ["a"]},
+    ),
+    (
+        ["./some-path", "--option", "a", "--no-flag"],
         {"flag": False, "pos": Path("./some-path"), "option": ["a"]},
     ),
     (
