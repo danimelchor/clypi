@@ -4,6 +4,8 @@ from clypi import Command, arg, cprint, get_config, style
 
 
 class Main(Command):
+    """An example of how enabling negative flags looks like"""
+
     verbose: bool = arg(
         False,
         short="v",
