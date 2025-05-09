@@ -106,6 +106,12 @@ class Config(t.Generic[T]):
         return name
 
     @property
+    def negative_name(self):
+        assert self.is_opt, "negative_name can only be used for options"
+        name = arg_parser.snake_to_dash(self.name)
+        return f"--no-{name}"
+
+    @property
     def short_display_name(self):
         assert self.short, f"Expected short to be set in {self}"
         name = arg_parser.snake_to_dash(self.short)
