@@ -1,6 +1,6 @@
 from typing_extensions import override
 
-from clypi import Command, arg, cprint, get_config
+from clypi import Command, arg, cprint, get_config, style
 
 
 class Main(Command):
@@ -14,7 +14,12 @@ class Main(Command):
     @override
     async def run(self):
         cprint(f"Verbose: {self.verbose}", fg="blue")
-        cprint("Try using --no-verbose or --help", fg="cyan")
+        print(
+            style("Try using ", fg="cyan")
+            + style("--no-verbose", fg="yellow", bold=True)
+            + style(" or ", fg="cyan")
+            + style("--help", fg="yellow", bold=True)
+        )
 
 
 if __name__ == "__main__":
