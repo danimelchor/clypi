@@ -172,7 +172,7 @@ class _CommandMeta(type):
         setattr(self, CLYPI_SUBCOMMANDS, subcmds)
 
     @t.final
-    def inherit(self, parent: type[Command]) -> list[str]:
+    def inherit(self, parent: type[Command]) -> set[str]:
         """
         This function is called by the parent command during parsing to configure
         inherited fields and the parenthood relationship so that the full command
@@ -184,7 +184,7 @@ class _CommandMeta(type):
 
         # For inherited args, configure them with the parent's configs
         options = self.options()
-        inherited: list[str] = []
+        inherited: set[str] = set()
         for opt, opt_config in parent.options().items():
             if opt not in options or not options[opt].inherited:
                 continue
@@ -194,7 +194,7 @@ class _CommandMeta(type):
                 inherited=True,
                 group=options[opt].group or opt_config.group,
             )
-            inherited.append(opt)
+            inherited.add(opt)
 
         return inherited
 
@@ -617,6 +617,10 @@ class Command(metaclass=_CommandMeta):
         # Flush the context after the loop in case anything is left uncollected
         flush_ctx()
 
+        # Get the fields that a child command inherited since it will be responsible
+        # for parsing them and the parent will just take them
+        inherited_fields: set[str] = subcommand.inherit(cls) if subcommand else set()
+
         # If the user requested help, skip prompting/parsing
         parsed_kwargs: dict[str, t.Any] = {}
         if not requested_help:
@@ -647,7 +651,7 @@ class Command(metaclass=_CommandMeta):
                     )
 
                 # If the field was not provided but we can prompt, do so
-                elif field_conf.prompt is not None:
+                elif field_conf.prompt is not None and field not in inherited_fields:
                     parsed_kwargs[field] = prompt(
                         field_conf.prompt,
                         default=field_conf.default,
@@ -658,15 +662,12 @@ class Command(metaclass=_CommandMeta):
                     )
 
                 # Otherwise, if the field has a default, use that
-                elif field_conf.has_default():
+                elif field_conf.has_default() and field not in inherited_fields:
                     parsed_kwargs[field] = field_conf.get_default()
 
-        # Parse the subcommand passing in the parsed types
+        # Parse the subcommand passing in the parsed types and borrow the
+        # inherited fields it parsed for us
         if subcommand:
-            # Configure parenthood and inherited args
-            inherited_fields = subcommand.inherit(cls)
-
-            # Parse the subcommand
             subcmd_instance = subcommand._safe_parse(args, parent_attrs=parsed_kwargs)
             parsed_kwargs["subcommand"] = subcmd_instance
 
