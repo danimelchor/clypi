@@ -446,6 +446,14 @@ class Command(metaclass=_CommandMeta):
 
     @t.final
     @classmethod
+    def _get_positive_name(cls, negative_opt: str) -> str | None:
+        for field, field_conf in cls.options().items():
+            if field_conf.name == negative_opt.removeprefix("no_"):
+                return field
+        return None
+
+    @t.final
+    @classmethod
     def get_similar_arg_error(cls, arg: arg_parser.Arg) -> ValueError:
         """
         Utility function to find arguments similar to the one the
@@ -561,18 +569,34 @@ class Command(metaclass=_CommandMeta):
 
             # ---- Try to set to the current option ----
             is_valid_long = parsed.is_long_opt() and parsed.value in cls.options()
+            is_valid_negative_long = (
+                get_config().negative_flags and parsed.orig.startswith("--no-")
+            )
             is_valid_short = parsed.is_short_opt() and cls._get_long_name(parsed.value)
-            if parsed.is_opt() and not (is_valid_long or is_valid_short):
+            if parsed.is_opt() and not (
+                is_valid_long or is_valid_short or is_valid_negative_long
+            ):
                 raise cls.get_similar_arg_error(parsed)
 
-            if is_valid_long or is_valid_short:
-                long_name = cls._get_long_name(parsed.value) or parsed.value
+            if is_valid_long or is_valid_short or is_valid_negative_long:
+                # Get the real name of the field. E.g.:
+                # - Short opts: -v -> verbose
+                # - Negative flags: --no-verbose -> verbose
+                # - Normal long opts: --verbose -> verbose
+                long_name = (
+                    cls._get_long_name(parsed.value)
+                    or cls._get_positive_name(parsed.value)
+                    or parsed.value
+                )
                 option = cls.options()[long_name]
                 flush_ctx()
 
                 # Boolean flags don't need to parse more args later on
                 if option.nargs == 0:
-                    unparsed[long_name] = "yes"
+                    is_negative_flag = (
+                        get_config().negative_flags and parsed.value.startswith("no_")
+                    )
+                    unparsed[long_name] = "no" if is_negative_flag else "yes"
                 else:
                     current_attr = CurrentCtx(option.name, option.nargs, option.nargs)
                 continue
