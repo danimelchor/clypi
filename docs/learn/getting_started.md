@@ -32,7 +32,7 @@ In this example, whatever the first argument to our program is will be passed in
 and the second argument will be passed as `age` since they're defined in that order.
 
 <!-- mdtest-args foo 1 -->
-```python title="cli.py" hl_lines="4-5"
+```python title="cli.py" hl_lines="5-6"
 from clypi import Command, Positional
 from typing_extensions import override
 
@@ -73,7 +73,7 @@ Hello, Daniel. You are 22!
 Options are named arguments, and they are usually optional. A user of your CLI must provide the name of the argument and the value(s) to assign to it.
 
 <!-- mdtest-args foo -->
-```python title="cli.py" hl_lines="5"
+```python title="cli.py" hl_lines="6"
 from clypi import Command, Positional
 from typing_extensions import override
 
@@ -129,7 +129,7 @@ To document the overall command we can use Python docstrings. To document each a
 and option we can make user of clypi's `arg` helper.
 
 <!-- mdtest-args foo --age 10 -->
-```python title="cli.py" hl_lines="4 6 7"
+```python title="cli.py" hl_lines="5 7 8"
 from clypi import Command, Positional, arg
 from typing_extensions import override
 
@@ -177,7 +177,7 @@ Creating subcommands is very easy. Just create more commands and then define a c
 in your main CLI with the name `subcommand`:
 
 <!-- mdtest-args wave daniel -->
-```python title="cli.py" hl_lines="19"
+```python title="cli.py" hl_lines="22"
 from clypi import Command, Positional, arg
 from typing_extensions import override
 
@@ -240,7 +240,7 @@ force our users to pass in an argument directly. We might want to ask them in a 
 way. For that, we can set up a prompt in case the user does not manually pass in a value:
 
 <!-- mdtest-stdin Daniel -->
-```python title="cli.py" hl_lines="5"
+```python title="cli.py" hl_lines="6"
 from clypi import Command, Positional, arg
 from typing_extensions import override
 
