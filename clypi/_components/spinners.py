@@ -55,7 +55,7 @@ class _PerLineIO(io.TextIOBase):
         """
         If flush is called, print whatever we have even if there's no new line
         """
-        if self.buffer[0]:
+        if self.buffer:
             self._new_line_cb(self.buffer[0])
         self.buffer = []
 

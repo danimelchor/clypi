@@ -8,7 +8,7 @@ The idea is easy: define the arguments in a parent command and all children will
 without having to redefine them.
 
 <!-- mdtest -->
-```python title="cli.py" hl_lines="6 15-17"
+```python title="cli.py" hl_lines="7 18-20"
 from clypi import Command, Positional, arg
 from typing_extensions import override
 
@@ -71,7 +71,7 @@ CLIs can get very complex. Sometimes we want to build a complex graph of depende
 The internals are complex but the user experience is quite simple: clypi will not prompt or require this value being passed up until when it's executed.
 
 <!-- mdtest-stdin 5 -->
-```python hl_lines="6 17"
+```python hl_lines="7 19"
 from clypi import Command, arg
 from typing_extensions import override
 
