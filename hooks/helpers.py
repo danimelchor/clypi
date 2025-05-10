@@ -28,14 +28,14 @@ def _badge(icon: str, text: str = "", icon_tooltip: str | None = None):
     tooltip = f'{{ title="{icon_tooltip}" }}' if icon_tooltip else ""
     return "".join(
         [
-            '<span class="clypi-badge">',
+            '<div class="clypi-badge">',
             *(
                 [f'<span class="clypi-badge-icon">:{icon}:{tooltip}</span>']
                 if icon
                 else []
             ),
             *([f'<span class="clypi-badge-text">{text}</span>'] if text else []),
-            "</span>",
+            "</div>",
         ]
     )
 

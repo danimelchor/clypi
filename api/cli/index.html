@@ -1181,8 +1181,8 @@ other than the <a href="#run"><code>run</code></a> method.</p>
 <li>Long options: <code>--foo 123</code> or <code>--foo=123</code></li>
 <li>Short options: <code>-f 123</code> or <code>-f=123</code></li>
 <li>Flags: <code>--verbose</code></li>
-<li><span class="clypi-badge"><span class="clypi-badge-icon"><span class="twemoji" title="Minimum version"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m21.41 11.58-9-9A2 2 0 0 0 11 2H4a2 2 0 0 0-2 2v7a2 2 0 0 0 .59 1.42l9 9A2 2 0 0 0 13 22a2 2 0 0 0 1.41-.59l7-7A2 2 0 0 0 22 13a2 2 0 0 0-.59-1.42M13 20l-9-9V4h7l9 9M6.5 5A1.5 1.5 0 1 1 5 6.5 1.5 1.5 0 0 1 6.5 5"/></svg></span></span><span class="clypi-badge-text">1.2.12</span></span> Concatenated short options: <code>-a -b -c</code> is the same as <code>-abc</code></li>
-<li><span class="clypi-badge"><span class="clypi-badge-icon"><span class="twemoji" title="Minimum version"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m21.41 11.58-9-9A2 2 0 0 0 11 2H4a2 2 0 0 0-2 2v7a2 2 0 0 0 .59 1.42l9 9A2 2 0 0 0 13 22a2 2 0 0 0 1.41-.59l7-7A2 2 0 0 0 22 13a2 2 0 0 0-.59-1.42M13 20l-9-9V4h7l9 9M6.5 5A1.5 1.5 0 1 1 5 6.5 1.5 1.5 0 0 1 6.5 5"/></svg></span></span><span class="clypi-badge-text">1.2.13</span></span> A double dash (<code>--</code>) stops parsing: <code>my-cli foo -- anything after is okay</code></li>
+<li><div class="clypi-badge"><span class="clypi-badge-icon"><span class="twemoji" title="Minimum version"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m21.41 11.58-9-9A2 2 0 0 0 11 2H4a2 2 0 0 0-2 2v7a2 2 0 0 0 .59 1.42l9 9A2 2 0 0 0 13 22a2 2 0 0 0 1.41-.59l7-7A2 2 0 0 0 22 13a2 2 0 0 0-.59-1.42M13 20l-9-9V4h7l9 9M6.5 5A1.5 1.5 0 1 1 5 6.5 1.5 1.5 0 0 1 6.5 5"/></svg></span></span><span class="clypi-badge-text">1.2.12</span></div> Concatenated short options: <code>-a -b -c</code> is the same as <code>-abc</code></li>
+<li><div class="clypi-badge"><span class="clypi-badge-icon"><span class="twemoji" title="Minimum version"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m21.41 11.58-9-9A2 2 0 0 0 11 2H4a2 2 0 0 0-2 2v7a2 2 0 0 0 .59 1.42l9 9A2 2 0 0 0 13 22a2 2 0 0 0 1.41-.59l7-7A2 2 0 0 0 22 13a2 2 0 0 0-.59-1.42M13 20l-9-9V4h7l9 9M6.5 5A1.5 1.5 0 1 1 5 6.5 1.5 1.5 0 0 1 6.5 5"/></svg></span></span><span class="clypi-badge-text">1.2.13</span></div> A double dash (<code>--</code>) stops parsing: <code>my-cli foo -- anything after is okay</code></li>
 </ul>
 <h3 id="subcommands">Subcommands<a class="headerlink" href="#subcommands" title="Permanent link">&para;</a></h3>
 <p>To define a subcommand, you must define a field in a class extending <code>Command</code> called <code>subcommand</code>. It's type hint must
@@ -1320,7 +1320,8 @@ The full path of commands to the current command being ran.</p>
 </span></code></pre></div>
 A list of parent commands for this command.</p>
 <h3 id="get_unparsed"><code>get_unparsed</code><a class="headerlink" href="#get_unparsed" title="Permanent link">&para;</a></h3>
-<p><span class="clypi-badge"><span class="clypi-badge-icon"><span class="twemoji" title="Minimum version"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m21.41 11.58-9-9A2 2 0 0 0 11 2H4a2 2 0 0 0-2 2v7a2 2 0 0 0 .59 1.42l9 9A2 2 0 0 0 13 22a2 2 0 0 0 1.41-.59l7-7A2 2 0 0 0 22 13a2 2 0 0 0-.59-1.42M13 20l-9-9V4h7l9 9M6.5 5A1.5 1.5 0 1 1 5 6.5 1.5 1.5 0 0 1 6.5 5"/></svg></span></span><span class="clypi-badge-text">1.2.13</span></span></p>
+<div class="clypi-badge"><span class="clypi-badge-icon">:material-tag-outline:{ title="Minimum version" }</span><span class="clypi-badge-text">1.2.13</span></div>
+
 <p><div class="language-python highlight"><pre><span></span><code><span id="__span-13-1"><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a><span class="nd">@t</span><span class="o">.</span><span class="n">final</span>
 </span><span id="__span-13-2"><a id="__codelineno-13-2" name="__codelineno-13-2" href="#__codelineno-13-2"></a><span class="nd">@classmethod</span>
 </span><span id="__span-13-3"><a id="__codelineno-13-3" name="__codelineno-13-3" href="#__codelineno-13-3"></a><span class="k">def</span><span class="w"> </span><span class="nf">get_unparsed</span><span class="p">(</span><span class="bp">cls</span><span class="p">)</span>
@@ -1358,7 +1359,8 @@ Prints the help page for a particular command.</p>
 <li><code>exception</code>: an exception neatly showed to the user as a traceback. Automatically passed in during runtime.</li>
 </ul>
 <h3 id="pre_run_hook"><code>pre_run_hook</code><a class="headerlink" href="#pre_run_hook" title="Permanent link">&para;</a></h3>
-<p><span class="clypi-badge"><span class="clypi-badge-icon"><span class="twemoji" title="Minimum version"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m21.41 11.58-9-9A2 2 0 0 0 11 2H4a2 2 0 0 0-2 2v7a2 2 0 0 0 .59 1.42l9 9A2 2 0 0 0 13 22a2 2 0 0 0 1.41-.59l7-7A2 2 0 0 0 22 13a2 2 0 0 0-.59-1.42M13 20l-9-9V4h7l9 9M6.5 5A1.5 1.5 0 1 1 5 6.5 1.5 1.5 0 0 1 6.5 5"/></svg></span></span><span class="clypi-badge-text">1.2.7</span></span></p>
+<div class="clypi-badge"><span class="clypi-badge-icon">:material-tag-outline:{ title="Minimum version" }</span><span class="clypi-badge-text">1.2.7</span></div>
+
 <p><div class="language-python highlight"><pre><span></span><code><span id="__span-19-1"><a id="__codelineno-19-1" name="__codelineno-19-1" href="#__codelineno-19-1"></a><span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">pre_run_hook</span><span class="p">(</span><span class="bp">self</span><span class="p">:</span> <span class="n">Command</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 </span></code></pre></div>
 A function that will run on every parent command and subcommand right before it's execution. Useful
@@ -1383,7 +1385,8 @@ to print before commands, emit metrics, and more!</p>
 </span><span id="__span-20-16"><a id="__codelineno-20-16" name="__codelineno-20-16" href="#__codelineno-20-16"></a><span class="n">main</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
 </span></code></pre></div>
 <h3 id="post_run_hook"><code>post_run_hook</code><a class="headerlink" href="#post_run_hook" title="Permanent link">&para;</a></h3>
-<p><span class="clypi-badge"><span class="clypi-badge-icon"><span class="twemoji" title="Minimum version"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m21.41 11.58-9-9A2 2 0 0 0 11 2H4a2 2 0 0 0-2 2v7a2 2 0 0 0 .59 1.42l9 9A2 2 0 0 0 13 22a2 2 0 0 0 1.41-.59l7-7A2 2 0 0 0 22 13a2 2 0 0 0-.59-1.42M13 20l-9-9V4h7l9 9M6.5 5A1.5 1.5 0 1 1 5 6.5 1.5 1.5 0 0 1 6.5 5"/></svg></span></span><span class="clypi-badge-text">1.2.7</span></span></p>
+<div class="clypi-badge"><span class="clypi-badge-icon">:material-tag-outline:{ title="Minimum version" }</span><span class="clypi-badge-text">1.2.7</span></div>
+
 <p><div class="language-python highlight"><pre><span></span><code><span id="__span-21-1"><a id="__codelineno-21-1" name="__codelineno-21-1" href="#__codelineno-21-1"></a><span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">post_run_hook</span><span class="p">(</span><span class="bp">self</span><span class="p">:</span> <span class="n">Command</span><span class="p">,</span> <span class="n">exception</span><span class="p">:</span> <span class="ne">Exception</span> <span class="o">|</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 </span></code></pre></div>
 A function that will run on every parent command and subcommand right after it's execution. Useful
