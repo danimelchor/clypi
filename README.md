@@ -37,7 +37,7 @@ I've been working with Python-based CLIs for several years with many users and s
 Just like you do with [dataclasses](https://docs.python.org/3/library/dataclasses.html), clypi CLI arguments can defined as class-level type annotations.
 
 <!-- mdtest-args --name foo -->
-```python
+```python hl_lines="5"
 from clypi import Command
 from typing_extensions import override
 
@@ -58,7 +58,7 @@ Use our `arg` helper and built-in parsers to define defaults, parsers,
 groups, and more!
 
 <!-- mdtest -->
-```python
+```python hl_lines="5-8"
 from clypi import Command, arg
 import clypi.parsers as cp
 
@@ -77,7 +77,7 @@ cli.start()
 Using docstrings automatically applies them to your CLI's `--help` page
 
 <!-- mdtest -->
-```python
+```python hl_lines="4 7"
 from clypi import Command, arg
 
 class MyCli(Command):
@@ -96,7 +96,7 @@ cli.start()
 Just create and compose more clypi commands!
 
 <!-- mdtest-args run -->
-```python
+```python hl_lines="12"
 from clypi import Command, arg
 
 class Lint(Command):
