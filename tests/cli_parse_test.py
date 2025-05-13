@@ -18,7 +18,6 @@ def parametrize(args: str, cases: list[tuple[t.Any, ...]]):
 
 
 get_config().help_on_fail = False
-get_config().negative_flags = True
 
 
 def join_mult(s: str, n: int):

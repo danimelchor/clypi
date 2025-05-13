@@ -43,6 +43,7 @@ class PartialConfig(t.Generic[T]):
     hidden: bool = False
     group: str | None = None
     defer: bool = False
+    negative: str | None = None
 
 
 @dataclass
@@ -61,6 +62,7 @@ class Config(t.Generic[T]):
     hidden: bool = False
     group: str | None = None
     defer: bool = False
+    negative: str | None = None
 
     def __post_init__(self):
         if self.is_positional and self.short:
@@ -108,8 +110,9 @@ class Config(t.Generic[T]):
     @property
     def negative_name(self):
         assert self.is_opt, "negative_name can only be used for options"
-        name = arg_parser.snake_to_dash(self.name)
-        return f"--no-{name}"
+        assert self.negative, "negative is not set"
+        negative_name = arg_parser.snake_to_dash(self.negative)
+        return f"--{negative_name}"
 
     @property
     def short_display_name(self):
@@ -160,6 +163,7 @@ def arg(
     hidden: bool = False,
     group: str | None = None,
     defer: bool = False,
+    negative: str | None = None,
 ) -> T:
     return PartialConfig(
         default=default,
@@ -174,6 +178,7 @@ def arg(
         hidden=hidden,
         group=group,
         defer=defer,
+        negative=negative,
     )  # type: ignore
 
 
