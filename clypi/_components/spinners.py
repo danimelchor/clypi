@@ -26,6 +26,7 @@ class _PerLineIO(io.TextIOBase):
         """
         super().__init__()
         self._new_line_cb = new_line_cb
+        self._closed = False
         self.buffer: list[str] = []
 
     @override
@@ -43,11 +44,10 @@ class _PerLineIO(io.TextIOBase):
         else:
             self.buffer = parts
 
-        if len(self.buffer) > 1:
-            for i in range(0, len(self.buffer) - 1):
-                if line := self.buffer[i]:
-                    self._new_line_cb(line)
-            self.buffer = self.buffer[-1:]
+        while len(self.buffer) > 1:
+            self._new_line_cb(self.buffer[0])
+            self.buffer = self.buffer[1:]
+
         return 0
 
     @override
@@ -55,9 +55,13 @@ class _PerLineIO(io.TextIOBase):
         """
         If flush is called, print whatever we have even if there's no new line
         """
-        if self.buffer:
+        if self.buffer and not self._closed:
             self._new_line_cb(self.buffer[0])
         self.buffer = []
+
+    @override
+    def close(self) -> None:
+        self._closed = True
 
 
 class RedirectStdPipe(AbstractContextManager[None]):
@@ -94,6 +98,7 @@ class RedirectStdPipe(AbstractContextManager[None]):
         return None
 
     def stop(self) -> None:
+        self._new.close()
         setattr(sys, self._pipe, self._original)
 
     def write(self, s: str):
@@ -113,6 +118,7 @@ class Spinner(AbstractAsyncContextManager["Spinner"]):
         suffix: str = "…",
         speed: float = 1,
         capture: bool = False,
+        output: t.Literal["stdout", "stderr"] = "stderr",
     ) -> None:
         """
         A context manager that lets you run async code while nicely
@@ -133,6 +139,7 @@ class Spinner(AbstractAsyncContextManager["Spinner"]):
 
         # For capturing stdout, stderr
         self._capture = capture
+        self._output = output
         self._stdout = RedirectStdPipe("stdout", self.log)
         self._stderr = RedirectStdPipe("stderr", self.log)
 
@@ -176,13 +183,15 @@ class Spinner(AbstractAsyncContextManager["Spinner"]):
         icon = clypi.style(icon + " ", fg=color) if icon else ""
         msg = f"{self.prefix}{icon}{msg}{end}"
 
+        output_pipe = self._stderr if self._output == "stderr" else self._stdout
+
         # Wipe the line for next render
-        self._stdout.write(MOVE_START)
-        self._stdout.write(DEL_LINE)
+        output_pipe.write(MOVE_START)
+        output_pipe.write(DEL_LINE)
 
         # Write msg and flush
-        self._stdout.write(msg)
-        self._stdout.flush()
+        output_pipe.write(msg)
+        output_pipe.flush()
 
     def _render_frame(self):
         self._print(
@@ -273,6 +282,7 @@ def spinner(
     suffix: str = "…",
     speed: float = 1,
     capture: bool = False,
+    output: t.Literal["stdout", "stderr"] = "stderr",
 ) -> t.Callable[[Func[P, R]], Func[P, R]]:
     """
     Utility decorator to wrap a function and display a Spinner while it's running.
@@ -287,6 +297,7 @@ def spinner(
                 suffix=suffix,
                 speed=speed,
                 capture=capture,
+                output=output,
             ):
                 return await fn(*args, **kwargs)
 
