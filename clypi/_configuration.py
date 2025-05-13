@@ -55,9 +55,6 @@ class ClypiConfig:
     # If we cannot get the terminal size, what should be the fallback?
     fallback_term_width: int = 100
 
-    # Enable negative flags (e.g.: --flag/--no-flag)
-    negative_flags: bool = False
-
 
 _config = ClypiConfig()
 

@@ -42,6 +42,7 @@ class PartialConfig(t.Generic[T]):
     inherited: bool = False
     hidden: bool = False
     group: str | None = None
+    negative: str | None = None
     defer: bool = False
 
 
@@ -60,6 +61,7 @@ class Config(t.Generic[T]):
     inherited: bool = False
     hidden: bool = False
     group: str | None = None
+    negative: str | None = None
     defer: bool = False
 
     def __post_init__(self):
@@ -108,8 +110,9 @@ class Config(t.Generic[T]):
     @property
     def negative_name(self):
         assert self.is_opt, "negative_name can only be used for options"
-        name = arg_parser.snake_to_dash(self.name)
-        return f"--no-{name}"
+        assert self.negative, "negative is not set"
+        negative_name = arg_parser.snake_to_dash(self.negative)
+        return f"--{negative_name}"
 
     @property
     def short_display_name(self):
@@ -159,6 +162,7 @@ def arg(
     inherited: bool = False,
     hidden: bool = False,
     group: str | None = None,
+    negative: str | None = None,
     defer: bool = False,
 ) -> T:
     return PartialConfig(
@@ -173,6 +177,7 @@ def arg(
         inherited=inherited,
         hidden=hidden,
         group=group,
+        negative=negative,
         defer=defer,
     )  # type: ignore
 

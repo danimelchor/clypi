@@ -82,8 +82,6 @@ class ClypiFormatter:
         return self.theme.placeholder(f"<{placeholder}>")
 
     def _format_option(self, option: Config[t.Any]) -> tuple[str, ...]:
-        from clypi._configuration import get_config
-
         help = self._maybe_norm_help(option.help or "")
 
         # E.g.: -r, --requirements <REQUIREMENTS>
@@ -94,7 +92,7 @@ class ClypiFormatter:
             usage = short_usage + ", " + usage
 
         # E.g.: --flag/--no-flag
-        if get_config().negative_flags:
+        if option.negative:
             usage += "/" + self.theme.long_option(option.negative_name)
 
         if not self.show_option_types:

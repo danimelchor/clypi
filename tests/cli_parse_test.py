@@ -18,7 +18,6 @@ def parametrize(args: str, cases: list[tuple[t.Any, ...]]):
 
 
 get_config().help_on_fail = False
-get_config().negative_flags = True
 
 
 def join_mult(s: str, n: int):
@@ -72,7 +71,7 @@ class ExampleSub(Command):
 
 class Example(Command):
     pos: Positional[Path]
-    flag: bool = arg(False, short="f")
+    flag: bool = arg(False, short="f", negative="no_flag")
     subcommand: ExampleSub | None = None
     option: list[str] = arg(default_factory=list, short="o")
 
