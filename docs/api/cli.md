@@ -153,7 +153,7 @@ You must implement the [`run`](#run) method so that your command can be ran. The
 must be `async` so that we can properly render items in your screen.
 
 <!-- mdtest -->
-```python hl_lines="6 7"
+```python hl_lines="7 8"
 from clypi import Command
 from typing_extensions import override
 
