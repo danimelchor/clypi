@@ -42,8 +42,8 @@ class PartialConfig(t.Generic[T]):
     inherited: bool = False
     hidden: bool = False
     group: str | None = None
-    defer: bool = False
     negative: str | None = None
+    defer: bool = False
 
 
 @dataclass
@@ -61,8 +61,8 @@ class Config(t.Generic[T]):
     inherited: bool = False
     hidden: bool = False
     group: str | None = None
-    defer: bool = False
     negative: str | None = None
+    defer: bool = False
 
     def __post_init__(self):
         if self.is_positional and self.short:
@@ -162,8 +162,8 @@ def arg(
     inherited: bool = False,
     hidden: bool = False,
     group: str | None = None,
-    defer: bool = False,
     negative: str | None = None,
+    defer: bool = False,
 ) -> T:
     return PartialConfig(
         default=default,
@@ -177,8 +177,8 @@ def arg(
         inherited=inherited,
         hidden=hidden,
         group=group,
-        defer=defer,
         negative=negative,
+        defer=defer,
     )  # type: ignore
 
 
