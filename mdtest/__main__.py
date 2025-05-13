@@ -2,13 +2,13 @@ import asyncio
 import re
 import shutil
 import time
+import tomllib
 from contextlib import suppress
 from dataclasses import dataclass
 from pathlib import Path
 from textwrap import dedent
 
 import anyio
-import tomllib
 from typing_extensions import override
 
 import clypi.parsers as cp
@@ -117,6 +117,9 @@ async def parse_file(sm: asyncio.Semaphore, file: Path) -> list[Test]:
             # Mdtest generic definition
             elif g := re.search("<!-- mdtest -->", line):
                 in_test = True
+
+            elif "mdtest" in line:
+                raise ValueError(f"Invalid mdtest config line: {line}")
 
     sm.release()
     cprint(style("✔", fg="green") + f" Collected {len(tests)} tests for {file}")

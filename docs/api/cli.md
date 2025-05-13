@@ -79,7 +79,7 @@ class MyCommand(Command):
 
 Arguments are mandatory positional words the user must pass in. They're defined as class attributes with no default and type hinted with the `Positional[T]` type.
 
-<!-- mdtest -->
+<!-- mdtest-args 5 foo bar baz -->
 ```python hl_lines="6 7"
 from clypi import Command, Positional
 
@@ -88,6 +88,9 @@ from clypi import Command, Positional
 class MyCommand(Command):
     arg1: Positional[int]
     arg2: Positional[list[str]]
+
+main = MyCommand.parse()
+main.start()
 ```
 
 ### Flags
@@ -104,8 +107,28 @@ from clypi import Command
 # With the flag OFF: my-command
 class MyCommand(Command):
     my_flag: bool = False
+
+main = MyCommand.parse()
+main.start()
 ```
 
+#### Negative flags
+
+You can define negative flag names for each flag using our handy `arg` helper and `negative`. This will configure an option users can pass that will set the flag to False. This is useful for flags that prompt so that they can be set to any value from the command line:
+
+<!-- mdtest-args --no-my-flag -->
+```python hl_lines="7"
+from clypi import Command, arg
+
+# With the flag ON: my-command --my-flag
+# With the flag OFF: my-command --no-my-flag
+# With no value: will prompt
+class MyCommand(Command):
+    my_flag: bool = arg(False, prompt="Value for my-flag?", negative="no_my_flag")
+
+main = MyCommand.parse()
+main.start()
+```
 
 ### Options
 
@@ -119,6 +142,9 @@ from clypi import Command
 # With default: my-command
 class MyCommand(Command):
     my_attr: str | int = "some-default-here"
+
+main = MyCommand.parse()
+main.start()
 ```
 
 ### Running the command
@@ -137,11 +163,14 @@ class MyCommand(Command):
     @override
     async def run(self):
         print(f"Running with verbose: {self.verbose}")
+
+main = MyCommand.parse()
+main.start()
 ```
 
 ### Help page
 
-You can define custom help messages for each argument using our handy `config` helper:
+You can define custom help messages for each argument using our handy `arg` helper:
 
 <!-- mdtest -->
 ```python hl_lines="6"
@@ -152,6 +181,9 @@ class MyCommand(Command):
         True,
         help="Whether to show all of the output"
     )
+
+main = MyCommand.parse()
+main.start()
 ```
 
 You can also define custom help messages for commands by creating a docstring on the class itself:
@@ -164,21 +196,27 @@ class MyCommand(Command):
     This text will show up when someone does `my-command --help`
     and can contain any info you'd like
     """
+
+main = MyCommand.parse()
+main.start()
 ```
 
 ### Prompting
 
-If you want to ask the user to provide input if it's not specified, you can pass in a prompt to `config` for each field like so:
+If you want to ask the user to provide input if it's not specified, you can pass in a prompt to `arg` for each field like so:
 
-<!-- mdtest -->
+<!-- mdtest-stdin foo -->
 ```python hl_lines="4"
 from clypi import Command, arg
 
 class MyCommand(Command):
     name: str = arg(prompt="What's your name?")
+
+main = MyCommand.parse()
+main.start()
 ```
 
-On runtime, if the user didn't provide a value for `--name`, the program will ask the user to provide one until they do. You can also pass in a `default` value to `config` to allow the user to just hit enter to accept the default.
+On runtime, if the user didn't provide a value for `--name`, the program will ask the user to provide one until they do. You can also pass in a `default` value to `arg` to allow the user to just hit enter to accept the default.
 
 ### Autocomplete
 
@@ -295,7 +333,7 @@ import logging
 from typing_extensions import override
 from clypi import Command
 
-class Main(Command):
+class MyCommand(Command):
     @override
     async def pre_run_hook(self):
         cmd_str = " ".join(self.full_command())
@@ -305,7 +343,7 @@ class Main(Command):
     async def run(self):
         print("Hey")
 
-main = Main.parse()
+main = MyCommand.parse()
 main.start()
 ```
 
