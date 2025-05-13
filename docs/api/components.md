@@ -43,6 +43,7 @@ def __init__(
     suffix: str = "…",
     speed: float = 1,
     capture: bool = False,
+    output: t.Literal["stdout", "stderr"] = "stderr",
 )
 ```
 Parameters:
@@ -53,6 +54,7 @@ Parameters:
 - `suffix`: text or padding displayed after the icon
 - `speed`: a multiplier to speed or slow down the frame rate of the animation
 - `capture`: if enabled, the Spinner will capture all stdout and stderr and display it nicely
+- `output`: the pipe to write the spinner animation to
 
 ##### `done`
 
