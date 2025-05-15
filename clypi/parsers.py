@@ -12,7 +12,7 @@ from pathlib import Path as _Path
 from typing_extensions import override
 
 from clypi import _type_util as tu
-from clypi._exceptions import ClypiException
+from clypi._exceptions import ClypiException, ClypiExceptionGroup, flatten_exc
 from clypi._util import UNSET, Unset, trim_split_collection
 
 T = t.TypeVar("T", covariant=True)
@@ -33,6 +33,7 @@ CATCH_ERRORS: tuple[type[Exception], ...] = (
     TypeError,
     IndexError,
     ClypiException,
+    ClypiExceptionGroup,
 )
 
 
@@ -40,6 +41,18 @@ class CannotParseAs(ClypiException):
     def __init__(self, value: t.Any, parser: Parser[t.Any]) -> None:
         message = f"Cannot parse {value!r} as {parser}"
         super().__init__(message)
+
+
+class CannotParseAsGroup(ClypiExceptionGroup):
+    @classmethod
+    def get(
+        cls,
+        value: t.Any,
+        parser: Parser[t.Any],
+        exceptions: t.Sequence[Exception],
+    ) -> t.Self:
+        message = f"Cannot parse {value!r} as {parser}"
+        return cls(message, exceptions)
 
 
 class ClypiParser(ABC, t.Generic[X]):
@@ -405,11 +418,28 @@ class Union(ClypiParser[t.Union[X, Y]]):
         if isinstance(first, Str):
             first, second = self._right, self._left
 
-        with suppress(*CATCH_ERRORS):
+        first_exc, second_exc = None, None
+
+        # Try parsing as the left side of the union
+        try:
             return first(raw)
-        with suppress(*CATCH_ERRORS):
+        except CATCH_ERRORS as e:
+            first_exc = e
+
+        # Try parsing as the right side of the union
+        try:
             return second(raw)
-        raise CannotParseAs(raw, self)
+        except CATCH_ERRORS as e:
+            second_exc = e
+
+        raise CannotParseAsGroup.get(
+            raw,
+            self,
+            [
+                *flatten_exc(first_exc),
+                *flatten_exc(second_exc),
+            ],
+        )
 
     def _parts(self):
         """
