@@ -43,6 +43,9 @@ docs = [
   "termynal>=0.13.0",
 ]
 
+[tool.ruff]
+target-version = "py311"
+
 [tool.pytest.ini_options]
 minversion = "8.0"
 addopts = "-ra -q"

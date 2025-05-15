@@ -5,6 +5,7 @@ from clypi._colors import Styler
 from clypi._components.wraps import OverflowStyle
 from clypi._exceptions import (
     ClypiException,
+    ClypiExceptionGroup,
 )
 
 
@@ -42,8 +43,8 @@ class ClypiConfig:
     help_on_fail: bool = True
 
     # What errors should we catch and neatly display?
-    nice_errors: tuple[type[Exception]] = field(
-        default_factory=lambda: (ClypiException,)
+    nice_errors: tuple[type[Exception], ...] = field(
+        default_factory=lambda: (ClypiException, ClypiExceptionGroup)
     )
 
     # How should sentences overwrap if they're too long?
