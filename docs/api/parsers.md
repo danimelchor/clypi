@@ -161,7 +161,7 @@ DateTime(
 ```
 Parameters:
 
-- `tz`: the timezone to convert the date to
+- `tz`: the timezone to convert the date to. If the date is provided without a timezone, it will be forced as the specified one. If it's passed with a timezone, it will convert the date to the right offset.
 
 ### `TimeDelta`
 

@@ -192,3 +192,23 @@ def test_parse_tuple_list():
         ("b", 2),
         ("c", 3),
     ]
+
+
+@pytest.mark.parametrize(
+    "parser,input,expected",
+    [
+        (cp.DateTime(tz=UTC), "2025-5-15", datetime(2025, 5, 15, 0, 0, 0, tzinfo=UTC)),
+        (
+            cp.DateTime(tz=UTC),
+            "2025-05-15T00:00:00Z",
+            datetime(2025, 5, 15, 0, 0, 0, tzinfo=UTC),
+        ),
+        (
+            cp.DateTime(tz=UTC),
+            "2025-05-15T00:00:00-01:00",
+            datetime(2025, 5, 15, 1, 0, 0, tzinfo=UTC),
+        ),
+    ],
+)
+def test_date_with_tz(parser: cp.DateTime, input: str, expected: datetime):
+    assert parser(input) == expected

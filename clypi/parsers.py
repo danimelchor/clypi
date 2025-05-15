@@ -249,7 +249,10 @@ class DateTime(ClypiParser[datetime]):
 
         parsed = parse(raw)
         if self.tz is not None:
-            parsed = parsed.astimezone(self.tz)
+            if parsed.tzinfo:
+                parsed = parsed.astimezone(tz=self.tz)
+            else:
+                parsed = parsed.replace(tzinfo=self.tz)
 
         return parsed
 
