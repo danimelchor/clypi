@@ -426,7 +426,7 @@ class Union(ClypiParser[t.Union[X, Y]]):
         except CATCH_ERRORS as e:
             first_exc = e
 
-        # Try parsing as the second side of the union
+        # Try parsing as the right side of the union
         try:
             return second(raw)
         except CATCH_ERRORS as e:
