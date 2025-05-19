@@ -57,6 +57,9 @@ SUCCESS_PRIMITIVES = [
     ("", cp.NoneParser(), None),
     ("", cp.Str() | cp.NoneParser(), None),
     ("", cp.NoneParser() | cp.Str(), None),
+    ("foo", cp.NoneParser() | cp.Str(), "foo"),
+    ("", cp.Path() | cp.NoneParser(), None),
+    ("foo", cp.NoneParser() | cp.Path(), Path("foo")),
 ]
 
 FAILURE_PRIMITIVES = [

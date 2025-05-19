@@ -415,8 +415,11 @@ class Union(ClypiParser[t.Union[X, Y]]):
     @override
     def __call__(self, raw: str | list[str], /) -> t.Union[X, Y]:
         # Str classes are catch-alls, so we de-prioritize them in unions
-        # so that the other type is parsed first
+        # so that the other type is parsed first. None types are not greedy
+        # so we always move them left
         first, second = self._left, self._right
+        if isinstance(second, NoneParser):
+            first, second = self._right, self._left
         if isinstance(first, Str):
             first, second = self._right, self._left
 
