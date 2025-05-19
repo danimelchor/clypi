@@ -93,7 +93,7 @@ class Config(t.Generic[T]):
         cls,
         partial: PartialConfig[T],
         name: str,
-        parser: Parser[T],
+        parser: Parser[T] | None,
         arg_type: t.Any,
     ):
         kwargs = asdict(partial)
