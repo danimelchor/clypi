@@ -340,7 +340,7 @@ class TimeDelta(ClypiParser[timedelta]):
 
 @dataclass
 class Path(ClypiParser[_Path]):
-    exists: bool = False
+    exists: bool | None = None
 
     @override
     def __call__(self, raw: str | list[str], /) -> _Path:
@@ -349,8 +349,10 @@ class Path(ClypiParser[_Path]):
         p = _Path(raw)
 
         # Validations on the path
-        if self.exists and not p.exists():
+        if self.exists is True and not p.exists():
             raise ValueError(f"File {p.resolve()} does not exist!")
+        if self.exists is False and p.exists():
+            raise ValueError(f"File {p.resolve()} exists but shouldn't!")
 
         return p
 
