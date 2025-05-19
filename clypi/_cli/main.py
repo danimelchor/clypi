@@ -101,10 +101,13 @@ class _CommandMeta(type):
 
             # Check if it comes from `arg()` or if it's a real value
             if isinstance(default, arg_config.PartialConfig):
+                parser = default.parser
+                if not default.inherited:
+                    parser = parser or parsers.from_type(_type)
                 field_conf = arg_config.Config.from_partial(
                     partial=default,
                     name=field,
-                    parser=default.parser or parsers.from_type(_type),
+                    parser=parser,
                     arg_type=_type,
                 )
             else:
@@ -190,9 +193,10 @@ class _CommandMeta(type):
                 continue
             options[opt] = dataclasses.replace(
                 opt_config,
-                # Keep inherited and group config
+                # Keep inherited and group/hidden config
                 inherited=True,
                 group=options[opt].group or opt_config.group,
+                hidden=options[opt].hidden or opt_config.hidden,
             )
             inherited.add(opt)
 

@@ -1,10 +1,20 @@
 import typing as t
+from dataclasses import dataclass
 
 import pytest
 
 from clypi import Command, arg
 from tests.cli_parse_test import parametrize
 from tests.prompt_test import replace_stdin
+
+
+@dataclass
+class CustomType:
+    foo: str = "bar"
+
+
+def parse_custom(raw: str | list[str]) -> CustomType:
+    return CustomType(foo=str(raw))
 
 
 class Run(Command):
@@ -15,6 +25,7 @@ class Run(Command):
     verbose: bool = arg(inherited=True)
     env: str = arg(inherited=True)
     env_prompt: str = arg(inherited=True)
+    custom: CustomType = arg(inherited=True)
 
 
 class Main(Command):
@@ -25,6 +36,7 @@ class Main(Command):
         help="The environment to use",
         prompt="What environment should we use?",
     )
+    custom: CustomType = arg(default=CustomType(), parser=parse_custom)
 
 
 @parametrize(
@@ -64,6 +76,23 @@ class Main(Command):
                     "env": "qa",
                     "env_prompt": "qa",
                 },
+            },
+            False,
+            "qa\n",
+        ),
+        (
+            ["--custom", "baz", "run", "--env", "qa", "-v"],
+            {
+                "verbose": True,
+                "env": "qa",
+                "env_prompt": "qa",
+                "run": {
+                    "verbose": True,
+                    "env": "qa",
+                    "env_prompt": "qa",
+                    "custom": CustomType("baz"),
+                },
+                "custom": CustomType("baz"),
             },
             False,
             "qa\n",
@@ -129,6 +158,23 @@ class Main(Command):
             "qa\n",
         ),
         (["run", "-v"], {}, True, ""),
+        (
+            ["run", "--env", "qa", "-v", "--custom", "baz"],
+            {
+                "verbose": True,
+                "env": "qa",
+                "env_prompt": "qa",
+                "run": {
+                    "verbose": True,
+                    "env": "qa",
+                    "env_prompt": "qa",
+                    "custom": CustomType("baz"),
+                },
+                "custom": CustomType("baz"),
+            },
+            False,
+            "qa\n",
+        ),
     ],
 )
 def test_parse_inherited(
