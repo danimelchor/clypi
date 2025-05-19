@@ -42,6 +42,11 @@ SUCCESS_PRIMITIVES = [
         cp.Path(exists=True),
         Path("./tests/parsers_test.py"),
     ),
+    (
+        "./tests/asbdajksfdsk.py",
+        cp.Path(exists=False),
+        Path("./tests/asbdajksfdsk.py"),
+    ),
     ("y", cp.Union(cp.Int(), cp.Bool()), True),
     ("1", cp.Union(cp.Int(), cp.Bool()), 1),
     ("1", cp.Literal(1, "foo"), 1),
@@ -67,6 +72,10 @@ FAILURE_PRIMITIVES = [
     (
         "./tests/parsers_test2.py",
         cp.Path(exists=True),
+    ),
+    (
+        "./tests/parsers_test.py",
+        cp.Path(exists=False),
     ),
     ("a", cp.Union(cp.Int(), cp.Bool())),
     ("2", cp.Literal("1", "foo")),

@@ -203,11 +203,11 @@ Supported time units:
 The `Path` parser is useful to parse file or directory-like arguments from the CLI.
 
 ```python
-Path(exists: bool = False)
+Path(exists: bool | None = None)
 ```
 Parameters:
 
-- `exists`: If `True`, it checks whether the provided path exists.
+- `exists`: If `True`, it ensures the provided path exists. If `False`, it ensures the provided path does not exist.
 
 Examples:
 <!-- mdtest -->
