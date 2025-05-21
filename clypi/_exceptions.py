@@ -43,7 +43,7 @@ def _build_exc_tree(err: BaseException) -> TreeExcNode:
 
 def format_traceback(err: BaseException, color: ColorType | None = "red") -> list[str]:
     def _format_exc(e: BaseException, indent: int):
-        msg, *_ = e.args
+        msg = e.args[0] if e.args else str(err.__class__.__name__)
         icon = "  " * (indent - 1) + " ↳ " if indent != 0 else ""
         return style(f"{icon}{str(msg)}", fg=color)
 

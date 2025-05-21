@@ -111,9 +111,6 @@ class ClypiFormatter:
     def _format_option_group(
         self, title: str, options: list[Config[t.Any]]
     ) -> str | None:
-        if not options:
-            return None
-
         usage: list[str] = []
         type_str: list[str] = []
         help: list[str] = []
@@ -126,6 +123,9 @@ class ClypiFormatter:
             usage.append(u)
             type_str.append(ts)
             help.append(hp)
+
+        if len(usage) == 0:
+            return None
 
         return self._maybe_boxed(usage, type_str, help, title=title)
 
@@ -177,9 +177,6 @@ class ClypiFormatter:
         return name, type_str, self._maybe_norm_help(help)
 
     def _format_positionals(self, positionals: list[Config[t.Any]]) -> str | None:
-        if not positionals:
-            return None
-
         name: list[str] = []
         type_str: list[str] = []
         help: list[str] = []
@@ -189,6 +186,9 @@ class ClypiFormatter:
             type_str.append(ts)
             help.append(hp)
 
+        if len(name) == 0:
+            return None
+
         return self._maybe_boxed(name, type_str, help, title="Arguments")
 
     def _format_subcommand(self, subcmd: type[Command]) -> tuple[str, str]:
@@ -197,15 +197,15 @@ class ClypiFormatter:
         return name, self._maybe_norm_help(help)
 
     def _format_subcommands(self, subcommands: list[type[Command]]) -> str | None:
-        if not subcommands:
-            return None
-
         name: list[str] = []
         help: list[str] = []
         for p in subcommands:
             n, hp = self._format_subcommand(p)
             name.append(n)
             help.append(hp)
+
+        if len(name) == 0:
+            return None
 
         return self._maybe_boxed(name, help, title="Subcommands")
 
