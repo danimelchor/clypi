@@ -4,6 +4,20 @@ from clypi import format_traceback
 from clypi._exceptions import ClypiExceptionGroup
 
 
+def test_single_exception():
+    err = RuntimeError("Actual root cause")
+    result = format_traceback(err, color=None)
+    result_str = "\n".join(result)
+    assert result_str == "Actual root cause".strip()
+
+
+def test_single_exception_no_args():
+    err = RuntimeError()
+    result = format_traceback(err, color=None)
+    result_str = "\n".join(result)
+    assert result_str == "RuntimeError".strip()
+
+
 def test_basic_traceback():
     root_cause = RuntimeError("Actual root cause")
 
