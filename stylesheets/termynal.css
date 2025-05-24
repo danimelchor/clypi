@@ -1,0 +1,13 @@
+:root > * {
+  --color-bg: var(--md-code-bg-color);
+  --color-text: var(--md-code-hl-name-color);
+}
+
+.termy {
+  padding: 2.5rem 1rem 1rem !important;
+  font-family: monospace !important;
+}
+
+[data-ty] {
+  line-height: 1.3 !important;
+}
