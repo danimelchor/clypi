@@ -53,6 +53,10 @@ def join_mult(s: str, n: int):
             ["-abc"],
             ["-a", "-b", "-c"],
         ),
+        (
+            ["-a", "-10"],
+            ["-a", "-10"],
+        ),
     ],
 )
 def test_normalize_args(args: list[str], expected: list[str]):
@@ -211,6 +215,14 @@ SUBCMD: list[tuple[t.Any, ...]] = [
             "pos2": ("foo", "bar"),
             "flag2": True,
             "option2": 6,
+        },
+    ),
+    (
+        ["example-sub", "--flag2", "foo, bar", "--option2", "-6"],
+        {
+            "pos2": ("foo", "bar"),
+            "flag2": True,
+            "option2": -6,
         },
     ),
 ]
