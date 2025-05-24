@@ -2,6 +2,10 @@ import re
 import typing as t
 from dataclasses import dataclass
 
+_COMPRESSED_ARG = re.compile(r"^-[a-zA-Z]{2,}$")
+_SHORT_ARG = re.compile(r"^-[a-zA-Z]$")
+_LONG_ARG = re.compile(r"^--[a-zA-Z][a-zA-Z0-9\-\_]+$")
+
 
 def dash_to_snake(s: str) -> str:
     return re.sub(r"^-+", "", s).replace("-", "_")
@@ -19,7 +23,7 @@ def normalize_args(args: t.Sequence[str]) -> list[str]:
             new_args.extend(a.split("=", 1))
 
         # Expand -abc into -a -b -c
-        elif a.startswith("-") and not a.startswith("--") and len(a) > 2:
+        elif _COMPRESSED_ARG.match(a):
             new_args.extend(f"-{arg}" for arg in a[1:])
 
         # Leave as is
@@ -48,10 +52,10 @@ class Arg:
 
 
 def parse_as_attr(arg: str) -> Arg:
-    if arg.startswith("--"):
+    if _LONG_ARG.match(arg):
         return Arg(value=dash_to_snake(arg), orig=arg, arg_type="long-opt")
 
-    if arg.startswith("-"):
+    if _SHORT_ARG.match(arg):
         return Arg(value=dash_to_snake(arg), orig=arg, arg_type="short-opt")
 
     return Arg(value=arg, orig=arg, arg_type="pos")
