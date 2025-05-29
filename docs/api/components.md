@@ -143,7 +143,7 @@ The full list can be found in the code [here](https://github.com/danimelchor/cly
 ```python
 def boxed(
     lines: T,
-    width: int | None = None,
+    width: t.Literal["auto", "max"] | int = "auto",
     style: Boxes = Boxes.HEAVY,
     alignment: AlignType = "left",
     title: str | None = None,
@@ -155,7 +155,11 @@ Wraps text neatly in a box with the selected style, padding, and alignment.
 Parameters:
 
 - `lines`: the type of lines will determine it's output type. It can be one of `str`, `list[str]` or `Iterable[str]`
-- `width`: the desired width of the box
+- `width`: the desired width of the box:
+    - If `"max"`, it will be set to the max width of the terminal.
+    - If `"auto"`, it will be set to the max width of the content.
+    - If `width < 0`, it will be set to the max width of the terminal - the number.
+    - If `width > 0`, it will be set to that exact width.
 - `style`: the desired style (see [`Boxes`](#boxes))
 - `alignment`: the style of alignment (see [`align`](#align))
 - `title`: optionally define a title for the box, it's length must be < width
@@ -164,8 +168,8 @@ Parameters:
 ### Stack
 
 ```python
-def stack(*blocks: list[str], padding: int = 1) -> str:
-def stack(*blocks: list[str], padding: int = 1, lines: bool) -> list[str]:
+def stack(*blocks: list[str], width: int | None = None, padding: int = 1) -> str:
+def stack(*blocks: list[str], width: int | None = None, padding: int = 1, lines: bool) -> list[str]:
 ```
 
 Horizontally aligns blocks of text to display a nice layout where each block is displayed
@@ -174,6 +178,7 @@ side by side.
 Parameters:
 
 - `blocks`: a series of blocks of lines of strings to display side by side
+- `width`: the desired width of the box. If None, it will be set to the max width of the terminal. If negative, it will be set to the max width of the terminal - the number.
 - `padding`: the space between each block
 - `lines`: if the output should be returned as lines or as a string
 
