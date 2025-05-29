@@ -44,6 +44,7 @@ class PartialConfig(t.Generic[T]):
     group: str | None = None
     negative: str | None = None
     defer: bool = False
+    env: str | None = None
 
 
 @dataclass
@@ -63,6 +64,7 @@ class Config(t.Generic[T]):
     group: str | None = None
     negative: str | None = None
     defer: bool = False
+    env: str | None = None
 
     def __post_init__(self):
         if self.is_positional and self.short:
@@ -164,6 +166,7 @@ def arg(
     group: str | None = None,
     negative: str | None = None,
     defer: bool = False,
+    env: str | None = None,
 ) -> T:
     return PartialConfig(
         default=default,
@@ -179,6 +182,7 @@ def arg(
         group=group,
         negative=negative,
         defer=defer,
+        env=env,
     )  # type: ignore
 
 

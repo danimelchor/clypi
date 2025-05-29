@@ -4,6 +4,7 @@ import asyncio
 import dataclasses
 import inspect
 import logging
+import os
 import re
 import sys
 import typing as t
@@ -630,6 +631,10 @@ class Command(metaclass=_CommandMeta):
                 # If the field was provided through args
                 if field in unparsed:
                     parsed_kwargs[field] = field_conf.parser(unparsed[field])
+
+                # If the field can come from an env var, check that
+                elif field_conf.env is not None and field_conf.env in os.environ:
+                    parsed_kwargs[field] = field_conf.parser(os.environ[field_conf.env])
 
                 # If the field comes from a parent command, use that
                 elif field_conf.inherited and field in parent_attrs:
