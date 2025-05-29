@@ -12,6 +12,7 @@ def arg(
     max_attempts: int = MAX_ATTEMPTS,
     negative: str | None = None,
     group: str | None = None,
+    env: str | None = None,
 ) -> T
 ```
 
@@ -31,6 +32,7 @@ Parameters:
 - `group`: optionally define the name of a group to display the option in. Adding an option will automatically display the options in a different section of the help page (see the [Argument groups](../learn/getting_started.md#argument-groups) docs).
 - `negative`: defines the negative argument to set a flag as False. Useful for flags that have prompts so that they can be programmatically set to False.
 - `defer` (advanced): defers the fetching of a value until the value is used. This can be helpful to express complex dependencies between arguments. For example, you may not want to prompt if a different option was passed in (see `examples/cli_deferred.py`).
+- `env`: optionally define an environment variable to read the value from.
 
 ## `Command`
 
