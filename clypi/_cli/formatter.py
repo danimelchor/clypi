@@ -72,7 +72,7 @@ class ClypiFormatter:
             stacked = stack(indented(first_col), *rest)
             return f"{section_title}\n{stacked}"
 
-        stacked = stack(first_col, *rest, lines=True)
+        stacked = stack(first_col, *rest, lines=True, width=-4)
         return "\n".join(boxed(stacked, width="max", title=title, color=color))
 
     def _format_option_value(self, option: Config[t.Any]):

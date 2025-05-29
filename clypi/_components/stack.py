@@ -13,7 +13,7 @@ def _safe_get(ls: list[str], idx: int) -> str:
 @overload
 def stack(
     *blocks: list[str],
-    max_width: int | None = None,
+    width: int | None = None,
     padding: int = 2,
     lines: bool,
 ) -> list[str]: ...
@@ -22,18 +22,23 @@ def stack(
 @overload
 def stack(
     *blocks: list[str],
-    max_width: int | None = None,
+    width: int | None = None,
     padding: int = 2,
 ) -> str: ...
 
 
 def stack(
     *blocks: list[str],
-    max_width: int | None = None,
+    width: int | None = None,
     padding: int = 2,
     lines: bool = False,
 ) -> str | list[str]:
-    max_width = max_width or get_term_width()
+    # Figure out width
+    if isinstance(width, int) and width < 0:
+        width = get_term_width() + width
+    elif width is None:
+        width = get_term_width()
+
     padding_str = " " * padding
 
     new_lines: list[str] = []
@@ -50,7 +55,7 @@ def stack(
             # If there was a line, next iter will happen
             block_line = _safe_get(block, idx)
             if block_line:
-                more |= True
+                more = True
 
             # How much do we need to reach the actual visible length
             actual_width = (block_width - visible_width(block_line)) + len(block_line)
@@ -60,14 +65,14 @@ def stack(
 
         # Check if combined line would overflow and wrap if needed
         combined_line = padding_str.join(tmp).rstrip()
-        if visible_width(combined_line) <= max_width:
+        if visible_width(combined_line) <= width:
             new_lines.append(combined_line)
         else:
             # We need to wrap the last block and the remainder needs to be aligned
             # with the start of the second block
             width_without_last = visible_width(padding_str.join(tmp[:-1]) + padding_str)
-            max_last_width = max_width - width_without_last
-            wrapped_last = wrap(tmp[-1], max_last_width)
+            max_last_width = width - width_without_last
+            wrapped_last = wrap(tmp[-1].strip(), max_last_width)
 
             # Add the combined line
             combined_line = padding_str.join(tmp[:-1] + [wrapped_last[0]]).rstrip()

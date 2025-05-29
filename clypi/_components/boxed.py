@@ -53,8 +53,10 @@ def boxed(
         yield c(box.bl + box.x * (width - 2) + box.br)
 
     def _get_width(lines: list[str]):
-        if isinstance(width, int):
+        if isinstance(width, int) and width >= 0:
             return width
+        if isinstance(width, int) and width < 0:
+            return get_term_width() + width
 
         if width == "max":
             return get_term_width()

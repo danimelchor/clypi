@@ -1,3 +1,5 @@
+from textwrap import dedent
+
 import pytest
 
 from clypi import OverflowStyle, wrap
@@ -20,3 +22,22 @@ def test_wrapping(s: str, overflow_style: OverflowStyle, expected: str):
     result = wrap(s, width, overflow_style)
     assert result == expected
     assert len(result) <= width
+
+
+def test_long_sentence_wrap():
+    sentence = dedent(
+        """
+        This is a very long sentence which should ideally split by the words "sentence",
+        "should", "by", "sentence", etc.
+        """
+    ).strip()
+    res = wrap(sentence, width=20, overflow_style="wrap")
+    assert res == [
+        "This is a very long",
+        "sentence which",
+        "should ideally split",
+        "by the words",
+        '"sentence",',
+        '"should", "by",',
+        '"sentence", etc.',
+    ]

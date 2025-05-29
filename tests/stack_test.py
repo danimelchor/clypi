@@ -17,7 +17,7 @@ def test_two_line_stack():
 
 
 def test_overflowing_line_stack():
-    result = stack(["a", "a"], ["b" * 12, "b" * 10], max_width=13, lines=True)
+    result = stack(["a", "a"], ["b" * 12, "b" * 10], width=13, lines=True)
     expected = [
         "a  bbbbbbbbbb",
         "   bb",
