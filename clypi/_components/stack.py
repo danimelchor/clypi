@@ -33,7 +33,12 @@ def stack(
     padding: int = 2,
     lines: bool = False,
 ) -> str | list[str]:
-    max_width = max_width or get_term_width()
+    # Figure out width
+    if isinstance(max_width, int) and max_width < 0:
+        max_width = get_term_width() + max_width
+    elif max_width is None:
+        max_width = get_term_width()
+
     padding_str = " " * padding
 
     new_lines: list[str] = []
