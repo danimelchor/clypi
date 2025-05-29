@@ -1,3 +1,4 @@
+import textwrap
 import typing as t
 
 from clypi._util import UNSET, Unset, visible_width
@@ -23,9 +24,4 @@ def wrap(
     if overflow_style == "ellipsis":
         return [s[: width - 1] + "…"]
 
-    res: list[str] = []
-    while s:
-        res.append(s[:width])
-        s = s[width:].strip()
-
-    return res
+    return textwrap.wrap(s, width=width)
