@@ -50,7 +50,7 @@ def stack(
             # If there was a line, next iter will happen
             block_line = _safe_get(block, idx)
             if block_line:
-                more |= True
+                more = True
 
             # How much do we need to reach the actual visible length
             actual_width = (block_width - visible_width(block_line)) + len(block_line)
@@ -67,7 +67,7 @@ def stack(
             # with the start of the second block
             width_without_last = visible_width(padding_str.join(tmp[:-1]) + padding_str)
             max_last_width = max_width - width_without_last
-            wrapped_last = wrap(tmp[-1], max_last_width)
+            wrapped_last = wrap(tmp[-1].strip(), max_last_width)
 
             # Add the combined line
             combined_line = padding_str.join(tmp[:-1] + [wrapped_last[0]]).rstrip()

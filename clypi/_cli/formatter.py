@@ -12,6 +12,7 @@ from clypi._components.boxed import boxed
 from clypi._components.indented import indented
 from clypi._components.stack import stack
 from clypi._exceptions import format_traceback
+from clypi._util import get_term_width
 
 if t.TYPE_CHECKING:
     from clypi import Command
@@ -72,7 +73,7 @@ class ClypiFormatter:
             stacked = stack(indented(first_col), *rest)
             return f"{section_title}\n{stacked}"
 
-        stacked = stack(first_col, *rest, lines=True)
+        stacked = stack(first_col, *rest, lines=True, max_width=get_term_width() - 4)
         return "\n".join(boxed(stacked, width="max", title=title, color=color))
 
     def _format_option_value(self, option: Config[t.Any]):

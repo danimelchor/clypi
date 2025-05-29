@@ -178,3 +178,26 @@ class TestCase:
                 """
             ),
         )
+
+    def test_basic_example_with_long_help(self):
+        class Main(Command):
+            positional: Positional[str] = arg(
+                help="Some positional arg with an insanely long description that will definitely not fit!"
+            )
+
+        stdout = _get_help(Main)
+        print(stdout.getvalue())
+        _assert_stdout_matches(
+            stdout,
+            dedent(
+                """
+                Usage: main [POSITIONAL]
+                
+                ┏━ Arguments ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
+                ┃ [POSITIONAL]  Some positional arg with an      ┃
+                ┃               insanely long description that   ┃
+                ┃               will definitely not fit!         ┃
+                ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
+                """
+            ),
+        )
