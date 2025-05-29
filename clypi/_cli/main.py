@@ -127,9 +127,9 @@ class _CommandMeta(type):
 
             # Set the values in the class properly instead of keeping the
             # Config fields around
-            if not field_conf.has_default() and hasattr(self, field):
+            if field_conf.default is UNSET and hasattr(self, field):
                 delattr(self, field)
-            elif field_conf.has_default():
+            elif field_conf.default is not UNSET:
                 setattr(self, field, field_conf.get_default())
 
         # Store all fields

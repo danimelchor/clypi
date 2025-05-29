@@ -8,6 +8,10 @@ from clypi import Command, Positional, arg
 from clypi._cli.arg_parser import Arg
 
 
+def _raise_error() -> str:
+    raise ValueError("Whoops! This should never be called")
+
+
 class ExampleSubCommand(Command):
     """Some sample docs"""
 
@@ -28,6 +32,7 @@ class ExampleCommand(Command):
     option: list[str] = arg(
         short="o", help="A list of strings please", default_factory=list
     )
+    default_test: str = arg(default_factory=_raise_error)
 
     @override
     @classmethod
@@ -53,7 +58,7 @@ def test_expected_base():
 
 def test_expected_options():
     opts = ExampleCommand.options()
-    assert len(opts) == 2
+    assert len(opts) == 3
 
     assert opts["flag"].name == "flag"
     assert opts["flag"].arg_type is bool
@@ -86,11 +91,11 @@ def test_expected_subcommands():
 
 
 def test_expected_cls_introspection():
-    assert ExampleCommand.option == []
+    assert ExampleCommand.flag is False
 
 
 def test_expected_init():
-    cmd = ExampleCommand()
+    cmd = ExampleCommand(default_test="")
     assert cmd.flag is False
     assert cmd.option == []
     assert cmd.subcommand is None
@@ -98,7 +103,10 @@ def test_expected_init():
 
 def test_expected_init_with_kwargs():
     cmd = ExampleCommand(
-        flag=True, option=["f"], subcommand=ExampleSubCommand(positional=tuple("g"))
+        flag=True,
+        option=["f"],
+        subcommand=ExampleSubCommand(positional=tuple("g")),
+        default_test="",
     )
     assert cmd.flag is True
     assert cmd.option == ["f"]
@@ -107,7 +115,7 @@ def test_expected_init_with_kwargs():
 
 
 def test_expected_init_with_args():
-    cmd = ExampleCommand(True, ExampleSubCommand(tuple("g")), ["f"])
+    cmd = ExampleCommand(True, ExampleSubCommand(tuple("g")), ["f"], "")
     assert cmd.flag is True
     assert cmd.option == ["f"]
     assert cmd.subcommand is not None
@@ -115,7 +123,9 @@ def test_expected_init_with_args():
 
 
 def test_expected_init_with_mixed_args_kwargs():
-    cmd = ExampleCommand(True, ExampleSubCommand(tuple("g")), option=["f"])
+    cmd = ExampleCommand(
+        True, ExampleSubCommand(tuple("g")), option=["f"], default_test=""
+    )
     assert cmd.flag is True
     assert cmd.option == ["f"]
     assert cmd.subcommand is not None
@@ -124,11 +134,14 @@ def test_expected_init_with_mixed_args_kwargs():
 
 def test_expected_repr():
     cmd = ExampleCommand(
-        flag=True, option=["f"], subcommand=ExampleSubCommand(positional=tuple("g"))
+        flag=True,
+        option=["f"],
+        subcommand=ExampleSubCommand(positional=tuple("g")),
+        default_test="foo",
     )
     assert (
         str(cmd)
-        == "ExampleCommand(flag=True, option=['f'], subcommand=ExampleSubCommand(positional=('g',)))"
+        == "ExampleCommand(flag=True, option=['f'], subcommand=ExampleSubCommand(positional=('g',)), default_test=foo)"
     )
 
 
