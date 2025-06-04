@@ -206,3 +206,18 @@ def test_parse_inherited(
         for k, v in expected["run"].items():
             lc_v = getattr(main, k)
             assert lc_v == v, f"run.{k} should be {v} but got {lc_v}"
+
+
+def test_inherited_fails_on_load():
+    class Subcmd(Command):
+        verbose: bool = arg(inherited=True)
+
+    with pytest.raises(TypeError) as exc_info:
+
+        class Main(Command):
+            subcommand: Subcmd | None = None
+
+    assert (
+        str(exc_info.value)
+        == "Fields {'verbose'} in Subcmd cannot be inherited from Main since they don't exist!"
+    )

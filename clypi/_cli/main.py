@@ -60,8 +60,8 @@ class _CommandMeta(type):
     ) -> None:
         super(_CommandMeta, self).__init__(name, bases, attrs)
         self._ensure_fields_are_annotated()
-        self._configure_subcommands()
         self._configure_fields()
+        self._configure_subcommands()
 
     @t.final
     def _ensure_fields_are_annotated(self) -> None:
@@ -157,6 +157,7 @@ class _CommandMeta(type):
         subcmds: dict[str | None, type[Command] | None] = {}
         for v in subcmds_tmp:
             if inspect.isclass(v) and issubclass(v, Command):
+                self._check_inherited(v)
                 subcmds[v.prog()] = v
             elif v is NoneType:
                 subcmds[None] = None
@@ -176,6 +177,35 @@ class _CommandMeta(type):
         setattr(self, CLYPI_SUBCOMMANDS, subcmds)
 
     @t.final
+    def _check_inherited(self, child: type[Command]) -> None:
+        """
+        This function is called by the parent command during class instantiation
+        to ensure child inherited fields exist in the parent.
+        """
+        missing: set[str] = set()
+
+        def _check(
+            parent_fields: dict[str, Config[t.Any]],
+            child_fields: dict[str, Config[t.Any]],
+        ):
+            child_inherited = {
+                field
+                for field, field_conf in child_fields.items()
+                if field_conf.inherited
+            }
+            all_parent = set(parent_fields.keys())
+            missing.update(child_inherited - all_parent)
+
+        _check(self.options(), child.options())
+        _check(self.positionals(), child.positionals())
+
+        if missing:
+            raise TypeError(
+                f"Fields {missing!r} in {child.__name__} cannot be inherited from"
+                + f" {self.__name__} since they don't exist!"
+            )
+
+    @t.final
     def inherit(self, parent: type[Command]) -> set[str]:
         """
         This function is called by the parent command during parsing to configure
@@ -185,21 +215,27 @@ class _CommandMeta(type):
         Returns the list of inherited fields
         """
         setattr(self, CLYPI_PARENTS, parent.full_command())
+        inherited: set[str] = set()
+
+        def _merge(
+            all_fields: dict[str, Config[t.Any]],
+            parent_fields: dict[str, Config[t.Any]],
+        ):
+            for field, field_conf in parent_fields.items():
+                if field not in all_fields or not all_fields[field].inherited:
+                    continue
+                all_fields[field] = dataclasses.replace(
+                    field_conf,
+                    # Keep inherited and group/hidden config
+                    inherited=True,
+                    group=all_fields[field].group or field_conf.group,
+                    hidden=all_fields[field].hidden or field_conf.hidden,
+                )
+                inherited.add(field)
 
         # For inherited args, configure them with the parent's configs
-        options = self.options()
-        inherited: set[str] = set()
-        for opt, opt_config in parent.options().items():
-            if opt not in options or not options[opt].inherited:
-                continue
-            options[opt] = dataclasses.replace(
-                opt_config,
-                # Keep inherited and group/hidden config
-                inherited=True,
-                group=options[opt].group or opt_config.group,
-                hidden=options[opt].hidden or opt_config.hidden,
-            )
-            inherited.add(opt)
+        _merge(self.options(), parent.options())
+        _merge(self.positionals(), parent.positionals())
 
         return inherited
 

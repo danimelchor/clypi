@@ -12,10 +12,19 @@ def _assert_stdout_matches(stdout: StringIO, expected: str):
     assert stdout_str.strip() == expected.strip()
 
 
-def _get_help(cmd: type[Command], err: Exception | None = None) -> StringIO:
+def _get_help(
+    cmd: type[Command], subcmds: list[str] = [], error: bool = False
+) -> StringIO:
     with replace_stdout() as stdout:
         with suppress(SystemExit):
-            cmd.print_help(err)
+            cmd.parse(
+                ["--sdasdasjkdasd"]
+                if error
+                else [
+                    *subcmds,
+                    "--help",
+                ]
+            )
 
         return stdout
 
@@ -44,7 +53,7 @@ class TestCase:
         class Main(Command):
             pass
 
-        stdout = _get_help(Main, RuntimeError())
+        stdout = _get_help(Main, error=True)
         _assert_stdout_matches(
             stdout,
             dedent(
@@ -52,7 +61,7 @@ class TestCase:
                 Usage: main
 
                 ┏━ Error ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
-                ┃ RuntimeError                                   ┃
+                ┃ Unknown option '--sdasdasjkdasd'               ┃
                 ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
                 """
             ),
@@ -120,6 +129,26 @@ class TestCase:
                 ┃ --flag             Some flag                   ┃
                 ┃ --option <OPTION>  Some option                 ┃
                 ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
+                """
+            ),
+        )
+
+    def test_basic_example_for_subcommand(self):
+        class Subcmd(Command):
+            pass
+
+        class Main(Command):
+            subcommand: Subcmd
+            positional: Positional[str] = arg(help="Some positional arg")
+            flag: bool = arg(False, help="Some flag")
+            option: int = arg(5, help="Some option")
+
+        stdout = _get_help(Main, subcmds=["subcmd"])
+        _assert_stdout_matches(
+            stdout,
+            dedent(
+                """
+                Usage: main subcmd
                 """
             ),
         )
@@ -197,6 +226,35 @@ class TestCase:
                 ┃ [POSITIONAL]  Some positional arg with an      ┃
                 ┃               insanely long description that   ┃
                 ┃               will definitely not fit!         ┃
+                ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
+                """
+            ),
+        )
+
+    def test_basic_example_with_inherited_fields(self):
+        class Subcmd(Command):
+            positional: Positional[str] = arg(inherited=True)
+            option: int = arg(inherited=True)
+
+        class Main(Command):
+            subcommand: Subcmd
+            positional: Positional[str] = arg(help="Some positional arg")
+            option: int = arg(5, help="Some option")
+
+        stdout = _get_help(Main, subcmds=["subcmd"])
+        print(stdout.getvalue())
+        _assert_stdout_matches(
+            stdout,
+            dedent(
+                """
+                Usage: main subcmd [POSITIONAL] [OPTIONS]
+                
+                ┏━ Arguments ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
+                ┃ [POSITIONAL]  Some positional arg              ┃
+                ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
+                
+                ┏━ Options ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
+                ┃ --option <OPTION>  Some option                 ┃
                 ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
                 """
             ),

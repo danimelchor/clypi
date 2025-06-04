@@ -1,3 +1,4 @@
+import dataclasses
 import shlex
 import typing as t
 from enum import Enum
@@ -6,7 +7,7 @@ from pathlib import Path
 import pytest
 from typing_extensions import override
 
-from clypi import Command, Positional, arg, get_config
+from clypi import Command, Positional, arg, configure, get_config
 from clypi._cli.arg_parser import normalize_args
 
 
@@ -17,7 +18,16 @@ def parametrize(args: str, cases: list[tuple[t.Any, ...]]):
     return wrapper
 
 
-get_config().help_on_fail = False
+@pytest.fixture(autouse=True)
+def disable_pretty_conf():
+    conf = get_config()
+    new_conf = dataclasses.replace(conf)
+    new_conf.help_on_fail = False
+    new_conf.nice_errors = tuple()
+    new_conf.disable_colors = True
+    configure(new_conf)
+    yield
+    configure(conf)
 
 
 def join_mult(s: str, n: int):
