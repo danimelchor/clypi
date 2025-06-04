@@ -12,7 +12,7 @@ import pytest
 from pytest import mark
 
 import clypi
-from clypi import AbortException, MaxAttemptsException, get_config
+from clypi import AbortException, MaxAttemptsException
 
 
 @contextmanager
@@ -52,12 +52,6 @@ class _TestEnum(Enum):
 
 
 class TestCase:
-    def setup_method(self):
-        conf = get_config()
-        conf.help_on_fail = False
-        conf.nice_errors = tuple()
-        conf.disable_colors = True
-
     @mark.parametrize(
         "expected",
         [True, False],

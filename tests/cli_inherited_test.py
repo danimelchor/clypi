@@ -3,7 +3,7 @@ from dataclasses import dataclass
 
 import pytest
 
-from clypi import Command, arg
+from clypi import Command, Positional, arg
 from tests.cli_parse_test import parametrize
 from tests.prompt_test import replace_stdin
 
@@ -22,6 +22,7 @@ class Run(Command):
     Runs all files
     """
 
+    pos: Positional[str] = arg(inherited=True)
     verbose: bool = arg(inherited=True)
     env: str = arg(inherited=True)
     env_prompt: str = arg(inherited=True)
@@ -30,6 +31,7 @@ class Run(Command):
 
 class Main(Command):
     subcommand: Run | None = None
+    pos: Positional[int] = arg(help="Some positional arg")
     verbose: bool = arg(False, short="v", help="Whether to show more output")
     env: t.Literal["qa", "prod"] = arg(help="The environment to use")
     env_prompt: t.Literal["qa", "prod"] = arg(
@@ -45,9 +47,11 @@ class Main(Command):
         ([], {}, True, ""),
         (["-v"], {}, True, ""),
         (["-v", "--env", "qa"], {}, True, ""),
+        (["-v", "--env", "qa", "--env-prompt", "qa"], {}, True, ""),
         (
-            ["-v", "--env", "qa"],
+            ["1", "-v", "--env", "qa"],
             {
+                "pos": 1,
                 "verbose": True,
                 "env": "qa",
                 "env_prompt": "qa",
@@ -56,8 +60,9 @@ class Main(Command):
             "qa\n",
         ),
         (
-            ["-v", "--env", "qa", "--env-prompt", "qa"],
+            ["1", "-v", "--env", "qa", "--env-prompt", "qa"],
             {
+                "pos": 1,
                 "verbose": True,
                 "env": "qa",
                 "env_prompt": "qa",
@@ -66,12 +71,14 @@ class Main(Command):
             "",
         ),
         (
-            ["--env", "qa", "-v", "run"],
+            ["1", "--env", "qa", "-v", "run"],
             {
+                "pos": 1,
                 "verbose": True,
                 "env": "qa",
                 "env_prompt": "qa",
                 "run": {
+                    "pos": 1,
                     "verbose": True,
                     "env": "qa",
                     "env_prompt": "qa",
@@ -81,12 +88,14 @@ class Main(Command):
             "qa\n",
         ),
         (
-            ["--custom", "baz", "run", "--env", "qa", "-v"],
+            ["1", "--custom", "baz", "run", "--env", "qa", "-v"],
             {
+                "pos": 1,
                 "verbose": True,
                 "env": "qa",
                 "env_prompt": "qa",
                 "run": {
+                    "pos": 1,
                     "verbose": True,
                     "env": "qa",
                     "env_prompt": "qa",
@@ -98,12 +107,14 @@ class Main(Command):
             "qa\n",
         ),
         (
-            ["--env", "qa", "run", "-v", "--env-prompt", "qa"],
+            ["--env", "qa", "run", "1", "-v", "--env-prompt", "qa"],
             {
+                "pos": 1,
                 "verbose": True,
                 "env": "qa",
                 "env_prompt": "qa",
                 "run": {
+                    "pos": 1,
                     "verbose": True,
                     "env": "qa",
                     "env_prompt": "qa",
@@ -113,12 +124,14 @@ class Main(Command):
             "",
         ),
         (
-            ["--env", "qa", "--env-prompt", "qa", "run", "-v"],
+            ["--env", "qa", "--env-prompt", "qa", "run", "1", "-v"],
             {
+                "pos": 1,
                 "verbose": True,
                 "env": "qa",
                 "env_prompt": "qa",
                 "run": {
+                    "pos": 1,
                     "verbose": True,
                     "env": "qa",
                     "env_prompt": "qa",
@@ -128,12 +141,14 @@ class Main(Command):
             "",
         ),
         (
-            ["--env", "qa", "run", "-v"],
+            ["--env", "qa", "run", "1", "-v"],
             {
+                "pos": 1,
                 "verbose": True,
                 "env": "qa",
                 "env_prompt": "qa",
                 "run": {
+                    "pos": 1,
                     "verbose": True,
                     "env": "qa",
                     "env_prompt": "qa",
@@ -143,12 +158,14 @@ class Main(Command):
             "qa\n",
         ),
         (
-            ["run", "--env", "qa", "-v"],
+            ["run", "--env", "qa", "-v", "1"],
             {
+                "pos": 1,
                 "verbose": True,
                 "env": "qa",
                 "env_prompt": "qa",
                 "run": {
+                    "pos": 1,
                     "verbose": True,
                     "env": "qa",
                     "env_prompt": "qa",
@@ -159,12 +176,14 @@ class Main(Command):
         ),
         (["run", "-v"], {}, True, ""),
         (
-            ["run", "--env", "qa", "-v", "--custom", "baz"],
+            ["run", "--env", "qa", "-v", "1", "--custom", "baz"],
             {
+                "pos": 1,
                 "verbose": True,
                 "env": "qa",
                 "env_prompt": "qa",
                 "run": {
+                    "pos": 1,
                     "verbose": True,
                     "env": "qa",
                     "env_prompt": "qa",
@@ -184,7 +203,7 @@ def test_parse_inherited(
     stdin: str | list[str],
 ):
     if fails:
-        with pytest.raises(Exception):
+        with pytest.raises(BaseException):
             _ = Main.parse(args)
         return
 
@@ -206,3 +225,19 @@ def test_parse_inherited(
         for k, v in expected["run"].items():
             lc_v = getattr(main, k)
             assert lc_v == v, f"run.{k} should be {v} but got {lc_v}"
+
+
+def test_inherited_fails_on_load():
+    class Subcmd(Command):
+        pos: Positional[str] = arg(inherited=True)
+        verbose: bool = arg(inherited=True)
+
+    with pytest.raises(TypeError) as exc_info:
+
+        class Main(Command):
+            subcommand: Subcmd | None = None
+
+    assert (
+        str(exc_info.value)
+        == "Fields ['verbose', 'pos'] in Subcmd cannot be inherited from Main since they don't exist!"
+    )
