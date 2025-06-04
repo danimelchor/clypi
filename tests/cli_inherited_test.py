@@ -3,7 +3,7 @@ from dataclasses import dataclass
 
 import pytest
 
-from clypi import Command, arg
+from clypi import Command, Positional, arg
 from tests.cli_parse_test import parametrize
 from tests.prompt_test import replace_stdin
 
@@ -210,6 +210,7 @@ def test_parse_inherited(
 
 def test_inherited_fails_on_load():
     class Subcmd(Command):
+        pos: Positional[str] = arg(inherited=True)
         verbose: bool = arg(inherited=True)
 
     with pytest.raises(TypeError) as exc_info:
@@ -219,5 +220,5 @@ def test_inherited_fails_on_load():
 
     assert (
         str(exc_info.value)
-        == "Fields {'verbose'} in Subcmd cannot be inherited from Main since they don't exist!"
+        == "Fields {'verbose', 'pos'} in Subcmd cannot be inherited from Main since they don't exist!"
     )
