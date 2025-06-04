@@ -182,7 +182,7 @@ class _CommandMeta(type):
         This function is called by the parent command during class instantiation
         to ensure child inherited fields exist in the parent.
         """
-        missing: set[str] = set()
+        missing: list[str] = []
 
         def _check(
             parent_fields: dict[str, Config[t.Any]],
@@ -194,7 +194,7 @@ class _CommandMeta(type):
                 if field_conf.inherited
             }
             all_parent = set(parent_fields.keys())
-            missing.update(child_inherited - all_parent)
+            missing.extend(child_inherited - all_parent)
 
         _check(self.options(), child.options())
         _check(self.positionals(), child.positionals())

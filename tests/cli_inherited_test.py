@@ -220,5 +220,5 @@ def test_inherited_fails_on_load():
 
     assert (
         str(exc_info.value)
-        == "Fields {'verbose', 'pos'} in Subcmd cannot be inherited from Main since they don't exist!"
+        == "Fields ['verbose', 'pos'] in Subcmd cannot be inherited from Main since they don't exist!"
     )
