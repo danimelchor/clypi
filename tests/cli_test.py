@@ -198,3 +198,24 @@ def test_get_similar_non_similar():
         )
 
     assert exc_info.value.args[0] == "Unknown argument 'foo'"
+
+
+def test_repeated_subcommands():
+    class Example1(Command):
+        @override
+        @classmethod
+        def prog(cls):
+            return "example"
+
+    class Example2(Command):
+        @override
+        @classmethod
+        def prog(cls):
+            return "example"
+
+    with pytest.raises(TypeError) as exc_info:
+
+        class Main(Command):
+            subcommand: Example1 | Example2
+
+    assert exc_info.value.args[0] == "Found duplicate subcommand 'example' in Main"
