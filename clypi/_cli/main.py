@@ -157,8 +157,14 @@ class _CommandMeta(type):
         subcmds: dict[str | None, type[Command] | None] = {}
         for v in subcmds_tmp:
             if inspect.isclass(v) and issubclass(v, Command):
+                prog = v.prog()
+                if prog in subcmds:
+                    raise TypeError(
+                        f"Found duplicate subcommand {prog!r} in {self.__name__}"
+                    )
+
                 self._check_inherited(v)
-                subcmds[v.prog()] = v
+                subcmds[prog] = v
             elif v is NoneType:
                 subcmds[None] = None
             else:
