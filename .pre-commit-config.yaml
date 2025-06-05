@@ -75,3 +75,13 @@ repos:
       pass_filenames: false
       stages: [pre-push]
       types: [markdown]
+      always_run: true
+
+    # Docs
+    - id: docs
+      name: docs
+      entry: ./scripts/gen_readme
+      language: python
+      pass_filenames: false
+      stages: [pre-push]
+      always_run: true
