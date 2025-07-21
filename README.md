@@ -18,10 +18,13 @@
     <img src="https://img.shields.io/github/contributors/danimelchor/clypi" alt="contributors" />
 </div>
 
+> [!NOTE]
+> Clypi is still being maintained, but considered a finished library. If
+> you have any issues or feature requests, please feel free to open an issue. Cheers!
+
 ## 📖 Docs
 
 Read [our docs](https://danimelchor.github.io/clypi/learn/getting_started/) to get started. You can also look at [the API reference](https://danimelchor.github.io/clypi/api/cli/) for examples and a full API reference. Otherwise, feel free to browse the source code in the [GitHub repository](https://github.com/danimelchor/clypi).
-
 
 ## What is clypi?
 
@@ -34,6 +37,7 @@ I've been working with Python-based CLIs for several years with many users and s
 - **Configurable**: clypi lets you configure almost everything you'd like to configure. You can create your own themes, help pages, error messages, and more!
 
 ### Define Arguments with Type Annotations
+
 Just like you do with [dataclasses](https://docs.python.org/3/library/dataclasses.html), clypi CLI arguments can defined as class-level type annotations.
 
 <!-- mdtest-args --name foo -->
@@ -117,7 +121,7 @@ cli.start()
 
 ### Getting started
 
-```bash
+```console
 uv add clypi  # or `pip install clypi`
 ```
 
@@ -125,12 +129,11 @@ uv add clypi  # or `pip install clypi`
 
 Clypi comes with pre-defined themes and modern features like suggestions on typos:
 
-```
-$ uv run -m examples.cli run run-seria
+```console
+uv run -m examples.cli run run-seria
 ```
 
 <img width="1696" alt="image" src="https://github.com/user-attachments/assets/3170874d-d120-4b1a-968a-f121e9b8ee53" />
-
 
 ## 🛠️ Configurable
 
@@ -165,14 +168,13 @@ configure(
 )
 ```
 
-```
-$ uv run -m examples.uv add -c
+```console
+uv run -m examples.uv add -c
 ```
 
 <img width="1699" alt="image" src="https://github.com/user-attachments/assets/dbf73404-1913-4315-81b6-1b690746680e" />
 
 Read the [docs](https://danimelchor.github.io/clypi/learn/configuration/) and [API reference](https://danimelchor.github.io/clypi/api/config/).
-
 
 ## 🌈 Colors
 
@@ -196,13 +198,12 @@ print("The old version said", wrong("the Earth was flat"))
 ```
 
 ```
-$ uv run -m examples.colors
+uv run -m examples.colors
 ```
 
 <img width="974" alt="image" src="https://github.com/user-attachments/assets/9340d828-f7ce-491c-b0a8-6a666f7b7caf" />
 
 Read the [docs](https://danimelchor.github.io/clypi/learn/beautiful_uis/)
-
 
 ## 🌀 Spinners
 
@@ -222,10 +223,9 @@ asyncio.run(do_some_work())
 
 `uv run -m examples.spinner`
 
-https://github.com/user-attachments/assets/2065b3dd-c73c-4e21-b698-8bf853e8e520
+<https://github.com/user-attachments/assets/2065b3dd-c73c-4e21-b698-8bf853e8e520>
 
 Read the [docs](https://danimelchor.github.io/clypi/learn/beautiful_uis/#spinners)
-
 
 ## 🔀 Async by default
 
