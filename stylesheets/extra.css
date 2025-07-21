@@ -1,0 +1,33 @@
+:root > * {
+  --color-bg: var(--md-code-bg-color);
+}
+
+.termy {
+  padding: 2.5rem 1rem 1rem !important;
+  font-family: monospace !important;
+}
+
+[data-ty] {
+  line-height: 1.3 !important;
+}
+
+/*
+* Based on squidfunk/mkdocs-material badges
+* https://github.com/squidfunk/mkdocs-material/blob/master/src/overrides/assets/stylesheets/custom/_typeset.scss
+*/
+
+.clypi-badge {
+  font-size: 0.85em;
+}
+
+.clypi-badge-icon {
+  background: var(--md-accent-fg-color--transparent);
+  border-radius: 1rem 0 0 1rem;
+  padding: 0.1rem 0.1rem 0.1rem 0.3rem;
+}
+
+.clypi-badge-text {
+  padding: 0.1rem 0.3rem;
+  border-radius: 0 1rem 1rem 0;
+  box-shadow: 0 0 0 1px inset var(--md-accent-fg-color--transparent);
+}
