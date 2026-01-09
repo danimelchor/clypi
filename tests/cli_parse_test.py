@@ -276,7 +276,9 @@ def test_expected_double_dash_ends_parsing():
 
 
 def test_expected_double_dash_ends_normalizing():
-    ec = Example.parse(["--flag", "./some-path", "--", "--option=a", "-Dkey=value", "-abc"])
+    ec = Example.parse(
+        ["--flag", "./some-path", "--", "--option=a", "-Dkey=value", "-abc"]
+    )
     assert ec.flag is True
     assert ec.pos == Path("./some-path")
 
