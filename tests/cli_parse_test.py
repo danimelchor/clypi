@@ -275,6 +275,17 @@ def test_expected_double_dash_ends_parsing():
     assert ec.get_unparsed() == ["--option", "a"]
 
 
+def test_expected_double_dash_ends_normalizing():
+    ec = Example.parse(["--flag", "./some-path", "--", "--option=a", "-Dkey=value", "-abc"])
+    assert ec.flag is True
+    assert ec.pos == Path("./some-path")
+
+    # --option a is ignored
+    assert ec.option == []
+    # arguments after the double dash should not be normalized
+    assert ec.get_unparsed() == ["--option=a", "-Dkey=value", "-abc"]
+
+
 @parametrize(
     "args,expected,fails",
     [
