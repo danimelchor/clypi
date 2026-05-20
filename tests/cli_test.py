@@ -210,7 +210,9 @@ def test_get_similar_help_long_opt():
             )
         )
 
-    assert exc_info.value.args[0] == "Unknown option '--hel'. Did you mean '--help'?"  # codespell:ignore
+    assert (
+        exc_info.value.args[0] == "Unknown option '--hel'. Did you mean '--help'?"
+    )  # codespell:ignore
 
 
 def test_get_similar_help_positional():
@@ -223,7 +225,9 @@ def test_get_similar_help_positional():
             )
         )
 
-    assert exc_info.value.args[0] == "Unknown argument 'halp'. Did you mean 'help'?"  # codespell:ignore
+    assert (
+        exc_info.value.args[0] == "Unknown argument 'halp'. Did you mean 'help'?"
+    )  # codespell:ignore
 
 
 def test_repeated_subcommands():
