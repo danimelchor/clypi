@@ -679,13 +679,15 @@ class Command(metaclass=_CommandMeta):
                 if field in unparsed:
                     parsed_kwargs[field] = field_conf.parser(unparsed[field])
 
+                # If the field comes from a parent command, use that. This must
+                # be checked before env vars so that the parent's resolved value
+                # (which already accounts for flag-vs-env precedence) is honored
+                elif field_conf.inherited and field in parent_attrs:
+                    parsed_kwargs[field] = parent_attrs[field]
+
                 # If the field can come from an env var, check that
                 elif field_conf.env is not None and field_conf.env in os.environ:
                     parsed_kwargs[field] = field_conf.parser(os.environ[field_conf.env])
-
-                # If the field comes from a parent command, use that
-                elif field_conf.inherited and field in parent_attrs:
-                    parsed_kwargs[field] = parent_attrs[field]
 
                 # If the field was not provided but we can defer prompting for the
                 # value, we instead set it to a DeferrableValue
