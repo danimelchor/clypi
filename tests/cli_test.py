@@ -200,6 +200,36 @@ def test_get_similar_non_similar():
     assert exc_info.value.args[0] == "Unknown argument 'foo'"
 
 
+def test_get_similar_help_long_opt():
+    with pytest.raises(ValueError) as exc_info:
+        raise ExampleCommand.get_similar_arg_error(
+            Arg(
+                "hel",  # codespell:ignore
+                "--hel",  # codespell:ignore
+                "long-opt",
+            )
+        )
+
+    assert (
+        exc_info.value.args[0] == "Unknown option '--hel'. Did you mean '--help'?"
+    )  # codespell:ignore
+
+
+def test_get_similar_help_positional():
+    with pytest.raises(ValueError) as exc_info:
+        raise ExampleCommand.get_similar_arg_error(
+            Arg(
+                "halp",  # codespell:ignore
+                "halp",  # codespell:ignore
+                "pos",
+            )
+        )
+
+    assert (
+        exc_info.value.args[0] == "Unknown argument 'halp'. Did you mean 'help'?"
+    )  # codespell:ignore
+
+
 def test_repeated_subcommands():
     class Example1(Command):
         @override
