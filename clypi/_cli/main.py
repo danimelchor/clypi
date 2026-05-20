@@ -508,8 +508,12 @@ class Command(metaclass=_CommandMeta):
         """
         similar = None
 
+        help_positionals = [h for h in HELP_ARGS if not h.startswith("-")]
+        help_opts = [h.lstrip("-") for h in HELP_ARGS if h.startswith("-")]
+
         if arg.is_pos():
             all_pos: list[str] = [
+                *help_positionals,
                 *[s for s in cls.subcommands() if s],
                 *list(cls.positionals()),
             ]
@@ -519,6 +523,7 @@ class Command(metaclass=_CommandMeta):
                 similar = pos
         else:
             all_pos: list[str] = [
+                *help_opts,
                 *list(cls.options()),
                 *[o.short for o in cls.options().values() if o.short],
             ]
