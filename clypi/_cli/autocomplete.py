@@ -28,6 +28,8 @@ class AutocompleteInstaller(ABC):
     enough into the right subcommand the user wants to autocomplete
     """
 
+    shell: t.ClassVar[str]
+
     def __init__(self, command: type[Command]) -> None:
         self.name = command.prog()
         self._options = list(command.options().values())
@@ -64,7 +66,9 @@ class AutocompleteInstaller(ABC):
             f.write(self.script())
         self.post_install(p)
         _colors.cprint(
-            "Successfully installed autocomplete for fish", fg="green", bold=True
+            f"Successfully installed autocomplete for {self.shell}",
+            fg="green",
+            bold=True,
         )
         _colors.cprint(f"  󰘍 {self.path()}")
         sys.exit(0)
@@ -74,6 +78,8 @@ class AutocompleteInstaller(ABC):
 
 
 class FishInstaller(AutocompleteInstaller):
+    shell = "fish"
+
     @override
     def path(self) -> Path:
         return Path.home() / ".config" / "fish" / "completions" / f"{self.name}.fish"
@@ -84,6 +90,8 @@ class FishInstaller(AutocompleteInstaller):
 
 
 class BashInstaller(AutocompleteInstaller):
+    shell = "bash"
+
     @override
     def path(self) -> Path:
         base = Path("/etc/bash_completion.d/")
@@ -118,6 +126,8 @@ class BashInstaller(AutocompleteInstaller):
 
 
 class ZshInstaller(AutocompleteInstaller):
+    shell = "zsh"
+
     @override
     def path(self) -> Path:
         return Path.home() / ".zfunc" / f"_{self.name}"
