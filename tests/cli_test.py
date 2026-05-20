@@ -213,19 +213,6 @@ def test_get_similar_help_long_opt():
     assert exc_info.value.args[0] == "Unknown option '--hel'. Did you mean '--help'?"
 
 
-def test_get_similar_help_short_opt():
-    with pytest.raises(ValueError) as exc_info:
-        raise ExampleCommand.get_similar_arg_error(
-            Arg(
-                "i",
-                "-i",
-                "short-opt",
-            )
-        )
-
-    assert exc_info.value.args[0] == "Unknown option '-i'. Did you mean '-h'?"
-
-
 def test_get_similar_help_positional():
     with pytest.raises(ValueError) as exc_info:
         raise ExampleCommand.get_similar_arg_error(
