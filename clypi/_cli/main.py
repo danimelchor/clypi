@@ -513,9 +513,9 @@ class Command(metaclass=_CommandMeta):
 
         if arg.is_pos():
             all_pos: list[str] = [
-                *help_positionals,
                 *[s for s in cls.subcommands() if s],
                 *list(cls.positionals()),
+                *help_positionals,
             ]
             pos, dist = closest(arg.value, all_pos)
             # 2 is ~good for typos (e.g.: this -> that)
@@ -523,9 +523,9 @@ class Command(metaclass=_CommandMeta):
                 similar = pos
         else:
             all_pos: list[str] = [
-                *help_opts,
                 *list(cls.options()),
                 *[o.short for o in cls.options().values() if o.short],
+                *help_opts,
             ]
             pos, dist = closest(arg.value, all_pos)
             # 2 is ~good for typos (e.g.: this -> that)
