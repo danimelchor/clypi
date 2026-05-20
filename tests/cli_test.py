@@ -204,8 +204,8 @@ def test_get_similar_help_long_opt():
     with pytest.raises(ValueError) as exc_info:
         raise ExampleCommand.get_similar_arg_error(
             Arg(
-                "hel",
-                "--hel",
+                "hel",  # codespell:ignore
+                "--hel",  # codespell:ignore
                 "long-opt",
             )
         )
