@@ -223,7 +223,7 @@ def test_get_similar_help_positional():
             )
         )
 
-    assert exc_info.value.args[0] == "Unknown argument 'halp'. Did you mean 'help'?"
+    assert exc_info.value.args[0] == "Unknown argument 'halp'. Did you mean 'help'?"  # codespell:ignore
 
 
 def test_repeated_subcommands():
