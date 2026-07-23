@@ -221,11 +221,11 @@ class Str(ClypiParser[str]):
             raise CannotParseAs(raw, self)
 
         if self.length is not None:
-            a(len(raw) == self.length, len, f"'s length is not {self.length}")
+            a(len(raw) == self.length, raw, f"'s length is not {self.length}")
         if self.max is not None:
-            a(len(raw) <= self.max, len, f"'s length is not less than {self.max}")
+            a(len(raw) <= self.max, raw, f"'s length is not less than {self.max}")
         if self.min is not None:
-            a(len(raw) >= self.min, len, f"'s length is not greater than {self.min}")
+            a(len(raw) >= self.min, raw, f"'s length is not greater than {self.min}")
         if self.startswith is not None:
             a(
                 raw.startswith(self.startswith),
